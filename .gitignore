@@ -1,5 +1,8 @@
 dist/
 node_modules/
 
+# Fichier de couverture de code généré par Jest
+coverage/
+
 # Tous les fichiers du protocol du jeu buildé
 src/network/com/ankamagames/dofus/

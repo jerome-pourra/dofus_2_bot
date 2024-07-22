@@ -4,18 +4,23 @@
     "description": "Bot Dofus",
     "main": "dist/main.js",
     "scripts": {
+        "test": "jest",
         "start": "node dist/main.js"
     },
     "keywords": [],
     "author": "Jérôme Pourra",
     "license": "ISC",
     "dependencies": {
-        "node-gyp": "^10.2.0",
-        "frida": "^16.4.5"
+        "frida": "^16.4.5",
+        "node-gyp": "^10.2.0"
     },
     "devDependencies": {
         "@types/frida-gum": "^18.7.0",
+        "@types/jest": "^29.5.12",
         "@types/node": "^20.14.11",
+        "jest": "^29.7.0",
+        "ts-jest": "^29.2.3",
+        "ts-node": "^10.9.2",
         "typescript": "^5.5.3"
     }
 }
