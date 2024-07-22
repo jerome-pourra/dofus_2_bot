@@ -1,8 +1,8 @@
 ---
 name: Rapport de bug
 about: Créez un rapport pour nous aider à améliorer
-title: 'Bug: ...'
-labels: Type::Bug
+title: 'Bug: '
+labels: Type::Bug Type::Open
 assignees: 'jeromepourra'
 
 ---
@@ -19,9 +19,6 @@ Une description claire et concise du bug.
 
 **Comportement attendu**
 Une description claire et concise de ce à quoi vous vous attendiez.
-
-**Captures d'écran**
-Si possible, ajoutez des captures d'écran pour expliquer votre problème.
 
 **Contexte supplémentaire**
 Ajoutez tout autre contexte concernant le problème ici.
