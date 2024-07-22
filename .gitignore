@@ -1,0 +1,5 @@
+dist/
+node_modules/
+
+# Tous les fichiers du protocol du jeu buildé
+src/network/com/ankamagames/dofus/
