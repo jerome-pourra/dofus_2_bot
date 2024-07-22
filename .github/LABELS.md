@@ -5,6 +5,10 @@
   - Couleur: `#1d76db`
   - Description: Nouvelle fonctionnalité
 
+- **Type::Tech**
+  - Couleur: `#8b4513`
+  - Description: Tâches techniques ou améliorations du code existant
+
 - **Type::Test**
   - Couleur: `#c2e0c6`
   - Description: Tests et validation
