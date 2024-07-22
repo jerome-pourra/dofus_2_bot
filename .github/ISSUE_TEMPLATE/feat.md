@@ -1,8 +1,8 @@
 ---
 name: Demande de fonctionnalité
 about: Suggérez une idée pour ce projet
-title: ''
-labels: enhancement
+title: 'Feat: ...'
+labels: Type::Feat
 assignees: 'jeromepourra'
 
 ---

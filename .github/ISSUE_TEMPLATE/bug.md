@@ -1,8 +1,8 @@
 ---
 name: Rapport de bug
 about: Créez un rapport pour nous aider à améliorer
-title: ''
-labels: bug
+title: 'Bug: ...'
+labels: Type::Bug
 assignees: 'jeromepourra'
 
 ---
