@@ -1,55 +1,72 @@
-#### **Type::Bug**
-- Couleur: ![#b60205](https://via.placeholder.com/15/b60205/000000?text=+)
-- Description: Quelque chose ne fonctionne pas
+# Labels pour ce dépôt
 
-#### **Type::Doc**
-- Couleur: ![#d93f0b](https://via.placeholder.com/15/d93f0b/000000?text=+)
-- Description: Améliorations ou ajouts à la documentation
+## Type de tâches
+- **Type::Feat**
+  - Couleur: `#1d76db`
+  - Description: Nouvelle fonctionnalité
 
-#### **Type::Feat**
-- Couleur: ![#fbca04](https://via.placeholder.com/15/fbca04/000000?text=+)
-- Description: Nouvelle fonctionnalité ou demande
+- **Type::Tech**
+  - Couleur: `#8b4513`
+  - Description: Tâches techniques ou améliorations du code existant
 
----
+- **Type::Test**
+  - Couleur: `#c2e0c6`
+  - Description: Tests et validation
 
-#### **State::Open**
-- Couleur: ![#207de5](https://via.placeholder.com/15/207de5/000000?text=+)
-- Description: Ouvert et actif, en attente d'actions ou de discussions supplémentaires
+- **Type::Bug**
+  - Couleur: `#d73a4a`
+  - Description: Quelque chose ne fonctionne pas
 
-#### **State::Closed**
-- Couleur: ![#6f42c1](https://via.placeholder.com/15/6f42c1/000000?text=+)
-- Description: Fermé, soit parce que la tâche est complétée, soit parce qu'elle n'est plus pertinente
-
-#### **State::Ready**
-- Couleur: ![#0e8a16](https://via.placeholder.com/15/0e8a16/000000?text=+)
-- Description: Prêt pour le développement ou la révision
-
-#### **State::In Progress**
-- Couleur: ![#cccccc](https://via.placeholder.com/15/cccccc/000000?text=+)
-- Description: Actuellement en cours de développement ou de révision
-
-#### **State::Review**
-- Couleur: ![#c2e0c6](https://via.placeholder.com/15/c2e0c6/000000?text=+)
-- Description: En attente de révision par les pairs
-
-#### **State::Blocked**
-- Couleur: ![#e11d21](https://via.placeholder.com/15/e11d21/000000?text=+)
-- Description: Bloqué par une autre tâche ou problème
-
-#### **State::Done**
-- Couleur: ![#006b75](https://via.placeholder.com/15/006b75/000000?text=+)
-- Description: Complété avec succès
+- **Type::Doc**
+  - Couleur: `#0075ca`
+  - Description: Améliorations ou ajouts à la documentation
 
 ---
 
-#### **Priority::High**
-- Couleur: ![#e11d21](https://via.placeholder.com/15/e11d21/000000?text=+)
-- Description: Haute priorité, nécessite une action rapide
+## État des tâches
+- **State::Open**
+  - Couleur: `#d4c5f9`
+  - Description: Tâche ouverte
 
-#### **Priority::Medium**
-- Couleur: ![#eb6420](https://via.placeholder.com/15/eb6420/000000?text=+)
-- Description: Priorité moyenne, importante mais pas urgente
+- **State::Ready**
+  - Couleur: `#e4e669`
+  - Description: Prêt pour commencer
 
-#### **Priority::Low**
-- Couleur: ![#f6c6c7](https://via.placeholder.com/15/f6c6c7/000000?text=+)
-- Description: Basse priorité, peut attendre sans conséquences majeures
+- **State::InProgress**
+  - Couleur: `#f9d0c4`
+  - Description: En cours
+
+- **State::Testing**
+  - Couleur: `#fef2c0`
+  - Description: En phase de test
+
+- **State::Review**
+  - Couleur: `#c5def5`
+  - Description: En cours de révision
+
+- **State::Done**
+  - Couleur: `#bfe5bf`
+  - Description: Terminé
+
+- **State::Closed**
+  - Couleur: `#e6e6e6`
+  - Description: Fermé
+
+- **State::Blocked**
+  - Couleur: `#e99695`
+  - Description: Bloqué
+
+---
+
+## Priorité des tâches
+- **Priority::Low**
+  - Couleur: `#d4e157`
+  - Description: Priorité faible
+
+- **Priority::Medium**
+  - Couleur: `#ffeb3b`
+  - Description: Priorité moyenne
+
+- **Priority::High**
+  - Couleur: `#f44336`
+  - Description: Priorité haute
