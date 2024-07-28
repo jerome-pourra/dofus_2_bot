@@ -3,10 +3,9 @@ import type { Config } from 'jest';
 const config: Config = {
     rootDir: "./",
     testMatch: [
-        "<rootDir>/tests/**/*.spec.ts",
-    ], // Match avec les fichiers de test dans le répertoire tests
+        "**/*.spec.js",
+    ],
     verbose: true, // Affichage détaillé des tests
-    preset: "ts-jest",
     testEnvironment: "node",
     passWithNoTests: false, // Echec si aucun test n'est trouvé
     collectCoverage: false, // Activation de la couverture de code
@@ -18,8 +17,11 @@ const config: Config = {
         "clover"
     ],
     collectCoverageFrom: [
-        "./src/**/*.ts",
-        "!./src/network/com/**/*.ts" // Exclusion des fichiers du protocol Dofus
+        "./dist/**/*.js"
+    ],
+    testPathIgnorePatterns: [
+        "./node_modules/",
+        "./src/network/com/"
     ]
 };
 

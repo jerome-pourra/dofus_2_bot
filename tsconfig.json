@@ -4,8 +4,9 @@
         "esModuleInterop": true,
         "target": "ES6",
         "moduleResolution": "Node",
-        "outDir": "dist/"
+        "outDir": "dist/",
+        "skipLibCheck": true,
     },
-    "include": ["src/**/*.ts", "tests/**/*.ts"],
+    "include": ["src/**/*.ts"],
     "exclude": ["src/**/*copy*.ts"]
 }
