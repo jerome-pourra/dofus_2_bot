@@ -3,6 +3,8 @@ import { Hook, HookableProcesses } from "./frida/hook";
 import { Mitm } from "./network/Mitm";
 import { config } from "./config";
 
+// process.exit(0);
+
 new Mitm(config.mitm.host, config.mitm.port);
 
 HookableProcesses(config.hook.search).then((processes: frida.Process[]) => {
@@ -14,9 +16,9 @@ HookableProcesses(config.hook.search).then((processes: frida.Process[]) => {
 
     processes.forEach((process: frida.Process) => {
         Hook(process.pid, config.mitm.port, "true").then(() => {
-            console.log("Hooking du processus " + process.name + " [" + process.pid + "] effectué");
+            console.log("Hooking of process " + process.name + " [" + process.pid + "] done");
         }, (reason) => {
-            console.log("Erreur lors du hooking du processus " + process.name + " [" + process.pid + "]: " + reason);
+            console.log("Error while hooking process " + process.name + " [" + process.pid + "]: " + reason);
         });
     });
 

@@ -11,20 +11,20 @@ export class Mitm {
         this._socket = new Server();
 
         this._socket.on("error", (error: Error) => {
-            console.error("[Mitm] socket error:" + error.message);
+            console.error("Mitm() -> socket error:" + error.message);
         });
 
         this._socket.on("end", () => {
-            console.log("[Mitm] socket end");
+            console.log("Mitm() -> socket end");
         });
 
         this._socket.on("close", (hadError: boolean) => {
-            console.log("[Mitm] socket closed");
+            console.log("Mitm() -> socket closed");
         });
 
         this._socket.on("connection", (socketClient: Socket) => {
 
-            console.log("[Mitm] new connection from " + socketClient.remoteAddress + "::" + socketClient.remotePort);
+            console.log("Mitm() -> new connection from " + socketClient.remoteAddress + "::" + socketClient.remotePort);
 
             let ankClient = new AnkClient(socketClient);
             let ankServer = new AnkServer();
@@ -43,7 +43,7 @@ export class Mitm {
         });
 
         this._socket.listen(port, host, () => {
-            console.log("[Mitm] listening on " + host + "::" + port);
+            console.log("Mitm() -> listening on " + host + "::" + port);
         });
 
     }

@@ -1,5 +1,7 @@
 import * as frida from "frida";
 import * as fs from "fs";
+import { inject } from "./inject";
+import { config } from "../config";
 
 const SCRIPT = fs.readFileSync("dist/frida/inject.js");
 
@@ -16,7 +18,7 @@ export async function Hook(pid: number, port: number = 8080, filter: string = "t
         let script = SCRIPT.toString("utf8").replace("__PORT__", port.toString()).replace("__FILTER__", filter);
 
         frida.attach(pid).then((session) => {
-            session.createScript(script).then((script) => {
+            session.createScript(`(${inject.toString()})("${config.mitm.host}", ${config.mitm.port}, [${config.hook.redirectPorts}]);`).then((script) => {
                 script.load().then(() => {
                     resolve();
                 }, (reason) => {
@@ -30,6 +32,5 @@ export async function Hook(pid: number, port: number = 8080, filter: string = "t
         });
 
     });
-
 
 }
