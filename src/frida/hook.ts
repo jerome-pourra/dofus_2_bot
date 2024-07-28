@@ -3,10 +3,10 @@ import * as fs from "fs";
 
 const SCRIPT = fs.readFileSync("dist/frida/inject.js");
 
-export async function HookableProcesses(filter: string) {
+export async function HookableProcesses(regex: RegExp) {
     const device = await frida.getLocalDevice();
     const processes = await device.enumerateProcesses();
-    return processes.filter(process => process.name.includes(filter));
+    return processes.filter(process => regex.test(process.name));
 }
 
 export async function Hook(pid: number, port: number = 8080, filter: string = "true") {
