@@ -4,6 +4,7 @@ import { MessageReceiver } from "../com/ankamagames/dofus/network/MessageReceive
 import { CustomDataWrapper } from "../com/ankamagames/jerakine/network/CustomDataWrapper";
 import { PacketHeaderDecoded, PacketHeaderDecoder } from "./PacketHeaderDecoder";
 import { PacketHeaderEncoder } from "./PacketHeaderEncoder";
+import { NetworkHandler } from "../../bot/network/NetworkHandler";
 
 
 export class PacketHandler {
@@ -57,13 +58,12 @@ export class PacketHandler {
 
     }
 
-    private process(decoded: PacketHeaderDecoded) {
+    private process(decoded: PacketHeaderDecoded): void {
 
         let message = MessageReceiver.parse(new CustomDataWrapper(decoded.content), decoded.id, decoded.size);
         // console.log(util.inspect(message, { depth: null, colors: true }));
+        NetworkHandler.process(message);
 
-
-        // MapComplementaryInformationsDataMessage
         if (message.constructor.name === "MapComplementaryInformationsDataMessage") {
             console.log(util.inspect(message, { depth: null, colors: true }));
             // console.log("Hello World!");

@@ -1,6 +1,7 @@
 import { Socket } from "net";
 import { AnkServer } from "./AnkServer";
 import { AnkSocket, AnkSocketEndpoint } from "./AnkSocket";
+import { ConnectionHandler } from "./ConnectionHandler";
 
 export class AnkClient extends AnkSocket {
 
@@ -15,6 +16,7 @@ export class AnkClient extends AnkSocket {
         }
 
         this._socket = socket;
+        ConnectionHandler.setClient(this);
 
         this._socket.addListener("error", (error: Error) => {
             console.error("AnkClient() -> socket error:" + error.message);
@@ -33,7 +35,7 @@ export class AnkClient extends AnkSocket {
     public attachAnkServer(ankServer: AnkServer) {
         this._ankServer = ankServer;
     }
-
+    
     public hookRecv(data: Buffer, callback: (host: string, port: number) => void) {
 
         console.log("[Hook >>> Mitm] : " + data.toString("utf-8"));
