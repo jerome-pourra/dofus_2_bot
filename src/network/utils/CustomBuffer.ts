@@ -1,4 +1,7 @@
-export class CustomBuffer {
+import { IDataInput } from "./IDataInput";
+import { IDataOutput } from "./IDataOutput";
+
+export class CustomBuffer implements IDataInput, IDataOutput {
 
     protected _buffer: Buffer;
     protected _readOffset: number;
@@ -78,20 +81,20 @@ export class CustomBuffer {
         return this.readUInt16BE();
     }
 
-    public readFloat(): number {
-        return this.readFloatBE();
-    }
-
-    public readDouble(): number {
-        return this.readDoubleBE();
-    }
-
     public readLong(): bigint {
         return this.readInt64BE();
     }
 
     public readUnsignedLong(): bigint {
         return this.readUInt64BE();
+    }
+
+    public readFloat(): number {
+        return this.readFloatBE();
+    }
+
+    public readDouble(): number {
+        return this.readDoubleBE();
     }
 
     public readUTF(): string {
