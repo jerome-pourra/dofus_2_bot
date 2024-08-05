@@ -1,8 +1,8 @@
 import * as fs from 'fs';
-import * as zlib from 'zlib';
-import { CustomBuffer } from '../../../../../../CustomBuffer';
+import { IDataInput } from '../../../../../../utils/IDataInput';
+import { CustomBuffer } from '../../../../../../utils/CustomBuffer';
 
-export type PakProtocol2Index = { v: number, n: string, i: number, o: number, l: number, stream: CustomBuffer };
+export type PakProtocol2Index = { v: number, n: string, i: number, o: number, l: number, stream: IDataInput };
 
 export class PakProtocol2 {
 

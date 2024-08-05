@@ -47,7 +47,7 @@ export class CustomBuffer implements IDataInput, IDataOutput {
         this._buffer = buffer;
     }
 
-    public subarray(start: number, end: number): CustomBuffer {
+    public subarray(start: number, end: number): IDataInput {
         return new CustomBuffer(this._buffer.subarray(start, end));
     }
 

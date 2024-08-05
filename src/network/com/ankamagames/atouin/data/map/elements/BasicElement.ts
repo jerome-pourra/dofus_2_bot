@@ -1,5 +1,4 @@
-import { CustomBuffer } from "../../../../../../CustomBuffer";
-import { ElementTypesEnum } from "../../../enums/ElementTypesEnum";
+import { IDataInput } from "../../../../../../utils/IDataInput";
 import { Cell } from "../Cell";
 
 export class BasicElement {
@@ -18,7 +17,7 @@ export class BasicElement {
         return -1;
     }
 
-    public fromRaw(raw: CustomBuffer, mapVersion: number): void {
+    public fromRaw(raw: IDataInput, mapVersion: number): void {
         throw new Error("Cette méthode doit être surchargée !");
     }
 }

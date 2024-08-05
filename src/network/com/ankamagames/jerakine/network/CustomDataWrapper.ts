@@ -1,4 +1,4 @@
-import { CustomBuffer } from "../../../../CustomBuffer";
+import { CustomBuffer } from "../../../../utils/CustomBuffer";
 import { ICustomDataInput } from "./ICustomDataInput";
 import { ICustomDataOutput } from "./ICustomDataOutput";
 import { ByteArray } from "./utils/types/ByteArray";
