@@ -1,6 +1,7 @@
 import { Socket } from "net";
 import { AnkClient } from "./AnkClient";
 import { AnkSocket, AnkSocketEndpoint } from "./AnkSocket";
+import { ConnectionHandler } from "./ConnectionHandler";
 
 export class AnkServer extends AnkSocket {
 
@@ -11,6 +12,7 @@ export class AnkServer extends AnkSocket {
         super();
 
         this._socket = new Socket();
+        ConnectionHandler.setServer(this);
 
         this._socket.on("error", (error: Error) => {
             console.error("AnkServer() -> socket error:" + error.message);

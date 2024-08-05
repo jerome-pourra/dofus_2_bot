@@ -39,9 +39,9 @@ export class PacketHeaderDecoder {
         self.decodeContent();
 
         if (self._endpoint === AnkSocketEndpoint.SERVER) {
-            console.log("[C >>> M] : id:" + self._id + " sos:" + self._sos + " seq:" + self._seq + " size:" + self._size + " content:" + self._content.toString("hex"));
+            // console.log("[C >>> M] : id:" + self._id + " sos:" + self._sos + " seq:" + self._seq + " size:" + self._size + " content:" + self._content.toString("hex"));
         } else {
-            console.log("[S >>> M] : id:" + self._id + " sos:" + self._sos + " size:" + self._size + " content:" + self._content.toString("hex"));
+            // console.log("[S >>> M] : id:" + self._id + " sos:" + self._sos + " size:" + self._size + " content:" + self._content.toString("hex"));
         }
 
         return {

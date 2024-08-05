@@ -1,27 +1,36 @@
-import * as util from "util";
+import * as zlib from 'zlib';
 import * as frida from "frida";
-import { Hook, HookableProcesses } from "./frida/hook";
 import { Mitm } from "./network/Mitm";
+import { config } from "./config";
+import { FridaHookManager } from "./frida/hook";
+import { PakProtocol2 } from "./network/com/ankamagames/jerakine/resources/protocols/impl/PakProtocol2";
+import { Map } from "./network/com/ankamagames/atouin/data/map/Map";
+import { CustomBuffer } from './network/CustomBuffer';
 
-const HOOK_NAME = "Dofus";
-const LISTEN_HOST = "127.0.0.1";
-const LISTEN_PORT = 54321;
+// Init MAPS
+let mapId = 190581250;
+let maps = PakProtocol2.getFilesIndex("C:/Users/jerom/AppData/Local/Ankama/Dofus/content/maps/maps0.d2p");
+// console.log(maps);
 
-new Mitm(LISTEN_HOST, LISTEN_PORT);
+if (maps.has(mapId)) {
+    let indexesMap = maps.get(mapId);
+    console.log(indexesMap);
 
-HookableProcesses("Dofus").then((processes: frida.Process[]) => {
+    
+    let mapFileStream = indexesMap.stream;
+    let mapRawData = mapFileStream.subarray(indexesMap.o, indexesMap.o + indexesMap.l);
+    let inflateMapRawData = new CustomBuffer(zlib.inflateSync(mapRawData.buffer));
+    // console.log(inflateMapRawData);
+    
+    // console.log(mapRawData);
+    
+    let map = new Map()
+    map.fromRaw(inflateMapRawData);
+    console.log(map);
+    
+}
 
-    if (processes.length === 0) {
-        console.log("Aucun processus " + HOOK_NAME + " trouvé");
-        process.exit(1);
-    }
+process.exit(0);
 
-    processes.forEach((process: frida.Process) => {
-        Hook(process.pid, LISTEN_PORT, "true").then(() => {
-            console.log("Hooking du processus " + process.name + " [" + process.pid + "] effectué");
-        }, (reason) => {
-            console.log("Erreur lors du hooking du processus " + process.name + " [" + process.pid + "]: " + reason);
-        });
-    });
-
-});
+FridaHookManager.initialize();
+new Mitm(config.mitm.host, config.mitm.port);
