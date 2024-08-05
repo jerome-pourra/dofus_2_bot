@@ -1,4 +1,4 @@
-export let inject = function(rd_host: string, rd_port: number, filter_ports: number[]) {
+export function inject(rd_host: string, rd_port: number, filter_ports: number[]) {
 
     try {
 

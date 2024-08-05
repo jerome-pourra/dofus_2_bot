@@ -2,7 +2,7 @@
     "compilerOptions": {
         "module": "CommonJS",
         "esModuleInterop": true,
-        "target": "ES6",
+        "target": "ESNext",
         "moduleResolution": "Node",
         "outDir": "dist/",
         "skipLibCheck": true,
