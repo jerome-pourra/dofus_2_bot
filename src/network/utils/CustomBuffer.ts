@@ -21,10 +21,6 @@ export class CustomBuffer implements IDataInput, IDataOutput {
         return this._buffer.length;
     }
 
-    public get byteLength(): number {
-        return this._buffer.byteLength;
-    }
-
     public get readOffset(): number {
         return this._readOffset;
     }
@@ -99,8 +95,33 @@ export class CustomBuffer implements IDataInput, IDataOutput {
 
     public readUTF(): string {
         const length = this.readUnsignedShort();
-        return this.readString(length);
+        return this.readString(length, "utf-8");
     }
+
+    public readBytes(buffer: Buffer, offset: number = 0, length: number = 0): void {
+        if (length === 0) {
+            length = buffer.length - offset;
+        }
+        this._buffer = buffer.subarray(offset, offset + length);
+    }
+
+    public readMultiByte(length: number, charset: BufferEncoding = "utf-8"): string {
+        const bytes = this._buffer.subarray(this._readOffset, this._readOffset + length);
+        this._readOffset += length;
+        return bytes.toString(charset);
+    }
+
+    public readUTFBytes(length: number): string {
+        return this.readMultiByte(length, "utf-8");
+    }
+
+    public readObject(): any {
+        const length = this.readInt();
+        const json = this.readMultiByte(length, "utf-8");
+        return JSON.parse(json);
+    }
+
+    // PROTECTED READ METHODS
 
     protected readInt8(): number {
         const value = this._buffer.readInt8(this._readOffset);
@@ -218,6 +239,20 @@ export class CustomBuffer implements IDataInput, IDataOutput {
         this.writeUnsignedShort(value.length);
         this.writeString(value);
     }
+
+    public writeMultiByte(length: number, charset: BufferEncoding = "utf-8"): string {
+        throw new Error("Method not implemented.");
+    }
+
+    public writeUTFBytes(length: number): string {
+        throw new Error("Method not implemented.");
+    }
+
+    public writeObject(): any {
+        throw new Error("Method not implemented.");
+    }
+
+    // PROTECTED WRITE METHODS
 
     protected writeInt8(value: number): void {
         this.allocate(1);

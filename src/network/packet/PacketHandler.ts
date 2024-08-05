@@ -60,14 +60,20 @@ export class PacketHandler {
 
     private process(decoded: PacketHeaderDecoded): void {
 
-        let message = MessageReceiver.parse(new CustomDataWrapper(decoded.content), decoded.id, decoded.size);
+        let data = new CustomDataWrapper(decoded.content);
+        let message = MessageReceiver.parse(data, decoded.id, decoded.size);
+
+        if (data.length !== data.readOffset) {
+            console.error("PacketHandler.process() -> data length and read offset mismatch");
+        }
+
         // console.log(util.inspect(message, { depth: null, colors: true }));
         NetworkHandler.process(message);
 
-        if (message.constructor.name === "MapComplementaryInformationsDataMessage") {
-            console.log(util.inspect(message, { depth: null, colors: true }));
-            // console.log("Hello World!");
-        }
+        // if (message.constructor.name === "MapComplementaryInformationsDataMessage") {
+        //     console.log(util.inspect(message, { depth: null, colors: true }));
+        //     // console.log("Hello World!");
+        // }
 
     }
 
