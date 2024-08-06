@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class BasicAckMessage extends NetworkMessage
+export class BasicAckMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9375;
@@ -17,14 +17,47 @@ export class BasicAckMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return BasicAckMessage.protocolId;
+    }
+
+    public initBasicAckMessage(seq: number = 0, lastPacketId: number = 0): BasicAckMessage
+    {
+        this.seq = seq;
+        this.lastPacketId = lastPacketId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BasicAckMessage(output);
+    }
+
+    public serializeAs_BasicAckMessage(output: ICustomDataOutput)
+    {
+        if(this.seq < 0)
+        {
+            throw new Error("Forbidden value (" + this.seq + ") on element seq.");
+        }
+        output.writeVarInt(this.seq);
+        if(this.lastPacketId < 0)
+        {
+            throw new Error("Forbidden value (" + this.lastPacketId + ") on element lastPacketId.");
+        }
+        output.writeVarShort(this.lastPacketId);
     }
 
     public deserialize(input: ICustomDataInput)

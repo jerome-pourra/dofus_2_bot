@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class BasicAllianceInformations extends AbstractSocialGroupInfos
+export class BasicAllianceInformations extends AbstractSocialGroupInfos implements INetworkType
 {
 
 	public static readonly protocolId: number = 2995;
@@ -14,6 +14,34 @@ export class BasicAllianceInformations extends AbstractSocialGroupInfos
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return BasicAllianceInformations.protocolId;
+    }
+
+    public initBasicAllianceInformations(allianceId: number = 0, allianceTag: string = ""): BasicAllianceInformations
+    {
+        this.allianceId = allianceId;
+        this.allianceTag = allianceTag;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BasicAllianceInformations(output);
+    }
+
+    public serializeAs_BasicAllianceInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractSocialGroupInfos(output);
+        if(this.allianceId < 0)
+        {
+            throw new Error("Forbidden value (" + this.allianceId + ") on element allianceId.");
+        }
+        output.writeVarInt(this.allianceId);
+        output.writeUTF(this.allianceTag);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -3,9 +3,11 @@ import { EntityLook } from "./../../look/EntityLook";
 import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDataInput";
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
+import { GameContextBasicSpawnInformation } from "./GameContextBasicSpawnInformation";
+import { GameFightCharacteristics } from "./GameFightCharacteristics";
 import { GameFightAIInformations } from "./GameFightAIInformations";
 
-export class GameFightMonsterInformations extends GameFightAIInformations
+export class GameFightMonsterInformations extends GameFightAIInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 1792;
@@ -17,6 +19,45 @@ export class GameFightMonsterInformations extends GameFightAIInformations
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return GameFightMonsterInformations.protocolId;
+    }
+
+    public initGameFightMonsterInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, spawnInfo: GameContextBasicSpawnInformation = null, wave: number = 0, stats: GameFightCharacteristics = null, previousPositions: Array<number> = null, creatureGenericId: number = 0, creatureGrade: number = 0, creatureLevel: number = 0): GameFightMonsterInformations
+    {
+        super.initGameFightAIInformations(contextualId,disposition,look,spawnInfo,wave,stats,previousPositions);
+        this.creatureGenericId = creatureGenericId;
+        this.creatureGrade = creatureGrade;
+        this.creatureLevel = creatureLevel;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightMonsterInformations(output);
+    }
+
+    public serializeAs_GameFightMonsterInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameFightAIInformations(output);
+        if(this.creatureGenericId < 0)
+        {
+            throw new Error("Forbidden value (" + this.creatureGenericId + ") on element creatureGenericId.");
+        }
+        output.writeVarShort(this.creatureGenericId);
+        if(this.creatureGrade < 0)
+        {
+            throw new Error("Forbidden value (" + this.creatureGrade + ") on element creatureGrade.");
+        }
+        output.writeByte(this.creatureGrade);
+        if(this.creatureLevel < 0)
+        {
+            throw new Error("Forbidden value (" + this.creatureLevel + ") on element creatureLevel.");
+        }
+        output.writeShort(this.creatureLevel);
     }
 
     public deserialize(input: ICustomDataInput)

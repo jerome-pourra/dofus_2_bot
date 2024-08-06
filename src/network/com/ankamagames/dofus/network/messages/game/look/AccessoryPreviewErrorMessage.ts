@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AccessoryPreviewErrorMessage extends NetworkMessage
+export class AccessoryPreviewErrorMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9621;
@@ -16,14 +16,37 @@ export class AccessoryPreviewErrorMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AccessoryPreviewErrorMessage.protocolId;
+    }
+
+    public initAccessoryPreviewErrorMessage(error: number = 0): AccessoryPreviewErrorMessage
+    {
+        this.error = error;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AccessoryPreviewErrorMessage(output);
+    }
+
+    public serializeAs_AccessoryPreviewErrorMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.error);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TaxCollectorAttackedMessage extends NetworkMessage
+export class TaxCollectorAttackedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5361;
@@ -24,14 +24,73 @@ export class TaxCollectorAttackedMessage extends NetworkMessage
         this.alliance = new BasicAllianceInformations();
     }
 
+    public getMessageId()
+    {
+        return TaxCollectorAttackedMessage.protocolId;
+    }
+
+    public initTaxCollectorAttackedMessage(firstNameId: number = 0, lastNameId: number = 0, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, alliance: BasicAllianceInformations = null): TaxCollectorAttackedMessage
+    {
+        this.firstNameId = firstNameId;
+        this.lastNameId = lastNameId;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.mapId = mapId;
+        this.subAreaId = subAreaId;
+        this.alliance = alliance;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorAttackedMessage(output);
+    }
+
+    public serializeAs_TaxCollectorAttackedMessage(output: ICustomDataOutput)
+    {
+        if(this.firstNameId < 0)
+        {
+            throw new Error("Forbidden value (" + this.firstNameId + ") on element firstNameId.");
+        }
+        output.writeVarShort(this.firstNameId);
+        if(this.lastNameId < 0)
+        {
+            throw new Error("Forbidden value (" + this.lastNameId + ") on element lastNameId.");
+        }
+        output.writeVarShort(this.lastNameId);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
+        this.alliance.serializeAs_BasicAllianceInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

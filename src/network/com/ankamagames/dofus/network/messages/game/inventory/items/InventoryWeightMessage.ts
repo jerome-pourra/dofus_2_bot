@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class InventoryWeightMessage extends NetworkMessage
+export class InventoryWeightMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9677;
@@ -17,14 +17,47 @@ export class InventoryWeightMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return InventoryWeightMessage.protocolId;
+    }
+
+    public initInventoryWeightMessage(inventoryWeight: number = 0, weightMax: number = 0): InventoryWeightMessage
+    {
+        this.inventoryWeight = inventoryWeight;
+        this.weightMax = weightMax;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_InventoryWeightMessage(output);
+    }
+
+    public serializeAs_InventoryWeightMessage(output: ICustomDataOutput)
+    {
+        if(this.inventoryWeight < 0)
+        {
+            throw new Error("Forbidden value (" + this.inventoryWeight + ") on element inventoryWeight.");
+        }
+        output.writeVarInt(this.inventoryWeight);
+        if(this.weightMax < 0)
+        {
+            throw new Error("Forbidden value (" + this.weightMax + ") on element weightMax.");
+        }
+        output.writeVarInt(this.weightMax);
     }
 
     public deserialize(input: ICustomDataInput)

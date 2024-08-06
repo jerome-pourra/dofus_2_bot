@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class ChallengeModSelectedMessage extends NetworkMessage
+export class ChallengeModSelectedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4667;
@@ -16,14 +16,37 @@ export class ChallengeModSelectedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ChallengeModSelectedMessage.protocolId;
+    }
+
+    public initChallengeModSelectedMessage(challengeMod: number = 0): ChallengeModSelectedMessage
+    {
+        this.challengeMod = challengeMod;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChallengeModSelectedMessage(output);
+    }
+
+    public serializeAs_ChallengeModSelectedMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.challengeMod);
     }
 
     public deserialize(input: ICustomDataInput)

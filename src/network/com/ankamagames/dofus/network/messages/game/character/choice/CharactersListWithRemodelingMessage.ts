@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { CharactersListMessage } from "./CharactersListMessage";
 
-export class CharactersListWithRemodelingMessage extends CharactersListMessage
+export class CharactersListWithRemodelingMessage extends CharactersListMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9633;
@@ -19,14 +19,43 @@ export class CharactersListWithRemodelingMessage extends CharactersListMessage
         this.charactersToRemodel = Array<CharacterToRemodelInformations>();
     }
 
+    public getMessageId()
+    {
+        return CharactersListWithRemodelingMessage.protocolId;
+    }
+
+    public initCharactersListWithRemodelingMessage(characters: Array<CharacterBaseInformations> = null, charactersToRemodel: Array<CharacterToRemodelInformations> = null): CharactersListWithRemodelingMessage
+    {
+        super.initCharactersListMessage(characters);
+        this.charactersToRemodel = charactersToRemodel;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharactersListWithRemodelingMessage(output);
+    }
+
+    public serializeAs_CharactersListWithRemodelingMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharactersListMessage(output);
+        output.writeShort(this.charactersToRemodel.length);
+        for(var _i1: number = 0; _i1 < this.charactersToRemodel.length; _i1++)
+        {
+            (this.charactersToRemodel[_i1] as CharacterToRemodelInformations).serializeAs_CharacterToRemodelInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

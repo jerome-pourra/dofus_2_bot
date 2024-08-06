@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class PaddockInformations
+export class PaddockInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 208;
@@ -13,6 +13,37 @@ export class PaddockInformations
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return PaddockInformations.protocolId;
+    }
+
+    public initPaddockInformations(maxOutdoorMount: number = 0, maxItems: number = 0): PaddockInformations
+    {
+        this.maxOutdoorMount = maxOutdoorMount;
+        this.maxItems = maxItems;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PaddockInformations(output);
+    }
+
+    public serializeAs_PaddockInformations(output: ICustomDataOutput)
+    {
+        if(this.maxOutdoorMount < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxOutdoorMount + ") on element maxOutdoorMount.");
+        }
+        output.writeVarShort(this.maxOutdoorMount);
+        if(this.maxItems < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxItems + ") on element maxItems.");
+        }
+        output.writeVarShort(this.maxItems);
     }
 
     public deserialize(input: ICustomDataInput)

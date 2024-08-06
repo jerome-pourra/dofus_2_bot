@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class NpcDialogCreationMessage extends NetworkMessage
+export class NpcDialogCreationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3289;
@@ -17,14 +17,43 @@ export class NpcDialogCreationMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return NpcDialogCreationMessage.protocolId;
+    }
+
+    public initNpcDialogCreationMessage(mapId: number = 0, npcId: number = 0): NpcDialogCreationMessage
+    {
+        this.mapId = mapId;
+        this.npcId = npcId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_NpcDialogCreationMessage(output);
+    }
+
+    public serializeAs_NpcDialogCreationMessage(output: ICustomDataOutput)
+    {
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        output.writeInt(this.npcId);
     }
 
     public deserialize(input: ICustomDataInput)

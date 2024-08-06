@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AtlasPointInformationsMessage extends NetworkMessage
+export class AtlasPointInformationsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5424;
@@ -18,14 +18,37 @@ export class AtlasPointInformationsMessage extends NetworkMessage
         this.type = new AtlasPointsInformations();
     }
 
+    public getMessageId()
+    {
+        return AtlasPointInformationsMessage.protocolId;
+    }
+
+    public initAtlasPointInformationsMessage(type: AtlasPointsInformations = null): AtlasPointInformationsMessage
+    {
+        this.type = type;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AtlasPointInformationsMessage(output);
+    }
+
+    public serializeAs_AtlasPointInformationsMessage(output: ICustomDataOutput)
+    {
+        this.type.serializeAs_AtlasPointsInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

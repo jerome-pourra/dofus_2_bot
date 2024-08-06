@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class GuildPaddockActivity extends GuildLogbookEntryBasicInformation
+export class GuildPaddockActivity extends GuildLogbookEntryBasicInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 3935;
@@ -19,6 +19,45 @@ export class GuildPaddockActivity extends GuildLogbookEntryBasicInformation
     {
         super();
         this.paddockCoordinates = new MapCoordinatesExtended();
+    }
+
+    public getTypeId()
+    {
+        return GuildPaddockActivity.protocolId;
+    }
+
+    public initGuildPaddockActivity(id: number = 0, date: number = 0, playerId: number = 0, playerName: string = "", paddockCoordinates: MapCoordinatesExtended = null, farmId: number = 0, paddockEventType: number = 0): GuildPaddockActivity
+    {
+        super.initGuildLogbookEntryBasicInformation(id,date);
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.paddockCoordinates = paddockCoordinates;
+        this.farmId = farmId;
+        this.paddockEventType = paddockEventType;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildPaddockActivity(output);
+    }
+
+    public serializeAs_GuildPaddockActivity(output: ICustomDataOutput)
+    {
+        super.serializeAs_GuildLogbookEntryBasicInformation(output);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeUTF(this.playerName);
+        this.paddockCoordinates.serializeAs_MapCoordinatesExtended(output);
+        if(this.farmId < 0 || this.farmId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.farmId + ") on element farmId.");
+        }
+        output.writeDouble(this.farmId);
+        output.writeByte(this.paddockEventType);
     }
 
     public deserialize(input: ICustomDataInput)

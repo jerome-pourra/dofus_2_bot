@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeBuyMessage extends NetworkMessage
+export class ExchangeBuyMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4582;
@@ -17,14 +17,47 @@ export class ExchangeBuyMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeBuyMessage.protocolId;
+    }
+
+    public initExchangeBuyMessage(objectToBuyId: number = 0, quantity: number = 0): ExchangeBuyMessage
+    {
+        this.objectToBuyId = objectToBuyId;
+        this.quantity = quantity;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeBuyMessage(output);
+    }
+
+    public serializeAs_ExchangeBuyMessage(output: ICustomDataOutput)
+    {
+        if(this.objectToBuyId < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectToBuyId + ") on element objectToBuyId.");
+        }
+        output.writeVarInt(this.objectToBuyId);
+        if(this.quantity < 0)
+        {
+            throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
+        }
+        output.writeVarInt(this.quantity);
     }
 
     public deserialize(input: ICustomDataInput)

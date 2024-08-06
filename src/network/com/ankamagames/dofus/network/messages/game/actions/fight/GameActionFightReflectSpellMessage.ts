@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class GameActionFightReflectSpellMessage extends AbstractGameActionMessage
+export class GameActionFightReflectSpellMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2356;
@@ -16,14 +16,43 @@ export class GameActionFightReflectSpellMessage extends AbstractGameActionMessag
         super();
     }
 
+    public getMessageId()
+    {
+        return GameActionFightReflectSpellMessage.protocolId;
+    }
+
+    public initGameActionFightReflectSpellMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0): GameActionFightReflectSpellMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.targetId = targetId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionFightReflectSpellMessage(output);
+    }
+
+    public serializeAs_GameActionFightReflectSpellMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        if(this.targetId < -9007199254740992 || this.targetId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+        }
+        output.writeDouble(this.targetId);
     }
 
     public deserialize(input: ICustomDataInput)

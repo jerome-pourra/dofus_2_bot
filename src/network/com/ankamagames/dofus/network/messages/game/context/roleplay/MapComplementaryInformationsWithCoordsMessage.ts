@@ -11,7 +11,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { MapComplementaryInformationsDataMessage } from "./MapComplementaryInformationsDataMessage";
 
-export class MapComplementaryInformationsWithCoordsMessage extends MapComplementaryInformationsDataMessage
+export class MapComplementaryInformationsWithCoordsMessage extends MapComplementaryInformationsDataMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5198;
@@ -24,14 +24,49 @@ export class MapComplementaryInformationsWithCoordsMessage extends MapComplement
         super();
     }
 
+    public getMessageId()
+    {
+        return MapComplementaryInformationsWithCoordsMessage.protocolId;
+    }
+
+    public initMapComplementaryInformationsWithCoordsMessage(subAreaId: number = 0, mapId: number = 0, houses: Array<HouseInformations> = null, actors: Array<GameRolePlayActorInformations> = null, interactiveElements: Array<InteractiveElement> = null, statedElements: Array<StatedElement> = null, obstacles: Array<MapObstacle> = null, fights: Array<FightCommonInformations> = null, hasAggressiveMonsters: boolean = false, fightStartPositions: FightStartingPositions = null, worldX: number = 0, worldY: number = 0): MapComplementaryInformationsWithCoordsMessage
+    {
+        super.initMapComplementaryInformationsDataMessage(subAreaId,mapId,houses,actors,interactiveElements,statedElements,obstacles,fights,hasAggressiveMonsters,fightStartPositions);
+        this.worldX = worldX;
+        this.worldY = worldY;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MapComplementaryInformationsWithCoordsMessage(output);
+    }
+
+    public serializeAs_MapComplementaryInformationsWithCoordsMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_MapComplementaryInformationsDataMessage(output);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
     }
 
     public deserialize(input: ICustomDataInput)

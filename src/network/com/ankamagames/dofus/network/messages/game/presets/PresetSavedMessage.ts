@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class PresetSavedMessage extends NetworkMessage
+export class PresetSavedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 889;
@@ -20,14 +20,40 @@ export class PresetSavedMessage extends NetworkMessage
         this.preset = new Preset();
     }
 
+    public getMessageId()
+    {
+        return PresetSavedMessage.protocolId;
+    }
+
+    public initPresetSavedMessage(presetId: number = 0, preset: Preset = null): PresetSavedMessage
+    {
+        this.presetId = presetId;
+        this.preset = preset;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PresetSavedMessage(output);
+    }
+
+    public serializeAs_PresetSavedMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.presetId);
+        output.writeShort(this.preset.getTypeId());
+        this.preset.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

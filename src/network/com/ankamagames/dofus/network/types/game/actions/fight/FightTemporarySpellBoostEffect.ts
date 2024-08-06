@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { FightTemporaryBoostEffect } from "./FightTemporaryBoostEffect";
 
-export class FightTemporarySpellBoostEffect extends FightTemporaryBoostEffect
+export class FightTemporarySpellBoostEffect extends FightTemporaryBoostEffect implements INetworkType
 {
 
 	public static readonly protocolId: number = 7119;
@@ -13,6 +13,33 @@ export class FightTemporarySpellBoostEffect extends FightTemporaryBoostEffect
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return FightTemporarySpellBoostEffect.protocolId;
+    }
+
+    public initFightTemporarySpellBoostEffect(uid: number = 0, targetId: number = 0, turnDuration: number = 0, dispelable: number = 1, spellId: number = 0, effectId: number = 0, parentBoostUid: number = 0, delta: number = 0, boostedSpellId: number = 0): FightTemporarySpellBoostEffect
+    {
+        super.initFightTemporaryBoostEffect(uid,targetId,turnDuration,dispelable,spellId,effectId,parentBoostUid,delta);
+        this.boostedSpellId = boostedSpellId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightTemporarySpellBoostEffect(output);
+    }
+
+    public serializeAs_FightTemporarySpellBoostEffect(output: ICustomDataOutput)
+    {
+        super.serializeAs_FightTemporaryBoostEffect(output);
+        if(this.boostedSpellId < 0)
+        {
+            throw new Error("Forbidden value (" + this.boostedSpellId + ") on element boostedSpellId.");
+        }
+        output.writeVarShort(this.boostedSpellId);
     }
 
     public deserialize(input: ICustomDataInput)

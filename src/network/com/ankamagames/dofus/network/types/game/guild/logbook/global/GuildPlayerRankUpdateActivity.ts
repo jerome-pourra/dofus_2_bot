@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class GuildPlayerRankUpdateActivity extends GuildLogbookEntryBasicInformation
+export class GuildPlayerRankUpdateActivity extends GuildLogbookEntryBasicInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 8680;
@@ -19,6 +19,45 @@ export class GuildPlayerRankUpdateActivity extends GuildLogbookEntryBasicInforma
     {
         super();
         this.guildRankMinimalInfos = new RankMinimalInformation();
+    }
+
+    public getTypeId()
+    {
+        return GuildPlayerRankUpdateActivity.protocolId;
+    }
+
+    public initGuildPlayerRankUpdateActivity(id: number = 0, date: number = 0, guildRankMinimalInfos: RankMinimalInformation = null, sourcePlayerId: number = 0, targetPlayerId: number = 0, sourcePlayerName: string = "", targetPlayerName: string = ""): GuildPlayerRankUpdateActivity
+    {
+        super.initGuildLogbookEntryBasicInformation(id,date);
+        this.guildRankMinimalInfos = guildRankMinimalInfos;
+        this.sourcePlayerId = sourcePlayerId;
+        this.targetPlayerId = targetPlayerId;
+        this.sourcePlayerName = sourcePlayerName;
+        this.targetPlayerName = targetPlayerName;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildPlayerRankUpdateActivity(output);
+    }
+
+    public serializeAs_GuildPlayerRankUpdateActivity(output: ICustomDataOutput)
+    {
+        super.serializeAs_GuildLogbookEntryBasicInformation(output);
+        this.guildRankMinimalInfos.serializeAs_RankMinimalInformation(output);
+        if(this.sourcePlayerId < 0 || this.sourcePlayerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.sourcePlayerId + ") on element sourcePlayerId.");
+        }
+        output.writeVarLong(this.sourcePlayerId);
+        if(this.targetPlayerId < 0 || this.targetPlayerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetPlayerId + ") on element targetPlayerId.");
+        }
+        output.writeVarLong(this.targetPlayerId);
+        output.writeUTF(this.sourcePlayerName);
+        output.writeUTF(this.targetPlayerName);
     }
 
     public deserialize(input: ICustomDataInput)

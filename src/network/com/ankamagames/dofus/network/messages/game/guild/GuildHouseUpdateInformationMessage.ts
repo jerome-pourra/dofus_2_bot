@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildHouseUpdateInformationMessage extends NetworkMessage
+export class GuildHouseUpdateInformationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1590;
@@ -18,14 +18,37 @@ export class GuildHouseUpdateInformationMessage extends NetworkMessage
         this.housesInformations = new HouseInformationsForGuild();
     }
 
+    public getMessageId()
+    {
+        return GuildHouseUpdateInformationMessage.protocolId;
+    }
+
+    public initGuildHouseUpdateInformationMessage(housesInformations: HouseInformationsForGuild = null): GuildHouseUpdateInformationMessage
+    {
+        this.housesInformations = housesInformations;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildHouseUpdateInformationMessage(output);
+    }
+
+    public serializeAs_GuildHouseUpdateInformationMessage(output: ICustomDataOutput)
+    {
+        this.housesInformations.serializeAs_HouseInformationsForGuild(output);
     }
 
     public deserialize(input: ICustomDataInput)

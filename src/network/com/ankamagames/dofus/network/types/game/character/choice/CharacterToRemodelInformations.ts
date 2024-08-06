@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { CharacterRemodelingInformation } from "./CharacterRemodelingInformation";
 
-export class CharacterToRemodelInformations extends CharacterRemodelingInformation
+export class CharacterToRemodelInformations extends CharacterRemodelingInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 3313;
@@ -14,6 +14,39 @@ export class CharacterToRemodelInformations extends CharacterRemodelingInformati
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return CharacterToRemodelInformations.protocolId;
+    }
+
+    public initCharacterToRemodelInformations(id: number = 0, name: string = "", breed: number = 0, sex: boolean = false, cosmeticId: number = 0, colors: Array<number> = null, possibleChangeMask: number = 0, mandatoryChangeMask: number = 0): CharacterToRemodelInformations
+    {
+        super.initCharacterRemodelingInformation(id,name,breed,sex,cosmeticId,colors);
+        this.possibleChangeMask = possibleChangeMask;
+        this.mandatoryChangeMask = mandatoryChangeMask;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterToRemodelInformations(output);
+    }
+
+    public serializeAs_CharacterToRemodelInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterRemodelingInformation(output);
+        if(this.possibleChangeMask < 0)
+        {
+            throw new Error("Forbidden value (" + this.possibleChangeMask + ") on element possibleChangeMask.");
+        }
+        output.writeByte(this.possibleChangeMask);
+        if(this.mandatoryChangeMask < 0)
+        {
+            throw new Error("Forbidden value (" + this.mandatoryChangeMask + ") on element mandatoryChangeMask.");
+        }
+        output.writeByte(this.mandatoryChangeMask);
     }
 
     public deserialize(input: ICustomDataInput)

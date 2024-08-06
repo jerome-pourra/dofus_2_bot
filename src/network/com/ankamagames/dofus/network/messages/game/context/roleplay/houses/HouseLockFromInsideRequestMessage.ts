@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 
-export class HouseLockFromInsideRequestMessage extends LockableChangeCodeMessage
+export class HouseLockFromInsideRequestMessage extends LockableChangeCodeMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9529;
@@ -14,14 +14,37 @@ export class HouseLockFromInsideRequestMessage extends LockableChangeCodeMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return HouseLockFromInsideRequestMessage.protocolId;
+    }
+
+    public initHouseLockFromInsideRequestMessage(code: string = ""): HouseLockFromInsideRequestMessage
+    {
+        super.initLockableChangeCodeMessage(code);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HouseLockFromInsideRequestMessage(output);
+    }
+
+    public serializeAs_HouseLockFromInsideRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_LockableChangeCodeMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -2,12 +2,32 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class Item
+export class Item implements INetworkType
 {
 
 	public static readonly protocolId: number = 8235;
 
     public constructor()
+    {
+
+    }
+
+    public getTypeId()
+    {
+        return Item.protocolId;
+    }
+
+    public initItem(): Item
+    {
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_Item(output);
+    }
+
+    public serializeAs_Item(output: ICustomDataOutput)
     {
 
     }

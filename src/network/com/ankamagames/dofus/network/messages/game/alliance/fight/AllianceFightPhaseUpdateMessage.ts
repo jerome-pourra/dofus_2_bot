@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceFightPhaseUpdateMessage extends NetworkMessage
+export class AllianceFightPhaseUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1193;
@@ -21,14 +21,39 @@ export class AllianceFightPhaseUpdateMessage extends NetworkMessage
         this.newPhase = new FightPhase();
     }
 
+    public getMessageId()
+    {
+        return AllianceFightPhaseUpdateMessage.protocolId;
+    }
+
+    public initAllianceFightPhaseUpdateMessage(allianceFightInfo: SocialFightInfo = null, newPhase: FightPhase = null): AllianceFightPhaseUpdateMessage
+    {
+        this.allianceFightInfo = allianceFightInfo;
+        this.newPhase = newPhase;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceFightPhaseUpdateMessage(output);
+    }
+
+    public serializeAs_AllianceFightPhaseUpdateMessage(output: ICustomDataOutput)
+    {
+        this.allianceFightInfo.serializeAs_SocialFightInfo(output);
+        this.newPhase.serializeAs_FightPhase(output);
     }
 
     public deserialize(input: ICustomDataInput)

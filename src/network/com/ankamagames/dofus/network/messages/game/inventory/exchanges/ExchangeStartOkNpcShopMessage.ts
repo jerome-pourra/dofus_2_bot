@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeStartOkNpcShopMessage extends NetworkMessage
+export class ExchangeStartOkNpcShopMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6130;
@@ -20,14 +20,53 @@ export class ExchangeStartOkNpcShopMessage extends NetworkMessage
         this.objectsInfos = Array<ObjectItemToSellInNpcShop>();
     }
 
+    public getMessageId()
+    {
+        return ExchangeStartOkNpcShopMessage.protocolId;
+    }
+
+    public initExchangeStartOkNpcShopMessage(npcSellerId: number = 0, tokenId: number = 0, objectsInfos: Array<ObjectItemToSellInNpcShop> = null): ExchangeStartOkNpcShopMessage
+    {
+        this.npcSellerId = npcSellerId;
+        this.tokenId = tokenId;
+        this.objectsInfos = objectsInfos;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeStartOkNpcShopMessage(output);
+    }
+
+    public serializeAs_ExchangeStartOkNpcShopMessage(output: ICustomDataOutput)
+    {
+        if(this.npcSellerId < -9007199254740992 || this.npcSellerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.npcSellerId + ") on element npcSellerId.");
+        }
+        output.writeDouble(this.npcSellerId);
+        if(this.tokenId < 0)
+        {
+            throw new Error("Forbidden value (" + this.tokenId + ") on element tokenId.");
+        }
+        output.writeVarInt(this.tokenId);
+        output.writeShort(this.objectsInfos.length);
+        for(var _i3: number = 0; _i3 < this.objectsInfos.length; _i3++)
+        {
+            (this.objectsInfos[_i3] as ObjectItemToSellInNpcShop).serializeAs_ObjectItemToSellInNpcShop(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

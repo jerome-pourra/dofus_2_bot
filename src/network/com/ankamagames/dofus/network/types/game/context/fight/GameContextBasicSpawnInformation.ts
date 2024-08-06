@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class GameContextBasicSpawnInformation
+export class GameContextBasicSpawnInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 1891;
@@ -16,6 +16,32 @@ export class GameContextBasicSpawnInformation
     public constructor()
     {
         this.informations = new GameContextActorPositionInformations();
+    }
+
+    public getTypeId()
+    {
+        return GameContextBasicSpawnInformation.protocolId;
+    }
+
+    public initGameContextBasicSpawnInformation(teamId: number = 2, alive: boolean = false, informations: GameContextActorPositionInformations = null): GameContextBasicSpawnInformation
+    {
+        this.teamId = teamId;
+        this.alive = alive;
+        this.informations = informations;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameContextBasicSpawnInformation(output);
+    }
+
+    public serializeAs_GameContextBasicSpawnInformation(output: ICustomDataOutput)
+    {
+        output.writeByte(this.teamId);
+        output.writeBoolean(this.alive);
+        output.writeShort(this.informations.getTypeId());
+        this.informations.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

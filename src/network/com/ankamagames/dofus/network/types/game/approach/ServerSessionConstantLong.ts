@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { ServerSessionConstant } from "./ServerSessionConstant";
 
-export class ServerSessionConstantLong extends ServerSessionConstant
+export class ServerSessionConstantLong extends ServerSessionConstant implements INetworkType
 {
 
 	public static readonly protocolId: number = 4175;
@@ -13,6 +13,33 @@ export class ServerSessionConstantLong extends ServerSessionConstant
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ServerSessionConstantLong.protocolId;
+    }
+
+    public initServerSessionConstantLong(id: number = 0, value: number = 0): ServerSessionConstantLong
+    {
+        super.initServerSessionConstant(id);
+        this.value = value;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ServerSessionConstantLong(output);
+    }
+
+    public serializeAs_ServerSessionConstantLong(output: ICustomDataOutput)
+    {
+        super.serializeAs_ServerSessionConstant(output);
+        if(this.value < -9007199254740992 || this.value > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.value + ") on element value.");
+        }
+        output.writeDouble(this.value);
     }
 
     public deserialize(input: ICustomDataInput)

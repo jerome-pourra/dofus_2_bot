@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class CharacterCreationResultMessage extends NetworkMessage
+export class CharacterCreationResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5979;
@@ -17,14 +17,39 @@ export class CharacterCreationResultMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CharacterCreationResultMessage.protocolId;
+    }
+
+    public initCharacterCreationResultMessage(result: number = 1, reason: number = 1): CharacterCreationResultMessage
+    {
+        this.result = result;
+        this.reason = reason;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterCreationResultMessage(output);
+    }
+
+    public serializeAs_CharacterCreationResultMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.result);
+        output.writeByte(this.reason);
     }
 
     public deserialize(input: ICustomDataInput)

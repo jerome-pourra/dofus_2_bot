@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class FriendSetWarnOnConnectionMessage extends NetworkMessage
+export class FriendSetWarnOnConnectionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7385;
@@ -16,14 +16,37 @@ export class FriendSetWarnOnConnectionMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return FriendSetWarnOnConnectionMessage.protocolId;
+    }
+
+    public initFriendSetWarnOnConnectionMessage(enable: boolean = false): FriendSetWarnOnConnectionMessage
+    {
+        this.enable = enable;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FriendSetWarnOnConnectionMessage(output);
+    }
+
+    public serializeAs_FriendSetWarnOnConnectionMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.enable);
     }
 
     public deserialize(input: ICustomDataInput)

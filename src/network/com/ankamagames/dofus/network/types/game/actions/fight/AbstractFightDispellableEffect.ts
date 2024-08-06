@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class AbstractFightDispellableEffect
+export class AbstractFightDispellableEffect implements INetworkType
 {
 
 	public static readonly protocolId: number = 4079;
@@ -18,6 +18,59 @@ export class AbstractFightDispellableEffect
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return AbstractFightDispellableEffect.protocolId;
+    }
+
+    public initAbstractFightDispellableEffect(uid: number = 0, targetId: number = 0, turnDuration: number = 0, dispelable: number = 1, spellId: number = 0, effectId: number = 0, parentBoostUid: number = 0): AbstractFightDispellableEffect
+    {
+        this.uid = uid;
+        this.targetId = targetId;
+        this.turnDuration = turnDuration;
+        this.dispelable = dispelable;
+        this.spellId = spellId;
+        this.effectId = effectId;
+        this.parentBoostUid = parentBoostUid;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AbstractFightDispellableEffect(output);
+    }
+
+    public serializeAs_AbstractFightDispellableEffect(output: ICustomDataOutput)
+    {
+        if(this.uid < 0)
+        {
+            throw new Error("Forbidden value (" + this.uid + ") on element uid.");
+        }
+        output.writeVarInt(this.uid);
+        if(this.targetId < -9007199254740992 || this.targetId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+        }
+        output.writeDouble(this.targetId);
+        output.writeShort(this.turnDuration);
+        output.writeByte(this.dispelable);
+        if(this.spellId < 0)
+        {
+            throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
+        }
+        output.writeVarShort(this.spellId);
+        if(this.effectId < 0)
+        {
+            throw new Error("Forbidden value (" + this.effectId + ") on element effectId.");
+        }
+        output.writeVarInt(this.effectId);
+        if(this.parentBoostUid < 0)
+        {
+            throw new Error("Forbidden value (" + this.parentBoostUid + ") on element parentBoostUid.");
+        }
+        output.writeVarInt(this.parentBoostUid);
     }
 
     public deserialize(input: ICustomDataInput)

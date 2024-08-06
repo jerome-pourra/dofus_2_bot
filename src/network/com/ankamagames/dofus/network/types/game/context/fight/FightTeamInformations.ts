@@ -5,7 +5,7 @@ import { INetworkType } from "./../../../../../../jerakine/network/INetworkType"
 import { FightTeamMemberInformations } from "./FightTeamMemberInformations";
 import { AbstractFightTeamInformations } from "./AbstractFightTeamInformations";
 
-export class FightTeamInformations extends AbstractFightTeamInformations
+export class FightTeamInformations extends AbstractFightTeamInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 3291;
@@ -16,6 +16,34 @@ export class FightTeamInformations extends AbstractFightTeamInformations
     {
         super();
         this.teamMembers = Array<FightTeamMemberInformations>();
+    }
+
+    public getTypeId()
+    {
+        return FightTeamInformations.protocolId;
+    }
+
+    public initFightTeamInformations(teamId: number = 2, leaderId: number = 0, teamSide: number = 0, teamTypeId: number = 0, nbWaves: number = 0, teamMembers: Array<FightTeamMemberInformations> = null): FightTeamInformations
+    {
+        super.initAbstractFightTeamInformations(teamId,leaderId,teamSide,teamTypeId,nbWaves);
+        this.teamMembers = teamMembers;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightTeamInformations(output);
+    }
+
+    public serializeAs_FightTeamInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractFightTeamInformations(output);
+        output.writeShort(this.teamMembers.length);
+        for(var _i1: number = 0; _i1 < this.teamMembers.length; _i1++)
+        {
+            output.writeShort((this.teamMembers[_i1] as FightTeamMemberInformations).getTypeId());
+            (this.teamMembers[_i1] as FightTeamMemberInformations).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

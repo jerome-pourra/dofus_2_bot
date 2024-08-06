@@ -7,7 +7,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { AbstractPartyMessage } from "./AbstractPartyMessage";
 
-export class PartyJoinMessage extends AbstractPartyMessage
+export class PartyJoinMessage extends AbstractPartyMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6577;
@@ -27,14 +27,68 @@ export class PartyJoinMessage extends AbstractPartyMessage
         this.guests = Array<PartyGuestInformations>();
     }
 
+    public getMessageId()
+    {
+        return PartyJoinMessage.protocolId;
+    }
+
+    public initPartyJoinMessage(partyId: number = 0, partyType: number = 0, partyLeaderId: number = 0, maxParticipants: number = 0, members: Array<PartyMemberInformations> = null, guests: Array<PartyGuestInformations> = null, restricted: boolean = false, partyName: string = ""): PartyJoinMessage
+    {
+        super.initAbstractPartyMessage(partyId);
+        this.partyType = partyType;
+        this.partyLeaderId = partyLeaderId;
+        this.maxParticipants = maxParticipants;
+        this.members = members;
+        this.guests = guests;
+        this.restricted = restricted;
+        this.partyName = partyName;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyJoinMessage(output);
+    }
+
+    public serializeAs_PartyJoinMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyMessage(output);
+        output.writeByte(this.partyType);
+        if(this.partyLeaderId < 0 || this.partyLeaderId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.partyLeaderId + ") on element partyLeaderId.");
+        }
+        output.writeVarLong(this.partyLeaderId);
+        if(this.maxParticipants < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxParticipants + ") on element maxParticipants.");
+        }
+        output.writeByte(this.maxParticipants);
+        output.writeShort(this.members.length);
+        for(var _i4: number = 0; _i4 < this.members.length; _i4++)
+        {
+            output.writeShort((this.members[_i4] as PartyMemberInformations).getTypeId());
+            (this.members[_i4] as PartyMemberInformations).serialize(output);
+        }
+        output.writeShort(this.guests.length);
+        for(var _i5: number = 0; _i5 < this.guests.length; _i5++)
+        {
+            (this.guests[_i5] as PartyGuestInformations).serializeAs_PartyGuestInformations(output);
+        }
+        output.writeBoolean(this.restricted);
+        output.writeUTF(this.partyName);
     }
 
     public deserialize(input: ICustomDataInput)

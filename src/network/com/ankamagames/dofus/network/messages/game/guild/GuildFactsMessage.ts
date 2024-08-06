@@ -7,7 +7,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildFactsMessage extends NetworkMessage
+export class GuildFactsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5626;
@@ -23,14 +23,50 @@ export class GuildFactsMessage extends NetworkMessage
         this.members = Array<CharacterMinimalSocialPublicInformations>();
     }
 
+    public getMessageId()
+    {
+        return GuildFactsMessage.protocolId;
+    }
+
+    public initGuildFactsMessage(infos: GuildFactSheetInformations = null, creationDate: number = 0, members: Array<CharacterMinimalSocialPublicInformations> = null): GuildFactsMessage
+    {
+        this.infos = infos;
+        this.creationDate = creationDate;
+        this.members = members;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildFactsMessage(output);
+    }
+
+    public serializeAs_GuildFactsMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.infos.getTypeId());
+        this.infos.serialize(output);
+        if(this.creationDate < 0)
+        {
+            throw new Error("Forbidden value (" + this.creationDate + ") on element creationDate.");
+        }
+        output.writeInt(this.creationDate);
+        output.writeShort(this.members.length);
+        for(var _i3: number = 0; _i3 < this.members.length; _i3++)
+        {
+            (this.members[_i3] as CharacterMinimalSocialPublicInformations).serializeAs_CharacterMinimalSocialPublicInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

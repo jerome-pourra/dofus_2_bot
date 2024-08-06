@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { Preset } from "./Preset";
 
-export class EntitiesPreset extends Preset
+export class EntitiesPreset extends Preset implements INetworkType
 {
 
 	public static readonly protocolId: number = 6250;
@@ -15,6 +15,43 @@ export class EntitiesPreset extends Preset
     {
         super();
         this.entityIds = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return EntitiesPreset.protocolId;
+    }
+
+    public initEntitiesPreset(id: number = 0, iconId: number = 0, entityIds: Array<number> = null): EntitiesPreset
+    {
+        super.initPreset(id);
+        this.iconId = iconId;
+        this.entityIds = entityIds;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_EntitiesPreset(output);
+    }
+
+    public serializeAs_EntitiesPreset(output: ICustomDataOutput)
+    {
+        super.serializeAs_Preset(output);
+        if(this.iconId < 0)
+        {
+            throw new Error("Forbidden value (" + this.iconId + ") on element iconId.");
+        }
+        output.writeShort(this.iconId);
+        output.writeShort(this.entityIds.length);
+        for(var _i2: number = 0; _i2 < this.entityIds.length; _i2++)
+        {
+            if(this.entityIds[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.entityIds[_i2] + ") on element 2 (starting at 1) of entityIds.");
+            }
+            output.writeVarShort(this.entityIds[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

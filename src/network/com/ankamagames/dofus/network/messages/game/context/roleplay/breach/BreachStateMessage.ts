@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class BreachStateMessage extends NetworkMessage
+export class BreachStateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8989;
@@ -23,14 +23,51 @@ export class BreachStateMessage extends NetworkMessage
         this.bonuses = Array<ObjectEffectInteger>();
     }
 
+    public getMessageId()
+    {
+        return BreachStateMessage.protocolId;
+    }
+
+    public initBreachStateMessage(owner: CharacterMinimalInformations = null, bonuses: Array<ObjectEffectInteger> = null, bugdet: number = 0, saved: boolean = false): BreachStateMessage
+    {
+        this.owner = owner;
+        this.bonuses = bonuses;
+        this.bugdet = bugdet;
+        this.saved = saved;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachStateMessage(output);
+    }
+
+    public serializeAs_BreachStateMessage(output: ICustomDataOutput)
+    {
+        this.owner.serializeAs_CharacterMinimalInformations(output);
+        output.writeShort(this.bonuses.length);
+        for(var _i2: number = 0; _i2 < this.bonuses.length; _i2++)
+        {
+            (this.bonuses[_i2] as ObjectEffectInteger).serializeAs_ObjectEffectInteger(output);
+        }
+        if(this.bugdet < 0)
+        {
+            throw new Error("Forbidden value (" + this.bugdet + ") on element bugdet.");
+        }
+        output.writeVarInt(this.bugdet);
+        output.writeBoolean(this.saved);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightPlacementPossiblePositionsMessage extends NetworkMessage
+export class GameFightPlacementPossiblePositionsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 282;
@@ -20,14 +20,57 @@ export class GameFightPlacementPossiblePositionsMessage extends NetworkMessage
         this.positionsForDefenders = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return GameFightPlacementPossiblePositionsMessage.protocolId;
+    }
+
+    public initGameFightPlacementPossiblePositionsMessage(positionsForChallengers: Array<number> = null, positionsForDefenders: Array<number> = null, teamNumber: number = 2): GameFightPlacementPossiblePositionsMessage
+    {
+        this.positionsForChallengers = positionsForChallengers;
+        this.positionsForDefenders = positionsForDefenders;
+        this.teamNumber = teamNumber;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightPlacementPossiblePositionsMessage(output);
+    }
+
+    public serializeAs_GameFightPlacementPossiblePositionsMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.positionsForChallengers.length);
+        for(var _i1: number = 0; _i1 < this.positionsForChallengers.length; _i1++)
+        {
+            if(this.positionsForChallengers[_i1] < 0 || this.positionsForChallengers[_i1] > 559)
+            {
+                throw new Error("Forbidden value (" + this.positionsForChallengers[_i1] + ") on element 1 (starting at 1) of positionsForChallengers.");
+            }
+            output.writeVarShort(this.positionsForChallengers[_i1]);
+        }
+        output.writeShort(this.positionsForDefenders.length);
+        for(var _i2: number = 0; _i2 < this.positionsForDefenders.length; _i2++)
+        {
+            if(this.positionsForDefenders[_i2] < 0 || this.positionsForDefenders[_i2] > 559)
+            {
+                throw new Error("Forbidden value (" + this.positionsForDefenders[_i2] + ") on element 2 (starting at 1) of positionsForDefenders.");
+            }
+            output.writeVarShort(this.positionsForDefenders[_i2]);
+        }
+        output.writeByte(this.teamNumber);
     }
 
     public deserialize(input: ICustomDataInput)

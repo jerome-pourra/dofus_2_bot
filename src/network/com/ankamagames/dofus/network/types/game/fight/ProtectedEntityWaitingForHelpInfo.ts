@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class ProtectedEntityWaitingForHelpInfo
+export class ProtectedEntityWaitingForHelpInfo implements INetworkType
 {
 
 	public static readonly protocolId: number = 9739;
@@ -14,6 +14,35 @@ export class ProtectedEntityWaitingForHelpInfo
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return ProtectedEntityWaitingForHelpInfo.protocolId;
+    }
+
+    public initProtectedEntityWaitingForHelpInfo(timeLeftBeforeFight: number = 0, waitTimeForPlacement: number = 0, nbPositionForDefensors: number = 0): ProtectedEntityWaitingForHelpInfo
+    {
+        this.timeLeftBeforeFight = timeLeftBeforeFight;
+        this.waitTimeForPlacement = waitTimeForPlacement;
+        this.nbPositionForDefensors = nbPositionForDefensors;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ProtectedEntityWaitingForHelpInfo(output);
+    }
+
+    public serializeAs_ProtectedEntityWaitingForHelpInfo(output: ICustomDataOutput)
+    {
+        output.writeInt(this.timeLeftBeforeFight);
+        output.writeInt(this.waitTimeForPlacement);
+        if(this.nbPositionForDefensors < 0)
+        {
+            throw new Error("Forbidden value (" + this.nbPositionForDefensors + ") on element nbPositionForDefensors.");
+        }
+        output.writeByte(this.nbPositionForDefensors);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { InventoryContentMessage } from "./InventoryContentMessage";
 
-export class WatchInventoryContentMessage extends InventoryContentMessage
+export class WatchInventoryContentMessage extends InventoryContentMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8887;
@@ -15,14 +15,37 @@ export class WatchInventoryContentMessage extends InventoryContentMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return WatchInventoryContentMessage.protocolId;
+    }
+
+    public initWatchInventoryContentMessage(objects: Array<ObjectItem> = null, kamas: number = 0): WatchInventoryContentMessage
+    {
+        super.initInventoryContentMessage(objects,kamas);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_WatchInventoryContentMessage(output);
+    }
+
+    public serializeAs_WatchInventoryContentMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_InventoryContentMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

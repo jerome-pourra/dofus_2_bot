@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class ShowCellMessage extends NetworkMessage
+export class ShowCellMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9194;
@@ -17,14 +17,47 @@ export class ShowCellMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ShowCellMessage.protocolId;
+    }
+
+    public initShowCellMessage(sourceId: number = 0, cellId: number = 0): ShowCellMessage
+    {
+        this.sourceId = sourceId;
+        this.cellId = cellId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ShowCellMessage(output);
+    }
+
+    public serializeAs_ShowCellMessage(output: ICustomDataOutput)
+    {
+        if(this.sourceId < -9007199254740992 || this.sourceId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.sourceId + ") on element sourceId.");
+        }
+        output.writeDouble(this.sourceId);
+        if(this.cellId < 0 || this.cellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.cellId + ") on element cellId.");
+        }
+        output.writeVarShort(this.cellId);
     }
 
     public deserialize(input: ICustomDataInput)

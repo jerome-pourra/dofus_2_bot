@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { IdentificationSuccessMessage } from "./IdentificationSuccessMessage";
 
-export class IdentificationSuccessWithLoginTokenMessage extends IdentificationSuccessMessage
+export class IdentificationSuccessWithLoginTokenMessage extends IdentificationSuccessMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3224;
@@ -17,14 +17,39 @@ export class IdentificationSuccessWithLoginTokenMessage extends IdentificationSu
         super();
     }
 
+    public getMessageId()
+    {
+        return IdentificationSuccessWithLoginTokenMessage.protocolId;
+    }
+
+    public initIdentificationSuccessWithLoginTokenMessage(login: string = "", accountTag: AccountTagInformation = null, accountId: number = 0, communityId: number = 0, hasRights: boolean = false, hasReportRight: boolean = false, hasForceRight: boolean = false, accountCreation: number = 0, subscriptionEndDate: number = 0, wasAlreadyConnected: boolean = false, havenbagAvailableRoom: number = 0, loginToken: string = ""): IdentificationSuccessWithLoginTokenMessage
+    {
+        super.initIdentificationSuccessMessage(login,accountTag,accountId,communityId,hasRights,hasReportRight,hasForceRight,accountCreation,subscriptionEndDate,wasAlreadyConnected,havenbagAvailableRoom);
+        this.loginToken = loginToken;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IdentificationSuccessWithLoginTokenMessage(output);
+    }
+
+    public serializeAs_IdentificationSuccessWithLoginTokenMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_IdentificationSuccessMessage(output);
+        output.writeUTF(this.loginToken);
     }
 
     public deserialize(input: ICustomDataInput)

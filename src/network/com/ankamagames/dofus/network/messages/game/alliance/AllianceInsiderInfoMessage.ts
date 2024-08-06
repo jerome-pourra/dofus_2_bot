@@ -9,7 +9,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceInsiderInfoMessage extends NetworkMessage
+export class AllianceInsiderInfoMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4562;
@@ -28,14 +28,56 @@ export class AllianceInsiderInfoMessage extends NetworkMessage
         this.taxCollectors = Array<TaxCollectorInformations>();
     }
 
+    public getMessageId()
+    {
+        return AllianceInsiderInfoMessage.protocolId;
+    }
+
+    public initAllianceInsiderInfoMessage(allianceInfos: AllianceFactSheetInformation = null, members: Array<AllianceMemberInfo> = null, prisms: Array<PrismGeolocalizedInformation> = null, taxCollectors: Array<TaxCollectorInformations> = null): AllianceInsiderInfoMessage
+    {
+        this.allianceInfos = allianceInfos;
+        this.members = members;
+        this.prisms = prisms;
+        this.taxCollectors = taxCollectors;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceInsiderInfoMessage(output);
+    }
+
+    public serializeAs_AllianceInsiderInfoMessage(output: ICustomDataOutput)
+    {
+        this.allianceInfos.serializeAs_AllianceFactSheetInformation(output);
+        output.writeShort(this.members.length);
+        for(var _i2: number = 0; _i2 < this.members.length; _i2++)
+        {
+            (this.members[_i2] as AllianceMemberInfo).serializeAs_AllianceMemberInfo(output);
+        }
+        output.writeShort(this.prisms.length);
+        for(var _i3: number = 0; _i3 < this.prisms.length; _i3++)
+        {
+            output.writeShort((this.prisms[_i3] as PrismGeolocalizedInformation).getTypeId());
+            (this.prisms[_i3] as PrismGeolocalizedInformation).serialize(output);
+        }
+        output.writeShort(this.taxCollectors.length);
+        for(var _i4: number = 0; _i4 < this.taxCollectors.length; _i4++)
+        {
+            (this.taxCollectors[_i4] as TaxCollectorInformations).serializeAs_TaxCollectorInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

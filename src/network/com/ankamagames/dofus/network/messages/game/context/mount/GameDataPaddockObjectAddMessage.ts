@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameDataPaddockObjectAddMessage extends NetworkMessage
+export class GameDataPaddockObjectAddMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 652;
@@ -18,14 +18,37 @@ export class GameDataPaddockObjectAddMessage extends NetworkMessage
         this.paddockItemDescription = new PaddockItem();
     }
 
+    public getMessageId()
+    {
+        return GameDataPaddockObjectAddMessage.protocolId;
+    }
+
+    public initGameDataPaddockObjectAddMessage(paddockItemDescription: PaddockItem = null): GameDataPaddockObjectAddMessage
+    {
+        this.paddockItemDescription = paddockItemDescription;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameDataPaddockObjectAddMessage(output);
+    }
+
+    public serializeAs_GameDataPaddockObjectAddMessage(output: ICustomDataOutput)
+    {
+        this.paddockItemDescription.serializeAs_PaddockItem(output);
     }
 
     public deserialize(input: ICustomDataInput)

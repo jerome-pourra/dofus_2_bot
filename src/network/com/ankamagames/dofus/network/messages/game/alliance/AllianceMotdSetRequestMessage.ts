@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 
-export class AllianceMotdSetRequestMessage extends SocialNoticeSetRequestMessage
+export class AllianceMotdSetRequestMessage extends SocialNoticeSetRequestMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1488;
@@ -16,14 +16,38 @@ export class AllianceMotdSetRequestMessage extends SocialNoticeSetRequestMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AllianceMotdSetRequestMessage.protocolId;
+    }
+
+    public initAllianceMotdSetRequestMessage(content: string = ""): AllianceMotdSetRequestMessage
+    {
+        this.content = content;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceMotdSetRequestMessage(output);
+    }
+
+    public serializeAs_AllianceMotdSetRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_SocialNoticeSetRequestMessage(output);
+        output.writeUTF(this.content);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class FriendGuildWarnOnAchievementCompleteStateMessage extends NetworkMessage
+export class FriendGuildWarnOnAchievementCompleteStateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1328;
@@ -16,14 +16,37 @@ export class FriendGuildWarnOnAchievementCompleteStateMessage extends NetworkMes
         super();
     }
 
+    public getMessageId()
+    {
+        return FriendGuildWarnOnAchievementCompleteStateMessage.protocolId;
+    }
+
+    public initFriendGuildWarnOnAchievementCompleteStateMessage(enable: boolean = false): FriendGuildWarnOnAchievementCompleteStateMessage
+    {
+        this.enable = enable;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FriendGuildWarnOnAchievementCompleteStateMessage(output);
+    }
+
+    public serializeAs_FriendGuildWarnOnAchievementCompleteStateMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.enable);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { PrismInformation } from "./PrismInformation";
 
-export class AlliancePrismInformation extends PrismInformation
+export class AlliancePrismInformation extends PrismInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 4594;
@@ -15,6 +15,29 @@ export class AlliancePrismInformation extends PrismInformation
     {
         super();
         this.alliance = new AllianceInformation();
+    }
+
+    public getTypeId()
+    {
+        return AlliancePrismInformation.protocolId;
+    }
+
+    public initAlliancePrismInformation(state: number = 1, placementDate: number = 0, nuggetsCount: number = 0, durability: number = 0, nextEvolutionDate: number = 0, alliance: AllianceInformation = null): AlliancePrismInformation
+    {
+        super.initPrismInformation(state,placementDate,nuggetsCount,durability,nextEvolutionDate);
+        this.alliance = alliance;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AlliancePrismInformation(output);
+    }
+
+    public serializeAs_AlliancePrismInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_PrismInformation(output);
+        this.alliance.serializeAs_AllianceInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

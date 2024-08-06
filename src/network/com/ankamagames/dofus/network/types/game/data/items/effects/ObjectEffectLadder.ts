@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 import { ObjectEffectCreature } from "./ObjectEffectCreature";
 
-export class ObjectEffectLadder extends ObjectEffectCreature
+export class ObjectEffectLadder extends ObjectEffectCreature implements INetworkType
 {
 
 	public static readonly protocolId: number = 5489;
@@ -13,6 +13,33 @@ export class ObjectEffectLadder extends ObjectEffectCreature
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ObjectEffectLadder.protocolId;
+    }
+
+    public initObjectEffectLadder(actionId: number = 0, monsterFamilyId: number = 0, monsterCount: number = 0): ObjectEffectLadder
+    {
+        super.initObjectEffectCreature(actionId,monsterFamilyId);
+        this.monsterCount = monsterCount;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectEffectLadder(output);
+    }
+
+    public serializeAs_ObjectEffectLadder(output: ICustomDataOutput)
+    {
+        super.serializeAs_ObjectEffectCreature(output);
+        if(this.monsterCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.monsterCount + ") on element monsterCount.");
+        }
+        output.writeVarInt(this.monsterCount);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class ReloginTokenStatusMessage extends NetworkMessage
+export class ReloginTokenStatusMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2673;
@@ -17,14 +17,39 @@ export class ReloginTokenStatusMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ReloginTokenStatusMessage.protocolId;
+    }
+
+    public initReloginTokenStatusMessage(validToken: boolean = false, token: string = ""): ReloginTokenStatusMessage
+    {
+        this.validToken = validToken;
+        this.token = token;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ReloginTokenStatusMessage(output);
+    }
+
+    public serializeAs_ReloginTokenStatusMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.validToken);
+        output.writeUTF(this.token);
     }
 
     public deserialize(input: ICustomDataInput)

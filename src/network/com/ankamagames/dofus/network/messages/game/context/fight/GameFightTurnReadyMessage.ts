@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightTurnReadyMessage extends NetworkMessage
+export class GameFightTurnReadyMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9655;
@@ -16,14 +16,37 @@ export class GameFightTurnReadyMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightTurnReadyMessage.protocolId;
+    }
+
+    public initGameFightTurnReadyMessage(isReady: boolean = false): GameFightTurnReadyMessage
+    {
+        this.isReady = isReady;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightTurnReadyMessage(output);
+    }
+
+    public serializeAs_GameFightTurnReadyMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.isReady);
     }
 
     public deserialize(input: ICustomDataInput)

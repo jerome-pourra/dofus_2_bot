@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class DiceRollRequestMessage extends NetworkMessage
+export class DiceRollRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8901;
@@ -18,14 +18,49 @@ export class DiceRollRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return DiceRollRequestMessage.protocolId;
+    }
+
+    public initDiceRollRequestMessage(dice: number = 0, faces: number = 0, channel: number = 0): DiceRollRequestMessage
+    {
+        this.dice = dice;
+        this.faces = faces;
+        this.channel = channel;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_DiceRollRequestMessage(output);
+    }
+
+    public serializeAs_DiceRollRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.dice < 0)
+        {
+            throw new Error("Forbidden value (" + this.dice + ") on element dice.");
+        }
+        output.writeVarInt(this.dice);
+        if(this.faces < 0)
+        {
+            throw new Error("Forbidden value (" + this.faces + ") on element faces.");
+        }
+        output.writeVarInt(this.faces);
+        output.writeByte(this.channel);
     }
 
     public deserialize(input: ICustomDataInput)

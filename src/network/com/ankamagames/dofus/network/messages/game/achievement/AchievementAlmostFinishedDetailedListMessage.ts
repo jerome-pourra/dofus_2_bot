@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AchievementAlmostFinishedDetailedListMessage extends NetworkMessage
+export class AchievementAlmostFinishedDetailedListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1205;
@@ -18,14 +18,41 @@ export class AchievementAlmostFinishedDetailedListMessage extends NetworkMessage
         this.almostFinishedAchievements = Array<Achievement>();
     }
 
+    public getMessageId()
+    {
+        return AchievementAlmostFinishedDetailedListMessage.protocolId;
+    }
+
+    public initAchievementAlmostFinishedDetailedListMessage(almostFinishedAchievements: Array<Achievement> = null): AchievementAlmostFinishedDetailedListMessage
+    {
+        this.almostFinishedAchievements = almostFinishedAchievements;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AchievementAlmostFinishedDetailedListMessage(output);
+    }
+
+    public serializeAs_AchievementAlmostFinishedDetailedListMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.almostFinishedAchievements.length);
+        for(var _i1: number = 0; _i1 < this.almostFinishedAchievements.length; _i1++)
+        {
+            (this.almostFinishedAchievements[_i1] as Achievement).serializeAs_Achievement(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

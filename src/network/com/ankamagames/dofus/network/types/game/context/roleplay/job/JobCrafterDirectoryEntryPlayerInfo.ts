@@ -5,7 +5,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class JobCrafterDirectoryEntryPlayerInfo
+export class JobCrafterDirectoryEntryPlayerInfo implements INetworkType
 {
 
 	public static readonly protocolId: number = 9204;
@@ -26,6 +26,70 @@ export class JobCrafterDirectoryEntryPlayerInfo
     public constructor()
     {
         this.status = new PlayerStatus();
+    }
+
+    public getTypeId()
+    {
+        return JobCrafterDirectoryEntryPlayerInfo.protocolId;
+    }
+
+    public initJobCrafterDirectoryEntryPlayerInfo(playerId: number = 0, playerName: string = "", alignmentSide: number = 0, breed: number = 0, sex: boolean = false, isInWorkshop: boolean = false, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, canCraftLegendary: boolean = false, status: PlayerStatus = null): JobCrafterDirectoryEntryPlayerInfo
+    {
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.alignmentSide = alignmentSide;
+        this.breed = breed;
+        this.sex = sex;
+        this.isInWorkshop = isInWorkshop;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.mapId = mapId;
+        this.subAreaId = subAreaId;
+        this.canCraftLegendary = canCraftLegendary;
+        this.status = status;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_JobCrafterDirectoryEntryPlayerInfo(output);
+    }
+
+    public serializeAs_JobCrafterDirectoryEntryPlayerInfo(output: ICustomDataOutput)
+    {
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeUTF(this.playerName);
+        output.writeByte(this.alignmentSide);
+        output.writeByte(this.breed);
+        output.writeBoolean(this.sex);
+        output.writeBoolean(this.isInWorkshop);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
+        output.writeBoolean(this.canCraftLegendary);
+        output.writeShort(this.status.getTypeId());
+        this.status.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

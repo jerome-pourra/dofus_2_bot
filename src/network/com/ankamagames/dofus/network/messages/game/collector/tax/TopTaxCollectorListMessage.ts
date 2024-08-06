@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TopTaxCollectorListMessage extends NetworkMessage
+export class TopTaxCollectorListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3893;
@@ -21,14 +21,49 @@ export class TopTaxCollectorListMessage extends NetworkMessage
         this.worldTaxCollectorsInformation = Array<TaxCollectorInformations>();
     }
 
+    public getMessageId()
+    {
+        return TopTaxCollectorListMessage.protocolId;
+    }
+
+    public initTopTaxCollectorListMessage(dungeonTaxCollectorsInformation: Array<TaxCollectorInformations> = null, worldTaxCollectorsInformation: Array<TaxCollectorInformations> = null): TopTaxCollectorListMessage
+    {
+        this.dungeonTaxCollectorsInformation = dungeonTaxCollectorsInformation;
+        this.worldTaxCollectorsInformation = worldTaxCollectorsInformation;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TopTaxCollectorListMessage(output);
+    }
+
+    public serializeAs_TopTaxCollectorListMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.dungeonTaxCollectorsInformation.length);
+        for(var _i1: number = 0; _i1 < this.dungeonTaxCollectorsInformation.length; _i1++)
+        {
+            output.writeShort((this.dungeonTaxCollectorsInformation[_i1] as TaxCollectorInformations).getTypeId());
+            (this.dungeonTaxCollectorsInformation[_i1] as TaxCollectorInformations).serialize(output);
+        }
+        output.writeShort(this.worldTaxCollectorsInformation.length);
+        for(var _i2: number = 0; _i2 < this.worldTaxCollectorsInformation.length; _i2++)
+        {
+            output.writeShort((this.worldTaxCollectorsInformation[_i2] as TaxCollectorInformations).getTypeId());
+            (this.worldTaxCollectorsInformation[_i2] as TaxCollectorInformations).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class MapRunningFightDetailsMessage extends NetworkMessage
+export class MapRunningFightDetailsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2005;
@@ -22,14 +22,55 @@ export class MapRunningFightDetailsMessage extends NetworkMessage
         this.defenders = Array<GameFightFighterLightInformations>();
     }
 
+    public getMessageId()
+    {
+        return MapRunningFightDetailsMessage.protocolId;
+    }
+
+    public initMapRunningFightDetailsMessage(fightId: number = 0, attackers: Array<GameFightFighterLightInformations> = null, defenders: Array<GameFightFighterLightInformations> = null): MapRunningFightDetailsMessage
+    {
+        this.fightId = fightId;
+        this.attackers = attackers;
+        this.defenders = defenders;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MapRunningFightDetailsMessage(output);
+    }
+
+    public serializeAs_MapRunningFightDetailsMessage(output: ICustomDataOutput)
+    {
+        if(this.fightId < 0)
+        {
+            throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+        }
+        output.writeVarShort(this.fightId);
+        output.writeShort(this.attackers.length);
+        for(var _i2: number = 0; _i2 < this.attackers.length; _i2++)
+        {
+            output.writeShort((this.attackers[_i2] as GameFightFighterLightInformations).getTypeId());
+            (this.attackers[_i2] as GameFightFighterLightInformations).serialize(output);
+        }
+        output.writeShort(this.defenders.length);
+        for(var _i3: number = 0; _i3 < this.defenders.length; _i3++)
+        {
+            output.writeShort((this.defenders[_i3] as GameFightFighterLightInformations).getTypeId());
+            (this.defenders[_i3] as GameFightFighterLightInformations).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

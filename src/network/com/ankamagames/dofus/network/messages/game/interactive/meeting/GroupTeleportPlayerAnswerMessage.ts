@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GroupTeleportPlayerAnswerMessage extends NetworkMessage
+export class GroupTeleportPlayerAnswerMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1816;
@@ -17,14 +17,43 @@ export class GroupTeleportPlayerAnswerMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GroupTeleportPlayerAnswerMessage.protocolId;
+    }
+
+    public initGroupTeleportPlayerAnswerMessage(accept: boolean = false, requesterId: number = 0): GroupTeleportPlayerAnswerMessage
+    {
+        this.accept = accept;
+        this.requesterId = requesterId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GroupTeleportPlayerAnswerMessage(output);
+    }
+
+    public serializeAs_GroupTeleportPlayerAnswerMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.accept);
+        if(this.requesterId < 0 || this.requesterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.requesterId + ") on element requesterId.");
+        }
+        output.writeVarLong(this.requesterId);
     }
 
     public deserialize(input: ICustomDataInput)

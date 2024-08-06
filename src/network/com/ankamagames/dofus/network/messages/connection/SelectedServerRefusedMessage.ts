@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class SelectedServerRefusedMessage extends NetworkMessage
+export class SelectedServerRefusedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 277;
@@ -18,14 +18,45 @@ export class SelectedServerRefusedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return SelectedServerRefusedMessage.protocolId;
+    }
+
+    public initSelectedServerRefusedMessage(serverId: number = 0, error: number = 1, serverStatus: number = 1): SelectedServerRefusedMessage
+    {
+        this.serverId = serverId;
+        this.error = error;
+        this.serverStatus = serverStatus;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SelectedServerRefusedMessage(output);
+    }
+
+    public serializeAs_SelectedServerRefusedMessage(output: ICustomDataOutput)
+    {
+        if(this.serverId < 0)
+        {
+            throw new Error("Forbidden value (" + this.serverId + ") on element serverId.");
+        }
+        output.writeVarShort(this.serverId);
+        output.writeByte(this.error);
+        output.writeByte(this.serverStatus);
     }
 
     public deserialize(input: ICustomDataInput)

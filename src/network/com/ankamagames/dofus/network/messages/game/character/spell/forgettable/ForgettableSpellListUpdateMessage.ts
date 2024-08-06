@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class ForgettableSpellListUpdateMessage extends NetworkMessage
+export class ForgettableSpellListUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6155;
@@ -19,14 +19,43 @@ export class ForgettableSpellListUpdateMessage extends NetworkMessage
         this.spells = Array<ForgettableSpellItem>();
     }
 
+    public getMessageId()
+    {
+        return ForgettableSpellListUpdateMessage.protocolId;
+    }
+
+    public initForgettableSpellListUpdateMessage(action: number = 0, spells: Array<ForgettableSpellItem> = null): ForgettableSpellListUpdateMessage
+    {
+        this.action = action;
+        this.spells = spells;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ForgettableSpellListUpdateMessage(output);
+    }
+
+    public serializeAs_ForgettableSpellListUpdateMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.action);
+        output.writeShort(this.spells.length);
+        for(var _i2: number = 0; _i2 < this.spells.length; _i2++)
+        {
+            (this.spells[_i2] as ForgettableSpellItem).serializeAs_ForgettableSpellItem(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class DebtsUpdateMessage extends NetworkMessage
+export class DebtsUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8856;
@@ -20,14 +20,44 @@ export class DebtsUpdateMessage extends NetworkMessage
         this.debts = Array<DebtInformation>();
     }
 
+    public getMessageId()
+    {
+        return DebtsUpdateMessage.protocolId;
+    }
+
+    public initDebtsUpdateMessage(action: number = 0, debts: Array<DebtInformation> = null): DebtsUpdateMessage
+    {
+        this.action = action;
+        this.debts = debts;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_DebtsUpdateMessage(output);
+    }
+
+    public serializeAs_DebtsUpdateMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.action);
+        output.writeShort(this.debts.length);
+        for(var _i2: number = 0; _i2 < this.debts.length; _i2++)
+        {
+            output.writeShort((this.debts[_i2] as DebtInformation).getTypeId());
+            (this.debts[_i2] as DebtInformation).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class FriendStatusShareStateMessage extends NetworkMessage
+export class FriendStatusShareStateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8565;
@@ -16,14 +16,37 @@ export class FriendStatusShareStateMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return FriendStatusShareStateMessage.protocolId;
+    }
+
+    public initFriendStatusShareStateMessage(share: boolean = false): FriendStatusShareStateMessage
+    {
+        this.share = share;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FriendStatusShareStateMessage(output);
+    }
+
+    public serializeAs_FriendStatusShareStateMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.share);
     }
 
     public deserialize(input: ICustomDataInput)

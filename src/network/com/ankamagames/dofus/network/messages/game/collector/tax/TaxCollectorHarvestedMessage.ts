@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TaxCollectorHarvestedMessage extends NetworkMessage
+export class TaxCollectorHarvestedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3704;
@@ -18,14 +18,49 @@ export class TaxCollectorHarvestedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TaxCollectorHarvestedMessage.protocolId;
+    }
+
+    public initTaxCollectorHarvestedMessage(taxCollectorId: number = 0, harvesterId: number = 0, harvesterName: string = ""): TaxCollectorHarvestedMessage
+    {
+        this.taxCollectorId = taxCollectorId;
+        this.harvesterId = harvesterId;
+        this.harvesterName = harvesterName;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorHarvestedMessage(output);
+    }
+
+    public serializeAs_TaxCollectorHarvestedMessage(output: ICustomDataOutput)
+    {
+        if(this.taxCollectorId < 0 || this.taxCollectorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.taxCollectorId + ") on element taxCollectorId.");
+        }
+        output.writeDouble(this.taxCollectorId);
+        if(this.harvesterId < 0 || this.harvesterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.harvesterId + ") on element harvesterId.");
+        }
+        output.writeVarLong(this.harvesterId);
+        output.writeUTF(this.harvesterName);
     }
 
     public deserialize(input: ICustomDataInput)

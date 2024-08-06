@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class Contribution
+export class Contribution implements INetworkType
 {
 
 	public static readonly protocolId: number = 7492;
@@ -14,6 +14,39 @@ export class Contribution
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return Contribution.protocolId;
+    }
+
+    public initContribution(contributorId: number = 0, contributorName: string = "", amount: number = 0): Contribution
+    {
+        this.contributorId = contributorId;
+        this.contributorName = contributorName;
+        this.amount = amount;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_Contribution(output);
+    }
+
+    public serializeAs_Contribution(output: ICustomDataOutput)
+    {
+        if(this.contributorId < 0 || this.contributorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.contributorId + ") on element contributorId.");
+        }
+        output.writeVarLong(this.contributorId);
+        output.writeUTF(this.contributorName);
+        if(this.amount < 0 || this.amount > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.amount + ") on element amount.");
+        }
+        output.writeVarLong(this.amount);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeBidHouseUnsoldItemsMessage extends NetworkMessage
+export class ExchangeBidHouseUnsoldItemsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9295;
@@ -18,14 +18,41 @@ export class ExchangeBidHouseUnsoldItemsMessage extends NetworkMessage
         this.items = Array<ObjectItemGenericQuantity>();
     }
 
+    public getMessageId()
+    {
+        return ExchangeBidHouseUnsoldItemsMessage.protocolId;
+    }
+
+    public initExchangeBidHouseUnsoldItemsMessage(items: Array<ObjectItemGenericQuantity> = null): ExchangeBidHouseUnsoldItemsMessage
+    {
+        this.items = items;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeBidHouseUnsoldItemsMessage(output);
+    }
+
+    public serializeAs_ExchangeBidHouseUnsoldItemsMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.items.length);
+        for(var _i1: number = 0; _i1 < this.items.length; _i1++)
+        {
+            (this.items[_i1] as ObjectItemGenericQuantity).serializeAs_ObjectItemGenericQuantity(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class StatedElement
+export class StatedElement implements INetworkType
 {
 
 	public static readonly protocolId: number = 1041;
@@ -15,6 +15,45 @@ export class StatedElement
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return StatedElement.protocolId;
+    }
+
+    public initStatedElement(elementId: number = 0, elementCellId: number = 0, elementState: number = 0, onCurrentMap: boolean = false): StatedElement
+    {
+        this.elementId = elementId;
+        this.elementCellId = elementCellId;
+        this.elementState = elementState;
+        this.onCurrentMap = onCurrentMap;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_StatedElement(output);
+    }
+
+    public serializeAs_StatedElement(output: ICustomDataOutput)
+    {
+        if(this.elementId < 0)
+        {
+            throw new Error("Forbidden value (" + this.elementId + ") on element elementId.");
+        }
+        output.writeInt(this.elementId);
+        if(this.elementCellId < 0 || this.elementCellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.elementCellId + ") on element elementCellId.");
+        }
+        output.writeVarShort(this.elementCellId);
+        if(this.elementState < 0)
+        {
+            throw new Error("Forbidden value (" + this.elementState + ") on element elementState.");
+        }
+        output.writeVarInt(this.elementState);
+        output.writeBoolean(this.onCurrentMap);
     }
 
     public deserialize(input: ICustomDataInput)

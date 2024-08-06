@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class IgnoredDeleteRequestMessage extends NetworkMessage
+export class IgnoredDeleteRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7645;
@@ -17,14 +17,43 @@ export class IgnoredDeleteRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return IgnoredDeleteRequestMessage.protocolId;
+    }
+
+    public initIgnoredDeleteRequestMessage(accountId: number = 0, session: boolean = false): IgnoredDeleteRequestMessage
+    {
+        this.accountId = accountId;
+        this.session = session;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IgnoredDeleteRequestMessage(output);
+    }
+
+    public serializeAs_IgnoredDeleteRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.accountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+        }
+        output.writeInt(this.accountId);
+        output.writeBoolean(this.session);
     }
 
     public deserialize(input: ICustomDataInput)

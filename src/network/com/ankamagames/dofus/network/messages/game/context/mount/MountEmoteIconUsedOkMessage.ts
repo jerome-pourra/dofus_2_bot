@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class MountEmoteIconUsedOkMessage extends NetworkMessage
+export class MountEmoteIconUsedOkMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3490;
@@ -17,14 +17,43 @@ export class MountEmoteIconUsedOkMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return MountEmoteIconUsedOkMessage.protocolId;
+    }
+
+    public initMountEmoteIconUsedOkMessage(mountId: number = 0, reactionType: number = 0): MountEmoteIconUsedOkMessage
+    {
+        this.mountId = mountId;
+        this.reactionType = reactionType;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MountEmoteIconUsedOkMessage(output);
+    }
+
+    public serializeAs_MountEmoteIconUsedOkMessage(output: ICustomDataOutput)
+    {
+        output.writeVarInt(this.mountId);
+        if(this.reactionType < 0)
+        {
+            throw new Error("Forbidden value (" + this.reactionType + ") on element reactionType.");
+        }
+        output.writeByte(this.reactionType);
     }
 
     public deserialize(input: ICustomDataInput)

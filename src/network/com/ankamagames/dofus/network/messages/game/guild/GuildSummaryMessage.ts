@@ -5,7 +5,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 
-export class GuildSummaryMessage extends PaginationAnswerAbstractMessage
+export class GuildSummaryMessage extends PaginationAnswerAbstractMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 156;
@@ -18,14 +18,43 @@ export class GuildSummaryMessage extends PaginationAnswerAbstractMessage
         this.guilds = Array<GuildFactSheetInformations>();
     }
 
+    public getMessageId()
+    {
+        return GuildSummaryMessage.protocolId;
+    }
+
+    public initGuildSummaryMessage(offset: number = 0, count: number = 0, total: number = 0, guilds: Array<GuildFactSheetInformations> = null): GuildSummaryMessage
+    {
+        super.initPaginationAnswerAbstractMessage(offset,count,total);
+        this.guilds = guilds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildSummaryMessage(output);
+    }
+
+    public serializeAs_GuildSummaryMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_PaginationAnswerAbstractMessage(output);
+        output.writeShort(this.guilds.length);
+        for(var _i1: number = 0; _i1 < this.guilds.length; _i1++)
+        {
+            (this.guilds[_i1] as GuildFactSheetInformations).serializeAs_GuildFactSheetInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

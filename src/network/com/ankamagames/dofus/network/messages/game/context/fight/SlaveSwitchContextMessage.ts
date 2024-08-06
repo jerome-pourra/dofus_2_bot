@@ -8,7 +8,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class SlaveSwitchContextMessage extends NetworkMessage
+export class SlaveSwitchContextMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 974;
@@ -28,14 +28,68 @@ export class SlaveSwitchContextMessage extends NetworkMessage
         this.shortcuts = Array<Shortcut>();
     }
 
+    public getMessageId()
+    {
+        return SlaveSwitchContextMessage.protocolId;
+    }
+
+    public initSlaveSwitchContextMessage(masterId: number = 0, slaveId: number = 0, slaveTurn: number = 0, slaveSpells: Array<SpellItem> = null, slaveStats: CharacterCharacteristicsInformations = null, shortcuts: Array<Shortcut> = null): SlaveSwitchContextMessage
+    {
+        this.masterId = masterId;
+        this.slaveId = slaveId;
+        this.slaveTurn = slaveTurn;
+        this.slaveSpells = slaveSpells;
+        this.slaveStats = slaveStats;
+        this.shortcuts = shortcuts;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SlaveSwitchContextMessage(output);
+    }
+
+    public serializeAs_SlaveSwitchContextMessage(output: ICustomDataOutput)
+    {
+        if(this.masterId < -9007199254740992 || this.masterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.masterId + ") on element masterId.");
+        }
+        output.writeDouble(this.masterId);
+        if(this.slaveId < -9007199254740992 || this.slaveId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.slaveId + ") on element slaveId.");
+        }
+        output.writeDouble(this.slaveId);
+        if(this.slaveTurn < 0)
+        {
+            throw new Error("Forbidden value (" + this.slaveTurn + ") on element slaveTurn.");
+        }
+        output.writeVarShort(this.slaveTurn);
+        output.writeShort(this.slaveSpells.length);
+        for(var _i4: number = 0; _i4 < this.slaveSpells.length; _i4++)
+        {
+            (this.slaveSpells[_i4] as SpellItem).serializeAs_SpellItem(output);
+        }
+        this.slaveStats.serializeAs_CharacterCharacteristicsInformations(output);
+        output.writeShort(this.shortcuts.length);
+        for(var _i6: number = 0; _i6 < this.shortcuts.length; _i6++)
+        {
+            output.writeShort((this.shortcuts[_i6] as Shortcut).getTypeId());
+            (this.shortcuts[_i6] as Shortcut).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

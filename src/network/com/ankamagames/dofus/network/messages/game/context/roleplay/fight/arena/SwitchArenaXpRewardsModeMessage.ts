@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class SwitchArenaXpRewardsModeMessage extends NetworkMessage
+export class SwitchArenaXpRewardsModeMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4870;
@@ -16,14 +16,37 @@ export class SwitchArenaXpRewardsModeMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return SwitchArenaXpRewardsModeMessage.protocolId;
+    }
+
+    public initSwitchArenaXpRewardsModeMessage(xpRewards: boolean = false): SwitchArenaXpRewardsModeMessage
+    {
+        this.xpRewards = xpRewards;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SwitchArenaXpRewardsModeMessage(output);
+    }
+
+    public serializeAs_SwitchArenaXpRewardsModeMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.xpRewards);
     }
 
     public deserialize(input: ICustomDataInput)

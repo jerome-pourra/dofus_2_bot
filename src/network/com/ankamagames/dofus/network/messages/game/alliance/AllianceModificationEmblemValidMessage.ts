@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceModificationEmblemValidMessage extends NetworkMessage
+export class AllianceModificationEmblemValidMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5179;
@@ -18,14 +18,37 @@ export class AllianceModificationEmblemValidMessage extends NetworkMessage
         this.allianceEmblem = new SocialEmblem();
     }
 
+    public getMessageId()
+    {
+        return AllianceModificationEmblemValidMessage.protocolId;
+    }
+
+    public initAllianceModificationEmblemValidMessage(allianceEmblem: SocialEmblem = null): AllianceModificationEmblemValidMessage
+    {
+        this.allianceEmblem = allianceEmblem;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceModificationEmblemValidMessage(output);
+    }
+
+    public serializeAs_AllianceModificationEmblemValidMessage(output: ICustomDataOutput)
+    {
+        this.allianceEmblem.serializeAs_SocialEmblem(output);
     }
 
     public deserialize(input: ICustomDataInput)

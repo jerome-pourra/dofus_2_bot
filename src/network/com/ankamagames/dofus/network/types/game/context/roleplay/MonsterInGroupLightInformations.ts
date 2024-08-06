@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class MonsterInGroupLightInformations
+export class MonsterInGroupLightInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 1537;
@@ -14,6 +14,39 @@ export class MonsterInGroupLightInformations
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return MonsterInGroupLightInformations.protocolId;
+    }
+
+    public initMonsterInGroupLightInformations(genericId: number = 0, grade: number = 0, level: number = 0): MonsterInGroupLightInformations
+    {
+        this.genericId = genericId;
+        this.grade = grade;
+        this.level = level;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MonsterInGroupLightInformations(output);
+    }
+
+    public serializeAs_MonsterInGroupLightInformations(output: ICustomDataOutput)
+    {
+        output.writeInt(this.genericId);
+        if(this.grade < 0)
+        {
+            throw new Error("Forbidden value (" + this.grade + ") on element grade.");
+        }
+        output.writeByte(this.grade);
+        if(this.level < 0)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeShort(this.level);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class FightLootObject
+export class FightLootObject implements INetworkType
 {
 
 	public static readonly protocolId: number = 5840;
@@ -14,6 +14,31 @@ export class FightLootObject
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return FightLootObject.protocolId;
+    }
+
+    public initFightLootObject(objectId: number = 0, quantity: number = 0, priorityHint: number = 0): FightLootObject
+    {
+        this.objectId = objectId;
+        this.quantity = quantity;
+        this.priorityHint = priorityHint;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightLootObject(output);
+    }
+
+    public serializeAs_FightLootObject(output: ICustomDataOutput)
+    {
+        output.writeInt(this.objectId);
+        output.writeInt(this.quantity);
+        output.writeInt(this.priorityHint);
     }
 
     public deserialize(input: ICustomDataInput)

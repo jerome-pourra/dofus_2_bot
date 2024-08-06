@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class FightDispellableEffectExtendedInformations
+export class FightDispellableEffectExtendedInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 8836;
@@ -16,6 +16,40 @@ export class FightDispellableEffectExtendedInformations
     public constructor()
     {
         this.effect = new AbstractFightDispellableEffect();
+    }
+
+    public getTypeId()
+    {
+        return FightDispellableEffectExtendedInformations.protocolId;
+    }
+
+    public initFightDispellableEffectExtendedInformations(actionId: number = 0, sourceId: number = 0, effect: AbstractFightDispellableEffect = null): FightDispellableEffectExtendedInformations
+    {
+        this.actionId = actionId;
+        this.sourceId = sourceId;
+        this.effect = effect;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightDispellableEffectExtendedInformations(output);
+    }
+
+    public serializeAs_FightDispellableEffectExtendedInformations(output: ICustomDataOutput)
+    {
+        if(this.actionId < 0)
+        {
+            throw new Error("Forbidden value (" + this.actionId + ") on element actionId.");
+        }
+        output.writeVarShort(this.actionId);
+        if(this.sourceId < -9007199254740992 || this.sourceId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.sourceId + ") on element sourceId.");
+        }
+        output.writeDouble(this.sourceId);
+        output.writeShort(this.effect.getTypeId());
+        this.effect.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

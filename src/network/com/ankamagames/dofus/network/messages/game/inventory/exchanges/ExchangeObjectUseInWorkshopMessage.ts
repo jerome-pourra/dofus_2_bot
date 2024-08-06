@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeObjectUseInWorkshopMessage extends NetworkMessage
+export class ExchangeObjectUseInWorkshopMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8008;
@@ -17,14 +17,43 @@ export class ExchangeObjectUseInWorkshopMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeObjectUseInWorkshopMessage.protocolId;
+    }
+
+    public initExchangeObjectUseInWorkshopMessage(objectUID: number = 0, quantity: number = 0): ExchangeObjectUseInWorkshopMessage
+    {
+        this.objectUID = objectUID;
+        this.quantity = quantity;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeObjectUseInWorkshopMessage(output);
+    }
+
+    public serializeAs_ExchangeObjectUseInWorkshopMessage(output: ICustomDataOutput)
+    {
+        if(this.objectUID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+        }
+        output.writeVarInt(this.objectUID);
+        output.writeVarInt(this.quantity);
     }
 
     public deserialize(input: ICustomDataInput)

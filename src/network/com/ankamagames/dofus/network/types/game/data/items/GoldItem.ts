@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { Item } from "./Item";
 
-export class GoldItem extends Item
+export class GoldItem extends Item implements INetworkType
 {
 
 	public static readonly protocolId: number = 8076;
@@ -13,6 +13,32 @@ export class GoldItem extends Item
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return GoldItem.protocolId;
+    }
+
+    public initGoldItem(sum: number = 0): GoldItem
+    {
+        this.sum = sum;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GoldItem(output);
+    }
+
+    public serializeAs_GoldItem(output: ICustomDataOutput)
+    {
+        super.serializeAs_Item(output);
+        if(this.sum < 0 || this.sum > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.sum + ") on element sum.");
+        }
+        output.writeVarLong(this.sum);
     }
 
     public deserialize(input: ICustomDataInput)

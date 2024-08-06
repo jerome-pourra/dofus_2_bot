@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class StatsUpgradeRequestMessage extends NetworkMessage
+export class StatsUpgradeRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5002;
@@ -18,14 +18,45 @@ export class StatsUpgradeRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return StatsUpgradeRequestMessage.protocolId;
+    }
+
+    public initStatsUpgradeRequestMessage(useAdditionnal: boolean = false, statId: number = 11, boostPoint: number = 0): StatsUpgradeRequestMessage
+    {
+        this.useAdditionnal = useAdditionnal;
+        this.statId = statId;
+        this.boostPoint = boostPoint;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_StatsUpgradeRequestMessage(output);
+    }
+
+    public serializeAs_StatsUpgradeRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.useAdditionnal);
+        output.writeByte(this.statId);
+        if(this.boostPoint < 0)
+        {
+            throw new Error("Forbidden value (" + this.boostPoint + ") on element boostPoint.");
+        }
+        output.writeVarShort(this.boostPoint);
     }
 
     public deserialize(input: ICustomDataInput)

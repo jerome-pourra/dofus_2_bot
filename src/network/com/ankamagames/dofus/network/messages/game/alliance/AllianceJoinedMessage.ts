@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceJoinedMessage extends NetworkMessage
+export class AllianceJoinedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5220;
@@ -19,14 +19,43 @@ export class AllianceJoinedMessage extends NetworkMessage
         this.allianceInfo = new AllianceInformation();
     }
 
+    public getMessageId()
+    {
+        return AllianceJoinedMessage.protocolId;
+    }
+
+    public initAllianceJoinedMessage(allianceInfo: AllianceInformation = null, rankId: number = 0): AllianceJoinedMessage
+    {
+        this.allianceInfo = allianceInfo;
+        this.rankId = rankId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceJoinedMessage(output);
+    }
+
+    public serializeAs_AllianceJoinedMessage(output: ICustomDataOutput)
+    {
+        this.allianceInfo.serializeAs_AllianceInformation(output);
+        if(this.rankId < 0)
+        {
+            throw new Error("Forbidden value (" + this.rankId + ") on element rankId.");
+        }
+        output.writeVarInt(this.rankId);
     }
 
     public deserialize(input: ICustomDataInput)

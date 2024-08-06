@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class InvalidPresetsMessage extends NetworkMessage
+export class InvalidPresetsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1001;
@@ -17,14 +17,45 @@ export class InvalidPresetsMessage extends NetworkMessage
         this.presetIds = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return InvalidPresetsMessage.protocolId;
+    }
+
+    public initInvalidPresetsMessage(presetIds: Array<number> = null): InvalidPresetsMessage
+    {
+        this.presetIds = presetIds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_InvalidPresetsMessage(output);
+    }
+
+    public serializeAs_InvalidPresetsMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.presetIds.length);
+        for(var _i1: number = 0; _i1 < this.presetIds.length; _i1++)
+        {
+            if(this.presetIds[_i1] < 0)
+            {
+                throw new Error("Forbidden value (" + this.presetIds[_i1] + ") on element 1 (starting at 1) of presetIds.");
+            }
+            output.writeShort(this.presetIds[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

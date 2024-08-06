@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 import { QuestObjectiveInformations } from "./QuestObjectiveInformations";
 
-export class QuestObjectiveInformationsWithCompletion extends QuestObjectiveInformations
+export class QuestObjectiveInformationsWithCompletion extends QuestObjectiveInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 8731;
@@ -14,6 +14,39 @@ export class QuestObjectiveInformationsWithCompletion extends QuestObjectiveInfo
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return QuestObjectiveInformationsWithCompletion.protocolId;
+    }
+
+    public initQuestObjectiveInformationsWithCompletion(objectiveId: number = 0, objectiveStatus: boolean = false, dialogParams: Array<string> = null, curCompletion: number = 0, maxCompletion: number = 0): QuestObjectiveInformationsWithCompletion
+    {
+        super.initQuestObjectiveInformations(objectiveId,objectiveStatus,dialogParams);
+        this.curCompletion = curCompletion;
+        this.maxCompletion = maxCompletion;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_QuestObjectiveInformationsWithCompletion(output);
+    }
+
+    public serializeAs_QuestObjectiveInformationsWithCompletion(output: ICustomDataOutput)
+    {
+        super.serializeAs_QuestObjectiveInformations(output);
+        if(this.curCompletion < 0)
+        {
+            throw new Error("Forbidden value (" + this.curCompletion + ") on element curCompletion.");
+        }
+        output.writeVarShort(this.curCompletion);
+        if(this.maxCompletion < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxCompletion + ") on element maxCompletion.");
+        }
+        output.writeVarShort(this.maxCompletion);
     }
 
     public deserialize(input: ICustomDataInput)

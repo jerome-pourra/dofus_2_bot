@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { BooleanByteWrapper } from "./../../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class AbstractGameActionFightTargetedAbilityMessage extends AbstractGameActionMessage
+export class AbstractGameActionFightTargetedAbilityMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5172;
@@ -21,14 +21,57 @@ export class AbstractGameActionFightTargetedAbilityMessage extends AbstractGameA
         super();
     }
 
+    public getMessageId()
+    {
+        return AbstractGameActionFightTargetedAbilityMessage.protocolId;
+    }
+
+    public initAbstractGameActionFightTargetedAbilityMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, destinationCellId: number = 0, critical: number = 1, silentCast: boolean = false, verboseCast: boolean = false): AbstractGameActionFightTargetedAbilityMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.targetId = targetId;
+        this.destinationCellId = destinationCellId;
+        this.critical = critical;
+        this.silentCast = silentCast;
+        this.verboseCast = verboseCast;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AbstractGameActionFightTargetedAbilityMessage(output);
+    }
+
+    public serializeAs_AbstractGameActionFightTargetedAbilityMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.silentCast);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.verboseCast);
+        output.writeByte(_box0);
+        if(this.targetId < -9007199254740992 || this.targetId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+        }
+        output.writeDouble(this.targetId);
+        if(this.destinationCellId < -1 || this.destinationCellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.destinationCellId + ") on element destinationCellId.");
+        }
+        output.writeShort(this.destinationCellId);
+        output.writeByte(this.critical);
     }
 
     public deserialize(input: ICustomDataInput)

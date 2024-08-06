@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class JobExperienceMultiUpdateMessage extends NetworkMessage
+export class JobExperienceMultiUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8763;
@@ -18,14 +18,41 @@ export class JobExperienceMultiUpdateMessage extends NetworkMessage
         this.experiencesUpdate = Array<JobExperience>();
     }
 
+    public getMessageId()
+    {
+        return JobExperienceMultiUpdateMessage.protocolId;
+    }
+
+    public initJobExperienceMultiUpdateMessage(experiencesUpdate: Array<JobExperience> = null): JobExperienceMultiUpdateMessage
+    {
+        this.experiencesUpdate = experiencesUpdate;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_JobExperienceMultiUpdateMessage(output);
+    }
+
+    public serializeAs_JobExperienceMultiUpdateMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.experiencesUpdate.length);
+        for(var _i1: number = 0; _i1 < this.experiencesUpdate.length; _i1++)
+        {
+            (this.experiencesUpdate[_i1] as JobExperience).serializeAs_JobExperience(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

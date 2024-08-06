@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class MoodSmileyResultMessage extends NetworkMessage
+export class MoodSmileyResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1383;
@@ -17,14 +17,43 @@ export class MoodSmileyResultMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return MoodSmileyResultMessage.protocolId;
+    }
+
+    public initMoodSmileyResultMessage(resultCode: number = 1, smileyId: number = 0): MoodSmileyResultMessage
+    {
+        this.resultCode = resultCode;
+        this.smileyId = smileyId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MoodSmileyResultMessage(output);
+    }
+
+    public serializeAs_MoodSmileyResultMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.resultCode);
+        if(this.smileyId < 0)
+        {
+            throw new Error("Forbidden value (" + this.smileyId + ") on element smileyId.");
+        }
+        output.writeVarShort(this.smileyId);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ObjectAddedMessage extends NetworkMessage
+export class ObjectAddedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6866;
@@ -19,14 +19,39 @@ export class ObjectAddedMessage extends NetworkMessage
         this.object = new ObjectItem();
     }
 
+    public getMessageId()
+    {
+        return ObjectAddedMessage.protocolId;
+    }
+
+    public initObjectAddedMessage(object: ObjectItem = null, origin: number = 0): ObjectAddedMessage
+    {
+        this.object = object;
+        this.origin = origin;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectAddedMessage(output);
+    }
+
+    public serializeAs_ObjectAddedMessage(output: ICustomDataOutput)
+    {
+        this.object.serializeAs_ObjectItem(output);
+        output.writeByte(this.origin);
     }
 
     public deserialize(input: ICustomDataInput)

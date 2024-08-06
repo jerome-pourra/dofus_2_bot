@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class BidExchangerObjectInfo
+export class BidExchangerObjectInfo implements INetworkType
 {
 
 	public static readonly protocolId: number = 2811;
@@ -19,6 +19,60 @@ export class BidExchangerObjectInfo
     {
         this.effects = Array<ObjectEffect>();
         this.prices = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return BidExchangerObjectInfo.protocolId;
+    }
+
+    public initBidExchangerObjectInfo(objectUID: number = 0, objectGID: number = 0, objectType: number = 0, effects: Array<ObjectEffect> = null, prices: Array<number> = null): BidExchangerObjectInfo
+    {
+        this.objectUID = objectUID;
+        this.objectGID = objectGID;
+        this.objectType = objectType;
+        this.effects = effects;
+        this.prices = prices;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BidExchangerObjectInfo(output);
+    }
+
+    public serializeAs_BidExchangerObjectInfo(output: ICustomDataOutput)
+    {
+        if(this.objectUID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+        }
+        output.writeVarInt(this.objectUID);
+        if(this.objectGID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+        }
+        output.writeVarInt(this.objectGID);
+        if(this.objectType < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectType + ") on element objectType.");
+        }
+        output.writeInt(this.objectType);
+        output.writeShort(this.effects.length);
+        for(var _i4: number = 0; _i4 < this.effects.length; _i4++)
+        {
+            output.writeShort((this.effects[_i4] as ObjectEffect).getTypeId());
+            (this.effects[_i4] as ObjectEffect).serialize(output);
+        }
+        output.writeShort(this.prices.length);
+        for(var _i5: number = 0; _i5 < this.prices.length; _i5++)
+        {
+            if(this.prices[_i5] < 0 || this.prices[_i5] > 9007199254740992)
+            {
+                throw new Error("Forbidden value (" + this.prices[_i5] + ") on element 5 (starting at 1) of prices.");
+            }
+            output.writeVarLong(this.prices[_i5]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

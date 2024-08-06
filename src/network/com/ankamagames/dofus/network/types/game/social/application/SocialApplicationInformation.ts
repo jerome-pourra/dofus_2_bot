@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { ApplicationPlayerInformation } from "./ApplicationPlayerInformation";
 
-export class SocialApplicationInformation
+export class SocialApplicationInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 4014;
@@ -15,6 +15,35 @@ export class SocialApplicationInformation
     public constructor()
     {
         this.playerInfo = new ApplicationPlayerInformation();
+    }
+
+    public getTypeId()
+    {
+        return SocialApplicationInformation.protocolId;
+    }
+
+    public initSocialApplicationInformation(playerInfo: ApplicationPlayerInformation = null, applyText: string = "", creationDate: number = 0): SocialApplicationInformation
+    {
+        this.playerInfo = playerInfo;
+        this.applyText = applyText;
+        this.creationDate = creationDate;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SocialApplicationInformation(output);
+    }
+
+    public serializeAs_SocialApplicationInformation(output: ICustomDataOutput)
+    {
+        this.playerInfo.serializeAs_ApplicationPlayerInformation(output);
+        output.writeUTF(this.applyText);
+        if(this.creationDate < -9007199254740992 || this.creationDate > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.creationDate + ") on element creationDate.");
+        }
+        output.writeDouble(this.creationDate);
     }
 
     public deserialize(input: ICustomDataInput)

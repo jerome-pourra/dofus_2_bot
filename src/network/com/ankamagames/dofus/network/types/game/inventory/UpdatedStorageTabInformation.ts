@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class UpdatedStorageTabInformation
+export class UpdatedStorageTabInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 570;
@@ -15,6 +15,49 @@ export class UpdatedStorageTabInformation
     public constructor()
     {
         this.dropTypeLimitation = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return UpdatedStorageTabInformation.protocolId;
+    }
+
+    public initUpdatedStorageTabInformation(name: string = "", tabNumber: number = 0, picto: number = 0, dropTypeLimitation: Array<number> = null): UpdatedStorageTabInformation
+    {
+        this.name = name;
+        this.tabNumber = tabNumber;
+        this.picto = picto;
+        this.dropTypeLimitation = dropTypeLimitation;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_UpdatedStorageTabInformation(output);
+    }
+
+    public serializeAs_UpdatedStorageTabInformation(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.name);
+        if(this.tabNumber < 0)
+        {
+            throw new Error("Forbidden value (" + this.tabNumber + ") on element tabNumber.");
+        }
+        output.writeVarInt(this.tabNumber);
+        if(this.picto < 0)
+        {
+            throw new Error("Forbidden value (" + this.picto + ") on element picto.");
+        }
+        output.writeVarInt(this.picto);
+        output.writeShort(this.dropTypeLimitation.length);
+        for(var _i4: number = 0; _i4 < this.dropTypeLimitation.length; _i4++)
+        {
+            if(this.dropTypeLimitation[_i4] < 0)
+            {
+                throw new Error("Forbidden value (" + this.dropTypeLimitation[_i4] + ") on element 4 (starting at 1) of dropTypeLimitation.");
+            }
+            output.writeVarInt(this.dropTypeLimitation[_i4]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

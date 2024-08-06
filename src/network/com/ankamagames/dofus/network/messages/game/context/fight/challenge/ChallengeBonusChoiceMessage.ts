@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class ChallengeBonusChoiceMessage extends NetworkMessage
+export class ChallengeBonusChoiceMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2271;
@@ -16,14 +16,37 @@ export class ChallengeBonusChoiceMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ChallengeBonusChoiceMessage.protocolId;
+    }
+
+    public initChallengeBonusChoiceMessage(challengeBonus: number = 0): ChallengeBonusChoiceMessage
+    {
+        this.challengeBonus = challengeBonus;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChallengeBonusChoiceMessage(output);
+    }
+
+    public serializeAs_ChallengeBonusChoiceMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.challengeBonus);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessa
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 import { BooleanByteWrapper } from "./../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class AllianceModificationStartedMessage extends NetworkMessage
+export class AllianceModificationStartedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2149;
@@ -19,14 +19,43 @@ export class AllianceModificationStartedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AllianceModificationStartedMessage.protocolId;
+    }
+
+    public initAllianceModificationStartedMessage(canChangeName: boolean = false, canChangeTag: boolean = false, canChangeEmblem: boolean = false): AllianceModificationStartedMessage
+    {
+        this.canChangeName = canChangeName;
+        this.canChangeTag = canChangeTag;
+        this.canChangeEmblem = canChangeEmblem;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceModificationStartedMessage(output);
+    }
+
+    public serializeAs_AllianceModificationStartedMessage(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.canChangeName);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.canChangeTag);
+        _box0 = BooleanByteWrapper.setFlag(_box0,2,this.canChangeEmblem);
+        output.writeByte(_box0);
     }
 
     public deserialize(input: ICustomDataInput)

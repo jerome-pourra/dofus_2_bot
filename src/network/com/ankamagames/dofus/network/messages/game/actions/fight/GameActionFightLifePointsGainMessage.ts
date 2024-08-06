@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class GameActionFightLifePointsGainMessage extends AbstractGameActionMessage
+export class GameActionFightLifePointsGainMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6590;
@@ -17,14 +17,49 @@ export class GameActionFightLifePointsGainMessage extends AbstractGameActionMess
         super();
     }
 
+    public getMessageId()
+    {
+        return GameActionFightLifePointsGainMessage.protocolId;
+    }
+
+    public initGameActionFightLifePointsGainMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, delta: number = 0): GameActionFightLifePointsGainMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.targetId = targetId;
+        this.delta = delta;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionFightLifePointsGainMessage(output);
+    }
+
+    public serializeAs_GameActionFightLifePointsGainMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        if(this.targetId < -9007199254740992 || this.targetId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+        }
+        output.writeDouble(this.targetId);
+        if(this.delta < 0)
+        {
+            throw new Error("Forbidden value (" + this.delta + ") on element delta.");
+        }
+        output.writeVarInt(this.delta);
     }
 
     public deserialize(input: ICustomDataInput)

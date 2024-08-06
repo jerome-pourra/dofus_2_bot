@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class DungeonPartyFinderRoomContentUpdateMessage extends NetworkMessage
+export class DungeonPartyFinderRoomContentUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5056;
@@ -21,14 +21,57 @@ export class DungeonPartyFinderRoomContentUpdateMessage extends NetworkMessage
         this.removedPlayersIds = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return DungeonPartyFinderRoomContentUpdateMessage.protocolId;
+    }
+
+    public initDungeonPartyFinderRoomContentUpdateMessage(dungeonId: number = 0, addedPlayers: Array<DungeonPartyFinderPlayer> = null, removedPlayersIds: Array<number> = null): DungeonPartyFinderRoomContentUpdateMessage
+    {
+        this.dungeonId = dungeonId;
+        this.addedPlayers = addedPlayers;
+        this.removedPlayersIds = removedPlayersIds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_DungeonPartyFinderRoomContentUpdateMessage(output);
+    }
+
+    public serializeAs_DungeonPartyFinderRoomContentUpdateMessage(output: ICustomDataOutput)
+    {
+        if(this.dungeonId < 0)
+        {
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element dungeonId.");
+        }
+        output.writeVarShort(this.dungeonId);
+        output.writeShort(this.addedPlayers.length);
+        for(var _i2: number = 0; _i2 < this.addedPlayers.length; _i2++)
+        {
+            (this.addedPlayers[_i2] as DungeonPartyFinderPlayer).serializeAs_DungeonPartyFinderPlayer(output);
+        }
+        output.writeShort(this.removedPlayersIds.length);
+        for(var _i3: number = 0; _i3 < this.removedPlayersIds.length; _i3++)
+        {
+            if(this.removedPlayersIds[_i3] < 0 || this.removedPlayersIds[_i3] > 9007199254740992)
+            {
+                throw new Error("Forbidden value (" + this.removedPlayersIds[_i3] + ") on element 3 (starting at 1) of removedPlayersIds.");
+            }
+            output.writeVarLong(this.removedPlayersIds[_i3]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

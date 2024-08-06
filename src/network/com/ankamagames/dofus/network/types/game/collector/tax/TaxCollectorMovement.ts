@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { TaxCollectorBasicInformations } from "./TaxCollectorBasicInformations";
 
-export class TaxCollectorMovement
+export class TaxCollectorMovement implements INetworkType
 {
 
 	public static readonly protocolId: number = 7487;
@@ -16,6 +16,37 @@ export class TaxCollectorMovement
     public constructor()
     {
         this.basicInfos = new TaxCollectorBasicInformations();
+    }
+
+    public getTypeId()
+    {
+        return TaxCollectorMovement.protocolId;
+    }
+
+    public initTaxCollectorMovement(movementType: number = 0, basicInfos: TaxCollectorBasicInformations = null, playerId: number = 0, playerName: string = ""): TaxCollectorMovement
+    {
+        this.movementType = movementType;
+        this.basicInfos = basicInfos;
+        this.playerId = playerId;
+        this.playerName = playerName;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorMovement(output);
+    }
+
+    public serializeAs_TaxCollectorMovement(output: ICustomDataOutput)
+    {
+        output.writeByte(this.movementType);
+        this.basicInfos.serializeAs_TaxCollectorBasicInformations(output);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeUTF(this.playerName);
     }
 
     public deserialize(input: ICustomDataInput)

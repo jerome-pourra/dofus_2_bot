@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class CompassUpdateMessage extends NetworkMessage
+export class CompassUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 872;
@@ -20,14 +20,40 @@ export class CompassUpdateMessage extends NetworkMessage
         this.coords = new MapCoordinates();
     }
 
+    public getMessageId()
+    {
+        return CompassUpdateMessage.protocolId;
+    }
+
+    public initCompassUpdateMessage(type: number = 0, coords: MapCoordinates = null): CompassUpdateMessage
+    {
+        this.type = type;
+        this.coords = coords;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CompassUpdateMessage(output);
+    }
+
+    public serializeAs_CompassUpdateMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.type);
+        output.writeShort(this.coords.getTypeId());
+        this.coords.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

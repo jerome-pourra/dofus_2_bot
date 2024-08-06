@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class GameActionFightLifePointsLostMessage extends AbstractGameActionMessage
+export class GameActionFightLifePointsLostMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6444;
@@ -19,14 +19,57 @@ export class GameActionFightLifePointsLostMessage extends AbstractGameActionMess
         super();
     }
 
+    public getMessageId()
+    {
+        return GameActionFightLifePointsLostMessage.protocolId;
+    }
+
+    public initGameActionFightLifePointsLostMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, loss: number = 0, permanentDamages: number = 0, elementId: number = 0): GameActionFightLifePointsLostMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.targetId = targetId;
+        this.loss = loss;
+        this.permanentDamages = permanentDamages;
+        this.elementId = elementId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionFightLifePointsLostMessage(output);
+    }
+
+    public serializeAs_GameActionFightLifePointsLostMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        if(this.targetId < -9007199254740992 || this.targetId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+        }
+        output.writeDouble(this.targetId);
+        if(this.loss < 0)
+        {
+            throw new Error("Forbidden value (" + this.loss + ") on element loss.");
+        }
+        output.writeVarInt(this.loss);
+        if(this.permanentDamages < 0)
+        {
+            throw new Error("Forbidden value (" + this.permanentDamages + ") on element permanentDamages.");
+        }
+        output.writeVarInt(this.permanentDamages);
+        output.writeVarInt(this.elementId);
     }
 
     public deserialize(input: ICustomDataInput)

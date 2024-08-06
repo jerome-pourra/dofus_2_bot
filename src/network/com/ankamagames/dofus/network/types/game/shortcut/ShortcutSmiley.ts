@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { Shortcut } from "./Shortcut";
 
-export class ShortcutSmiley extends Shortcut
+export class ShortcutSmiley extends Shortcut implements INetworkType
 {
 
 	public static readonly protocolId: number = 4118;
@@ -13,6 +13,33 @@ export class ShortcutSmiley extends Shortcut
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ShortcutSmiley.protocolId;
+    }
+
+    public initShortcutSmiley(slot: number = 0, smileyId: number = 0): ShortcutSmiley
+    {
+        super.initShortcut(slot);
+        this.smileyId = smileyId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ShortcutSmiley(output);
+    }
+
+    public serializeAs_ShortcutSmiley(output: ICustomDataOutput)
+    {
+        super.serializeAs_Shortcut(output);
+        if(this.smileyId < 0)
+        {
+            throw new Error("Forbidden value (" + this.smileyId + ") on element smileyId.");
+        }
+        output.writeVarShort(this.smileyId);
     }
 
     public deserialize(input: ICustomDataInput)

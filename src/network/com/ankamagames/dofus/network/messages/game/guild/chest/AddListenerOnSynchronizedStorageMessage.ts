@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class AddListenerOnSynchronizedStorageMessage extends NetworkMessage
+export class AddListenerOnSynchronizedStorageMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1826;
@@ -16,14 +16,37 @@ export class AddListenerOnSynchronizedStorageMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AddListenerOnSynchronizedStorageMessage.protocolId;
+    }
+
+    public initAddListenerOnSynchronizedStorageMessage(player: string = ""): AddListenerOnSynchronizedStorageMessage
+    {
+        this.player = player;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AddListenerOnSynchronizedStorageMessage(output);
+    }
+
+    public serializeAs_AddListenerOnSynchronizedStorageMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.player);
     }
 
     public deserialize(input: ICustomDataInput)

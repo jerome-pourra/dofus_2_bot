@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class JobExperience
+export class JobExperience implements INetworkType
 {
 
 	public static readonly protocolId: number = 1492;
@@ -16,6 +16,55 @@ export class JobExperience
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return JobExperience.protocolId;
+    }
+
+    public initJobExperience(jobId: number = 0, jobLevel: number = 0, jobXP: number = 0, jobXpLevelFloor: number = 0, jobXpNextLevelFloor: number = 0): JobExperience
+    {
+        this.jobId = jobId;
+        this.jobLevel = jobLevel;
+        this.jobXP = jobXP;
+        this.jobXpLevelFloor = jobXpLevelFloor;
+        this.jobXpNextLevelFloor = jobXpNextLevelFloor;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_JobExperience(output);
+    }
+
+    public serializeAs_JobExperience(output: ICustomDataOutput)
+    {
+        if(this.jobId < 0)
+        {
+            throw new Error("Forbidden value (" + this.jobId + ") on element jobId.");
+        }
+        output.writeByte(this.jobId);
+        if(this.jobLevel < 0 || this.jobLevel > 255)
+        {
+            throw new Error("Forbidden value (" + this.jobLevel + ") on element jobLevel.");
+        }
+        output.writeByte(this.jobLevel);
+        if(this.jobXP < 0 || this.jobXP > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.jobXP + ") on element jobXP.");
+        }
+        output.writeVarLong(this.jobXP);
+        if(this.jobXpLevelFloor < 0 || this.jobXpLevelFloor > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.jobXpLevelFloor + ") on element jobXpLevelFloor.");
+        }
+        output.writeVarLong(this.jobXpLevelFloor);
+        if(this.jobXpNextLevelFloor < 0 || this.jobXpNextLevelFloor > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.jobXpNextLevelFloor + ") on element jobXpNextLevelFloor.");
+        }
+        output.writeVarLong(this.jobXpNextLevelFloor);
     }
 
     public deserialize(input: ICustomDataInput)

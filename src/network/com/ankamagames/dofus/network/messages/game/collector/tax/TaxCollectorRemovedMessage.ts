@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TaxCollectorRemovedMessage extends NetworkMessage
+export class TaxCollectorRemovedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2310;
@@ -16,14 +16,41 @@ export class TaxCollectorRemovedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TaxCollectorRemovedMessage.protocolId;
+    }
+
+    public initTaxCollectorRemovedMessage(collectorId: number = 0): TaxCollectorRemovedMessage
+    {
+        this.collectorId = collectorId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorRemovedMessage(output);
+    }
+
+    public serializeAs_TaxCollectorRemovedMessage(output: ICustomDataOutput)
+    {
+        if(this.collectorId < 0 || this.collectorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.collectorId + ") on element collectorId.");
+        }
+        output.writeDouble(this.collectorId);
     }
 
     public deserialize(input: ICustomDataInput)

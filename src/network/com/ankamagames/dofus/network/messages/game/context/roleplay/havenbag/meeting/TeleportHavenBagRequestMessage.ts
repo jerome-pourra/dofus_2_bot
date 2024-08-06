@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class TeleportHavenBagRequestMessage extends NetworkMessage
+export class TeleportHavenBagRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8587;
@@ -16,14 +16,41 @@ export class TeleportHavenBagRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TeleportHavenBagRequestMessage.protocolId;
+    }
+
+    public initTeleportHavenBagRequestMessage(guestId: number = 0): TeleportHavenBagRequestMessage
+    {
+        this.guestId = guestId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TeleportHavenBagRequestMessage(output);
+    }
+
+    public serializeAs_TeleportHavenBagRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.guestId < 0 || this.guestId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.guestId + ") on element guestId.");
+        }
+        output.writeVarLong(this.guestId);
     }
 
     public deserialize(input: ICustomDataInput)

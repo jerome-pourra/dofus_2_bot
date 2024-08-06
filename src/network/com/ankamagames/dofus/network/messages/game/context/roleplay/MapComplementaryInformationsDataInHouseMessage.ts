@@ -12,7 +12,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { MapComplementaryInformationsDataMessage } from "./MapComplementaryInformationsDataMessage";
 
-export class MapComplementaryInformationsDataInHouseMessage extends MapComplementaryInformationsDataMessage
+export class MapComplementaryInformationsDataInHouseMessage extends MapComplementaryInformationsDataMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1071;
@@ -25,14 +25,39 @@ export class MapComplementaryInformationsDataInHouseMessage extends MapComplemen
         this.currentHouse = new HouseInformationsInside();
     }
 
+    public getMessageId()
+    {
+        return MapComplementaryInformationsDataInHouseMessage.protocolId;
+    }
+
+    public initMapComplementaryInformationsDataInHouseMessage(subAreaId: number = 0, mapId: number = 0, houses: Array<HouseInformations> = null, actors: Array<GameRolePlayActorInformations> = null, interactiveElements: Array<InteractiveElement> = null, statedElements: Array<StatedElement> = null, obstacles: Array<MapObstacle> = null, fights: Array<FightCommonInformations> = null, hasAggressiveMonsters: boolean = false, fightStartPositions: FightStartingPositions = null, currentHouse: HouseInformationsInside = null): MapComplementaryInformationsDataInHouseMessage
+    {
+        super.initMapComplementaryInformationsDataMessage(subAreaId,mapId,houses,actors,interactiveElements,statedElements,obstacles,fights,hasAggressiveMonsters,fightStartPositions);
+        this.currentHouse = currentHouse;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MapComplementaryInformationsDataInHouseMessage(output);
+    }
+
+    public serializeAs_MapComplementaryInformationsDataInHouseMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_MapComplementaryInformationsDataMessage(output);
+        this.currentHouse.serializeAs_HouseInformationsInside(output);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { AbstractFightDispellableEffect } from "./AbstractFightDispellableEffect";
 
-export class FightTriggeredEffect extends AbstractFightDispellableEffect
+export class FightTriggeredEffect extends AbstractFightDispellableEffect implements INetworkType
 {
 
 	public static readonly protocolId: number = 5487;
@@ -16,6 +16,35 @@ export class FightTriggeredEffect extends AbstractFightDispellableEffect
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return FightTriggeredEffect.protocolId;
+    }
+
+    public initFightTriggeredEffect(uid: number = 0, targetId: number = 0, turnDuration: number = 0, dispelable: number = 1, spellId: number = 0, effectId: number = 0, parentBoostUid: number = 0, param1: number = 0, param2: number = 0, param3: number = 0, delay: number = 0): FightTriggeredEffect
+    {
+        super.initAbstractFightDispellableEffect(uid,targetId,turnDuration,dispelable,spellId,effectId,parentBoostUid);
+        this.param1 = param1;
+        this.param2 = param2;
+        this.param3 = param3;
+        this.delay = delay;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightTriggeredEffect(output);
+    }
+
+    public serializeAs_FightTriggeredEffect(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractFightDispellableEffect(output);
+        output.writeInt(this.param1);
+        output.writeInt(this.param2);
+        output.writeInt(this.param3);
+        output.writeShort(this.delay);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeMountFreeFromPaddockMessage extends NetworkMessage
+export class ExchangeMountFreeFromPaddockMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4615;
@@ -19,14 +19,51 @@ export class ExchangeMountFreeFromPaddockMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeMountFreeFromPaddockMessage.protocolId;
+    }
+
+    public initExchangeMountFreeFromPaddockMessage(name: string = "", worldX: number = 0, worldY: number = 0, liberator: string = ""): ExchangeMountFreeFromPaddockMessage
+    {
+        this.name = name;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.liberator = liberator;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeMountFreeFromPaddockMessage(output);
+    }
+
+    public serializeAs_ExchangeMountFreeFromPaddockMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.name);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
+        output.writeUTF(this.liberator);
     }
 
     public deserialize(input: ICustomDataInput)

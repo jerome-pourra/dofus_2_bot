@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class NamedPartyTeam
+export class NamedPartyTeam implements INetworkType
 {
 
 	public static readonly protocolId: number = 9179;
@@ -13,6 +13,29 @@ export class NamedPartyTeam
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return NamedPartyTeam.protocolId;
+    }
+
+    public initNamedPartyTeam(teamId: number = 2, partyName: string = ""): NamedPartyTeam
+    {
+        this.teamId = teamId;
+        this.partyName = partyName;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_NamedPartyTeam(output);
+    }
+
+    public serializeAs_NamedPartyTeam(output: ICustomDataOutput)
+    {
+        output.writeByte(this.teamId);
+        output.writeUTF(this.partyName);
     }
 
     public deserialize(input: ICustomDataInput)

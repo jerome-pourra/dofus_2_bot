@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class SocialFightInfo
+export class SocialFightInfo implements INetworkType
 {
 
 	public static readonly protocolId: number = 2355;
@@ -14,6 +14,39 @@ export class SocialFightInfo
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return SocialFightInfo.protocolId;
+    }
+
+    public initSocialFightInfo(fightId: number = 0, fightType: number = 0, mapId: number = 0): SocialFightInfo
+    {
+        this.fightId = fightId;
+        this.fightType = fightType;
+        this.mapId = mapId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SocialFightInfo(output);
+    }
+
+    public serializeAs_SocialFightInfo(output: ICustomDataOutput)
+    {
+        if(this.fightId < 0)
+        {
+            throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+        }
+        output.writeVarShort(this.fightId);
+        output.writeByte(this.fightType);
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ActivityLockRequestMessage extends NetworkMessage
+export class ActivityLockRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5738;
@@ -17,14 +17,43 @@ export class ActivityLockRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ActivityLockRequestMessage.protocolId;
+    }
+
+    public initActivityLockRequestMessage(activityId: number = 0, lock: boolean = false): ActivityLockRequestMessage
+    {
+        this.activityId = activityId;
+        this.lock = lock;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ActivityLockRequestMessage(output);
+    }
+
+    public serializeAs_ActivityLockRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.activityId < 0)
+        {
+            throw new Error("Forbidden value (" + this.activityId + ") on element activityId.");
+        }
+        output.writeVarShort(this.activityId);
+        output.writeBoolean(this.lock);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class RemoveTaxCollectorOrderedSpellMessage extends NetworkMessage
+export class RemoveTaxCollectorOrderedSpellMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9951;
@@ -17,14 +17,47 @@ export class RemoveTaxCollectorOrderedSpellMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return RemoveTaxCollectorOrderedSpellMessage.protocolId;
+    }
+
+    public initRemoveTaxCollectorOrderedSpellMessage(taxCollectorId: number = 0, slot: number = 0): RemoveTaxCollectorOrderedSpellMessage
+    {
+        this.taxCollectorId = taxCollectorId;
+        this.slot = slot;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_RemoveTaxCollectorOrderedSpellMessage(output);
+    }
+
+    public serializeAs_RemoveTaxCollectorOrderedSpellMessage(output: ICustomDataOutput)
+    {
+        if(this.taxCollectorId < 0 || this.taxCollectorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.taxCollectorId + ") on element taxCollectorId.");
+        }
+        output.writeDouble(this.taxCollectorId);
+        if(this.slot < 0)
+        {
+            throw new Error("Forbidden value (" + this.slot + ") on element slot.");
+        }
+        output.writeByte(this.slot);
     }
 
     public deserialize(input: ICustomDataInput)

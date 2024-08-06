@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class HavenBagPackListMessage extends NetworkMessage
+export class HavenBagPackListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9897;
@@ -17,14 +17,41 @@ export class HavenBagPackListMessage extends NetworkMessage
         this.packIds = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return HavenBagPackListMessage.protocolId;
+    }
+
+    public initHavenBagPackListMessage(packIds: Array<number> = null): HavenBagPackListMessage
+    {
+        this.packIds = packIds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HavenBagPackListMessage(output);
+    }
+
+    public serializeAs_HavenBagPackListMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.packIds.length);
+        for(var _i1: number = 0; _i1 < this.packIds.length; _i1++)
+        {
+            output.writeByte(this.packIds[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

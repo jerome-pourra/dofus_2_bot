@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class PaddockPropertiesMessage extends NetworkMessage
+export class PaddockPropertiesMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4650;
@@ -18,14 +18,37 @@ export class PaddockPropertiesMessage extends NetworkMessage
         this.properties = new PaddockInstancesInformations();
     }
 
+    public getMessageId()
+    {
+        return PaddockPropertiesMessage.protocolId;
+    }
+
+    public initPaddockPropertiesMessage(properties: PaddockInstancesInformations = null): PaddockPropertiesMessage
+    {
+        this.properties = properties;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PaddockPropertiesMessage(output);
+    }
+
+    public serializeAs_PaddockPropertiesMessage(output: ICustomDataOutput)
+    {
+        this.properties.serializeAs_PaddockInstancesInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

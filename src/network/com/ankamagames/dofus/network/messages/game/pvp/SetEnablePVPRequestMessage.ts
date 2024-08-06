@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class SetEnablePVPRequestMessage extends NetworkMessage
+export class SetEnablePVPRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3251;
@@ -16,14 +16,37 @@ export class SetEnablePVPRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return SetEnablePVPRequestMessage.protocolId;
+    }
+
+    public initSetEnablePVPRequestMessage(enable: boolean = false): SetEnablePVPRequestMessage
+    {
+        this.enable = enable;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SetEnablePVPRequestMessage(output);
+    }
+
+    public serializeAs_SetEnablePVPRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.enable);
     }
 
     public deserialize(input: ICustomDataInput)

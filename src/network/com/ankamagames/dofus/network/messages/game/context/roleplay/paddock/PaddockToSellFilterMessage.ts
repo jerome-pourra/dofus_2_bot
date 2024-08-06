@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class PaddockToSellFilterMessage extends NetworkMessage
+export class PaddockToSellFilterMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3852;
@@ -20,14 +20,49 @@ export class PaddockToSellFilterMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PaddockToSellFilterMessage.protocolId;
+    }
+
+    public initPaddockToSellFilterMessage(areaId: number = 0, atLeastNbMount: number = 0, atLeastNbMachine: number = 0, maxPrice: number = 0, orderBy: number = 0): PaddockToSellFilterMessage
+    {
+        this.areaId = areaId;
+        this.atLeastNbMount = atLeastNbMount;
+        this.atLeastNbMachine = atLeastNbMachine;
+        this.maxPrice = maxPrice;
+        this.orderBy = orderBy;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PaddockToSellFilterMessage(output);
+    }
+
+    public serializeAs_PaddockToSellFilterMessage(output: ICustomDataOutput)
+    {
+        output.writeInt(this.areaId);
+        output.writeByte(this.atLeastNbMount);
+        output.writeByte(this.atLeastNbMachine);
+        if(this.maxPrice < 0 || this.maxPrice > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.maxPrice + ") on element maxPrice.");
+        }
+        output.writeVarLong(this.maxPrice);
+        output.writeByte(this.orderBy);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class JobDescription
+export class JobDescription implements INetworkType
 {
 
 	public static readonly protocolId: number = 4698;
@@ -15,6 +15,38 @@ export class JobDescription
     public constructor()
     {
         this.skills = Array<SkillActionDescription>();
+    }
+
+    public getTypeId()
+    {
+        return JobDescription.protocolId;
+    }
+
+    public initJobDescription(jobId: number = 0, skills: Array<SkillActionDescription> = null): JobDescription
+    {
+        this.jobId = jobId;
+        this.skills = skills;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_JobDescription(output);
+    }
+
+    public serializeAs_JobDescription(output: ICustomDataOutput)
+    {
+        if(this.jobId < 0)
+        {
+            throw new Error("Forbidden value (" + this.jobId + ") on element jobId.");
+        }
+        output.writeByte(this.jobId);
+        output.writeShort(this.skills.length);
+        for(var _i2: number = 0; _i2 < this.skills.length; _i2++)
+        {
+            output.writeShort((this.skills[_i2] as SkillActionDescription).getTypeId());
+            (this.skills[_i2] as SkillActionDescription).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

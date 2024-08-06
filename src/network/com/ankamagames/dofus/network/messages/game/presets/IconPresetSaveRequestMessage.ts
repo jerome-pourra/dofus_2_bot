@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class IconPresetSaveRequestMessage extends NetworkMessage
+export class IconPresetSaveRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6591;
@@ -18,14 +18,45 @@ export class IconPresetSaveRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return IconPresetSaveRequestMessage.protocolId;
+    }
+
+    public initIconPresetSaveRequestMessage(presetId: number = 0, symbolId: number = 0, updateData: boolean = false): IconPresetSaveRequestMessage
+    {
+        this.presetId = presetId;
+        this.symbolId = symbolId;
+        this.updateData = updateData;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IconPresetSaveRequestMessage(output);
+    }
+
+    public serializeAs_IconPresetSaveRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.presetId);
+        if(this.symbolId < 0)
+        {
+            throw new Error("Forbidden value (" + this.symbolId + ") on element symbolId.");
+        }
+        output.writeByte(this.symbolId);
+        output.writeBoolean(this.updateData);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class ObjectItemInRolePlay
+export class ObjectItemInRolePlay implements INetworkType
 {
 
 	public static readonly protocolId: number = 1282;
@@ -13,6 +13,37 @@ export class ObjectItemInRolePlay
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return ObjectItemInRolePlay.protocolId;
+    }
+
+    public initObjectItemInRolePlay(cellId: number = 0, objectGID: number = 0): ObjectItemInRolePlay
+    {
+        this.cellId = cellId;
+        this.objectGID = objectGID;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectItemInRolePlay(output);
+    }
+
+    public serializeAs_ObjectItemInRolePlay(output: ICustomDataOutput)
+    {
+        if(this.cellId < 0 || this.cellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.cellId + ") on element cellId.");
+        }
+        output.writeVarShort(this.cellId);
+        if(this.objectGID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+        }
+        output.writeVarInt(this.objectGID);
     }
 
     public deserialize(input: ICustomDataInput)

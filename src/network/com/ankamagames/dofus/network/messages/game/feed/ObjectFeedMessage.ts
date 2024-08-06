@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class ObjectFeedMessage extends NetworkMessage
+export class ObjectFeedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8727;
@@ -19,14 +19,47 @@ export class ObjectFeedMessage extends NetworkMessage
         this.meal = Array<ObjectItemQuantity>();
     }
 
+    public getMessageId()
+    {
+        return ObjectFeedMessage.protocolId;
+    }
+
+    public initObjectFeedMessage(objectUID: number = 0, meal: Array<ObjectItemQuantity> = null): ObjectFeedMessage
+    {
+        this.objectUID = objectUID;
+        this.meal = meal;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectFeedMessage(output);
+    }
+
+    public serializeAs_ObjectFeedMessage(output: ICustomDataOutput)
+    {
+        if(this.objectUID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+        }
+        output.writeVarInt(this.objectUID);
+        output.writeShort(this.meal.length);
+        for(var _i2: number = 0; _i2 < this.meal.length; _i2++)
+        {
+            (this.meal[_i2] as ObjectItemQuantity).serializeAs_ObjectItemQuantity(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

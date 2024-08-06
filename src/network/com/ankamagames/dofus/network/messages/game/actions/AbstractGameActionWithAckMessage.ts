@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { AbstractGameActionMessage } from "./AbstractGameActionMessage";
 
-export class AbstractGameActionWithAckMessage extends AbstractGameActionMessage
+export class AbstractGameActionWithAckMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1587;
@@ -16,14 +16,39 @@ export class AbstractGameActionWithAckMessage extends AbstractGameActionMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AbstractGameActionWithAckMessage.protocolId;
+    }
+
+    public initAbstractGameActionWithAckMessage(actionId: number = 0, sourceId: number = 0, waitAckId: number = 0): AbstractGameActionWithAckMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.waitAckId = waitAckId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AbstractGameActionWithAckMessage(output);
+    }
+
+    public serializeAs_AbstractGameActionWithAckMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        output.writeShort(this.waitAckId);
     }
 
     public deserialize(input: ICustomDataInput)

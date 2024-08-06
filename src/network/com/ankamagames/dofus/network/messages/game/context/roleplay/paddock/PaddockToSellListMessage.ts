@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class PaddockToSellListMessage extends NetworkMessage
+export class PaddockToSellListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7795;
@@ -20,14 +20,53 @@ export class PaddockToSellListMessage extends NetworkMessage
         this.paddockList = Array<PaddockInformationsForSell>();
     }
 
+    public getMessageId()
+    {
+        return PaddockToSellListMessage.protocolId;
+    }
+
+    public initPaddockToSellListMessage(pageIndex: number = 0, totalPage: number = 0, paddockList: Array<PaddockInformationsForSell> = null): PaddockToSellListMessage
+    {
+        this.pageIndex = pageIndex;
+        this.totalPage = totalPage;
+        this.paddockList = paddockList;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PaddockToSellListMessage(output);
+    }
+
+    public serializeAs_PaddockToSellListMessage(output: ICustomDataOutput)
+    {
+        if(this.pageIndex < 0)
+        {
+            throw new Error("Forbidden value (" + this.pageIndex + ") on element pageIndex.");
+        }
+        output.writeVarShort(this.pageIndex);
+        if(this.totalPage < 0)
+        {
+            throw new Error("Forbidden value (" + this.totalPage + ") on element totalPage.");
+        }
+        output.writeVarShort(this.totalPage);
+        output.writeShort(this.paddockList.length);
+        for(var _i3: number = 0; _i3 < this.paddockList.length; _i3++)
+        {
+            (this.paddockList[_i3] as PaddockInformationsForSell).serializeAs_PaddockInformationsForSell(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

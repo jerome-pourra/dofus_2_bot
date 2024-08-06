@@ -4,7 +4,7 @@ import { INetworkType } from "./../../../../../../jerakine/network/INetworkType"
 import { ObjectEffects } from "./ObjectEffects";
 import { ObjectItemGenericQuantity } from "./ObjectItemGenericQuantity";
 
-export class ObjectItemQuantityPriceDateEffects extends ObjectItemGenericQuantity
+export class ObjectItemQuantityPriceDateEffects extends ObjectItemGenericQuantity implements INetworkType
 {
 
 	public static readonly protocolId: number = 3552;
@@ -17,6 +17,41 @@ export class ObjectItemQuantityPriceDateEffects extends ObjectItemGenericQuantit
     {
         super();
         this.effects = new ObjectEffects();
+    }
+
+    public getTypeId()
+    {
+        return ObjectItemQuantityPriceDateEffects.protocolId;
+    }
+
+    public initObjectItemQuantityPriceDateEffects(objectGID: number = 0, quantity: number = 0, price: number = 0, effects: ObjectEffects = null, date: number = 0): ObjectItemQuantityPriceDateEffects
+    {
+        super.initObjectItemGenericQuantity(objectGID,quantity);
+        this.price = price;
+        this.effects = effects;
+        this.date = date;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectItemQuantityPriceDateEffects(output);
+    }
+
+    public serializeAs_ObjectItemQuantityPriceDateEffects(output: ICustomDataOutput)
+    {
+        super.serializeAs_ObjectItemGenericQuantity(output);
+        if(this.price < 0 || this.price > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.price + ") on element price.");
+        }
+        output.writeVarLong(this.price);
+        this.effects.serializeAs_ObjectEffects(output);
+        if(this.date < 0)
+        {
+            throw new Error("Forbidden value (" + this.date + ") on element date.");
+        }
+        output.writeInt(this.date);
     }
 
     public deserialize(input: ICustomDataInput)

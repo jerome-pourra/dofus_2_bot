@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class CharacterCreationRequestMessage extends NetworkMessage
+export class CharacterCreationRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 491;
@@ -22,14 +22,52 @@ export class CharacterCreationRequestMessage extends NetworkMessage
         this.colors = Array<number>(5);
     }
 
+    public getMessageId()
+    {
+        return CharacterCreationRequestMessage.protocolId;
+    }
+
+    public initCharacterCreationRequestMessage(name: string = "", breed: number = 0, sex: boolean = false, colors: Array<number> = null, cosmeticId: number = 0): CharacterCreationRequestMessage
+    {
+        this.name = name;
+        this.breed = breed;
+        this.sex = sex;
+        this.colors = colors;
+        this.cosmeticId = cosmeticId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterCreationRequestMessage(output);
+    }
+
+    public serializeAs_CharacterCreationRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.name);
+        output.writeByte(this.breed);
+        output.writeBoolean(this.sex);
+        for(var _i4: number = 0; _i4 < 5; _i4++)
+        {
+            output.writeInt(this.colors[_i4]);
+        }
+        if(this.cosmeticId < 0)
+        {
+            throw new Error("Forbidden value (" + this.cosmeticId + ") on element cosmeticId.");
+        }
+        output.writeVarShort(this.cosmeticId);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceMemberLeavingMessage extends NetworkMessage
+export class AllianceMemberLeavingMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 626;
@@ -17,14 +17,43 @@ export class AllianceMemberLeavingMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AllianceMemberLeavingMessage.protocolId;
+    }
+
+    public initAllianceMemberLeavingMessage(kicked: boolean = false, memberId: number = 0): AllianceMemberLeavingMessage
+    {
+        this.kicked = kicked;
+        this.memberId = memberId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceMemberLeavingMessage(output);
+    }
+
+    public serializeAs_AllianceMemberLeavingMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.kicked);
+        if(this.memberId < 0 || this.memberId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.memberId + ") on element memberId.");
+        }
+        output.writeVarLong(this.memberId);
     }
 
     public deserialize(input: ICustomDataInput)

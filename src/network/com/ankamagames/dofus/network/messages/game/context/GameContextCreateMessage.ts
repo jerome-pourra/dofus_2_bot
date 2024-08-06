@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GameContextCreateMessage extends NetworkMessage
+export class GameContextCreateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1595;
@@ -16,14 +16,37 @@ export class GameContextCreateMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameContextCreateMessage.protocolId;
+    }
+
+    public initGameContextCreateMessage(context: number = 1): GameContextCreateMessage
+    {
+        this.context = context;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameContextCreateMessage(output);
+    }
+
+    public serializeAs_GameContextCreateMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.context);
     }
 
     public deserialize(input: ICustomDataInput)

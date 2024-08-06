@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { BooleanByteWrapper } from "./../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class MountClientData
+export class MountClientData implements INetworkType
 {
 
 	public static readonly protocolId: number = 4446;
@@ -49,6 +49,199 @@ export class MountClientData
         this.ancestor = Array<number>();
         this.behaviors = Array<number>();
         this.effectList = Array<ObjectEffectInteger>();
+    }
+
+    public getTypeId()
+    {
+        return MountClientData.protocolId;
+    }
+
+    public initMountClientData(id: number = 0, model: number = 0, ancestor: Array<number> = null, behaviors: Array<number> = null, name: string = "", sex: boolean = false, ownerId: number = 0, experience: number = 0, experienceForLevel: number = 0, experienceForNextLevel: number = 0, level: number = 0, isRideable: boolean = false, maxPods: number = 0, isWild: boolean = false, stamina: number = 0, staminaMax: number = 0, maturity: number = 0, maturityForAdult: number = 0, energy: number = 0, energyMax: number = 0, serenity: number = 0, aggressivityMax: number = 0, serenityMax: number = 0, love: number = 0, loveMax: number = 0, fecondationTime: number = 0, isFecondationReady: boolean = false, boostLimiter: number = 0, boostMax: number = 0, reproductionCount: number = 0, reproductionCountMax: number = 0, harnessGID: number = 0, useHarnessColors: boolean = false, effectList: Array<ObjectEffectInteger> = null): MountClientData
+    {
+        this.id = id;
+        this.model = model;
+        this.ancestor = ancestor;
+        this.behaviors = behaviors;
+        this.name = name;
+        this.sex = sex;
+        this.ownerId = ownerId;
+        this.experience = experience;
+        this.experienceForLevel = experienceForLevel;
+        this.experienceForNextLevel = experienceForNextLevel;
+        this.level = level;
+        this.isRideable = isRideable;
+        this.maxPods = maxPods;
+        this.isWild = isWild;
+        this.stamina = stamina;
+        this.staminaMax = staminaMax;
+        this.maturity = maturity;
+        this.maturityForAdult = maturityForAdult;
+        this.energy = energy;
+        this.energyMax = energyMax;
+        this.serenity = serenity;
+        this.aggressivityMax = aggressivityMax;
+        this.serenityMax = serenityMax;
+        this.love = love;
+        this.loveMax = loveMax;
+        this.fecondationTime = fecondationTime;
+        this.isFecondationReady = isFecondationReady;
+        this.boostLimiter = boostLimiter;
+        this.boostMax = boostMax;
+        this.reproductionCount = reproductionCount;
+        this.reproductionCountMax = reproductionCountMax;
+        this.harnessGID = harnessGID;
+        this.useHarnessColors = useHarnessColors;
+        this.effectList = effectList;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MountClientData(output);
+    }
+
+    public serializeAs_MountClientData(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.sex);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.isRideable);
+        _box0 = BooleanByteWrapper.setFlag(_box0,2,this.isWild);
+        _box0 = BooleanByteWrapper.setFlag(_box0,3,this.isFecondationReady);
+        _box0 = BooleanByteWrapper.setFlag(_box0,4,this.useHarnessColors);
+        output.writeByte(_box0);
+        if(this.id < -9007199254740992 || this.id > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeDouble(this.id);
+        if(this.model < 0)
+        {
+            throw new Error("Forbidden value (" + this.model + ") on element model.");
+        }
+        output.writeVarInt(this.model);
+        output.writeShort(this.ancestor.length);
+        for(var _i3: number = 0; _i3 < this.ancestor.length; _i3++)
+        {
+            if(this.ancestor[_i3] < 0)
+            {
+                throw new Error("Forbidden value (" + this.ancestor[_i3] + ") on element 3 (starting at 1) of ancestor.");
+            }
+            output.writeInt(this.ancestor[_i3]);
+        }
+        output.writeShort(this.behaviors.length);
+        for(var _i4: number = 0; _i4 < this.behaviors.length; _i4++)
+        {
+            if(this.behaviors[_i4] < 0)
+            {
+                throw new Error("Forbidden value (" + this.behaviors[_i4] + ") on element 4 (starting at 1) of behaviors.");
+            }
+            output.writeInt(this.behaviors[_i4]);
+        }
+        output.writeUTF(this.name);
+        if(this.ownerId < 0)
+        {
+            throw new Error("Forbidden value (" + this.ownerId + ") on element ownerId.");
+        }
+        output.writeInt(this.ownerId);
+        if(this.experience < 0 || this.experience > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.experience + ") on element experience.");
+        }
+        output.writeVarLong(this.experience);
+        if(this.experienceForLevel < 0 || this.experienceForLevel > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.experienceForLevel + ") on element experienceForLevel.");
+        }
+        output.writeVarLong(this.experienceForLevel);
+        if(this.experienceForNextLevel < -9007199254740992 || this.experienceForNextLevel > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.experienceForNextLevel + ") on element experienceForNextLevel.");
+        }
+        output.writeDouble(this.experienceForNextLevel);
+        if(this.level < 0)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeByte(this.level);
+        if(this.maxPods < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxPods + ") on element maxPods.");
+        }
+        output.writeVarInt(this.maxPods);
+        if(this.stamina < 0)
+        {
+            throw new Error("Forbidden value (" + this.stamina + ") on element stamina.");
+        }
+        output.writeVarInt(this.stamina);
+        if(this.staminaMax < 0)
+        {
+            throw new Error("Forbidden value (" + this.staminaMax + ") on element staminaMax.");
+        }
+        output.writeVarInt(this.staminaMax);
+        if(this.maturity < 0)
+        {
+            throw new Error("Forbidden value (" + this.maturity + ") on element maturity.");
+        }
+        output.writeVarInt(this.maturity);
+        if(this.maturityForAdult < 0)
+        {
+            throw new Error("Forbidden value (" + this.maturityForAdult + ") on element maturityForAdult.");
+        }
+        output.writeVarInt(this.maturityForAdult);
+        if(this.energy < 0)
+        {
+            throw new Error("Forbidden value (" + this.energy + ") on element energy.");
+        }
+        output.writeVarInt(this.energy);
+        if(this.energyMax < 0)
+        {
+            throw new Error("Forbidden value (" + this.energyMax + ") on element energyMax.");
+        }
+        output.writeVarInt(this.energyMax);
+        output.writeInt(this.serenity);
+        output.writeInt(this.aggressivityMax);
+        if(this.serenityMax < 0)
+        {
+            throw new Error("Forbidden value (" + this.serenityMax + ") on element serenityMax.");
+        }
+        output.writeVarInt(this.serenityMax);
+        if(this.love < 0)
+        {
+            throw new Error("Forbidden value (" + this.love + ") on element love.");
+        }
+        output.writeVarInt(this.love);
+        if(this.loveMax < 0)
+        {
+            throw new Error("Forbidden value (" + this.loveMax + ") on element loveMax.");
+        }
+        output.writeVarInt(this.loveMax);
+        output.writeInt(this.fecondationTime);
+        if(this.boostLimiter < 0)
+        {
+            throw new Error("Forbidden value (" + this.boostLimiter + ") on element boostLimiter.");
+        }
+        output.writeInt(this.boostLimiter);
+        if(this.boostMax < -9007199254740992 || this.boostMax > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.boostMax + ") on element boostMax.");
+        }
+        output.writeDouble(this.boostMax);
+        output.writeInt(this.reproductionCount);
+        if(this.reproductionCountMax < 0)
+        {
+            throw new Error("Forbidden value (" + this.reproductionCountMax + ") on element reproductionCountMax.");
+        }
+        output.writeVarInt(this.reproductionCountMax);
+        if(this.harnessGID < 0)
+        {
+            throw new Error("Forbidden value (" + this.harnessGID + ") on element harnessGID.");
+        }
+        output.writeVarInt(this.harnessGID);
+        output.writeShort(this.effectList.length);
+        for(var _i34: number = 0; _i34 < this.effectList.length; _i34++)
+        {
+            (this.effectList[_i34] as ObjectEffectInteger).serializeAs_ObjectEffectInteger(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class AchievementPioneerRank
+export class AchievementPioneerRank implements INetworkType
 {
 
 	public static readonly protocolId: number = 6487;
@@ -13,6 +13,37 @@ export class AchievementPioneerRank
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return AchievementPioneerRank.protocolId;
+    }
+
+    public initAchievementPioneerRank(achievementId: number = 0, pioneerRank: number = 0): AchievementPioneerRank
+    {
+        this.achievementId = achievementId;
+        this.pioneerRank = pioneerRank;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AchievementPioneerRank(output);
+    }
+
+    public serializeAs_AchievementPioneerRank(output: ICustomDataOutput)
+    {
+        if(this.achievementId < 0)
+        {
+            throw new Error("Forbidden value (" + this.achievementId + ") on element achievementId.");
+        }
+        output.writeVarInt(this.achievementId);
+        if(this.pioneerRank < 0)
+        {
+            throw new Error("Forbidden value (" + this.pioneerRank + ") on element pioneerRank.");
+        }
+        output.writeVarInt(this.pioneerRank);
     }
 
     public deserialize(input: ICustomDataInput)

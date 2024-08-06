@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class ShortcutBarAddErrorMessage extends NetworkMessage
+export class ShortcutBarAddErrorMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1627;
@@ -16,14 +16,37 @@ export class ShortcutBarAddErrorMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ShortcutBarAddErrorMessage.protocolId;
+    }
+
+    public initShortcutBarAddErrorMessage(error: number = 0): ShortcutBarAddErrorMessage
+    {
+        this.error = error;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ShortcutBarAddErrorMessage(output);
+    }
+
+    public serializeAs_ShortcutBarAddErrorMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.error);
     }
 
     public deserialize(input: ICustomDataInput)

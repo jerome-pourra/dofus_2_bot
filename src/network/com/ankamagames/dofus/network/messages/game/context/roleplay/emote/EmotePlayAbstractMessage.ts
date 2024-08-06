@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class EmotePlayAbstractMessage extends NetworkMessage
+export class EmotePlayAbstractMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8135;
@@ -17,14 +17,47 @@ export class EmotePlayAbstractMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return EmotePlayAbstractMessage.protocolId;
+    }
+
+    public initEmotePlayAbstractMessage(emoteId: number = 0, emoteStartTime: number = 0): EmotePlayAbstractMessage
+    {
+        this.emoteId = emoteId;
+        this.emoteStartTime = emoteStartTime;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_EmotePlayAbstractMessage(output);
+    }
+
+    public serializeAs_EmotePlayAbstractMessage(output: ICustomDataOutput)
+    {
+        if(this.emoteId < 0 || this.emoteId > 65535)
+        {
+            throw new Error("Forbidden value (" + this.emoteId + ") on element emoteId.");
+        }
+        output.writeShort(this.emoteId);
+        if(this.emoteStartTime < -9007199254740992 || this.emoteStartTime > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.emoteStartTime + ") on element emoteStartTime.");
+        }
+        output.writeDouble(this.emoteStartTime);
     }
 
     public deserialize(input: ICustomDataInput)

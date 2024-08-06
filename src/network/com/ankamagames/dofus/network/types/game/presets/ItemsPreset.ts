@@ -5,7 +5,7 @@ import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { ItemForPreset } from "./ItemForPreset";
 import { Preset } from "./Preset";
 
-export class ItemsPreset extends Preset
+export class ItemsPreset extends Preset implements INetworkType
 {
 
 	public static readonly protocolId: number = 4783;
@@ -19,6 +19,37 @@ export class ItemsPreset extends Preset
         super();
         this.items = Array<ItemForPreset>();
         this.look = new EntityLook();
+    }
+
+    public getTypeId()
+    {
+        return ItemsPreset.protocolId;
+    }
+
+    public initItemsPreset(id: number = 0, items: Array<ItemForPreset> = null, mountEquipped: boolean = false, look: EntityLook = null): ItemsPreset
+    {
+        super.initPreset(id);
+        this.items = items;
+        this.mountEquipped = mountEquipped;
+        this.look = look;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ItemsPreset(output);
+    }
+
+    public serializeAs_ItemsPreset(output: ICustomDataOutput)
+    {
+        super.serializeAs_Preset(output);
+        output.writeShort(this.items.length);
+        for(var _i1: number = 0; _i1 < this.items.length; _i1++)
+        {
+            (this.items[_i1] as ItemForPreset).serializeAs_ItemForPreset(output);
+        }
+        output.writeBoolean(this.mountEquipped);
+        this.look.serializeAs_EntityLook(output);
     }
 
     public deserialize(input: ICustomDataInput)

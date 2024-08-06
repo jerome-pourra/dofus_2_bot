@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class SimpleCharacterCharacteristicForPreset
+export class SimpleCharacterCharacteristicForPreset implements INetworkType
 {
 
 	public static readonly protocolId: number = 361;
@@ -14,6 +14,31 @@ export class SimpleCharacterCharacteristicForPreset
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return SimpleCharacterCharacteristicForPreset.protocolId;
+    }
+
+    public initSimpleCharacterCharacteristicForPreset(keyword: string = "", base: number = 0, additionnal: number = 0): SimpleCharacterCharacteristicForPreset
+    {
+        this.keyword = keyword;
+        this.base = base;
+        this.additionnal = additionnal;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SimpleCharacterCharacteristicForPreset(output);
+    }
+
+    public serializeAs_SimpleCharacterCharacteristicForPreset(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.keyword);
+        output.writeVarInt(this.base);
+        output.writeVarInt(this.additionnal);
     }
 
     public deserialize(input: ICustomDataInput)

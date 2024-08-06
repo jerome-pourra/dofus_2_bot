@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { GameRolePlayActorInformations } from "./GameRolePlayActorInformations";
 
-export class GameRolePlayNpcInformations extends GameRolePlayActorInformations
+export class GameRolePlayNpcInformations extends GameRolePlayActorInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 8347;
@@ -17,6 +17,41 @@ export class GameRolePlayNpcInformations extends GameRolePlayActorInformations
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return GameRolePlayNpcInformations.protocolId;
+    }
+
+    public initGameRolePlayNpcInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, npcId: number = 0, sex: boolean = false, specialArtworkId: number = 0): GameRolePlayNpcInformations
+    {
+        super.initGameRolePlayActorInformations(contextualId,disposition,look);
+        this.npcId = npcId;
+        this.sex = sex;
+        this.specialArtworkId = specialArtworkId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayNpcInformations(output);
+    }
+
+    public serializeAs_GameRolePlayNpcInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameRolePlayActorInformations(output);
+        if(this.npcId < 0)
+        {
+            throw new Error("Forbidden value (" + this.npcId + ") on element npcId.");
+        }
+        output.writeVarShort(this.npcId);
+        output.writeBoolean(this.sex);
+        if(this.specialArtworkId < 0)
+        {
+            throw new Error("Forbidden value (" + this.specialArtworkId + ") on element specialArtworkId.");
+        }
+        output.writeVarShort(this.specialArtworkId);
     }
 
     public deserialize(input: ICustomDataInput)

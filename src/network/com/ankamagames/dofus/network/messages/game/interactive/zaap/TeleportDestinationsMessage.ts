@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TeleportDestinationsMessage extends NetworkMessage
+export class TeleportDestinationsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7615;
@@ -19,14 +19,43 @@ export class TeleportDestinationsMessage extends NetworkMessage
         this.destinations = Array<TeleportDestination>();
     }
 
+    public getMessageId()
+    {
+        return TeleportDestinationsMessage.protocolId;
+    }
+
+    public initTeleportDestinationsMessage(type: number = 0, destinations: Array<TeleportDestination> = null): TeleportDestinationsMessage
+    {
+        this.type = type;
+        this.destinations = destinations;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TeleportDestinationsMessage(output);
+    }
+
+    public serializeAs_TeleportDestinationsMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.type);
+        output.writeShort(this.destinations.length);
+        for(var _i2: number = 0; _i2 < this.destinations.length; _i2++)
+        {
+            (this.destinations[_i2] as TeleportDestination).serializeAs_TeleportDestination(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

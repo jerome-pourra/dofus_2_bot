@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class PresetDeleteResultMessage extends NetworkMessage
+export class PresetDeleteResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6319;
@@ -17,14 +17,39 @@ export class PresetDeleteResultMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PresetDeleteResultMessage.protocolId;
+    }
+
+    public initPresetDeleteResultMessage(presetId: number = 0, code: number = 2): PresetDeleteResultMessage
+    {
+        this.presetId = presetId;
+        this.code = code;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PresetDeleteResultMessage(output);
+    }
+
+    public serializeAs_PresetDeleteResultMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.presetId);
+        output.writeByte(this.code);
     }
 
     public deserialize(input: ICustomDataInput)

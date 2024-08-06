@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class ObjectGroundRemovedMultipleMessage extends NetworkMessage
+export class ObjectGroundRemovedMultipleMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3407;
@@ -17,14 +17,45 @@ export class ObjectGroundRemovedMultipleMessage extends NetworkMessage
         this.cells = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return ObjectGroundRemovedMultipleMessage.protocolId;
+    }
+
+    public initObjectGroundRemovedMultipleMessage(cells: Array<number> = null): ObjectGroundRemovedMultipleMessage
+    {
+        this.cells = cells;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectGroundRemovedMultipleMessage(output);
+    }
+
+    public serializeAs_ObjectGroundRemovedMultipleMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.cells.length);
+        for(var _i1: number = 0; _i1 < this.cells.length; _i1++)
+        {
+            if(this.cells[_i1] < 0 || this.cells[_i1] > 559)
+            {
+                throw new Error("Forbidden value (" + this.cells[_i1] + ") on element 1 (starting at 1) of cells.");
+            }
+            output.writeVarShort(this.cells[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class CharacterDeletionPrepareMessage extends NetworkMessage
+export class CharacterDeletionPrepareMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5348;
@@ -19,14 +19,47 @@ export class CharacterDeletionPrepareMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CharacterDeletionPrepareMessage.protocolId;
+    }
+
+    public initCharacterDeletionPrepareMessage(characterId: number = 0, characterName: string = "", secretQuestion: string = "", needSecretAnswer: boolean = false): CharacterDeletionPrepareMessage
+    {
+        this.characterId = characterId;
+        this.characterName = characterName;
+        this.secretQuestion = secretQuestion;
+        this.needSecretAnswer = needSecretAnswer;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterDeletionPrepareMessage(output);
+    }
+
+    public serializeAs_CharacterDeletionPrepareMessage(output: ICustomDataOutput)
+    {
+        if(this.characterId < 0 || this.characterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.characterId + ") on element characterId.");
+        }
+        output.writeVarLong(this.characterId);
+        output.writeUTF(this.characterName);
+        output.writeUTF(this.secretQuestion);
+        output.writeBoolean(this.needSecretAnswer);
     }
 
     public deserialize(input: ICustomDataInput)

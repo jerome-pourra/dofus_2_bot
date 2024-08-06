@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AchievementDetailsRequestMessage extends NetworkMessage
+export class AchievementDetailsRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7495;
@@ -16,14 +16,41 @@ export class AchievementDetailsRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AchievementDetailsRequestMessage.protocolId;
+    }
+
+    public initAchievementDetailsRequestMessage(achievementId: number = 0): AchievementDetailsRequestMessage
+    {
+        this.achievementId = achievementId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AchievementDetailsRequestMessage(output);
+    }
+
+    public serializeAs_AchievementDetailsRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.achievementId < 0)
+        {
+            throw new Error("Forbidden value (" + this.achievementId + ") on element achievementId.");
+        }
+        output.writeVarShort(this.achievementId);
     }
 
     public deserialize(input: ICustomDataInput)

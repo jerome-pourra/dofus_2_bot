@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { CharacterCharacteristic } from "./CharacterCharacteristic";
 
-export class CharacterCharacteristicValue extends CharacterCharacteristic
+export class CharacterCharacteristicValue extends CharacterCharacteristic implements INetworkType
 {
 
 	public static readonly protocolId: number = 3951;
@@ -13,6 +13,29 @@ export class CharacterCharacteristicValue extends CharacterCharacteristic
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return CharacterCharacteristicValue.protocolId;
+    }
+
+    public initCharacterCharacteristicValue(characteristicId: number = 0, total: number = 0): CharacterCharacteristicValue
+    {
+        super.initCharacterCharacteristic(characteristicId);
+        this.total = total;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterCharacteristicValue(output);
+    }
+
+    public serializeAs_CharacterCharacteristicValue(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterCharacteristic(output);
+        output.writeInt(this.total);
     }
 
     public deserialize(input: ICustomDataInput)

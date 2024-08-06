@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlayPlayerFightRequestMessage extends NetworkMessage
+export class GameRolePlayPlayerFightRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6628;
@@ -18,14 +18,49 @@ export class GameRolePlayPlayerFightRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlayPlayerFightRequestMessage.protocolId;
+    }
+
+    public initGameRolePlayPlayerFightRequestMessage(targetId: number = 0, targetCellId: number = 0, friendly: boolean = false): GameRolePlayPlayerFightRequestMessage
+    {
+        this.targetId = targetId;
+        this.targetCellId = targetCellId;
+        this.friendly = friendly;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayPlayerFightRequestMessage(output);
+    }
+
+    public serializeAs_GameRolePlayPlayerFightRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.targetId < 0 || this.targetId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+        }
+        output.writeVarLong(this.targetId);
+        if(this.targetCellId < -1 || this.targetCellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.targetCellId + ") on element targetCellId.");
+        }
+        output.writeShort(this.targetCellId);
+        output.writeBoolean(this.friendly);
     }
 
     public deserialize(input: ICustomDataInput)

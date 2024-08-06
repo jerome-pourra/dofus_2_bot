@@ -5,7 +5,7 @@ import { ICustomDataInput } from "./../../../../../../../../jerakine/network/ICu
 import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../../jerakine/network/INetworkType";
 
-export class LeagueFriendInformations extends AbstractContactInformations
+export class LeagueFriendInformations extends AbstractContactInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 7750;
@@ -22,6 +22,51 @@ export class LeagueFriendInformations extends AbstractContactInformations
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return LeagueFriendInformations.protocolId;
+    }
+
+    public initLeagueFriendInformations(accountId: number = 0, accountTag: AccountTagInformation = null, playerId: number = 0, playerName: string = "", breed: number = 0, sex: boolean = false, level: number = 0, leagueId: number = 0, totalLeaguePoints: number = 0, ladderPosition: number = 0): LeagueFriendInformations
+    {
+        super.initAbstractContactInformations(accountId,accountTag);
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.breed = breed;
+        this.sex = sex;
+        this.level = level;
+        this.leagueId = leagueId;
+        this.totalLeaguePoints = totalLeaguePoints;
+        this.ladderPosition = ladderPosition;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_LeagueFriendInformations(output);
+    }
+
+    public serializeAs_LeagueFriendInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractContactInformations(output);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeUTF(this.playerName);
+        output.writeByte(this.breed);
+        output.writeBoolean(this.sex);
+        if(this.level < 0)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeVarShort(this.level);
+        output.writeVarShort(this.leagueId);
+        output.writeVarShort(this.totalLeaguePoints);
+        output.writeInt(this.ladderPosition);
     }
 
     public deserialize(input: ICustomDataInput)

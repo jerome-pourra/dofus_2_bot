@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class AllianceMemberInfo extends SocialMember
+export class AllianceMemberInfo extends SocialMember implements INetworkType
 {
 
 	public static readonly protocolId: number = 7753;
@@ -14,6 +14,29 @@ export class AllianceMemberInfo extends SocialMember
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return AllianceMemberInfo.protocolId;
+    }
+
+    public initAllianceMemberInfo(id: number = 0, name: string = "", level: number = 0, breed: number = 0, sex: boolean = false, connected: number = 99, hoursSinceLastConnection: number = 0, accountId: number = 0, status: PlayerStatus = null, rankId: number = 0, enrollmentDate: number = 0, avaRoleId: number = 0): AllianceMemberInfo
+    {
+        super.initSocialMember(id,name,level,breed,sex,connected,hoursSinceLastConnection,accountId,status,rankId,enrollmentDate);
+        this.avaRoleId = avaRoleId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceMemberInfo(output);
+    }
+
+    public serializeAs_AllianceMemberInfo(output: ICustomDataOutput)
+    {
+        super.serializeAs_SocialMember(output);
+        output.writeInt(this.avaRoleId);
     }
 
     public deserialize(input: ICustomDataInput)

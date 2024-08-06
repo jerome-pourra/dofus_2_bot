@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { AllianceJoinedMessage } from "./AllianceJoinedMessage";
 
-export class AllianceMembershipMessage extends AllianceJoinedMessage
+export class AllianceMembershipMessage extends AllianceJoinedMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3547;
@@ -15,14 +15,37 @@ export class AllianceMembershipMessage extends AllianceJoinedMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AllianceMembershipMessage.protocolId;
+    }
+
+    public initAllianceMembershipMessage(allianceInfo: AllianceInformation = null, rankId: number = 0): AllianceMembershipMessage
+    {
+        super.initAllianceJoinedMessage(allianceInfo,rankId);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceMembershipMessage(output);
+    }
+
+    public serializeAs_AllianceMembershipMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AllianceJoinedMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

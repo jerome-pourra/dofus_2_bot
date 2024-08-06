@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TeleportPlayerCloseMessage extends NetworkMessage
+export class TeleportPlayerCloseMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4378;
@@ -17,14 +17,47 @@ export class TeleportPlayerCloseMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TeleportPlayerCloseMessage.protocolId;
+    }
+
+    public initTeleportPlayerCloseMessage(mapId: number = 0, requesterId: number = 0): TeleportPlayerCloseMessage
+    {
+        this.mapId = mapId;
+        this.requesterId = requesterId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TeleportPlayerCloseMessage(output);
+    }
+
+    public serializeAs_TeleportPlayerCloseMessage(output: ICustomDataOutput)
+    {
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        if(this.requesterId < 0 || this.requesterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.requesterId + ") on element requesterId.");
+        }
+        output.writeVarLong(this.requesterId);
     }
 
     public deserialize(input: ICustomDataInput)

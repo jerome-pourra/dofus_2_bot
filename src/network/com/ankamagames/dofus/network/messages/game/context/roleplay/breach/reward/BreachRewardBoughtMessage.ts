@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class BreachRewardBoughtMessage extends NetworkMessage
+export class BreachRewardBoughtMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 560;
@@ -17,14 +17,43 @@ export class BreachRewardBoughtMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return BreachRewardBoughtMessage.protocolId;
+    }
+
+    public initBreachRewardBoughtMessage(id: number = 0, bought: boolean = false): BreachRewardBoughtMessage
+    {
+        this.id = id;
+        this.bought = bought;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachRewardBoughtMessage(output);
+    }
+
+    public serializeAs_BreachRewardBoughtMessage(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarInt(this.id);
+        output.writeBoolean(this.bought);
     }
 
     public deserialize(input: ICustomDataInput)

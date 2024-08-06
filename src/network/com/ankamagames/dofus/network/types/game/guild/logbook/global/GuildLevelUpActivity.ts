@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class GuildLevelUpActivity extends GuildLogbookEntryBasicInformation
+export class GuildLevelUpActivity extends GuildLogbookEntryBasicInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 3398;
@@ -13,6 +13,33 @@ export class GuildLevelUpActivity extends GuildLogbookEntryBasicInformation
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return GuildLevelUpActivity.protocolId;
+    }
+
+    public initGuildLevelUpActivity(id: number = 0, date: number = 0, newGuildLevel: number = 0): GuildLevelUpActivity
+    {
+        super.initGuildLogbookEntryBasicInformation(id,date);
+        this.newGuildLevel = newGuildLevel;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildLevelUpActivity(output);
+    }
+
+    public serializeAs_GuildLevelUpActivity(output: ICustomDataOutput)
+    {
+        super.serializeAs_GuildLogbookEntryBasicInformation(output);
+        if(this.newGuildLevel < 0 || this.newGuildLevel > 255)
+        {
+            throw new Error("Forbidden value (" + this.newGuildLevel + ") on element newGuildLevel.");
+        }
+        output.writeByte(this.newGuildLevel);
     }
 
     public deserialize(input: ICustomDataInput)

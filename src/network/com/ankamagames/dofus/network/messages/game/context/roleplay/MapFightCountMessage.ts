@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class MapFightCountMessage extends NetworkMessage
+export class MapFightCountMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2838;
@@ -16,14 +16,41 @@ export class MapFightCountMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return MapFightCountMessage.protocolId;
+    }
+
+    public initMapFightCountMessage(fightCount: number = 0): MapFightCountMessage
+    {
+        this.fightCount = fightCount;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MapFightCountMessage(output);
+    }
+
+    public serializeAs_MapFightCountMessage(output: ICustomDataOutput)
+    {
+        if(this.fightCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.fightCount + ") on element fightCount.");
+        }
+        output.writeVarShort(this.fightCount);
     }
 
     public deserialize(input: ICustomDataInput)

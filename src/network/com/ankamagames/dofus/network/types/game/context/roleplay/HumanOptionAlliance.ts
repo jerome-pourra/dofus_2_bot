@@ -4,7 +4,7 @@ import { INetworkType } from "./../../../../../../jerakine/network/INetworkType"
 import { AllianceInformation } from "./AllianceInformation";
 import { HumanOption } from "./HumanOption";
 
-export class HumanOptionAlliance extends HumanOption
+export class HumanOptionAlliance extends HumanOption implements INetworkType
 {
 
 	public static readonly protocolId: number = 7953;
@@ -16,6 +16,30 @@ export class HumanOptionAlliance extends HumanOption
     {
         super();
         this.allianceInformation = new AllianceInformation();
+    }
+
+    public getTypeId()
+    {
+        return HumanOptionAlliance.protocolId;
+    }
+
+    public initHumanOptionAlliance(allianceInformation: AllianceInformation = null, aggressable: number = 0): HumanOptionAlliance
+    {
+        this.allianceInformation = allianceInformation;
+        this.aggressable = aggressable;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HumanOptionAlliance(output);
+    }
+
+    public serializeAs_HumanOptionAlliance(output: ICustomDataOutput)
+    {
+        super.serializeAs_HumanOption(output);
+        this.allianceInformation.serializeAs_AllianceInformation(output);
+        output.writeByte(this.aggressable);
     }
 
     public deserialize(input: ICustomDataInput)

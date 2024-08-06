@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class ConsoleEndMessage extends NetworkMessage
+export class ConsoleEndMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9802;
@@ -19,14 +19,39 @@ export class ConsoleEndMessage extends NetworkMessage
         this.consoleUuid = new Uuid();
     }
 
+    public getMessageId()
+    {
+        return ConsoleEndMessage.protocolId;
+    }
+
+    public initConsoleEndMessage(consoleUuid: Uuid = null, isSuccess: boolean = false): ConsoleEndMessage
+    {
+        this.consoleUuid = consoleUuid;
+        this.isSuccess = isSuccess;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ConsoleEndMessage(output);
+    }
+
+    public serializeAs_ConsoleEndMessage(output: ICustomDataOutput)
+    {
+        this.consoleUuid.serializeAs_Uuid(output);
+        output.writeBoolean(this.isSuccess);
     }
 
     public deserialize(input: ICustomDataInput)

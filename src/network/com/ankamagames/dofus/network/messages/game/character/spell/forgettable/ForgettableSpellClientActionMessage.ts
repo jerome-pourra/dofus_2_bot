@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class ForgettableSpellClientActionMessage extends NetworkMessage
+export class ForgettableSpellClientActionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5459;
@@ -17,14 +17,43 @@ export class ForgettableSpellClientActionMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ForgettableSpellClientActionMessage.protocolId;
+    }
+
+    public initForgettableSpellClientActionMessage(spellId: number = 0, action: number = 0): ForgettableSpellClientActionMessage
+    {
+        this.spellId = spellId;
+        this.action = action;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ForgettableSpellClientActionMessage(output);
+    }
+
+    public serializeAs_ForgettableSpellClientActionMessage(output: ICustomDataOutput)
+    {
+        if(this.spellId < 0)
+        {
+            throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
+        }
+        output.writeInt(this.spellId);
+        output.writeByte(this.action);
     }
 
     public deserialize(input: ICustomDataInput)

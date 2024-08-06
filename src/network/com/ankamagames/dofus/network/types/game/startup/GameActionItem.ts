@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class GameActionItem
+export class GameActionItem implements INetworkType
 {
 
 	public static readonly protocolId: number = 7527;
@@ -18,6 +18,45 @@ export class GameActionItem
     public constructor()
     {
         this.items = Array<ObjectItemInformationWithQuantity>();
+    }
+
+    public getTypeId()
+    {
+        return GameActionItem.protocolId;
+    }
+
+    public initGameActionItem(uid: number = 0, title: string = "", text: string = "", descUrl: string = "", pictureUrl: string = "", items: Array<ObjectItemInformationWithQuantity> = null): GameActionItem
+    {
+        this.uid = uid;
+        this.title = title;
+        this.text = text;
+        this.descUrl = descUrl;
+        this.pictureUrl = pictureUrl;
+        this.items = items;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionItem(output);
+    }
+
+    public serializeAs_GameActionItem(output: ICustomDataOutput)
+    {
+        if(this.uid < 0)
+        {
+            throw new Error("Forbidden value (" + this.uid + ") on element uid.");
+        }
+        output.writeInt(this.uid);
+        output.writeUTF(this.title);
+        output.writeUTF(this.text);
+        output.writeUTF(this.descUrl);
+        output.writeUTF(this.pictureUrl);
+        output.writeShort(this.items.length);
+        for(var _i6: number = 0; _i6 < this.items.length; _i6++)
+        {
+            (this.items[_i6] as ObjectItemInformationWithQuantity).serializeAs_ObjectItemInformationWithQuantity(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

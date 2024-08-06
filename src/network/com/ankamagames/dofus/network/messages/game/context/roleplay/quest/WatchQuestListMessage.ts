@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { QuestListMessage } from "./QuestListMessage";
 
-export class WatchQuestListMessage extends QuestListMessage
+export class WatchQuestListMessage extends QuestListMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5644;
@@ -17,14 +17,43 @@ export class WatchQuestListMessage extends QuestListMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return WatchQuestListMessage.protocolId;
+    }
+
+    public initWatchQuestListMessage(finishedQuestsIds: Array<number> = null, finishedQuestsCounts: Array<number> = null, activeQuests: Array<QuestActiveInformations> = null, reinitDoneQuestsIds: Array<number> = null, playerId: number = 0): WatchQuestListMessage
+    {
+        super.initQuestListMessage(finishedQuestsIds,finishedQuestsCounts,activeQuests,reinitDoneQuestsIds);
+        this.playerId = playerId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_WatchQuestListMessage(output);
+    }
+
+    public serializeAs_WatchQuestListMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_QuestListMessage(output);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
     }
 
     public deserialize(input: ICustomDataInput)

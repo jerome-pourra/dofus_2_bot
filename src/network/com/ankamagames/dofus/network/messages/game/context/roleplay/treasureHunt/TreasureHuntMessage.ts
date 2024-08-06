@@ -7,7 +7,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class TreasureHuntMessage extends NetworkMessage
+export class TreasureHuntMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7235;
@@ -28,14 +28,76 @@ export class TreasureHuntMessage extends NetworkMessage
         this.flags = Array<TreasureHuntFlag>();
     }
 
+    public getMessageId()
+    {
+        return TreasureHuntMessage.protocolId;
+    }
+
+    public initTreasureHuntMessage(questType: number = 0, startMapId: number = 0, knownStepsList: Array<TreasureHuntStep> = null, totalStepCount: number = 0, checkPointCurrent: number = 0, checkPointTotal: number = 0, availableRetryCount: number = 0, flags: Array<TreasureHuntFlag> = null): TreasureHuntMessage
+    {
+        this.questType = questType;
+        this.startMapId = startMapId;
+        this.knownStepsList = knownStepsList;
+        this.totalStepCount = totalStepCount;
+        this.checkPointCurrent = checkPointCurrent;
+        this.checkPointTotal = checkPointTotal;
+        this.availableRetryCount = availableRetryCount;
+        this.flags = flags;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TreasureHuntMessage(output);
+    }
+
+    public serializeAs_TreasureHuntMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.questType);
+        if(this.startMapId < 0 || this.startMapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.startMapId + ") on element startMapId.");
+        }
+        output.writeDouble(this.startMapId);
+        output.writeShort(this.knownStepsList.length);
+        for(var _i3: number = 0; _i3 < this.knownStepsList.length; _i3++)
+        {
+            output.writeShort((this.knownStepsList[_i3] as TreasureHuntStep).getTypeId());
+            (this.knownStepsList[_i3] as TreasureHuntStep).serialize(output);
+        }
+        if(this.totalStepCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.totalStepCount + ") on element totalStepCount.");
+        }
+        output.writeByte(this.totalStepCount);
+        if(this.checkPointCurrent < 0)
+        {
+            throw new Error("Forbidden value (" + this.checkPointCurrent + ") on element checkPointCurrent.");
+        }
+        output.writeVarInt(this.checkPointCurrent);
+        if(this.checkPointTotal < 0)
+        {
+            throw new Error("Forbidden value (" + this.checkPointTotal + ") on element checkPointTotal.");
+        }
+        output.writeVarInt(this.checkPointTotal);
+        output.writeInt(this.availableRetryCount);
+        output.writeShort(this.flags.length);
+        for(var _i8: number = 0; _i8 < this.flags.length; _i8++)
+        {
+            (this.flags[_i8] as TreasureHuntFlag).serializeAs_TreasureHuntFlag(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

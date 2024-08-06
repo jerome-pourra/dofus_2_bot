@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../jerakine/network/ICustomDataInpu
 import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../jerakine/network/INetworkType";
 
-export class Uuid
+export class Uuid implements INetworkType
 {
 
 	public static readonly protocolId: number = 8662;
@@ -12,6 +12,27 @@ export class Uuid
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return Uuid.protocolId;
+    }
+
+    public initUuid(uuidString: string = ""): Uuid
+    {
+        this.uuidString = uuidString;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_Uuid(output);
+    }
+
+    public serializeAs_Uuid(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.uuidString);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlayArenaLeagueRewardsMessage extends NetworkMessage
+export class GameRolePlayArenaLeagueRewardsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7599;
@@ -19,14 +19,51 @@ export class GameRolePlayArenaLeagueRewardsMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlayArenaLeagueRewardsMessage.protocolId;
+    }
+
+    public initGameRolePlayArenaLeagueRewardsMessage(seasonId: number = 0, leagueId: number = 0, ladderPosition: number = 0, endSeasonReward: boolean = false): GameRolePlayArenaLeagueRewardsMessage
+    {
+        this.seasonId = seasonId;
+        this.leagueId = leagueId;
+        this.ladderPosition = ladderPosition;
+        this.endSeasonReward = endSeasonReward;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayArenaLeagueRewardsMessage(output);
+    }
+
+    public serializeAs_GameRolePlayArenaLeagueRewardsMessage(output: ICustomDataOutput)
+    {
+        if(this.seasonId < 0)
+        {
+            throw new Error("Forbidden value (" + this.seasonId + ") on element seasonId.");
+        }
+        output.writeVarShort(this.seasonId);
+        if(this.leagueId < 0)
+        {
+            throw new Error("Forbidden value (" + this.leagueId + ") on element leagueId.");
+        }
+        output.writeVarShort(this.leagueId);
+        output.writeInt(this.ladderPosition);
+        output.writeBoolean(this.endSeasonReward);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 import { TreasureHuntStep } from "./TreasureHuntStep";
 
-export class TreasureHuntStepFollowDirectionToHint extends TreasureHuntStep
+export class TreasureHuntStepFollowDirectionToHint extends TreasureHuntStep implements INetworkType
 {
 
 	public static readonly protocolId: number = 8809;
@@ -14,6 +14,34 @@ export class TreasureHuntStepFollowDirectionToHint extends TreasureHuntStep
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return TreasureHuntStepFollowDirectionToHint.protocolId;
+    }
+
+    public initTreasureHuntStepFollowDirectionToHint(direction: number = 1, npcId: number = 0): TreasureHuntStepFollowDirectionToHint
+    {
+        this.direction = direction;
+        this.npcId = npcId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TreasureHuntStepFollowDirectionToHint(output);
+    }
+
+    public serializeAs_TreasureHuntStepFollowDirectionToHint(output: ICustomDataOutput)
+    {
+        super.serializeAs_TreasureHuntStep(output);
+        output.writeByte(this.direction);
+        if(this.npcId < 0)
+        {
+            throw new Error("Forbidden value (" + this.npcId + ") on element npcId.");
+        }
+        output.writeVarShort(this.npcId);
     }
 
     public deserialize(input: ICustomDataInput)

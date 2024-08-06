@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class BreachBranch
+export class BreachBranch implements INetworkType
 {
 
 	public static readonly protocolId: number = 7507;
@@ -20,6 +20,59 @@ export class BreachBranch
     {
         this.bosses = Array<MonsterInGroupLightInformations>();
         this.monsters = Array<MonsterInGroupLightInformations>();
+    }
+
+    public getTypeId()
+    {
+        return BreachBranch.protocolId;
+    }
+
+    public initBreachBranch(room: number = 0, element: number = 0, bosses: Array<MonsterInGroupLightInformations> = null, map: number = 0, score: number = 0, relativeScore: number = 0, monsters: Array<MonsterInGroupLightInformations> = null): BreachBranch
+    {
+        this.room = room;
+        this.element = element;
+        this.bosses = bosses;
+        this.map = map;
+        this.score = score;
+        this.relativeScore = relativeScore;
+        this.monsters = monsters;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachBranch(output);
+    }
+
+    public serializeAs_BreachBranch(output: ICustomDataOutput)
+    {
+        if(this.room < 0)
+        {
+            throw new Error("Forbidden value (" + this.room + ") on element room.");
+        }
+        output.writeByte(this.room);
+        if(this.element < 0)
+        {
+            throw new Error("Forbidden value (" + this.element + ") on element element.");
+        }
+        output.writeInt(this.element);
+        output.writeShort(this.bosses.length);
+        for(var _i3: number = 0; _i3 < this.bosses.length; _i3++)
+        {
+            (this.bosses[_i3] as MonsterInGroupLightInformations).serializeAs_MonsterInGroupLightInformations(output);
+        }
+        if(this.map < 0 || this.map > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.map + ") on element map.");
+        }
+        output.writeDouble(this.map);
+        output.writeShort(this.score);
+        output.writeShort(this.relativeScore);
+        output.writeShort(this.monsters.length);
+        for(var _i7: number = 0; _i7 < this.monsters.length; _i7++)
+        {
+            (this.monsters[_i7] as MonsterInGroupLightInformations).serializeAs_MonsterInGroupLightInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

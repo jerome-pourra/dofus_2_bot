@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TaxCollectorOrderedSpellUpdatedMessage extends NetworkMessage
+export class TaxCollectorOrderedSpellUpdatedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2428;
@@ -19,14 +19,47 @@ export class TaxCollectorOrderedSpellUpdatedMessage extends NetworkMessage
         this.taxCollectorSpells = Array<TaxCollectorOrderedSpell>();
     }
 
+    public getMessageId()
+    {
+        return TaxCollectorOrderedSpellUpdatedMessage.protocolId;
+    }
+
+    public initTaxCollectorOrderedSpellUpdatedMessage(taxCollectorId: number = 0, taxCollectorSpells: Array<TaxCollectorOrderedSpell> = null): TaxCollectorOrderedSpellUpdatedMessage
+    {
+        this.taxCollectorId = taxCollectorId;
+        this.taxCollectorSpells = taxCollectorSpells;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorOrderedSpellUpdatedMessage(output);
+    }
+
+    public serializeAs_TaxCollectorOrderedSpellUpdatedMessage(output: ICustomDataOutput)
+    {
+        if(this.taxCollectorId < 0 || this.taxCollectorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.taxCollectorId + ") on element taxCollectorId.");
+        }
+        output.writeDouble(this.taxCollectorId);
+        output.writeShort(this.taxCollectorSpells.length);
+        for(var _i2: number = 0; _i2 < this.taxCollectorSpells.length; _i2++)
+        {
+            (this.taxCollectorSpells[_i2] as TaxCollectorOrderedSpell).serializeAs_TaxCollectorOrderedSpell(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

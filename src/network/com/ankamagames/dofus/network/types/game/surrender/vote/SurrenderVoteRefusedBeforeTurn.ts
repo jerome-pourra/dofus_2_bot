@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { SurrenderVoteRefused } from "./SurrenderVoteRefused";
 
-export class SurrenderVoteRefusedBeforeTurn extends SurrenderVoteRefused
+export class SurrenderVoteRefusedBeforeTurn extends SurrenderVoteRefused implements INetworkType
 {
 
 	public static readonly protocolId: number = 9709;
@@ -13,6 +13,28 @@ export class SurrenderVoteRefusedBeforeTurn extends SurrenderVoteRefused
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return SurrenderVoteRefusedBeforeTurn.protocolId;
+    }
+
+    public initSurrenderVoteRefusedBeforeTurn(minTurnForSurrenderVote: number = 0): SurrenderVoteRefusedBeforeTurn
+    {
+        this.minTurnForSurrenderVote = minTurnForSurrenderVote;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SurrenderVoteRefusedBeforeTurn(output);
+    }
+
+    public serializeAs_SurrenderVoteRefusedBeforeTurn(output: ICustomDataOutput)
+    {
+        super.serializeAs_SurrenderVoteRefused(output);
+        output.writeInt(this.minTurnForSurrenderVote);
     }
 
     public deserialize(input: ICustomDataInput)

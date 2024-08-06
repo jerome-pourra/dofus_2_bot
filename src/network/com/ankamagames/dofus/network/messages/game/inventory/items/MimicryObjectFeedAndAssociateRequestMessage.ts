@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { SymbioticObjectAssociateRequestMessage } from "./SymbioticObjectAssociateRequestMessage";
 
-export class MimicryObjectFeedAndAssociateRequestMessage extends SymbioticObjectAssociateRequestMessage
+export class MimicryObjectFeedAndAssociateRequestMessage extends SymbioticObjectAssociateRequestMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3754;
@@ -18,14 +18,51 @@ export class MimicryObjectFeedAndAssociateRequestMessage extends SymbioticObject
         super();
     }
 
+    public getMessageId()
+    {
+        return MimicryObjectFeedAndAssociateRequestMessage.protocolId;
+    }
+
+    public initMimicryObjectFeedAndAssociateRequestMessage(symbioteUID: number = 0, symbiotePos: number = 0, hostUID: number = 0, hostPos: number = 0, foodUID: number = 0, foodPos: number = 0, preview: boolean = false): MimicryObjectFeedAndAssociateRequestMessage
+    {
+        super.initSymbioticObjectAssociateRequestMessage(symbioteUID,symbiotePos,hostUID,hostPos);
+        this.foodUID = foodUID;
+        this.foodPos = foodPos;
+        this.preview = preview;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MimicryObjectFeedAndAssociateRequestMessage(output);
+    }
+
+    public serializeAs_MimicryObjectFeedAndAssociateRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_SymbioticObjectAssociateRequestMessage(output);
+        if(this.foodUID < 0)
+        {
+            throw new Error("Forbidden value (" + this.foodUID + ") on element foodUID.");
+        }
+        output.writeVarInt(this.foodUID);
+        if(this.foodPos < 0 || this.foodPos > 255)
+        {
+            throw new Error("Forbidden value (" + this.foodPos + ") on element foodPos.");
+        }
+        output.writeByte(this.foodPos);
+        output.writeBoolean(this.preview);
     }
 
     public deserialize(input: ICustomDataInput)

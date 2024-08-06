@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightSynchronizeMessage extends NetworkMessage
+export class GameFightSynchronizeMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8985;
@@ -19,14 +19,42 @@ export class GameFightSynchronizeMessage extends NetworkMessage
         this.fighters = Array<GameFightFighterInformations>();
     }
 
+    public getMessageId()
+    {
+        return GameFightSynchronizeMessage.protocolId;
+    }
+
+    public initGameFightSynchronizeMessage(fighters: Array<GameFightFighterInformations> = null): GameFightSynchronizeMessage
+    {
+        this.fighters = fighters;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightSynchronizeMessage(output);
+    }
+
+    public serializeAs_GameFightSynchronizeMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.fighters.length);
+        for(var _i1: number = 0; _i1 < this.fighters.length; _i1++)
+        {
+            output.writeShort((this.fighters[_i1] as GameFightFighterInformations).getTypeId());
+            (this.fighters[_i1] as GameFightFighterInformations).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

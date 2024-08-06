@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { ShowCellMessage } from "./ShowCellMessage";
 
-export class ShowCellSpectatorMessage extends ShowCellMessage
+export class ShowCellSpectatorMessage extends ShowCellMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4927;
@@ -16,14 +16,39 @@ export class ShowCellSpectatorMessage extends ShowCellMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ShowCellSpectatorMessage.protocolId;
+    }
+
+    public initShowCellSpectatorMessage(sourceId: number = 0, cellId: number = 0, playerName: string = ""): ShowCellSpectatorMessage
+    {
+        super.initShowCellMessage(sourceId,cellId);
+        this.playerName = playerName;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ShowCellSpectatorMessage(output);
+    }
+
+    public serializeAs_ShowCellSpectatorMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ShowCellMessage(output);
+        output.writeUTF(this.playerName);
     }
 
     public deserialize(input: ICustomDataInput)

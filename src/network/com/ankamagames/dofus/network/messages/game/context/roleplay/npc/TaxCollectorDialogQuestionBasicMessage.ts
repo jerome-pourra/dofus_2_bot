@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class TaxCollectorDialogQuestionBasicMessage extends NetworkMessage
+export class TaxCollectorDialogQuestionBasicMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3500;
@@ -18,14 +18,37 @@ export class TaxCollectorDialogQuestionBasicMessage extends NetworkMessage
         this.allianceInfo = new BasicAllianceInformations();
     }
 
+    public getMessageId()
+    {
+        return TaxCollectorDialogQuestionBasicMessage.protocolId;
+    }
+
+    public initTaxCollectorDialogQuestionBasicMessage(allianceInfo: BasicAllianceInformations = null): TaxCollectorDialogQuestionBasicMessage
+    {
+        this.allianceInfo = allianceInfo;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorDialogQuestionBasicMessage(output);
+    }
+
+    public serializeAs_TaxCollectorDialogQuestionBasicMessage(output: ICustomDataOutput)
+    {
+        this.allianceInfo.serializeAs_BasicAllianceInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

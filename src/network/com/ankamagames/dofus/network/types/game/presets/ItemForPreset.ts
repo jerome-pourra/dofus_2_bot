@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class ItemForPreset
+export class ItemForPreset implements INetworkType
 {
 
 	public static readonly protocolId: number = 5291;
@@ -14,6 +14,39 @@ export class ItemForPreset
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return ItemForPreset.protocolId;
+    }
+
+    public initItemForPreset(position: number = 63, objGid: number = 0, objUid: number = 0): ItemForPreset
+    {
+        this.position = position;
+        this.objGid = objGid;
+        this.objUid = objUid;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ItemForPreset(output);
+    }
+
+    public serializeAs_ItemForPreset(output: ICustomDataOutput)
+    {
+        output.writeShort(this.position);
+        if(this.objGid < 0)
+        {
+            throw new Error("Forbidden value (" + this.objGid + ") on element objGid.");
+        }
+        output.writeVarInt(this.objGid);
+        if(this.objUid < 0)
+        {
+            throw new Error("Forbidden value (" + this.objUid + ") on element objUid.");
+        }
+        output.writeVarInt(this.objUid);
     }
 
     public deserialize(input: ICustomDataInput)

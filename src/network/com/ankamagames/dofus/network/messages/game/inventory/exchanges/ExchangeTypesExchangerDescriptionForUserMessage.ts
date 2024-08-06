@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeTypesExchangerDescriptionForUserMessage extends NetworkMessage
+export class ExchangeTypesExchangerDescriptionForUserMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6572;
@@ -18,14 +18,51 @@ export class ExchangeTypesExchangerDescriptionForUserMessage extends NetworkMess
         this.typeDescription = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return ExchangeTypesExchangerDescriptionForUserMessage.protocolId;
+    }
+
+    public initExchangeTypesExchangerDescriptionForUserMessage(objectType: number = 0, typeDescription: Array<number> = null): ExchangeTypesExchangerDescriptionForUserMessage
+    {
+        this.objectType = objectType;
+        this.typeDescription = typeDescription;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeTypesExchangerDescriptionForUserMessage(output);
+    }
+
+    public serializeAs_ExchangeTypesExchangerDescriptionForUserMessage(output: ICustomDataOutput)
+    {
+        if(this.objectType < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectType + ") on element objectType.");
+        }
+        output.writeInt(this.objectType);
+        output.writeShort(this.typeDescription.length);
+        for(var _i2: number = 0; _i2 < this.typeDescription.length; _i2++)
+        {
+            if(this.typeDescription[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.typeDescription[_i2] + ") on element 2 (starting at 1) of typeDescription.");
+            }
+            output.writeVarInt(this.typeDescription[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

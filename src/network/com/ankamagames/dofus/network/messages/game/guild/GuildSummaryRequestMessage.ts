@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { BooleanByteWrapper } from "./../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class GuildSummaryRequestMessage extends PaginationRequestAbstractMessage
+export class GuildSummaryRequestMessage extends PaginationRequestAbstractMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1163;
@@ -33,14 +33,111 @@ export class GuildSummaryRequestMessage extends PaginationRequestAbstractMessage
         this.recruitmentTypeFilter = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return GuildSummaryRequestMessage.protocolId;
+    }
+
+    public initGuildSummaryRequestMessage(offset: number = 0, count: number = 0, nameFilter: string = "", hideFullFilter: boolean = false, followingGuildCriteria: boolean = false, criterionFilter: Array<number> = null, languagesFilter: Array<number> = null, recruitmentTypeFilter: Array<number> = null, minLevelFilter: number = 0, maxLevelFilter: number = 0, minPlayerLevelFilter: number = 0, maxPlayerLevelFilter: number = 0, minSuccessFilter: number = 0, maxSuccessFilter: number = 0, sortType: number = 0, sortDescending: boolean = false): GuildSummaryRequestMessage
+    {
+        super.initPaginationRequestAbstractMessage(offset,count);
+        this.nameFilter = nameFilter;
+        this.hideFullFilter = hideFullFilter;
+        this.followingGuildCriteria = followingGuildCriteria;
+        this.criterionFilter = criterionFilter;
+        this.languagesFilter = languagesFilter;
+        this.recruitmentTypeFilter = recruitmentTypeFilter;
+        this.minLevelFilter = minLevelFilter;
+        this.maxLevelFilter = maxLevelFilter;
+        this.minPlayerLevelFilter = minPlayerLevelFilter;
+        this.maxPlayerLevelFilter = maxPlayerLevelFilter;
+        this.minSuccessFilter = minSuccessFilter;
+        this.maxSuccessFilter = maxSuccessFilter;
+        this.sortType = sortType;
+        this.sortDescending = sortDescending;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildSummaryRequestMessage(output);
+    }
+
+    public serializeAs_GuildSummaryRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_PaginationRequestAbstractMessage(output);
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.hideFullFilter);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.followingGuildCriteria);
+        _box0 = BooleanByteWrapper.setFlag(_box0,2,this.sortDescending);
+        output.writeByte(_box0);
+        output.writeUTF(this.nameFilter);
+        output.writeShort(this.criterionFilter.length);
+        for(var _i4: number = 0; _i4 < this.criterionFilter.length; _i4++)
+        {
+            if(this.criterionFilter[_i4] < 0)
+            {
+                throw new Error("Forbidden value (" + this.criterionFilter[_i4] + ") on element 4 (starting at 1) of criterionFilter.");
+            }
+            output.writeVarInt(this.criterionFilter[_i4]);
+        }
+        output.writeShort(this.languagesFilter.length);
+        for(var _i5: number = 0; _i5 < this.languagesFilter.length; _i5++)
+        {
+            if(this.languagesFilter[_i5] < 0)
+            {
+                throw new Error("Forbidden value (" + this.languagesFilter[_i5] + ") on element 5 (starting at 1) of languagesFilter.");
+            }
+            output.writeVarInt(this.languagesFilter[_i5]);
+        }
+        output.writeShort(this.recruitmentTypeFilter.length);
+        for(var _i6: number = 0; _i6 < this.recruitmentTypeFilter.length; _i6++)
+        {
+            output.writeByte(this.recruitmentTypeFilter[_i6]);
+        }
+        if(this.minLevelFilter < 0)
+        {
+            throw new Error("Forbidden value (" + this.minLevelFilter + ") on element minLevelFilter.");
+        }
+        output.writeShort(this.minLevelFilter);
+        if(this.maxLevelFilter < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxLevelFilter + ") on element maxLevelFilter.");
+        }
+        output.writeShort(this.maxLevelFilter);
+        if(this.minPlayerLevelFilter < 0)
+        {
+            throw new Error("Forbidden value (" + this.minPlayerLevelFilter + ") on element minPlayerLevelFilter.");
+        }
+        output.writeShort(this.minPlayerLevelFilter);
+        if(this.maxPlayerLevelFilter < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxPlayerLevelFilter + ") on element maxPlayerLevelFilter.");
+        }
+        output.writeShort(this.maxPlayerLevelFilter);
+        if(this.minSuccessFilter < 0)
+        {
+            throw new Error("Forbidden value (" + this.minSuccessFilter + ") on element minSuccessFilter.");
+        }
+        output.writeVarInt(this.minSuccessFilter);
+        if(this.maxSuccessFilter < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxSuccessFilter + ") on element maxSuccessFilter.");
+        }
+        output.writeVarInt(this.maxSuccessFilter);
+        output.writeByte(this.sortType);
     }
 
     public deserialize(input: ICustomDataInput)

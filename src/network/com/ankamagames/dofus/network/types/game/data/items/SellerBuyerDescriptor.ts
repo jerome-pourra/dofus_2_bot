@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class SellerBuyerDescriptor
+export class SellerBuyerDescriptor implements INetworkType
 {
 
 	public static readonly protocolId: number = 780;
@@ -20,6 +20,69 @@ export class SellerBuyerDescriptor
     {
         this.quantities = Array<number>();
         this.types = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return SellerBuyerDescriptor.protocolId;
+    }
+
+    public initSellerBuyerDescriptor(quantities: Array<number> = null, types: Array<number> = null, taxPercentage: number = 0, taxModificationPercentage: number = 0, maxItemLevel: number = 0, maxItemPerAccount: number = 0, npcContextualId: number = 0, unsoldDelay: number = 0): SellerBuyerDescriptor
+    {
+        this.quantities = quantities;
+        this.types = types;
+        this.taxPercentage = taxPercentage;
+        this.taxModificationPercentage = taxModificationPercentage;
+        this.maxItemLevel = maxItemLevel;
+        this.maxItemPerAccount = maxItemPerAccount;
+        this.npcContextualId = npcContextualId;
+        this.unsoldDelay = unsoldDelay;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SellerBuyerDescriptor(output);
+    }
+
+    public serializeAs_SellerBuyerDescriptor(output: ICustomDataOutput)
+    {
+        output.writeShort(this.quantities.length);
+        for(var _i1: number = 0; _i1 < this.quantities.length; _i1++)
+        {
+            if(this.quantities[_i1] < 0)
+            {
+                throw new Error("Forbidden value (" + this.quantities[_i1] + ") on element 1 (starting at 1) of quantities.");
+            }
+            output.writeVarInt(this.quantities[_i1]);
+        }
+        output.writeShort(this.types.length);
+        for(var _i2: number = 0; _i2 < this.types.length; _i2++)
+        {
+            if(this.types[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.types[_i2] + ") on element 2 (starting at 1) of types.");
+            }
+            output.writeVarInt(this.types[_i2]);
+        }
+        output.writeFloat(this.taxPercentage);
+        output.writeFloat(this.taxModificationPercentage);
+        if(this.maxItemLevel < 0 || this.maxItemLevel > 255)
+        {
+            throw new Error("Forbidden value (" + this.maxItemLevel + ") on element maxItemLevel.");
+        }
+        output.writeByte(this.maxItemLevel);
+        if(this.maxItemPerAccount < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxItemPerAccount + ") on element maxItemPerAccount.");
+        }
+        output.writeVarInt(this.maxItemPerAccount);
+        output.writeInt(this.npcContextualId);
+        if(this.unsoldDelay < 0)
+        {
+            throw new Error("Forbidden value (" + this.unsoldDelay + ") on element unsoldDelay.");
+        }
+        output.writeVarShort(this.unsoldDelay);
     }
 
     public deserialize(input: ICustomDataInput)

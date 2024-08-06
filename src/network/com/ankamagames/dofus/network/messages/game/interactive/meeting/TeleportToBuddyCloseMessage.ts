@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TeleportToBuddyCloseMessage extends NetworkMessage
+export class TeleportToBuddyCloseMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4968;
@@ -17,14 +17,47 @@ export class TeleportToBuddyCloseMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TeleportToBuddyCloseMessage.protocolId;
+    }
+
+    public initTeleportToBuddyCloseMessage(dungeonId: number = 0, buddyId: number = 0): TeleportToBuddyCloseMessage
+    {
+        this.dungeonId = dungeonId;
+        this.buddyId = buddyId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TeleportToBuddyCloseMessage(output);
+    }
+
+    public serializeAs_TeleportToBuddyCloseMessage(output: ICustomDataOutput)
+    {
+        if(this.dungeonId < 0)
+        {
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element dungeonId.");
+        }
+        output.writeVarShort(this.dungeonId);
+        if(this.buddyId < 0 || this.buddyId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.buddyId + ") on element buddyId.");
+        }
+        output.writeVarLong(this.buddyId);
     }
 
     public deserialize(input: ICustomDataInput)

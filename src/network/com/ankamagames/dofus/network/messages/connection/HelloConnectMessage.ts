@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class HelloConnectMessage extends NetworkMessage
+export class HelloConnectMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5586;
@@ -18,14 +18,43 @@ export class HelloConnectMessage extends NetworkMessage
         this.key = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return HelloConnectMessage.protocolId;
+    }
+
+    public initHelloConnectMessage(salt: string = "", key: Array<number> = null): HelloConnectMessage
+    {
+        this.salt = salt;
+        this.key = key;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HelloConnectMessage(output);
+    }
+
+    public serializeAs_HelloConnectMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.salt);
+        output.writeVarInt(this.key.length);
+        for(var _i2: number = 0; _i2 < this.key.length; _i2++)
+        {
+            output.writeByte(this.key[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

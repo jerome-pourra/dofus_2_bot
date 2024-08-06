@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GuildSubmitApplicationMessage extends NetworkMessage
+export class GuildSubmitApplicationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2378;
@@ -28,14 +28,69 @@ export class GuildSubmitApplicationMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildSubmitApplicationMessage.protocolId;
+    }
+
+    public initGuildSubmitApplicationMessage(applyText: string = "", guildId: number = 0, timeSpent: number = 0, filterLanguage: string = "", filterAmbiance: string = "", filterPlaytime: string = "", filterInterest: string = "", filterMinMaxGuildLevel: string = "", filterRecruitmentType: string = "", filterMinMaxCharacterLevel: string = "", filterMinMaxAchievement: string = "", filterSearchName: string = "", filterLastSort: string = ""): GuildSubmitApplicationMessage
+    {
+        this.applyText = applyText;
+        this.guildId = guildId;
+        this.timeSpent = timeSpent;
+        this.filterLanguage = filterLanguage;
+        this.filterAmbiance = filterAmbiance;
+        this.filterPlaytime = filterPlaytime;
+        this.filterInterest = filterInterest;
+        this.filterMinMaxGuildLevel = filterMinMaxGuildLevel;
+        this.filterRecruitmentType = filterRecruitmentType;
+        this.filterMinMaxCharacterLevel = filterMinMaxCharacterLevel;
+        this.filterMinMaxAchievement = filterMinMaxAchievement;
+        this.filterSearchName = filterSearchName;
+        this.filterLastSort = filterLastSort;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildSubmitApplicationMessage(output);
+    }
+
+    public serializeAs_GuildSubmitApplicationMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.applyText);
+        if(this.guildId < 0)
+        {
+            throw new Error("Forbidden value (" + this.guildId + ") on element guildId.");
+        }
+        output.writeVarInt(this.guildId);
+        if(this.timeSpent < 0)
+        {
+            throw new Error("Forbidden value (" + this.timeSpent + ") on element timeSpent.");
+        }
+        output.writeVarInt(this.timeSpent);
+        output.writeUTF(this.filterLanguage);
+        output.writeUTF(this.filterAmbiance);
+        output.writeUTF(this.filterPlaytime);
+        output.writeUTF(this.filterInterest);
+        output.writeUTF(this.filterMinMaxGuildLevel);
+        output.writeUTF(this.filterRecruitmentType);
+        output.writeUTF(this.filterMinMaxCharacterLevel);
+        output.writeUTF(this.filterMinMaxAchievement);
+        output.writeUTF(this.filterSearchName);
+        output.writeUTF(this.filterLastSort);
     }
 
     public deserialize(input: ICustomDataInput)

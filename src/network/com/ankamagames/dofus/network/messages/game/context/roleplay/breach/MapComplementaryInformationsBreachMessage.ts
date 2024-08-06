@@ -13,7 +13,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 
-export class MapComplementaryInformationsBreachMessage extends MapComplementaryInformationsDataMessage
+export class MapComplementaryInformationsBreachMessage extends MapComplementaryInformationsDataMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4428;
@@ -29,14 +29,62 @@ export class MapComplementaryInformationsBreachMessage extends MapComplementaryI
         this.branches = Array<BreachBranch>();
     }
 
+    public getMessageId()
+    {
+        return MapComplementaryInformationsBreachMessage.protocolId;
+    }
+
+    public initMapComplementaryInformationsBreachMessage(subAreaId: number = 0, mapId: number = 0, houses: Array<HouseInformations> = null, actors: Array<GameRolePlayActorInformations> = null, interactiveElements: Array<InteractiveElement> = null, statedElements: Array<StatedElement> = null, obstacles: Array<MapObstacle> = null, fights: Array<FightCommonInformations> = null, hasAggressiveMonsters: boolean = false, fightStartPositions: FightStartingPositions = null, floor: number = 0, room: number = 0, infinityMode: number = 0, branches: Array<BreachBranch> = null): MapComplementaryInformationsBreachMessage
+    {
+        super.initMapComplementaryInformationsDataMessage(subAreaId,mapId,houses,actors,interactiveElements,statedElements,obstacles,fights,hasAggressiveMonsters,fightStartPositions);
+        this.floor = floor;
+        this.room = room;
+        this.infinityMode = infinityMode;
+        this.branches = branches;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MapComplementaryInformationsBreachMessage(output);
+    }
+
+    public serializeAs_MapComplementaryInformationsBreachMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_MapComplementaryInformationsDataMessage(output);
+        if(this.floor < 0)
+        {
+            throw new Error("Forbidden value (" + this.floor + ") on element floor.");
+        }
+        output.writeVarInt(this.floor);
+        if(this.room < 0)
+        {
+            throw new Error("Forbidden value (" + this.room + ") on element room.");
+        }
+        output.writeByte(this.room);
+        if(this.infinityMode < 0)
+        {
+            throw new Error("Forbidden value (" + this.infinityMode + ") on element infinityMode.");
+        }
+        output.writeShort(this.infinityMode);
+        output.writeShort(this.branches.length);
+        for(var _i4: number = 0; _i4 < this.branches.length; _i4++)
+        {
+            output.writeShort((this.branches[_i4] as BreachBranch).getTypeId());
+            (this.branches[_i4] as BreachBranch).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class FighterStatsListMessage extends NetworkMessage
+export class FighterStatsListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4354;
@@ -18,14 +18,37 @@ export class FighterStatsListMessage extends NetworkMessage
         this.stats = new CharacterCharacteristicsInformations();
     }
 
+    public getMessageId()
+    {
+        return FighterStatsListMessage.protocolId;
+    }
+
+    public initFighterStatsListMessage(stats: CharacterCharacteristicsInformations = null): FighterStatsListMessage
+    {
+        this.stats = stats;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FighterStatsListMessage(output);
+    }
+
+    public serializeAs_FighterStatsListMessage(output: ICustomDataOutput)
+    {
+        this.stats.serializeAs_CharacterCharacteristicsInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class RefreshFollowedQuestsOrderRequestMessage extends NetworkMessage
+export class RefreshFollowedQuestsOrderRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3965;
@@ -17,14 +17,45 @@ export class RefreshFollowedQuestsOrderRequestMessage extends NetworkMessage
         this.quests = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return RefreshFollowedQuestsOrderRequestMessage.protocolId;
+    }
+
+    public initRefreshFollowedQuestsOrderRequestMessage(quests: Array<number> = null): RefreshFollowedQuestsOrderRequestMessage
+    {
+        this.quests = quests;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_RefreshFollowedQuestsOrderRequestMessage(output);
+    }
+
+    public serializeAs_RefreshFollowedQuestsOrderRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.quests.length);
+        for(var _i1: number = 0; _i1 < this.quests.length; _i1++)
+        {
+            if(this.quests[_i1] < 0)
+            {
+                throw new Error("Forbidden value (" + this.quests[_i1] + ") on element 1 (starting at 1) of quests.");
+            }
+            output.writeVarShort(this.quests[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

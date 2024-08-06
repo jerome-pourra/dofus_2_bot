@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlayMonsterAngryAtPlayerMessage extends NetworkMessage
+export class GameRolePlayMonsterAngryAtPlayerMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9879;
@@ -19,14 +19,59 @@ export class GameRolePlayMonsterAngryAtPlayerMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlayMonsterAngryAtPlayerMessage.protocolId;
+    }
+
+    public initGameRolePlayMonsterAngryAtPlayerMessage(playerId: number = 0, monsterGroupId: number = 0, angryStartTime: number = 0, attackTime: number = 0): GameRolePlayMonsterAngryAtPlayerMessage
+    {
+        this.playerId = playerId;
+        this.monsterGroupId = monsterGroupId;
+        this.angryStartTime = angryStartTime;
+        this.attackTime = attackTime;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayMonsterAngryAtPlayerMessage(output);
+    }
+
+    public serializeAs_GameRolePlayMonsterAngryAtPlayerMessage(output: ICustomDataOutput)
+    {
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        if(this.monsterGroupId < -9007199254740992 || this.monsterGroupId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.monsterGroupId + ") on element monsterGroupId.");
+        }
+        output.writeDouble(this.monsterGroupId);
+        if(this.angryStartTime < 0 || this.angryStartTime > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.angryStartTime + ") on element angryStartTime.");
+        }
+        output.writeDouble(this.angryStartTime);
+        if(this.attackTime < 0 || this.attackTime > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.attackTime + ") on element attackTime.");
+        }
+        output.writeDouble(this.attackTime);
     }
 
     public deserialize(input: ICustomDataInput)

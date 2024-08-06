@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { AllianceListMessage } from "./AllianceListMessage";
 
-export class AlliancePartialListMessage extends AllianceListMessage
+export class AlliancePartialListMessage extends AllianceListMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4178;
@@ -15,14 +15,37 @@ export class AlliancePartialListMessage extends AllianceListMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AlliancePartialListMessage.protocolId;
+    }
+
+    public initAlliancePartialListMessage(alliances: Array<AllianceFactSheetInformation> = null): AlliancePartialListMessage
+    {
+        super.initAllianceListMessage(alliances);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AlliancePartialListMessage(output);
+    }
+
+    public serializeAs_AlliancePartialListMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AllianceListMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

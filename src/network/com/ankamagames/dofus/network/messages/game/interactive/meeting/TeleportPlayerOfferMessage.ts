@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TeleportPlayerOfferMessage extends NetworkMessage
+export class TeleportPlayerOfferMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9777;
@@ -19,14 +19,55 @@ export class TeleportPlayerOfferMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TeleportPlayerOfferMessage.protocolId;
+    }
+
+    public initTeleportPlayerOfferMessage(mapId: number = 0, message: string = "", timeLeft: number = 0, requesterId: number = 0): TeleportPlayerOfferMessage
+    {
+        this.mapId = mapId;
+        this.message = message;
+        this.timeLeft = timeLeft;
+        this.requesterId = requesterId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TeleportPlayerOfferMessage(output);
+    }
+
+    public serializeAs_TeleportPlayerOfferMessage(output: ICustomDataOutput)
+    {
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        output.writeUTF(this.message);
+        if(this.timeLeft < 0)
+        {
+            throw new Error("Forbidden value (" + this.timeLeft + ") on element timeLeft.");
+        }
+        output.writeVarInt(this.timeLeft);
+        if(this.requesterId < 0 || this.requesterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.requesterId + ") on element requesterId.");
+        }
+        output.writeVarLong(this.requesterId);
     }
 
     public deserialize(input: ICustomDataInput)

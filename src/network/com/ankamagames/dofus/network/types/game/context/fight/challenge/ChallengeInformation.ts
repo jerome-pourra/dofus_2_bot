@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 import { ChallengeTargetInformation } from "./ChallengeTargetInformation";
 
-export class ChallengeInformation
+export class ChallengeInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 1494;
@@ -18,6 +18,52 @@ export class ChallengeInformation
     public constructor()
     {
         this.targetsList = Array<ChallengeTargetInformation>();
+    }
+
+    public getTypeId()
+    {
+        return ChallengeInformation.protocolId;
+    }
+
+    public initChallengeInformation(challengeId: number = 0, targetsList: Array<ChallengeTargetInformation> = null, dropBonus: number = 0, xpBonus: number = 0, state: number = 2): ChallengeInformation
+    {
+        this.challengeId = challengeId;
+        this.targetsList = targetsList;
+        this.dropBonus = dropBonus;
+        this.xpBonus = xpBonus;
+        this.state = state;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChallengeInformation(output);
+    }
+
+    public serializeAs_ChallengeInformation(output: ICustomDataOutput)
+    {
+        if(this.challengeId < 0)
+        {
+            throw new Error("Forbidden value (" + this.challengeId + ") on element challengeId.");
+        }
+        output.writeVarInt(this.challengeId);
+        output.writeShort(this.targetsList.length);
+        for(var _i2: number = 0; _i2 < this.targetsList.length; _i2++)
+        {
+            output.writeShort((this.targetsList[_i2] as ChallengeTargetInformation).getTypeId());
+            (this.targetsList[_i2] as ChallengeTargetInformation).serialize(output);
+        }
+        if(this.dropBonus < 0)
+        {
+            throw new Error("Forbidden value (" + this.dropBonus + ") on element dropBonus.");
+        }
+        output.writeVarInt(this.dropBonus);
+        if(this.xpBonus < 0)
+        {
+            throw new Error("Forbidden value (" + this.xpBonus + ") on element xpBonus.");
+        }
+        output.writeVarInt(this.xpBonus);
+        output.writeByte(this.state);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class HouseToSellFilterMessage extends NetworkMessage
+export class HouseToSellFilterMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9188;
@@ -21,14 +21,63 @@ export class HouseToSellFilterMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return HouseToSellFilterMessage.protocolId;
+    }
+
+    public initHouseToSellFilterMessage(areaId: number = 0, atLeastNbRoom: number = 0, atLeastNbChest: number = 0, skillRequested: number = 0, maxPrice: number = 0, orderBy: number = 0): HouseToSellFilterMessage
+    {
+        this.areaId = areaId;
+        this.atLeastNbRoom = atLeastNbRoom;
+        this.atLeastNbChest = atLeastNbChest;
+        this.skillRequested = skillRequested;
+        this.maxPrice = maxPrice;
+        this.orderBy = orderBy;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HouseToSellFilterMessage(output);
+    }
+
+    public serializeAs_HouseToSellFilterMessage(output: ICustomDataOutput)
+    {
+        output.writeInt(this.areaId);
+        if(this.atLeastNbRoom < 0)
+        {
+            throw new Error("Forbidden value (" + this.atLeastNbRoom + ") on element atLeastNbRoom.");
+        }
+        output.writeByte(this.atLeastNbRoom);
+        if(this.atLeastNbChest < 0)
+        {
+            throw new Error("Forbidden value (" + this.atLeastNbChest + ") on element atLeastNbChest.");
+        }
+        output.writeByte(this.atLeastNbChest);
+        if(this.skillRequested < 0)
+        {
+            throw new Error("Forbidden value (" + this.skillRequested + ") on element skillRequested.");
+        }
+        output.writeVarShort(this.skillRequested);
+        if(this.maxPrice < 0 || this.maxPrice > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.maxPrice + ") on element maxPrice.");
+        }
+        output.writeVarLong(this.maxPrice);
+        output.writeByte(this.orderBy);
     }
 
     public deserialize(input: ICustomDataInput)

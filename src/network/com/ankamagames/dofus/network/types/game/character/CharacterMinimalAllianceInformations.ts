@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { CharacterMinimalPlusLookInformations } from "./CharacterMinimalPlusLookInformations";
 
-export class CharacterMinimalAllianceInformations extends CharacterMinimalPlusLookInformations
+export class CharacterMinimalAllianceInformations extends CharacterMinimalPlusLookInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 4814;
@@ -16,6 +16,29 @@ export class CharacterMinimalAllianceInformations extends CharacterMinimalPlusLo
     {
         super();
         this.alliance = new BasicNamedAllianceInformations();
+    }
+
+    public getTypeId()
+    {
+        return CharacterMinimalAllianceInformations.protocolId;
+    }
+
+    public initCharacterMinimalAllianceInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0, alliance: BasicNamedAllianceInformations = null): CharacterMinimalAllianceInformations
+    {
+        super.initCharacterMinimalPlusLookInformations(id,name,level,entityLook,breed);
+        this.alliance = alliance;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterMinimalAllianceInformations(output);
+    }
+
+    public serializeAs_CharacterMinimalAllianceInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterMinimalPlusLookInformations(output);
+        this.alliance.serializeAs_BasicNamedAllianceInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

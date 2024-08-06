@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { ExchangeMountsStableAddMessage } from "./ExchangeMountsStableAddMessage";
 
-export class ExchangeMountsStableBornAddMessage extends ExchangeMountsStableAddMessage
+export class ExchangeMountsStableBornAddMessage extends ExchangeMountsStableAddMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2861;
@@ -15,14 +15,37 @@ export class ExchangeMountsStableBornAddMessage extends ExchangeMountsStableAddM
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeMountsStableBornAddMessage.protocolId;
+    }
+
+    public initExchangeMountsStableBornAddMessage(mountDescription: Array<MountClientData> = null): ExchangeMountsStableBornAddMessage
+    {
+        super.initExchangeMountsStableAddMessage(mountDescription);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeMountsStableBornAddMessage(output);
+    }
+
+    public serializeAs_ExchangeMountsStableBornAddMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ExchangeMountsStableAddMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

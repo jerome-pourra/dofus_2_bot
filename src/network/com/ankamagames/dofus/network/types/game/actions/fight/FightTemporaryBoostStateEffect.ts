@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { FightTemporaryBoostEffect } from "./FightTemporaryBoostEffect";
 
-export class FightTemporaryBoostStateEffect extends FightTemporaryBoostEffect
+export class FightTemporaryBoostStateEffect extends FightTemporaryBoostEffect implements INetworkType
 {
 
 	public static readonly protocolId: number = 4574;
@@ -13,6 +13,29 @@ export class FightTemporaryBoostStateEffect extends FightTemporaryBoostEffect
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return FightTemporaryBoostStateEffect.protocolId;
+    }
+
+    public initFightTemporaryBoostStateEffect(uid: number = 0, targetId: number = 0, turnDuration: number = 0, dispelable: number = 1, spellId: number = 0, effectId: number = 0, parentBoostUid: number = 0, delta: number = 0, stateId: number = 0): FightTemporaryBoostStateEffect
+    {
+        super.initFightTemporaryBoostEffect(uid,targetId,turnDuration,dispelable,spellId,effectId,parentBoostUid,delta);
+        this.stateId = stateId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightTemporaryBoostStateEffect(output);
+    }
+
+    public serializeAs_FightTemporaryBoostStateEffect(output: ICustomDataOutput)
+    {
+        super.serializeAs_FightTemporaryBoostEffect(output);
+        output.writeShort(this.stateId);
     }
 
     public deserialize(input: ICustomDataInput)

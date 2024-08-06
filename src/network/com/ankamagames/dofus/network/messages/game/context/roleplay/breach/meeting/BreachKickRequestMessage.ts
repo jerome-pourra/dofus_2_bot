@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class BreachKickRequestMessage extends NetworkMessage
+export class BreachKickRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4588;
@@ -16,14 +16,41 @@ export class BreachKickRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return BreachKickRequestMessage.protocolId;
+    }
+
+    public initBreachKickRequestMessage(target: number = 0): BreachKickRequestMessage
+    {
+        this.target = target;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachKickRequestMessage(output);
+    }
+
+    public serializeAs_BreachKickRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.target < 0 || this.target > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.target + ") on element target.");
+        }
+        output.writeVarLong(this.target);
     }
 
     public deserialize(input: ICustomDataInput)

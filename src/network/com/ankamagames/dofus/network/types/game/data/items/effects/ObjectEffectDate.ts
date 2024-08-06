@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 import { ObjectEffect } from "./ObjectEffect";
 
-export class ObjectEffectDate extends ObjectEffect
+export class ObjectEffectDate extends ObjectEffect implements INetworkType
 {
 
 	public static readonly protocolId: number = 3435;
@@ -17,6 +17,57 @@ export class ObjectEffectDate extends ObjectEffect
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ObjectEffectDate.protocolId;
+    }
+
+    public initObjectEffectDate(actionId: number = 0, year: number = 0, month: number = 0, day: number = 0, hour: number = 0, minute: number = 0): ObjectEffectDate
+    {
+        super.initObjectEffect(actionId);
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.hour = hour;
+        this.minute = minute;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectEffectDate(output);
+    }
+
+    public serializeAs_ObjectEffectDate(output: ICustomDataOutput)
+    {
+        super.serializeAs_ObjectEffect(output);
+        if(this.year < 0)
+        {
+            throw new Error("Forbidden value (" + this.year + ") on element year.");
+        }
+        output.writeVarShort(this.year);
+        if(this.month < 0)
+        {
+            throw new Error("Forbidden value (" + this.month + ") on element month.");
+        }
+        output.writeByte(this.month);
+        if(this.day < 0)
+        {
+            throw new Error("Forbidden value (" + this.day + ") on element day.");
+        }
+        output.writeByte(this.day);
+        if(this.hour < 0)
+        {
+            throw new Error("Forbidden value (" + this.hour + ") on element hour.");
+        }
+        output.writeByte(this.hour);
+        if(this.minute < 0)
+        {
+            throw new Error("Forbidden value (" + this.minute + ") on element minute.");
+        }
+        output.writeByte(this.minute);
     }
 
     public deserialize(input: ICustomDataInput)

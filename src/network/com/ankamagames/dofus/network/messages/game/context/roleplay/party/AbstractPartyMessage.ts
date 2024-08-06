@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class AbstractPartyMessage extends NetworkMessage
+export class AbstractPartyMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2039;
@@ -16,14 +16,41 @@ export class AbstractPartyMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AbstractPartyMessage.protocolId;
+    }
+
+    public initAbstractPartyMessage(partyId: number = 0): AbstractPartyMessage
+    {
+        this.partyId = partyId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AbstractPartyMessage(output);
+    }
+
+    public serializeAs_AbstractPartyMessage(output: ICustomDataOutput)
+    {
+        if(this.partyId < 0)
+        {
+            throw new Error("Forbidden value (" + this.partyId + ") on element partyId.");
+        }
+        output.writeVarInt(this.partyId);
     }
 
     public deserialize(input: ICustomDataInput)

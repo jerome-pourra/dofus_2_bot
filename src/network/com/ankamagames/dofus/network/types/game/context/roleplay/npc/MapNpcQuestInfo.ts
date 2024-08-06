@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class MapNpcQuestInfo
+export class MapNpcQuestInfo implements INetworkType
 {
 
 	public static readonly protocolId: number = 7887;
@@ -16,6 +16,43 @@ export class MapNpcQuestInfo
     {
         this.npcsIdsWithQuest = Array<number>();
         this.questFlags = Array<GameRolePlayNpcQuestFlag>();
+    }
+
+    public getTypeId()
+    {
+        return MapNpcQuestInfo.protocolId;
+    }
+
+    public initMapNpcQuestInfo(mapId: number = 0, npcsIdsWithQuest: Array<number> = null, questFlags: Array<GameRolePlayNpcQuestFlag> = null): MapNpcQuestInfo
+    {
+        this.mapId = mapId;
+        this.npcsIdsWithQuest = npcsIdsWithQuest;
+        this.questFlags = questFlags;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MapNpcQuestInfo(output);
+    }
+
+    public serializeAs_MapNpcQuestInfo(output: ICustomDataOutput)
+    {
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        output.writeShort(this.npcsIdsWithQuest.length);
+        for(var _i2: number = 0; _i2 < this.npcsIdsWithQuest.length; _i2++)
+        {
+            output.writeInt(this.npcsIdsWithQuest[_i2]);
+        }
+        output.writeShort(this.questFlags.length);
+        for(var _i3: number = 0; _i3 < this.questFlags.length; _i3++)
+        {
+            (this.questFlags[_i3] as GameRolePlayNpcQuestFlag).serializeAs_GameRolePlayNpcQuestFlag(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

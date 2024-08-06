@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class PaddockItem extends ObjectItemInRolePlay
+export class PaddockItem extends ObjectItemInRolePlay implements INetworkType
 {
 
 	public static readonly protocolId: number = 2373;
@@ -15,6 +15,29 @@ export class PaddockItem extends ObjectItemInRolePlay
     {
         super();
         this.durability = new ItemDurability();
+    }
+
+    public getTypeId()
+    {
+        return PaddockItem.protocolId;
+    }
+
+    public initPaddockItem(cellId: number = 0, objectGID: number = 0, durability: ItemDurability = null): PaddockItem
+    {
+        super.initObjectItemInRolePlay(cellId,objectGID);
+        this.durability = durability;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PaddockItem(output);
+    }
+
+    public serializeAs_PaddockItem(output: ICustomDataOutput)
+    {
+        super.serializeAs_ObjectItemInRolePlay(output);
+        this.durability.serializeAs_ItemDurability(output);
     }
 
     public deserialize(input: ICustomDataInput)

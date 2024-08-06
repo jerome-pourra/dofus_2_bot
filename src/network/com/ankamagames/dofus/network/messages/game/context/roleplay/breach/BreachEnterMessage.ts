@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class BreachEnterMessage extends NetworkMessage
+export class BreachEnterMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9138;
@@ -16,14 +16,41 @@ export class BreachEnterMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return BreachEnterMessage.protocolId;
+    }
+
+    public initBreachEnterMessage(owner: number = 0): BreachEnterMessage
+    {
+        this.owner = owner;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachEnterMessage(output);
+    }
+
+    public serializeAs_BreachEnterMessage(output: ICustomDataOutput)
+    {
+        if(this.owner < 0 || this.owner > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.owner + ") on element owner.");
+        }
+        output.writeVarLong(this.owner);
     }
 
     public deserialize(input: ICustomDataInput)

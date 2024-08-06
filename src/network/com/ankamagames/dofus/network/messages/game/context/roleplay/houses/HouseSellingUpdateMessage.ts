@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class HouseSellingUpdateMessage extends NetworkMessage
+export class HouseSellingUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6800;
@@ -22,14 +22,57 @@ export class HouseSellingUpdateMessage extends NetworkMessage
         this.buyerTag = new AccountTagInformation();
     }
 
+    public getMessageId()
+    {
+        return HouseSellingUpdateMessage.protocolId;
+    }
+
+    public initHouseSellingUpdateMessage(houseId: number = 0, instanceId: number = 0, secondHand: boolean = false, realPrice: number = 0, buyerTag: AccountTagInformation = null): HouseSellingUpdateMessage
+    {
+        this.houseId = houseId;
+        this.instanceId = instanceId;
+        this.secondHand = secondHand;
+        this.realPrice = realPrice;
+        this.buyerTag = buyerTag;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HouseSellingUpdateMessage(output);
+    }
+
+    public serializeAs_HouseSellingUpdateMessage(output: ICustomDataOutput)
+    {
+        if(this.houseId < 0)
+        {
+            throw new Error("Forbidden value (" + this.houseId + ") on element houseId.");
+        }
+        output.writeVarInt(this.houseId);
+        if(this.instanceId < 0)
+        {
+            throw new Error("Forbidden value (" + this.instanceId + ") on element instanceId.");
+        }
+        output.writeInt(this.instanceId);
+        output.writeBoolean(this.secondHand);
+        if(this.realPrice < 0 || this.realPrice > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.realPrice + ") on element realPrice.");
+        }
+        output.writeVarLong(this.realPrice);
+        this.buyerTag.serializeAs_AccountTagInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

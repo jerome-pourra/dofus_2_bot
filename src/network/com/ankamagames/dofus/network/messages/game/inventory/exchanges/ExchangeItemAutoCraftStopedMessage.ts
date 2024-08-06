@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeItemAutoCraftStopedMessage extends NetworkMessage
+export class ExchangeItemAutoCraftStopedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5298;
@@ -16,14 +16,37 @@ export class ExchangeItemAutoCraftStopedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeItemAutoCraftStopedMessage.protocolId;
+    }
+
+    public initExchangeItemAutoCraftStopedMessage(reason: number = 0): ExchangeItemAutoCraftStopedMessage
+    {
+        this.reason = reason;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeItemAutoCraftStopedMessage(output);
+    }
+
+    public serializeAs_ExchangeItemAutoCraftStopedMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.reason);
     }
 
     public deserialize(input: ICustomDataInput)

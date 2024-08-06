@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class SetEnableAVARequestMessage extends NetworkMessage
+export class SetEnableAVARequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6858;
@@ -16,14 +16,37 @@ export class SetEnableAVARequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return SetEnableAVARequestMessage.protocolId;
+    }
+
+    public initSetEnableAVARequestMessage(enable: boolean = false): SetEnableAVARequestMessage
+    {
+        this.enable = enable;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SetEnableAVARequestMessage(output);
+    }
+
+    public serializeAs_SetEnableAVARequestMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.enable);
     }
 
     public deserialize(input: ICustomDataInput)

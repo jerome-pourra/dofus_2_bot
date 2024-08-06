@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { EmotePlayAbstractMessage } from "./EmotePlayAbstractMessage";
 
-export class EmotePlayMessage extends EmotePlayAbstractMessage
+export class EmotePlayMessage extends EmotePlayAbstractMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3198;
@@ -17,14 +17,49 @@ export class EmotePlayMessage extends EmotePlayAbstractMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return EmotePlayMessage.protocolId;
+    }
+
+    public initEmotePlayMessage(emoteId: number = 0, emoteStartTime: number = 0, actorId: number = 0, accountId: number = 0): EmotePlayMessage
+    {
+        super.initEmotePlayAbstractMessage(emoteId,emoteStartTime);
+        this.actorId = actorId;
+        this.accountId = accountId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_EmotePlayMessage(output);
+    }
+
+    public serializeAs_EmotePlayMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_EmotePlayAbstractMessage(output);
+        if(this.actorId < -9007199254740992 || this.actorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.actorId + ") on element actorId.");
+        }
+        output.writeDouble(this.actorId);
+        if(this.accountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+        }
+        output.writeInt(this.accountId);
     }
 
     public deserialize(input: ICustomDataInput)

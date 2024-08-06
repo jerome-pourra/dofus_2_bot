@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { PartyMemberRemoveMessage } from "./PartyMemberRemoveMessage";
 
-export class PartyMemberEjectedMessage extends PartyMemberRemoveMessage
+export class PartyMemberEjectedMessage extends PartyMemberRemoveMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9438;
@@ -16,14 +16,43 @@ export class PartyMemberEjectedMessage extends PartyMemberRemoveMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyMemberEjectedMessage.protocolId;
+    }
+
+    public initPartyMemberEjectedMessage(partyId: number = 0, leavingPlayerId: number = 0, kickerId: number = 0): PartyMemberEjectedMessage
+    {
+        super.initPartyMemberRemoveMessage(partyId,leavingPlayerId);
+        this.kickerId = kickerId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyMemberEjectedMessage(output);
+    }
+
+    public serializeAs_PartyMemberEjectedMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_PartyMemberRemoveMessage(output);
+        if(this.kickerId < 0 || this.kickerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.kickerId + ") on element kickerId.");
+        }
+        output.writeVarLong(this.kickerId);
     }
 
     public deserialize(input: ICustomDataInput)

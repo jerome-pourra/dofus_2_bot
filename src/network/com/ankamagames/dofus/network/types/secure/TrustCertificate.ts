@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../jerakine/network/ICustomDataInpu
 import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../jerakine/network/INetworkType";
 
-export class TrustCertificate
+export class TrustCertificate implements INetworkType
 {
 
 	public static readonly protocolId: number = 3311;
@@ -13,6 +13,33 @@ export class TrustCertificate
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return TrustCertificate.protocolId;
+    }
+
+    public initTrustCertificate(id: number = 0, hash: string = ""): TrustCertificate
+    {
+        this.id = id;
+        this.hash = hash;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TrustCertificate(output);
+    }
+
+    public serializeAs_TrustCertificate(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeInt(this.id);
+        output.writeUTF(this.hash);
     }
 
     public deserialize(input: ICustomDataInput)

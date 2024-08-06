@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class EntityTalkMessage extends NetworkMessage
+export class EntityTalkMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1171;
@@ -19,14 +19,53 @@ export class EntityTalkMessage extends NetworkMessage
         this.parameters = Array<string>();
     }
 
+    public getMessageId()
+    {
+        return EntityTalkMessage.protocolId;
+    }
+
+    public initEntityTalkMessage(entityId: number = 0, textId: number = 0, parameters: Array<string> = null): EntityTalkMessage
+    {
+        this.entityId = entityId;
+        this.textId = textId;
+        this.parameters = parameters;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_EntityTalkMessage(output);
+    }
+
+    public serializeAs_EntityTalkMessage(output: ICustomDataOutput)
+    {
+        if(this.entityId < -9007199254740992 || this.entityId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.entityId + ") on element entityId.");
+        }
+        output.writeDouble(this.entityId);
+        if(this.textId < 0)
+        {
+            throw new Error("Forbidden value (" + this.textId + ") on element textId.");
+        }
+        output.writeVarShort(this.textId);
+        output.writeShort(this.parameters.length);
+        for(var _i3: number = 0; _i3 < this.parameters.length; _i3++)
+        {
+            output.writeUTF(this.parameters[_i3]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { TeleportDestinationsMessage } from "./TeleportDestinationsMessage";
 
-export class ZaapDestinationsMessage extends TeleportDestinationsMessage
+export class ZaapDestinationsMessage extends TeleportDestinationsMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9132;
@@ -17,14 +17,43 @@ export class ZaapDestinationsMessage extends TeleportDestinationsMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ZaapDestinationsMessage.protocolId;
+    }
+
+    public initZaapDestinationsMessage(type: number = 0, destinations: Array<TeleportDestination> = null, spawnMapId: number = 0): ZaapDestinationsMessage
+    {
+        super.initTeleportDestinationsMessage(type,destinations);
+        this.spawnMapId = spawnMapId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ZaapDestinationsMessage(output);
+    }
+
+    public serializeAs_ZaapDestinationsMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_TeleportDestinationsMessage(output);
+        if(this.spawnMapId < 0 || this.spawnMapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.spawnMapId + ") on element spawnMapId.");
+        }
+        output.writeDouble(this.spawnMapId);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class ObjectEffect
+export class ObjectEffect implements INetworkType
 {
 
 	public static readonly protocolId: number = 7605;
@@ -12,6 +12,31 @@ export class ObjectEffect
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return ObjectEffect.protocolId;
+    }
+
+    public initObjectEffect(actionId: number = 0): ObjectEffect
+    {
+        this.actionId = actionId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectEffect(output);
+    }
+
+    public serializeAs_ObjectEffect(output: ICustomDataOutput)
+    {
+        if(this.actionId < 0)
+        {
+            throw new Error("Forbidden value (" + this.actionId + ") on element actionId.");
+        }
+        output.writeVarShort(this.actionId);
     }
 
     public deserialize(input: ICustomDataInput)

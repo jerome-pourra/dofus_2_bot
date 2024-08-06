@@ -7,7 +7,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class PartyMemberInformations extends CharacterBaseInformations
+export class PartyMemberInformations extends CharacterBaseInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 9391;
@@ -30,6 +30,93 @@ export class PartyMemberInformations extends CharacterBaseInformations
         super();
         this.status = new PlayerStatus();
         this.entities = Array<PartyEntityBaseInformation>();
+    }
+
+    public getTypeId()
+    {
+        return PartyMemberInformations.protocolId;
+    }
+
+    public initPartyMemberInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0, sex: boolean = false, lifePoints: number = 0, maxLifePoints: number = 0, prospecting: number = 0, regenRate: number = 0, initiative: number = 0, alignmentSide: number = 0, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, status: PlayerStatus = null, entities: Array<PartyEntityBaseInformation> = null): PartyMemberInformations
+    {
+        super.initCharacterBaseInformations(id,name,level,entityLook,breed,sex);
+        this.lifePoints = lifePoints;
+        this.maxLifePoints = maxLifePoints;
+        this.prospecting = prospecting;
+        this.regenRate = regenRate;
+        this.initiative = initiative;
+        this.alignmentSide = alignmentSide;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.mapId = mapId;
+        this.subAreaId = subAreaId;
+        this.status = status;
+        this.entities = entities;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyMemberInformations(output);
+    }
+
+    public serializeAs_PartyMemberInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterBaseInformations(output);
+        if(this.lifePoints < 0)
+        {
+            throw new Error("Forbidden value (" + this.lifePoints + ") on element lifePoints.");
+        }
+        output.writeVarInt(this.lifePoints);
+        if(this.maxLifePoints < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxLifePoints + ") on element maxLifePoints.");
+        }
+        output.writeVarInt(this.maxLifePoints);
+        if(this.prospecting < 0)
+        {
+            throw new Error("Forbidden value (" + this.prospecting + ") on element prospecting.");
+        }
+        output.writeVarInt(this.prospecting);
+        if(this.regenRate < 0 || this.regenRate > 255)
+        {
+            throw new Error("Forbidden value (" + this.regenRate + ") on element regenRate.");
+        }
+        output.writeByte(this.regenRate);
+        if(this.initiative < 0)
+        {
+            throw new Error("Forbidden value (" + this.initiative + ") on element initiative.");
+        }
+        output.writeVarInt(this.initiative);
+        output.writeByte(this.alignmentSide);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
+        output.writeShort(this.status.getTypeId());
+        this.status.serialize(output);
+        output.writeShort(this.entities.length);
+        for(var _i12: number = 0; _i12 < this.entities.length; _i12++)
+        {
+            output.writeShort((this.entities[_i12] as PartyEntityBaseInformation).getTypeId());
+            (this.entities[_i12] as PartyEntityBaseInformation).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

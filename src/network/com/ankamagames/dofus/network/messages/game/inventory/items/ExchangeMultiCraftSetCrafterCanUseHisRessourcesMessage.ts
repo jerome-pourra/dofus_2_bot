@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage extends NetworkMessage
+export class ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7279;
@@ -16,14 +16,37 @@ export class ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage extends Netw
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage.protocolId;
+    }
+
+    public initExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(allow: boolean = false): ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage
+    {
+        this.allow = allow;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(output);
+    }
+
+    public serializeAs_ExchangeMultiCraftSetCrafterCanUseHisRessourcesMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.allow);
     }
 
     public deserialize(input: ICustomDataInput)

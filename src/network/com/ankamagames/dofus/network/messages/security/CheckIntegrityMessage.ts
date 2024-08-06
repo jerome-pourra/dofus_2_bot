@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class CheckIntegrityMessage extends NetworkMessage
+export class CheckIntegrityMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7220;
@@ -17,14 +17,41 @@ export class CheckIntegrityMessage extends NetworkMessage
         this.data = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return CheckIntegrityMessage.protocolId;
+    }
+
+    public initCheckIntegrityMessage(data: Array<number> = null): CheckIntegrityMessage
+    {
+        this.data = data;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CheckIntegrityMessage(output);
+    }
+
+    public serializeAs_CheckIntegrityMessage(output: ICustomDataOutput)
+    {
+        output.writeVarInt(this.data.length);
+        for(var _i1: number = 0; _i1 < this.data.length; _i1++)
+        {
+            output.writeByte(this.data[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

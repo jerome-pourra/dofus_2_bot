@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class OrnamentSelectedMessage extends NetworkMessage
+export class OrnamentSelectedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7251;
@@ -16,14 +16,41 @@ export class OrnamentSelectedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return OrnamentSelectedMessage.protocolId;
+    }
+
+    public initOrnamentSelectedMessage(ornamentId: number = 0): OrnamentSelectedMessage
+    {
+        this.ornamentId = ornamentId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_OrnamentSelectedMessage(output);
+    }
+
+    public serializeAs_OrnamentSelectedMessage(output: ICustomDataOutput)
+    {
+        if(this.ornamentId < 0)
+        {
+            throw new Error("Forbidden value (" + this.ornamentId + ") on element ornamentId.");
+        }
+        output.writeVarShort(this.ornamentId);
     }
 
     public deserialize(input: ICustomDataInput)

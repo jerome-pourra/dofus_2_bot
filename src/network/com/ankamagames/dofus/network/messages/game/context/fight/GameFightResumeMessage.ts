@@ -8,7 +8,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { GameFightSpectateMessage } from "./GameFightSpectateMessage";
 
-export class GameFightResumeMessage extends GameFightSpectateMessage
+export class GameFightResumeMessage extends GameFightSpectateMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2675;
@@ -23,14 +23,55 @@ export class GameFightResumeMessage extends GameFightSpectateMessage
         this.spellCooldowns = Array<GameFightSpellCooldown>();
     }
 
+    public getMessageId()
+    {
+        return GameFightResumeMessage.protocolId;
+    }
+
+    public initGameFightResumeMessage(effects: Array<FightDispellableEffectExtendedInformations> = null, marks: Array<GameActionMark> = null, gameTurn: number = 0, fightStart: number = 0, fxTriggerCounts: Array<GameFightEffectTriggerCount> = null, spellCooldowns: Array<GameFightSpellCooldown> = null, summonCount: number = 0, bombCount: number = 0): GameFightResumeMessage
+    {
+        super.initGameFightSpectateMessage(effects,marks,gameTurn,fightStart,fxTriggerCounts);
+        this.spellCooldowns = spellCooldowns;
+        this.summonCount = summonCount;
+        this.bombCount = bombCount;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightResumeMessage(output);
+    }
+
+    public serializeAs_GameFightResumeMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameFightSpectateMessage(output);
+        output.writeShort(this.spellCooldowns.length);
+        for(var _i1: number = 0; _i1 < this.spellCooldowns.length; _i1++)
+        {
+            (this.spellCooldowns[_i1] as GameFightSpellCooldown).serializeAs_GameFightSpellCooldown(output);
+        }
+        if(this.summonCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.summonCount + ") on element summonCount.");
+        }
+        output.writeByte(this.summonCount);
+        if(this.bombCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.bombCount + ") on element bombCount.");
+        }
+        output.writeByte(this.bombCount);
     }
 
     public deserialize(input: ICustomDataInput)

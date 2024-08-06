@@ -4,7 +4,7 @@ import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { AchievementObjective } from "./AchievementObjective";
 import { AchievementStartedObjective } from "./AchievementStartedObjective";
 
-export class Achievement
+export class Achievement implements INetworkType
 {
 
 	public static readonly protocolId: number = 2764;
@@ -17,6 +17,43 @@ export class Achievement
     {
         this.finishedObjective = Array<AchievementObjective>();
         this.startedObjectives = Array<AchievementStartedObjective>();
+    }
+
+    public getTypeId()
+    {
+        return Achievement.protocolId;
+    }
+
+    public initAchievement(id: number = 0, finishedObjective: Array<AchievementObjective> = null, startedObjectives: Array<AchievementStartedObjective> = null): Achievement
+    {
+        this.id = id;
+        this.finishedObjective = finishedObjective;
+        this.startedObjectives = startedObjectives;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_Achievement(output);
+    }
+
+    public serializeAs_Achievement(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarShort(this.id);
+        output.writeShort(this.finishedObjective.length);
+        for(var _i2: number = 0; _i2 < this.finishedObjective.length; _i2++)
+        {
+            (this.finishedObjective[_i2] as AchievementObjective).serializeAs_AchievementObjective(output);
+        }
+        output.writeShort(this.startedObjectives.length);
+        for(var _i3: number = 0; _i3 < this.startedObjectives.length; _i3++)
+        {
+            (this.startedObjectives[_i3] as AchievementStartedObjective).serializeAs_AchievementStartedObjective(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

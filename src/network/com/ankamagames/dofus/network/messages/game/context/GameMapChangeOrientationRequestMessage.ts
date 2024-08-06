@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GameMapChangeOrientationRequestMessage extends NetworkMessage
+export class GameMapChangeOrientationRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1190;
@@ -16,14 +16,37 @@ export class GameMapChangeOrientationRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameMapChangeOrientationRequestMessage.protocolId;
+    }
+
+    public initGameMapChangeOrientationRequestMessage(direction: number = 1): GameMapChangeOrientationRequestMessage
+    {
+        this.direction = direction;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameMapChangeOrientationRequestMessage(output);
+    }
+
+    public serializeAs_GameMapChangeOrientationRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.direction);
     }
 
     public deserialize(input: ICustomDataInput)

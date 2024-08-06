@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class ClientKeyMessage extends NetworkMessage
+export class ClientKeyMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7975;
@@ -16,14 +16,37 @@ export class ClientKeyMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ClientKeyMessage.protocolId;
+    }
+
+    public initClientKeyMessage(key: string = ""): ClientKeyMessage
+    {
+        this.key = key;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ClientKeyMessage(output);
+    }
+
+    public serializeAs_ClientKeyMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.key);
     }
 
     public deserialize(input: ICustomDataInput)

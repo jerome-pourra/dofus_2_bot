@@ -1,9 +1,10 @@
 import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataInput";
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
+import { Preset } from "./Preset";
 import { PresetsContainerPreset } from "./PresetsContainerPreset";
 
-export class IconNamedPreset extends PresetsContainerPreset
+export class IconNamedPreset extends PresetsContainerPreset implements INetworkType
 {
 
 	public static readonly protocolId: number = 2553;
@@ -14,6 +15,35 @@ export class IconNamedPreset extends PresetsContainerPreset
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return IconNamedPreset.protocolId;
+    }
+
+    public initIconNamedPreset(id: number = 0, presets: Array<Preset> = null, iconId: number = 0, name: string = ""): IconNamedPreset
+    {
+        super.initPresetsContainerPreset(id,presets);
+        this.iconId = iconId;
+        this.name = name;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IconNamedPreset(output);
+    }
+
+    public serializeAs_IconNamedPreset(output: ICustomDataOutput)
+    {
+        super.serializeAs_PresetsContainerPreset(output);
+        if(this.iconId < 0)
+        {
+            throw new Error("Forbidden value (" + this.iconId + ") on element iconId.");
+        }
+        output.writeShort(this.iconId);
+        output.writeUTF(this.name);
     }
 
     public deserialize(input: ICustomDataInput)

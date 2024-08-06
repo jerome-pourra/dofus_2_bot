@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class GuildLogbookChestActivity extends GuildLogbookEntryBasicInformation
+export class GuildLogbookChestActivity extends GuildLogbookEntryBasicInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 9067;
@@ -21,6 +21,57 @@ export class GuildLogbookChestActivity extends GuildLogbookEntryBasicInformation
     {
         super();
         this.object = new ObjectItemNotInContainer();
+    }
+
+    public getTypeId()
+    {
+        return GuildLogbookChestActivity.protocolId;
+    }
+
+    public initGuildLogbookChestActivity(id: number = 0, date: number = 0, playerId: number = 0, playerName: string = "", eventType: number = 0, quantity: number = 0, object: ObjectItemNotInContainer = null, sourceTabId: number = 0, destinationTabId: number = 0): GuildLogbookChestActivity
+    {
+        super.initGuildLogbookEntryBasicInformation(id,date);
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.eventType = eventType;
+        this.quantity = quantity;
+        this.object = object;
+        this.sourceTabId = sourceTabId;
+        this.destinationTabId = destinationTabId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildLogbookChestActivity(output);
+    }
+
+    public serializeAs_GuildLogbookChestActivity(output: ICustomDataOutput)
+    {
+        super.serializeAs_GuildLogbookEntryBasicInformation(output);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeUTF(this.playerName);
+        output.writeByte(this.eventType);
+        if(this.quantity < 0)
+        {
+            throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
+        }
+        output.writeInt(this.quantity);
+        this.object.serializeAs_ObjectItemNotInContainer(output);
+        if(this.sourceTabId < 0)
+        {
+            throw new Error("Forbidden value (" + this.sourceTabId + ") on element sourceTabId.");
+        }
+        output.writeInt(this.sourceTabId);
+        if(this.destinationTabId < 0)
+        {
+            throw new Error("Forbidden value (" + this.destinationTabId + ") on element destinationTabId.");
+        }
+        output.writeInt(this.destinationTabId);
     }
 
     public deserialize(input: ICustomDataInput)

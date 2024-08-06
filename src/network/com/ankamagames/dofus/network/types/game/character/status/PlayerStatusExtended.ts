@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { PlayerStatus } from "./PlayerStatus";
 
-export class PlayerStatusExtended extends PlayerStatus
+export class PlayerStatusExtended extends PlayerStatus implements INetworkType
 {
 
 	public static readonly protocolId: number = 8257;
@@ -13,6 +13,29 @@ export class PlayerStatusExtended extends PlayerStatus
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return PlayerStatusExtended.protocolId;
+    }
+
+    public initPlayerStatusExtended(statusId: number = 1, message: string = ""): PlayerStatusExtended
+    {
+        super.initPlayerStatus(statusId);
+        this.message = message;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PlayerStatusExtended(output);
+    }
+
+    public serializeAs_PlayerStatusExtended(output: ICustomDataOutput)
+    {
+        super.serializeAs_PlayerStatus(output);
+        output.writeUTF(this.message);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlayShowChallengeMessage extends NetworkMessage
+export class GameRolePlayShowChallengeMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7254;
@@ -18,14 +18,37 @@ export class GameRolePlayShowChallengeMessage extends NetworkMessage
         this.commonsInfos = new FightCommonInformations();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlayShowChallengeMessage.protocolId;
+    }
+
+    public initGameRolePlayShowChallengeMessage(commonsInfos: FightCommonInformations = null): GameRolePlayShowChallengeMessage
+    {
+        this.commonsInfos = commonsInfos;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayShowChallengeMessage(output);
+    }
+
+    public serializeAs_GameRolePlayShowChallengeMessage(output: ICustomDataOutput)
+    {
+        this.commonsInfos.serializeAs_FightCommonInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

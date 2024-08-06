@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 import { ObjectEffect } from "./ObjectEffect";
 
-export class ObjectEffectDice extends ObjectEffect
+export class ObjectEffectDice extends ObjectEffect implements INetworkType
 {
 
 	public static readonly protocolId: number = 670;
@@ -15,6 +15,45 @@ export class ObjectEffectDice extends ObjectEffect
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ObjectEffectDice.protocolId;
+    }
+
+    public initObjectEffectDice(actionId: number = 0, diceNum: number = 0, diceSide: number = 0, diceConst: number = 0): ObjectEffectDice
+    {
+        super.initObjectEffect(actionId);
+        this.diceNum = diceNum;
+        this.diceSide = diceSide;
+        this.diceConst = diceConst;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectEffectDice(output);
+    }
+
+    public serializeAs_ObjectEffectDice(output: ICustomDataOutput)
+    {
+        super.serializeAs_ObjectEffect(output);
+        if(this.diceNum < 0)
+        {
+            throw new Error("Forbidden value (" + this.diceNum + ") on element diceNum.");
+        }
+        output.writeVarInt(this.diceNum);
+        if(this.diceSide < 0)
+        {
+            throw new Error("Forbidden value (" + this.diceSide + ") on element diceSide.");
+        }
+        output.writeVarInt(this.diceSide);
+        if(this.diceConst < 0)
+        {
+            throw new Error("Forbidden value (" + this.diceConst + ") on element diceConst.");
+        }
+        output.writeVarInt(this.diceConst);
     }
 
     public deserialize(input: ICustomDataInput)

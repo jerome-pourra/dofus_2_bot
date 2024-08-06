@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class FriendDeleteResultMessage extends NetworkMessage
+export class FriendDeleteResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4930;
@@ -19,14 +19,39 @@ export class FriendDeleteResultMessage extends NetworkMessage
         this.tag = new AccountTagInformation();
     }
 
+    public getMessageId()
+    {
+        return FriendDeleteResultMessage.protocolId;
+    }
+
+    public initFriendDeleteResultMessage(success: boolean = false, tag: AccountTagInformation = null): FriendDeleteResultMessage
+    {
+        this.success = success;
+        this.tag = tag;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FriendDeleteResultMessage(output);
+    }
+
+    public serializeAs_FriendDeleteResultMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.success);
+        this.tag.serializeAs_AccountTagInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

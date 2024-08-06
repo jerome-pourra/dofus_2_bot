@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TaxCollectorErrorMessage extends NetworkMessage
+export class TaxCollectorErrorMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2186;
@@ -16,14 +16,37 @@ export class TaxCollectorErrorMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TaxCollectorErrorMessage.protocolId;
+    }
+
+    public initTaxCollectorErrorMessage(reason: number = 0): TaxCollectorErrorMessage
+    {
+        this.reason = reason;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorErrorMessage(output);
+    }
+
+    public serializeAs_TaxCollectorErrorMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.reason);
     }
 
     public deserialize(input: ICustomDataInput)

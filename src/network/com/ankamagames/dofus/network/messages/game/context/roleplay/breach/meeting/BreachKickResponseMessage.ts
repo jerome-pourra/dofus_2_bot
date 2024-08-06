@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class BreachKickResponseMessage extends NetworkMessage
+export class BreachKickResponseMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5018;
@@ -19,14 +19,39 @@ export class BreachKickResponseMessage extends NetworkMessage
         this.target = new CharacterMinimalInformations();
     }
 
+    public getMessageId()
+    {
+        return BreachKickResponseMessage.protocolId;
+    }
+
+    public initBreachKickResponseMessage(target: CharacterMinimalInformations = null, kicked: boolean = false): BreachKickResponseMessage
+    {
+        this.target = target;
+        this.kicked = kicked;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachKickResponseMessage(output);
+    }
+
+    public serializeAs_BreachKickResponseMessage(output: ICustomDataOutput)
+    {
+        this.target.serializeAs_CharacterMinimalInformations(output);
+        output.writeBoolean(this.kicked);
     }
 
     public deserialize(input: ICustomDataInput)

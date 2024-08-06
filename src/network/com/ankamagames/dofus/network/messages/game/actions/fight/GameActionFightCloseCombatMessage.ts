@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { AbstractGameActionFightTargetedAbilityMessage } from "./AbstractGameActionFightTargetedAbilityMessage";
 
-export class GameActionFightCloseCombatMessage extends AbstractGameActionFightTargetedAbilityMessage
+export class GameActionFightCloseCombatMessage extends AbstractGameActionFightTargetedAbilityMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2405;
@@ -16,14 +16,43 @@ export class GameActionFightCloseCombatMessage extends AbstractGameActionFightTa
         super();
     }
 
+    public getMessageId()
+    {
+        return GameActionFightCloseCombatMessage.protocolId;
+    }
+
+    public initGameActionFightCloseCombatMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, destinationCellId: number = 0, critical: number = 1, silentCast: boolean = false, verboseCast: boolean = false, weaponGenericId: number = 0): GameActionFightCloseCombatMessage
+    {
+        super.initAbstractGameActionFightTargetedAbilityMessage(actionId,sourceId,targetId,destinationCellId,critical,silentCast,verboseCast);
+        this.weaponGenericId = weaponGenericId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionFightCloseCombatMessage(output);
+    }
+
+    public serializeAs_GameActionFightCloseCombatMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionFightTargetedAbilityMessage(output);
+        if(this.weaponGenericId < 0)
+        {
+            throw new Error("Forbidden value (" + this.weaponGenericId + ") on element weaponGenericId.");
+        }
+        output.writeVarInt(this.weaponGenericId);
     }
 
     public deserialize(input: ICustomDataInput)

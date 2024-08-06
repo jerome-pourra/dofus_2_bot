@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildChestTabContributionMessage extends NetworkMessage
+export class GuildChestTabContributionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8050;
@@ -20,14 +20,65 @@ export class GuildChestTabContributionMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildChestTabContributionMessage.protocolId;
+    }
+
+    public initGuildChestTabContributionMessage(tabNumber: number = 0, requiredAmount: number = 0, currentAmount: number = 0, chestContributionEnrollmentDelay: number = 0, chestContributionDelay: number = 0): GuildChestTabContributionMessage
+    {
+        this.tabNumber = tabNumber;
+        this.requiredAmount = requiredAmount;
+        this.currentAmount = currentAmount;
+        this.chestContributionEnrollmentDelay = chestContributionEnrollmentDelay;
+        this.chestContributionDelay = chestContributionDelay;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildChestTabContributionMessage(output);
+    }
+
+    public serializeAs_GuildChestTabContributionMessage(output: ICustomDataOutput)
+    {
+        if(this.tabNumber < 0)
+        {
+            throw new Error("Forbidden value (" + this.tabNumber + ") on element tabNumber.");
+        }
+        output.writeVarInt(this.tabNumber);
+        if(this.requiredAmount < 0 || this.requiredAmount > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.requiredAmount + ") on element requiredAmount.");
+        }
+        output.writeVarLong(this.requiredAmount);
+        if(this.currentAmount < 0 || this.currentAmount > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.currentAmount + ") on element currentAmount.");
+        }
+        output.writeVarLong(this.currentAmount);
+        if(this.chestContributionEnrollmentDelay < 0 || this.chestContributionEnrollmentDelay > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.chestContributionEnrollmentDelay + ") on element chestContributionEnrollmentDelay.");
+        }
+        output.writeDouble(this.chestContributionEnrollmentDelay);
+        if(this.chestContributionDelay < 0 || this.chestContributionDelay > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.chestContributionDelay + ") on element chestContributionDelay.");
+        }
+        output.writeDouble(this.chestContributionDelay);
     }
 
     public deserialize(input: ICustomDataInput)

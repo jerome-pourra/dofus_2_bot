@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 import { ObjectEffect } from "./ObjectEffect";
 
-export class ObjectEffectCreature extends ObjectEffect
+export class ObjectEffectCreature extends ObjectEffect implements INetworkType
 {
 
 	public static readonly protocolId: number = 3987;
@@ -13,6 +13,33 @@ export class ObjectEffectCreature extends ObjectEffect
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ObjectEffectCreature.protocolId;
+    }
+
+    public initObjectEffectCreature(actionId: number = 0, monsterFamilyId: number = 0): ObjectEffectCreature
+    {
+        super.initObjectEffect(actionId);
+        this.monsterFamilyId = monsterFamilyId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectEffectCreature(output);
+    }
+
+    public serializeAs_ObjectEffectCreature(output: ICustomDataOutput)
+    {
+        super.serializeAs_ObjectEffect(output);
+        if(this.monsterFamilyId < 0)
+        {
+            throw new Error("Forbidden value (" + this.monsterFamilyId + ") on element monsterFamilyId.");
+        }
+        output.writeVarShort(this.monsterFamilyId);
     }
 
     public deserialize(input: ICustomDataInput)

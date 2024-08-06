@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { HumanOption } from "./HumanOption";
 
-export class HumanOptionEmote extends HumanOption
+export class HumanOptionEmote extends HumanOption implements INetworkType
 {
 
 	public static readonly protocolId: number = 7646;
@@ -14,6 +14,38 @@ export class HumanOptionEmote extends HumanOption
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return HumanOptionEmote.protocolId;
+    }
+
+    public initHumanOptionEmote(emoteId: number = 0, emoteStartTime: number = 0): HumanOptionEmote
+    {
+        this.emoteId = emoteId;
+        this.emoteStartTime = emoteStartTime;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HumanOptionEmote(output);
+    }
+
+    public serializeAs_HumanOptionEmote(output: ICustomDataOutput)
+    {
+        super.serializeAs_HumanOption(output);
+        if(this.emoteId < 0 || this.emoteId > 65535)
+        {
+            throw new Error("Forbidden value (" + this.emoteId + ") on element emoteId.");
+        }
+        output.writeShort(this.emoteId);
+        if(this.emoteStartTime < -9007199254740992 || this.emoteStartTime > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.emoteStartTime + ") on element emoteStartTime.");
+        }
+        output.writeDouble(this.emoteStartTime);
     }
 
     public deserialize(input: ICustomDataInput)

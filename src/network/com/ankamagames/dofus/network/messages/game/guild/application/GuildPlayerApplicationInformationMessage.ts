@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { GuildPlayerApplicationAbstractMessage } from "./GuildPlayerApplicationAbstractMessage";
 
-export class GuildPlayerApplicationInformationMessage extends GuildPlayerApplicationAbstractMessage
+export class GuildPlayerApplicationInformationMessage extends GuildPlayerApplicationAbstractMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 656;
@@ -21,14 +21,40 @@ export class GuildPlayerApplicationInformationMessage extends GuildPlayerApplica
         this.apply = new SocialApplicationInformation();
     }
 
+    public getMessageId()
+    {
+        return GuildPlayerApplicationInformationMessage.protocolId;
+    }
+
+    public initGuildPlayerApplicationInformationMessage(guildInformation: GuildInformations = null, apply: SocialApplicationInformation = null): GuildPlayerApplicationInformationMessage
+    {
+        this.guildInformation = guildInformation;
+        this.apply = apply;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildPlayerApplicationInformationMessage(output);
+    }
+
+    public serializeAs_GuildPlayerApplicationInformationMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_GuildPlayerApplicationAbstractMessage(output);
+        this.guildInformation.serializeAs_GuildInformations(output);
+        this.apply.serializeAs_SocialApplicationInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

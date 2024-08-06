@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { BooleanByteWrapper } from "./../../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class AllianceSummaryRequestMessage extends PaginationRequestAbstractMessage
+export class AllianceSummaryRequestMessage extends PaginationRequestAbstractMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4007;
@@ -30,14 +30,89 @@ export class AllianceSummaryRequestMessage extends PaginationRequestAbstractMess
         this.recruitmentTypeFilter = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return AllianceSummaryRequestMessage.protocolId;
+    }
+
+    public initAllianceSummaryRequestMessage(offset: number = 0, count: number = 0, filterType: number = 0, textFilter: string = "", hideFullFilter: boolean = false, followingAllianceCriteria: boolean = false, criterionFilter: Array<number> = null, sortType: number = 0, sortDescending: boolean = false, languagesFilter: Array<number> = null, recruitmentTypeFilter: Array<number> = null, minPlayerLevelFilter: number = 0, maxPlayerLevelFilter: number = 0): AllianceSummaryRequestMessage
+    {
+        super.initPaginationRequestAbstractMessage(offset,count);
+        this.filterType = filterType;
+        this.textFilter = textFilter;
+        this.hideFullFilter = hideFullFilter;
+        this.followingAllianceCriteria = followingAllianceCriteria;
+        this.criterionFilter = criterionFilter;
+        this.sortType = sortType;
+        this.sortDescending = sortDescending;
+        this.languagesFilter = languagesFilter;
+        this.recruitmentTypeFilter = recruitmentTypeFilter;
+        this.minPlayerLevelFilter = minPlayerLevelFilter;
+        this.maxPlayerLevelFilter = maxPlayerLevelFilter;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceSummaryRequestMessage(output);
+    }
+
+    public serializeAs_AllianceSummaryRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_PaginationRequestAbstractMessage(output);
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.hideFullFilter);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.followingAllianceCriteria);
+        _box0 = BooleanByteWrapper.setFlag(_box0,2,this.sortDescending);
+        output.writeByte(_box0);
+        output.writeInt(this.filterType);
+        output.writeUTF(this.textFilter);
+        output.writeShort(this.criterionFilter.length);
+        for(var _i5: number = 0; _i5 < this.criterionFilter.length; _i5++)
+        {
+            if(this.criterionFilter[_i5] < 0)
+            {
+                throw new Error("Forbidden value (" + this.criterionFilter[_i5] + ") on element 5 (starting at 1) of criterionFilter.");
+            }
+            output.writeVarInt(this.criterionFilter[_i5]);
+        }
+        output.writeByte(this.sortType);
+        output.writeShort(this.languagesFilter.length);
+        for(var _i8: number = 0; _i8 < this.languagesFilter.length; _i8++)
+        {
+            if(this.languagesFilter[_i8] < 0)
+            {
+                throw new Error("Forbidden value (" + this.languagesFilter[_i8] + ") on element 8 (starting at 1) of languagesFilter.");
+            }
+            output.writeVarInt(this.languagesFilter[_i8]);
+        }
+        output.writeShort(this.recruitmentTypeFilter.length);
+        for(var _i9: number = 0; _i9 < this.recruitmentTypeFilter.length; _i9++)
+        {
+            output.writeByte(this.recruitmentTypeFilter[_i9]);
+        }
+        if(this.minPlayerLevelFilter < 0)
+        {
+            throw new Error("Forbidden value (" + this.minPlayerLevelFilter + ") on element minPlayerLevelFilter.");
+        }
+        output.writeShort(this.minPlayerLevelFilter);
+        if(this.maxPlayerLevelFilter < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxPlayerLevelFilter + ") on element maxPlayerLevelFilter.");
+        }
+        output.writeShort(this.maxPlayerLevelFilter);
     }
 
     public deserialize(input: ICustomDataInput)

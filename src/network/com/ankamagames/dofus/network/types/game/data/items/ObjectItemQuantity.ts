@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { Item } from "./Item";
 
-export class ObjectItemQuantity extends Item
+export class ObjectItemQuantity extends Item implements INetworkType
 {
 
 	public static readonly protocolId: number = 5434;
@@ -14,6 +14,38 @@ export class ObjectItemQuantity extends Item
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ObjectItemQuantity.protocolId;
+    }
+
+    public initObjectItemQuantity(objectUID: number = 0, quantity: number = 0): ObjectItemQuantity
+    {
+        this.objectUID = objectUID;
+        this.quantity = quantity;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectItemQuantity(output);
+    }
+
+    public serializeAs_ObjectItemQuantity(output: ICustomDataOutput)
+    {
+        super.serializeAs_Item(output);
+        if(this.objectUID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+        }
+        output.writeVarInt(this.objectUID);
+        if(this.quantity < 0)
+        {
+            throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
+        }
+        output.writeVarInt(this.quantity);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class AtlasPointsInformations
+export class AtlasPointsInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 6167;
@@ -14,6 +14,33 @@ export class AtlasPointsInformations
     public constructor()
     {
         this.coords = Array<MapCoordinatesExtended>();
+    }
+
+    public getTypeId()
+    {
+        return AtlasPointsInformations.protocolId;
+    }
+
+    public initAtlasPointsInformations(type: number = 0, coords: Array<MapCoordinatesExtended> = null): AtlasPointsInformations
+    {
+        this.type = type;
+        this.coords = coords;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AtlasPointsInformations(output);
+    }
+
+    public serializeAs_AtlasPointsInformations(output: ICustomDataOutput)
+    {
+        output.writeByte(this.type);
+        output.writeShort(this.coords.length);
+        for(var _i2: number = 0; _i2 < this.coords.length; _i2++)
+        {
+            (this.coords[_i2] as MapCoordinatesExtended).serializeAs_MapCoordinatesExtended(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

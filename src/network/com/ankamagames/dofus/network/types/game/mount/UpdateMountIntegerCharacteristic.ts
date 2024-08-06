@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { UpdateMountCharacteristic } from "./UpdateMountCharacteristic";
 
-export class UpdateMountIntegerCharacteristic extends UpdateMountCharacteristic
+export class UpdateMountIntegerCharacteristic extends UpdateMountCharacteristic implements INetworkType
 {
 
 	public static readonly protocolId: number = 5600;
@@ -13,6 +13,29 @@ export class UpdateMountIntegerCharacteristic extends UpdateMountCharacteristic
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return UpdateMountIntegerCharacteristic.protocolId;
+    }
+
+    public initUpdateMountIntegerCharacteristic(type: number = 0, value: number = 0): UpdateMountIntegerCharacteristic
+    {
+        super.initUpdateMountCharacteristic(type);
+        this.value = value;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_UpdateMountIntegerCharacteristic(output);
+    }
+
+    public serializeAs_UpdateMountIntegerCharacteristic(output: ICustomDataOutput)
+    {
+        super.serializeAs_UpdateMountCharacteristic(output);
+        output.writeInt(this.value);
     }
 
     public deserialize(input: ICustomDataInput)

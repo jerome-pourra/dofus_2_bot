@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { IgnoredInformations } from "./IgnoredInformations";
 
-export class IgnoredOnlineInformations extends IgnoredInformations
+export class IgnoredOnlineInformations extends IgnoredInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 941;
@@ -18,6 +18,39 @@ export class IgnoredOnlineInformations extends IgnoredInformations
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return IgnoredOnlineInformations.protocolId;
+    }
+
+    public initIgnoredOnlineInformations(accountId: number = 0, accountTag: AccountTagInformation = null, playerId: number = 0, playerName: string = "", breed: number = 0, sex: boolean = false): IgnoredOnlineInformations
+    {
+        super.initIgnoredInformations(accountId,accountTag);
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.breed = breed;
+        this.sex = sex;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IgnoredOnlineInformations(output);
+    }
+
+    public serializeAs_IgnoredOnlineInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_IgnoredInformations(output);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeUTF(this.playerName);
+        output.writeByte(this.breed);
+        output.writeBoolean(this.sex);
     }
 
     public deserialize(input: ICustomDataInput)

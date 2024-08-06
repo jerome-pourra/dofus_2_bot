@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TeleportBuddiesMessage extends NetworkMessage
+export class TeleportBuddiesMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9554;
@@ -16,14 +16,41 @@ export class TeleportBuddiesMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TeleportBuddiesMessage.protocolId;
+    }
+
+    public initTeleportBuddiesMessage(dungeonId: number = 0): TeleportBuddiesMessage
+    {
+        this.dungeonId = dungeonId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TeleportBuddiesMessage(output);
+    }
+
+    public serializeAs_TeleportBuddiesMessage(output: ICustomDataOutput)
+    {
+        if(this.dungeonId < 0)
+        {
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element dungeonId.");
+        }
+        output.writeVarShort(this.dungeonId);
     }
 
     public deserialize(input: ICustomDataInput)

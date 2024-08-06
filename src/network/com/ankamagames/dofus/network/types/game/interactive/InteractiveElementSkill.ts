@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class InteractiveElementSkill
+export class InteractiveElementSkill implements INetworkType
 {
 
 	public static readonly protocolId: number = 2087;
@@ -13,6 +13,37 @@ export class InteractiveElementSkill
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return InteractiveElementSkill.protocolId;
+    }
+
+    public initInteractiveElementSkill(skillId: number = 0, skillInstanceUid: number = 0): InteractiveElementSkill
+    {
+        this.skillId = skillId;
+        this.skillInstanceUid = skillInstanceUid;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_InteractiveElementSkill(output);
+    }
+
+    public serializeAs_InteractiveElementSkill(output: ICustomDataOutput)
+    {
+        if(this.skillId < 0)
+        {
+            throw new Error("Forbidden value (" + this.skillId + ") on element skillId.");
+        }
+        output.writeVarInt(this.skillId);
+        if(this.skillInstanceUid < 0)
+        {
+            throw new Error("Forbidden value (" + this.skillInstanceUid + ") on element skillInstanceUid.");
+        }
+        output.writeInt(this.skillInstanceUid);
     }
 
     public deserialize(input: ICustomDataInput)

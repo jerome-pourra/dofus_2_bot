@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TaxCollectorMovementsOfflineMessage extends NetworkMessage
+export class TaxCollectorMovementsOfflineMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4833;
@@ -18,14 +18,41 @@ export class TaxCollectorMovementsOfflineMessage extends NetworkMessage
         this.movements = Array<TaxCollectorMovement>();
     }
 
+    public getMessageId()
+    {
+        return TaxCollectorMovementsOfflineMessage.protocolId;
+    }
+
+    public initTaxCollectorMovementsOfflineMessage(movements: Array<TaxCollectorMovement> = null): TaxCollectorMovementsOfflineMessage
+    {
+        this.movements = movements;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorMovementsOfflineMessage(output);
+    }
+
+    public serializeAs_TaxCollectorMovementsOfflineMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.movements.length);
+        for(var _i1: number = 0; _i1 < this.movements.length; _i1++)
+        {
+            (this.movements[_i1] as TaxCollectorMovement).serializeAs_TaxCollectorMovement(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

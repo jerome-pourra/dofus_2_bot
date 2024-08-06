@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class JobCrafterDirectoryEntryJobInfo
+export class JobCrafterDirectoryEntryJobInfo implements INetworkType
 {
 
 	public static readonly protocolId: number = 5157;
@@ -15,6 +15,45 @@ export class JobCrafterDirectoryEntryJobInfo
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return JobCrafterDirectoryEntryJobInfo.protocolId;
+    }
+
+    public initJobCrafterDirectoryEntryJobInfo(jobId: number = 0, jobLevel: number = 0, free: boolean = false, minLevel: number = 0): JobCrafterDirectoryEntryJobInfo
+    {
+        this.jobId = jobId;
+        this.jobLevel = jobLevel;
+        this.free = free;
+        this.minLevel = minLevel;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_JobCrafterDirectoryEntryJobInfo(output);
+    }
+
+    public serializeAs_JobCrafterDirectoryEntryJobInfo(output: ICustomDataOutput)
+    {
+        if(this.jobId < 0)
+        {
+            throw new Error("Forbidden value (" + this.jobId + ") on element jobId.");
+        }
+        output.writeByte(this.jobId);
+        if(this.jobLevel < 1 || this.jobLevel > 200)
+        {
+            throw new Error("Forbidden value (" + this.jobLevel + ") on element jobLevel.");
+        }
+        output.writeByte(this.jobLevel);
+        output.writeBoolean(this.free);
+        if(this.minLevel < 0 || this.minLevel > 255)
+        {
+            throw new Error("Forbidden value (" + this.minLevel + ") on element minLevel.");
+        }
+        output.writeByte(this.minLevel);
     }
 
     public deserialize(input: ICustomDataInput)

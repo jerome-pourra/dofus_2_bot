@@ -2,12 +2,32 @@ import { ICustomDataInput } from "./../../../../jerakine/network/ICustomDataInpu
 import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../jerakine/network/INetworkType";
 
-export class AbstractPlayerSearchInformation
+export class AbstractPlayerSearchInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 1300;
 
     public constructor()
+    {
+
+    }
+
+    public getTypeId()
+    {
+        return AbstractPlayerSearchInformation.protocolId;
+    }
+
+    public initAbstractPlayerSearchInformation(): AbstractPlayerSearchInformation
+    {
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AbstractPlayerSearchInformation(output);
+    }
+
+    public serializeAs_AbstractPlayerSearchInformation(output: ICustomDataOutput)
     {
 
     }

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeHandleMountsMessage extends NetworkMessage
+export class ExchangeHandleMountsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3319;
@@ -18,14 +18,47 @@ export class ExchangeHandleMountsMessage extends NetworkMessage
         this.ridesId = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return ExchangeHandleMountsMessage.protocolId;
+    }
+
+    public initExchangeHandleMountsMessage(actionType: number = 0, ridesId: Array<number> = null): ExchangeHandleMountsMessage
+    {
+        this.actionType = actionType;
+        this.ridesId = ridesId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeHandleMountsMessage(output);
+    }
+
+    public serializeAs_ExchangeHandleMountsMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.actionType);
+        output.writeShort(this.ridesId.length);
+        for(var _i2: number = 0; _i2 < this.ridesId.length; _i2++)
+        {
+            if(this.ridesId[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.ridesId[_i2] + ") on element 2 (starting at 1) of ridesId.");
+            }
+            output.writeVarInt(this.ridesId[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class AbstractContactInformations
+export class AbstractContactInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 8841;
@@ -14,6 +14,33 @@ export class AbstractContactInformations
     public constructor()
     {
         this.accountTag = new AccountTagInformation();
+    }
+
+    public getTypeId()
+    {
+        return AbstractContactInformations.protocolId;
+    }
+
+    public initAbstractContactInformations(accountId: number = 0, accountTag: AccountTagInformation = null): AbstractContactInformations
+    {
+        this.accountId = accountId;
+        this.accountTag = accountTag;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AbstractContactInformations(output);
+    }
+
+    public serializeAs_AbstractContactInformations(output: ICustomDataOutput)
+    {
+        if(this.accountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+        }
+        output.writeInt(this.accountId);
+        this.accountTag.serializeAs_AccountTagInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

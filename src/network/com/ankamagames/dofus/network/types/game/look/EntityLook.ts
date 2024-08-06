@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { SubEntity } from "./SubEntity";
 
-export class EntityLook
+export class EntityLook implements INetworkType
 {
 
 	public static readonly protocolId: number = 6640;
@@ -20,6 +20,59 @@ export class EntityLook
         this.indexedColors = Array<number>();
         this.scales = Array<number>();
         this.subentities = Array<SubEntity>();
+    }
+
+    public getTypeId()
+    {
+        return EntityLook.protocolId;
+    }
+
+    public initEntityLook(bonesId: number = 0, skins: Array<number> = null, indexedColors: Array<number> = null, scales: Array<number> = null, subentities: Array<SubEntity> = null): EntityLook
+    {
+        this.bonesId = bonesId;
+        this.skins = skins;
+        this.indexedColors = indexedColors;
+        this.scales = scales;
+        this.subentities = subentities;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_EntityLook(output);
+    }
+
+    public serializeAs_EntityLook(output: ICustomDataOutput)
+    {
+        if(this.bonesId < 0)
+        {
+            throw new Error("Forbidden value (" + this.bonesId + ") on element bonesId.");
+        }
+        output.writeVarShort(this.bonesId);
+        output.writeShort(this.skins.length);
+        for(var _i2: number = 0; _i2 < this.skins.length; _i2++)
+        {
+            if(this.skins[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.skins[_i2] + ") on element 2 (starting at 1) of skins.");
+            }
+            output.writeVarShort(this.skins[_i2]);
+        }
+        output.writeShort(this.indexedColors.length);
+        for(var _i3: number = 0; _i3 < this.indexedColors.length; _i3++)
+        {
+            output.writeInt(this.indexedColors[_i3]);
+        }
+        output.writeShort(this.scales.length);
+        for(var _i4: number = 0; _i4 < this.scales.length; _i4++)
+        {
+            output.writeVarShort(this.scales[_i4]);
+        }
+        output.writeShort(this.subentities.length);
+        for(var _i5: number = 0; _i5 < this.subentities.length; _i5++)
+        {
+            (this.subentities[_i5] as SubEntity).serializeAs_SubEntity(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

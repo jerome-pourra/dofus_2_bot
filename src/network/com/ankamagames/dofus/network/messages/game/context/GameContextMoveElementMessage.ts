@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GameContextMoveElementMessage extends NetworkMessage
+export class GameContextMoveElementMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5362;
@@ -18,14 +18,37 @@ export class GameContextMoveElementMessage extends NetworkMessage
         this.movement = new EntityMovementInformations();
     }
 
+    public getMessageId()
+    {
+        return GameContextMoveElementMessage.protocolId;
+    }
+
+    public initGameContextMoveElementMessage(movement: EntityMovementInformations = null): GameContextMoveElementMessage
+    {
+        this.movement = movement;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameContextMoveElementMessage(output);
+    }
+
+    public serializeAs_GameContextMoveElementMessage(output: ICustomDataOutput)
+    {
+        this.movement.serializeAs_EntityMovementInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

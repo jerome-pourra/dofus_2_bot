@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class CharacterDeletionErrorMessage extends NetworkMessage
+export class CharacterDeletionErrorMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4351;
@@ -16,14 +16,37 @@ export class CharacterDeletionErrorMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CharacterDeletionErrorMessage.protocolId;
+    }
+
+    public initCharacterDeletionErrorMessage(reason: number = 1): CharacterDeletionErrorMessage
+    {
+        this.reason = reason;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterDeletionErrorMessage(output);
+    }
+
+    public serializeAs_CharacterDeletionErrorMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.reason);
     }
 
     public deserialize(input: ICustomDataInput)

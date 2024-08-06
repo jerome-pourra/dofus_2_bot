@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class GameActionFightTriggerGlyphTrapMessage extends AbstractGameActionMessage
+export class GameActionFightTriggerGlyphTrapMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6199;
@@ -19,14 +19,57 @@ export class GameActionFightTriggerGlyphTrapMessage extends AbstractGameActionMe
         super();
     }
 
+    public getMessageId()
+    {
+        return GameActionFightTriggerGlyphTrapMessage.protocolId;
+    }
+
+    public initGameActionFightTriggerGlyphTrapMessage(actionId: number = 0, sourceId: number = 0, markId: number = 0, markImpactCell: number = 0, triggeringCharacterId: number = 0, triggeredSpellId: number = 0): GameActionFightTriggerGlyphTrapMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.markId = markId;
+        this.markImpactCell = markImpactCell;
+        this.triggeringCharacterId = triggeringCharacterId;
+        this.triggeredSpellId = triggeredSpellId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionFightTriggerGlyphTrapMessage(output);
+    }
+
+    public serializeAs_GameActionFightTriggerGlyphTrapMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        output.writeShort(this.markId);
+        if(this.markImpactCell < 0)
+        {
+            throw new Error("Forbidden value (" + this.markImpactCell + ") on element markImpactCell.");
+        }
+        output.writeVarShort(this.markImpactCell);
+        if(this.triggeringCharacterId < -9007199254740992 || this.triggeringCharacterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.triggeringCharacterId + ") on element triggeringCharacterId.");
+        }
+        output.writeDouble(this.triggeringCharacterId);
+        if(this.triggeredSpellId < 0)
+        {
+            throw new Error("Forbidden value (" + this.triggeredSpellId + ") on element triggeredSpellId.");
+        }
+        output.writeVarShort(this.triggeredSpellId);
     }
 
     public deserialize(input: ICustomDataInput)

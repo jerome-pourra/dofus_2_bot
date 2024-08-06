@@ -4,7 +4,7 @@ import { INetworkType } from "./../../../../jerakine/network/INetworkType";
 import { AccountTagInformation } from "./AccountTagInformation";
 import { AbstractPlayerSearchInformation } from "./AbstractPlayerSearchInformation";
 
-export class PlayerSearchTagInformation extends AbstractPlayerSearchInformation
+export class PlayerSearchTagInformation extends AbstractPlayerSearchInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 3389;
@@ -15,6 +15,28 @@ export class PlayerSearchTagInformation extends AbstractPlayerSearchInformation
     {
         super();
         this.tag = new AccountTagInformation();
+    }
+
+    public getTypeId()
+    {
+        return PlayerSearchTagInformation.protocolId;
+    }
+
+    public initPlayerSearchTagInformation(tag: AccountTagInformation = null): PlayerSearchTagInformation
+    {
+        this.tag = tag;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PlayerSearchTagInformation(output);
+    }
+
+    public serializeAs_PlayerSearchTagInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPlayerSearchInformation(output);
+        this.tag.serializeAs_AccountTagInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

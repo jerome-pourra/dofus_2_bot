@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class TitlesAndOrnamentsListMessage extends NetworkMessage
+export class TitlesAndOrnamentsListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3749;
@@ -21,14 +21,67 @@ export class TitlesAndOrnamentsListMessage extends NetworkMessage
         this.ornaments = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return TitlesAndOrnamentsListMessage.protocolId;
+    }
+
+    public initTitlesAndOrnamentsListMessage(titles: Array<number> = null, ornaments: Array<number> = null, activeTitle: number = 0, activeOrnament: number = 0): TitlesAndOrnamentsListMessage
+    {
+        this.titles = titles;
+        this.ornaments = ornaments;
+        this.activeTitle = activeTitle;
+        this.activeOrnament = activeOrnament;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TitlesAndOrnamentsListMessage(output);
+    }
+
+    public serializeAs_TitlesAndOrnamentsListMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.titles.length);
+        for(var _i1: number = 0; _i1 < this.titles.length; _i1++)
+        {
+            if(this.titles[_i1] < 0)
+            {
+                throw new Error("Forbidden value (" + this.titles[_i1] + ") on element 1 (starting at 1) of titles.");
+            }
+            output.writeVarShort(this.titles[_i1]);
+        }
+        output.writeShort(this.ornaments.length);
+        for(var _i2: number = 0; _i2 < this.ornaments.length; _i2++)
+        {
+            if(this.ornaments[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.ornaments[_i2] + ") on element 2 (starting at 1) of ornaments.");
+            }
+            output.writeVarShort(this.ornaments[_i2]);
+        }
+        if(this.activeTitle < 0)
+        {
+            throw new Error("Forbidden value (" + this.activeTitle + ") on element activeTitle.");
+        }
+        output.writeVarShort(this.activeTitle);
+        if(this.activeOrnament < 0)
+        {
+            throw new Error("Forbidden value (" + this.activeOrnament + ") on element activeOrnament.");
+        }
+        output.writeVarShort(this.activeOrnament);
     }
 
     public deserialize(input: ICustomDataInput)

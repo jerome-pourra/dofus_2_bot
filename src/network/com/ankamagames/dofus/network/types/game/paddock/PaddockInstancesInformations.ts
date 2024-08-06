@@ -5,7 +5,7 @@ import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { PaddockBuyableInformations } from "./PaddockBuyableInformations";
 import { PaddockInformations } from "./PaddockInformations";
 
-export class PaddockInstancesInformations extends PaddockInformations
+export class PaddockInstancesInformations extends PaddockInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 4571;
@@ -16,6 +16,34 @@ export class PaddockInstancesInformations extends PaddockInformations
     {
         super();
         this.paddocks = Array<PaddockBuyableInformations>();
+    }
+
+    public getTypeId()
+    {
+        return PaddockInstancesInformations.protocolId;
+    }
+
+    public initPaddockInstancesInformations(maxOutdoorMount: number = 0, maxItems: number = 0, paddocks: Array<PaddockBuyableInformations> = null): PaddockInstancesInformations
+    {
+        super.initPaddockInformations(maxOutdoorMount,maxItems);
+        this.paddocks = paddocks;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PaddockInstancesInformations(output);
+    }
+
+    public serializeAs_PaddockInstancesInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_PaddockInformations(output);
+        output.writeShort(this.paddocks.length);
+        for(var _i1: number = 0; _i1 < this.paddocks.length; _i1++)
+        {
+            output.writeShort((this.paddocks[_i1] as PaddockBuyableInformations).getTypeId());
+            (this.paddocks[_i1] as PaddockBuyableInformations).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

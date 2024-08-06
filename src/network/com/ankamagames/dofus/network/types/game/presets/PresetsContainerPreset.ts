@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { Preset } from "./Preset";
 
-export class PresetsContainerPreset extends Preset
+export class PresetsContainerPreset extends Preset implements INetworkType
 {
 
 	public static readonly protocolId: number = 5695;
@@ -15,6 +15,34 @@ export class PresetsContainerPreset extends Preset
     {
         super();
         this.presets = Array<Preset>();
+    }
+
+    public getTypeId()
+    {
+        return PresetsContainerPreset.protocolId;
+    }
+
+    public initPresetsContainerPreset(id: number = 0, presets: Array<Preset> = null): PresetsContainerPreset
+    {
+        super.initPreset(id);
+        this.presets = presets;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PresetsContainerPreset(output);
+    }
+
+    public serializeAs_PresetsContainerPreset(output: ICustomDataOutput)
+    {
+        super.serializeAs_Preset(output);
+        output.writeShort(this.presets.length);
+        for(var _i1: number = 0; _i1 < this.presets.length; _i1++)
+        {
+            output.writeShort((this.presets[_i1] as Preset).getTypeId());
+            (this.presets[_i1] as Preset).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class NotificationByServerMessage extends NetworkMessage
+export class NotificationByServerMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3884;
@@ -19,14 +19,49 @@ export class NotificationByServerMessage extends NetworkMessage
         this.parameters = Array<string>();
     }
 
+    public getMessageId()
+    {
+        return NotificationByServerMessage.protocolId;
+    }
+
+    public initNotificationByServerMessage(id: number = 0, parameters: Array<string> = null, forceOpen: boolean = false): NotificationByServerMessage
+    {
+        this.id = id;
+        this.parameters = parameters;
+        this.forceOpen = forceOpen;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_NotificationByServerMessage(output);
+    }
+
+    public serializeAs_NotificationByServerMessage(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarShort(this.id);
+        output.writeShort(this.parameters.length);
+        for(var _i2: number = 0; _i2 < this.parameters.length; _i2++)
+        {
+            output.writeUTF(this.parameters[_i2]);
+        }
+        output.writeBoolean(this.forceOpen);
     }
 
     public deserialize(input: ICustomDataInput)

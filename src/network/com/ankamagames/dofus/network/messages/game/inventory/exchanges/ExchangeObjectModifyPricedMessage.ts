@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { ExchangeObjectMovePricedMessage } from "./ExchangeObjectMovePricedMessage";
 
-export class ExchangeObjectModifyPricedMessage extends ExchangeObjectMovePricedMessage
+export class ExchangeObjectModifyPricedMessage extends ExchangeObjectMovePricedMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1058;
@@ -14,14 +14,37 @@ export class ExchangeObjectModifyPricedMessage extends ExchangeObjectMovePricedM
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeObjectModifyPricedMessage.protocolId;
+    }
+
+    public initExchangeObjectModifyPricedMessage(objectUID: number = 0, quantity: number = 0, price: number = 0): ExchangeObjectModifyPricedMessage
+    {
+        super.initExchangeObjectMovePricedMessage(objectUID,quantity,price);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeObjectModifyPricedMessage(output);
+    }
+
+    public serializeAs_ExchangeObjectModifyPricedMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ExchangeObjectMovePricedMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

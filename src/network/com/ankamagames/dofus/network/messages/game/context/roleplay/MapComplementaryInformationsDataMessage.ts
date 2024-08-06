@@ -12,7 +12,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class MapComplementaryInformationsDataMessage extends NetworkMessage
+export class MapComplementaryInformationsDataMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9792;
@@ -40,14 +40,90 @@ export class MapComplementaryInformationsDataMessage extends NetworkMessage
         this.fightStartPositions = new FightStartingPositions();
     }
 
+    public getMessageId()
+    {
+        return MapComplementaryInformationsDataMessage.protocolId;
+    }
+
+    public initMapComplementaryInformationsDataMessage(subAreaId: number = 0, mapId: number = 0, houses: Array<HouseInformations> = null, actors: Array<GameRolePlayActorInformations> = null, interactiveElements: Array<InteractiveElement> = null, statedElements: Array<StatedElement> = null, obstacles: Array<MapObstacle> = null, fights: Array<FightCommonInformations> = null, hasAggressiveMonsters: boolean = false, fightStartPositions: FightStartingPositions = null): MapComplementaryInformationsDataMessage
+    {
+        this.subAreaId = subAreaId;
+        this.mapId = mapId;
+        this.houses = houses;
+        this.actors = actors;
+        this.interactiveElements = interactiveElements;
+        this.statedElements = statedElements;
+        this.obstacles = obstacles;
+        this.fights = fights;
+        this.hasAggressiveMonsters = hasAggressiveMonsters;
+        this.fightStartPositions = fightStartPositions;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MapComplementaryInformationsDataMessage(output);
+    }
+
+    public serializeAs_MapComplementaryInformationsDataMessage(output: ICustomDataOutput)
+    {
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        output.writeShort(this.houses.length);
+        for(var _i3: number = 0; _i3 < this.houses.length; _i3++)
+        {
+            output.writeShort((this.houses[_i3] as HouseInformations).getTypeId());
+            (this.houses[_i3] as HouseInformations).serialize(output);
+        }
+        output.writeShort(this.actors.length);
+        for(var _i4: number = 0; _i4 < this.actors.length; _i4++)
+        {
+            output.writeShort((this.actors[_i4] as GameRolePlayActorInformations).getTypeId());
+            (this.actors[_i4] as GameRolePlayActorInformations).serialize(output);
+        }
+        output.writeShort(this.interactiveElements.length);
+        for(var _i5: number = 0; _i5 < this.interactiveElements.length; _i5++)
+        {
+            output.writeShort((this.interactiveElements[_i5] as InteractiveElement).getTypeId());
+            (this.interactiveElements[_i5] as InteractiveElement).serialize(output);
+        }
+        output.writeShort(this.statedElements.length);
+        for(var _i6: number = 0; _i6 < this.statedElements.length; _i6++)
+        {
+            (this.statedElements[_i6] as StatedElement).serializeAs_StatedElement(output);
+        }
+        output.writeShort(this.obstacles.length);
+        for(var _i7: number = 0; _i7 < this.obstacles.length; _i7++)
+        {
+            (this.obstacles[_i7] as MapObstacle).serializeAs_MapObstacle(output);
+        }
+        output.writeShort(this.fights.length);
+        for(var _i8: number = 0; _i8 < this.fights.length; _i8++)
+        {
+            (this.fights[_i8] as FightCommonInformations).serializeAs_FightCommonInformations(output);
+        }
+        output.writeBoolean(this.hasAggressiveMonsters);
+        this.fightStartPositions.serializeAs_FightStartingPositions(output);
     }
 
     public deserialize(input: ICustomDataInput)

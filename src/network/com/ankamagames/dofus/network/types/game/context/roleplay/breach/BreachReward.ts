@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class BreachReward
+export class BreachReward implements INetworkType
 {
 
 	public static readonly protocolId: number = 3273;
@@ -16,6 +16,47 @@ export class BreachReward
     public constructor()
     {
         this.buyLocks = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return BreachReward.protocolId;
+    }
+
+    public initBreachReward(id: number = 0, buyLocks: Array<number> = null, buyCriterion: string = "", remainingQty: number = 0, price: number = 0): BreachReward
+    {
+        this.id = id;
+        this.buyLocks = buyLocks;
+        this.buyCriterion = buyCriterion;
+        this.remainingQty = remainingQty;
+        this.price = price;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachReward(output);
+    }
+
+    public serializeAs_BreachReward(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarInt(this.id);
+        output.writeShort(this.buyLocks.length);
+        for(var _i2: number = 0; _i2 < this.buyLocks.length; _i2++)
+        {
+            output.writeByte(this.buyLocks[_i2]);
+        }
+        output.writeUTF(this.buyCriterion);
+        output.writeVarInt(this.remainingQty);
+        if(this.price < 0)
+        {
+            throw new Error("Forbidden value (" + this.price + ") on element price.");
+        }
+        output.writeVarInt(this.price);
     }
 
     public deserialize(input: ICustomDataInput)

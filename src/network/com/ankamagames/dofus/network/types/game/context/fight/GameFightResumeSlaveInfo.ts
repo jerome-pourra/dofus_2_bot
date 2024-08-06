@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { GameFightSpellCooldown } from "./GameFightSpellCooldown";
 
-export class GameFightResumeSlaveInfo
+export class GameFightResumeSlaveInfo implements INetworkType
 {
 
 	public static readonly protocolId: number = 6502;
@@ -16,6 +16,49 @@ export class GameFightResumeSlaveInfo
     public constructor()
     {
         this.spellCooldowns = Array<GameFightSpellCooldown>();
+    }
+
+    public getTypeId()
+    {
+        return GameFightResumeSlaveInfo.protocolId;
+    }
+
+    public initGameFightResumeSlaveInfo(slaveId: number = 0, spellCooldowns: Array<GameFightSpellCooldown> = null, summonCount: number = 0, bombCount: number = 0): GameFightResumeSlaveInfo
+    {
+        this.slaveId = slaveId;
+        this.spellCooldowns = spellCooldowns;
+        this.summonCount = summonCount;
+        this.bombCount = bombCount;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightResumeSlaveInfo(output);
+    }
+
+    public serializeAs_GameFightResumeSlaveInfo(output: ICustomDataOutput)
+    {
+        if(this.slaveId < -9007199254740992 || this.slaveId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.slaveId + ") on element slaveId.");
+        }
+        output.writeDouble(this.slaveId);
+        output.writeShort(this.spellCooldowns.length);
+        for(var _i2: number = 0; _i2 < this.spellCooldowns.length; _i2++)
+        {
+            (this.spellCooldowns[_i2] as GameFightSpellCooldown).serializeAs_GameFightSpellCooldown(output);
+        }
+        if(this.summonCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.summonCount + ") on element summonCount.");
+        }
+        output.writeByte(this.summonCount);
+        if(this.bombCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.bombCount + ") on element bombCount.");
+        }
+        output.writeByte(this.bombCount);
     }
 
     public deserialize(input: ICustomDataInput)

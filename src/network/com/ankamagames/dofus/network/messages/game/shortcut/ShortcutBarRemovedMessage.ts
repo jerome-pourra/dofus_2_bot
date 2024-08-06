@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class ShortcutBarRemovedMessage extends NetworkMessage
+export class ShortcutBarRemovedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8757;
@@ -17,14 +17,43 @@ export class ShortcutBarRemovedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ShortcutBarRemovedMessage.protocolId;
+    }
+
+    public initShortcutBarRemovedMessage(barType: number = 0, slot: number = 0): ShortcutBarRemovedMessage
+    {
+        this.barType = barType;
+        this.slot = slot;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ShortcutBarRemovedMessage(output);
+    }
+
+    public serializeAs_ShortcutBarRemovedMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.barType);
+        if(this.slot < 0 || this.slot > 99)
+        {
+            throw new Error("Forbidden value (" + this.slot + ") on element slot.");
+        }
+        output.writeByte(this.slot);
     }
 
     public deserialize(input: ICustomDataInput)

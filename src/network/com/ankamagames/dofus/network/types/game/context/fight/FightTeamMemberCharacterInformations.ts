@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { FightTeamMemberInformations } from "./FightTeamMemberInformations";
 
-export class FightTeamMemberCharacterInformations extends FightTeamMemberInformations
+export class FightTeamMemberCharacterInformations extends FightTeamMemberInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 4535;
@@ -14,6 +14,35 @@ export class FightTeamMemberCharacterInformations extends FightTeamMemberInforma
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return FightTeamMemberCharacterInformations.protocolId;
+    }
+
+    public initFightTeamMemberCharacterInformations(id: number = 0, name: string = "", level: number = 0): FightTeamMemberCharacterInformations
+    {
+        super.initFightTeamMemberInformations(id);
+        this.name = name;
+        this.level = level;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightTeamMemberCharacterInformations(output);
+    }
+
+    public serializeAs_FightTeamMemberCharacterInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_FightTeamMemberInformations(output);
+        output.writeUTF(this.name);
+        if(this.level < 0)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeVarShort(this.level);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { IdentificationFailedMessage } from "./IdentificationFailedMessage";
 
-export class IdentificationFailedForBadVersionMessage extends IdentificationFailedMessage
+export class IdentificationFailedForBadVersionMessage extends IdentificationFailedMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4124;
@@ -18,14 +18,39 @@ export class IdentificationFailedForBadVersionMessage extends IdentificationFail
         this.requiredVersion = new Version();
     }
 
+    public getMessageId()
+    {
+        return IdentificationFailedForBadVersionMessage.protocolId;
+    }
+
+    public initIdentificationFailedForBadVersionMessage(reason: number = 99, requiredVersion: Version = null): IdentificationFailedForBadVersionMessage
+    {
+        super.initIdentificationFailedMessage(reason);
+        this.requiredVersion = requiredVersion;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IdentificationFailedForBadVersionMessage(output);
+    }
+
+    public serializeAs_IdentificationFailedForBadVersionMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_IdentificationFailedMessage(output);
+        this.requiredVersion.serializeAs_Version(output);
     }
 
     public deserialize(input: ICustomDataInput)

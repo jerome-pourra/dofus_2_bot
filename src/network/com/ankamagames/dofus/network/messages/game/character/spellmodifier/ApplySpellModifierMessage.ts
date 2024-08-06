@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ApplySpellModifierMessage extends NetworkMessage
+export class ApplySpellModifierMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1373;
@@ -19,14 +19,43 @@ export class ApplySpellModifierMessage extends NetworkMessage
         this.modifier = new SpellModifierMessage();
     }
 
+    public getMessageId()
+    {
+        return ApplySpellModifierMessage.protocolId;
+    }
+
+    public initApplySpellModifierMessage(actorId: number = 0, modifier: SpellModifierMessage = null): ApplySpellModifierMessage
+    {
+        this.actorId = actorId;
+        this.modifier = modifier;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ApplySpellModifierMessage(output);
+    }
+
+    public serializeAs_ApplySpellModifierMessage(output: ICustomDataOutput)
+    {
+        if(this.actorId < -9007199254740992 || this.actorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.actorId + ") on element actorId.");
+        }
+        output.writeDouble(this.actorId);
+        this.modifier.serializeAs_SpellModifierMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

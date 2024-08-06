@@ -8,7 +8,7 @@ import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessa
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 import { BooleanByteWrapper } from "./../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class BasicWhoIsMessage extends NetworkMessage
+export class BasicWhoIsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8673;
@@ -33,14 +33,74 @@ export class BasicWhoIsMessage extends NetworkMessage
         this.socialGroups = Array<AbstractSocialGroupInfos>();
     }
 
+    public getMessageId()
+    {
+        return BasicWhoIsMessage.protocolId;
+    }
+
+    public initBasicWhoIsMessage(self: boolean = false, position: number = -1, accountTag: AccountTagInformation = null, accountId: number = 0, playerName: string = "", playerId: number = 0, areaId: number = 0, serverId: number = 0, originServerId: number = 0, socialGroups: Array<AbstractSocialGroupInfos> = null, verbose: boolean = false, playerState: number = 99): BasicWhoIsMessage
+    {
+        this.self = self;
+        this.position = position;
+        this.accountTag = accountTag;
+        this.accountId = accountId;
+        this.playerName = playerName;
+        this.playerId = playerId;
+        this.areaId = areaId;
+        this.serverId = serverId;
+        this.originServerId = originServerId;
+        this.socialGroups = socialGroups;
+        this.verbose = verbose;
+        this.playerState = playerState;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BasicWhoIsMessage(output);
+    }
+
+    public serializeAs_BasicWhoIsMessage(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.self);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.verbose);
+        output.writeByte(_box0);
+        output.writeByte(this.position);
+        this.accountTag.serializeAs_AccountTagInformation(output);
+        if(this.accountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+        }
+        output.writeInt(this.accountId);
+        output.writeUTF(this.playerName);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeShort(this.areaId);
+        output.writeShort(this.serverId);
+        output.writeShort(this.originServerId);
+        output.writeShort(this.socialGroups.length);
+        for(var _i10: number = 0; _i10 < this.socialGroups.length; _i10++)
+        {
+            output.writeShort((this.socialGroups[_i10] as AbstractSocialGroupInfos).getTypeId());
+            (this.socialGroups[_i10] as AbstractSocialGroupInfos).serialize(output);
+        }
+        output.writeByte(this.playerState);
     }
 
     public deserialize(input: ICustomDataInput)

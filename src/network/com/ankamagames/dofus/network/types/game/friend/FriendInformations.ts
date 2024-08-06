@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { AbstractContactInformations } from "./AbstractContactInformations";
 
-export class FriendInformations extends AbstractContactInformations
+export class FriendInformations extends AbstractContactInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 861;
@@ -18,6 +18,41 @@ export class FriendInformations extends AbstractContactInformations
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return FriendInformations.protocolId;
+    }
+
+    public initFriendInformations(accountId: number = 0, accountTag: AccountTagInformation = null, playerState: number = 99, lastConnection: number = 0, achievementPoints: number = 0, leagueId: number = 0, ladderPosition: number = 0): FriendInformations
+    {
+        super.initAbstractContactInformations(accountId,accountTag);
+        this.playerState = playerState;
+        this.lastConnection = lastConnection;
+        this.achievementPoints = achievementPoints;
+        this.leagueId = leagueId;
+        this.ladderPosition = ladderPosition;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FriendInformations(output);
+    }
+
+    public serializeAs_FriendInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractContactInformations(output);
+        output.writeByte(this.playerState);
+        if(this.lastConnection < 0)
+        {
+            throw new Error("Forbidden value (" + this.lastConnection + ") on element lastConnection.");
+        }
+        output.writeVarShort(this.lastConnection);
+        output.writeInt(this.achievementPoints);
+        output.writeVarShort(this.leagueId);
+        output.writeInt(this.ladderPosition);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class InteractiveUseEndedMessage extends NetworkMessage
+export class InteractiveUseEndedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2897;
@@ -17,14 +17,47 @@ export class InteractiveUseEndedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return InteractiveUseEndedMessage.protocolId;
+    }
+
+    public initInteractiveUseEndedMessage(elemId: number = 0, skillId: number = 0): InteractiveUseEndedMessage
+    {
+        this.elemId = elemId;
+        this.skillId = skillId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_InteractiveUseEndedMessage(output);
+    }
+
+    public serializeAs_InteractiveUseEndedMessage(output: ICustomDataOutput)
+    {
+        if(this.elemId < 0)
+        {
+            throw new Error("Forbidden value (" + this.elemId + ") on element elemId.");
+        }
+        output.writeVarInt(this.elemId);
+        if(this.skillId < 0)
+        {
+            throw new Error("Forbidden value (" + this.skillId + ") on element skillId.");
+        }
+        output.writeVarShort(this.skillId);
     }
 
     public deserialize(input: ICustomDataInput)

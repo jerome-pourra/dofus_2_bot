@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GameEntityDispositionMessage extends NetworkMessage
+export class GameEntityDispositionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4;
@@ -18,14 +18,37 @@ export class GameEntityDispositionMessage extends NetworkMessage
         this.disposition = new IdentifiedEntityDispositionInformations();
     }
 
+    public getMessageId()
+    {
+        return GameEntityDispositionMessage.protocolId;
+    }
+
+    public initGameEntityDispositionMessage(disposition: IdentifiedEntityDispositionInformations = null): GameEntityDispositionMessage
+    {
+        this.disposition = disposition;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameEntityDispositionMessage(output);
+    }
+
+    public serializeAs_GameEntityDispositionMessage(output: ICustomDataOutput)
+    {
+        this.disposition.serializeAs_IdentifiedEntityDispositionInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

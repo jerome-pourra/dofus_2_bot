@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 import { ObjectEffect } from "./ObjectEffect";
 
-export class ObjectEffectMinMax extends ObjectEffect
+export class ObjectEffectMinMax extends ObjectEffect implements INetworkType
 {
 
 	public static readonly protocolId: number = 843;
@@ -14,6 +14,39 @@ export class ObjectEffectMinMax extends ObjectEffect
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ObjectEffectMinMax.protocolId;
+    }
+
+    public initObjectEffectMinMax(actionId: number = 0, min: number = 0, max: number = 0): ObjectEffectMinMax
+    {
+        super.initObjectEffect(actionId);
+        this.min = min;
+        this.max = max;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectEffectMinMax(output);
+    }
+
+    public serializeAs_ObjectEffectMinMax(output: ICustomDataOutput)
+    {
+        super.serializeAs_ObjectEffect(output);
+        if(this.min < 0)
+        {
+            throw new Error("Forbidden value (" + this.min + ") on element min.");
+        }
+        output.writeVarInt(this.min);
+        if(this.max < 0)
+        {
+            throw new Error("Forbidden value (" + this.max + ") on element max.");
+        }
+        output.writeVarInt(this.max);
     }
 
     public deserialize(input: ICustomDataInput)

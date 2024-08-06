@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class QuestObjectiveInformations
+export class QuestObjectiveInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 7248;
@@ -14,6 +14,39 @@ export class QuestObjectiveInformations
     public constructor()
     {
         this.dialogParams = Array<string>();
+    }
+
+    public getTypeId()
+    {
+        return QuestObjectiveInformations.protocolId;
+    }
+
+    public initQuestObjectiveInformations(objectiveId: number = 0, objectiveStatus: boolean = false, dialogParams: Array<string> = null): QuestObjectiveInformations
+    {
+        this.objectiveId = objectiveId;
+        this.objectiveStatus = objectiveStatus;
+        this.dialogParams = dialogParams;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_QuestObjectiveInformations(output);
+    }
+
+    public serializeAs_QuestObjectiveInformations(output: ICustomDataOutput)
+    {
+        if(this.objectiveId < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectiveId + ") on element objectiveId.");
+        }
+        output.writeVarShort(this.objectiveId);
+        output.writeBoolean(this.objectiveStatus);
+        output.writeShort(this.dialogParams.length);
+        for(var _i3: number = 0; _i3 < this.dialogParams.length; _i3++)
+        {
+            output.writeUTF(this.dialogParams[_i3]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class SocialEmblem
+export class SocialEmblem implements INetworkType
 {
 
 	public static readonly protocolId: number = 6817;
@@ -15,6 +15,41 @@ export class SocialEmblem
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return SocialEmblem.protocolId;
+    }
+
+    public initSocialEmblem(symbolShape: number = 0, symbolColor: number = 0, backgroundShape: number = 0, backgroundColor: number = 0): SocialEmblem
+    {
+        this.symbolShape = symbolShape;
+        this.symbolColor = symbolColor;
+        this.backgroundShape = backgroundShape;
+        this.backgroundColor = backgroundColor;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SocialEmblem(output);
+    }
+
+    public serializeAs_SocialEmblem(output: ICustomDataOutput)
+    {
+        if(this.symbolShape < 0)
+        {
+            throw new Error("Forbidden value (" + this.symbolShape + ") on element symbolShape.");
+        }
+        output.writeVarShort(this.symbolShape);
+        output.writeInt(this.symbolColor);
+        if(this.backgroundShape < 0)
+        {
+            throw new Error("Forbidden value (" + this.backgroundShape + ") on element backgroundShape.");
+        }
+        output.writeByte(this.backgroundShape);
+        output.writeInt(this.backgroundColor);
     }
 
     public deserialize(input: ICustomDataInput)

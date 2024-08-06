@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeOfflineSoldItemsMessage extends NetworkMessage
+export class ExchangeOfflineSoldItemsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2524;
@@ -18,14 +18,41 @@ export class ExchangeOfflineSoldItemsMessage extends NetworkMessage
         this.bidHouseItems = Array<ObjectItemQuantityPriceDateEffects>();
     }
 
+    public getMessageId()
+    {
+        return ExchangeOfflineSoldItemsMessage.protocolId;
+    }
+
+    public initExchangeOfflineSoldItemsMessage(bidHouseItems: Array<ObjectItemQuantityPriceDateEffects> = null): ExchangeOfflineSoldItemsMessage
+    {
+        this.bidHouseItems = bidHouseItems;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeOfflineSoldItemsMessage(output);
+    }
+
+    public serializeAs_ExchangeOfflineSoldItemsMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.bidHouseItems.length);
+        for(var _i1: number = 0; _i1 < this.bidHouseItems.length; _i1++)
+        {
+            (this.bidHouseItems[_i1] as ObjectItemQuantityPriceDateEffects).serializeAs_ObjectItemQuantityPriceDateEffects(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

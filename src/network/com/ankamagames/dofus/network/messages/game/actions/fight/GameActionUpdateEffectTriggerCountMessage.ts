@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameActionUpdateEffectTriggerCountMessage extends NetworkMessage
+export class GameActionUpdateEffectTriggerCountMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6014;
@@ -18,14 +18,41 @@ export class GameActionUpdateEffectTriggerCountMessage extends NetworkMessage
         this.targetIds = Array<GameFightEffectTriggerCount>();
     }
 
+    public getMessageId()
+    {
+        return GameActionUpdateEffectTriggerCountMessage.protocolId;
+    }
+
+    public initGameActionUpdateEffectTriggerCountMessage(targetIds: Array<GameFightEffectTriggerCount> = null): GameActionUpdateEffectTriggerCountMessage
+    {
+        this.targetIds = targetIds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionUpdateEffectTriggerCountMessage(output);
+    }
+
+    public serializeAs_GameActionUpdateEffectTriggerCountMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.targetIds.length);
+        for(var _i1: number = 0; _i1 < this.targetIds.length; _i1++)
+        {
+            (this.targetIds[_i1] as GameFightEffectTriggerCount).serializeAs_GameFightEffectTriggerCount(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

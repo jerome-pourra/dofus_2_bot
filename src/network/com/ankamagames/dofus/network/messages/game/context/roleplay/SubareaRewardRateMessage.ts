@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class SubareaRewardRateMessage extends NetworkMessage
+export class SubareaRewardRateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1678;
@@ -16,14 +16,37 @@ export class SubareaRewardRateMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return SubareaRewardRateMessage.protocolId;
+    }
+
+    public initSubareaRewardRateMessage(subAreaRate: number = 0): SubareaRewardRateMessage
+    {
+        this.subAreaRate = subAreaRate;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SubareaRewardRateMessage(output);
+    }
+
+    public serializeAs_SubareaRewardRateMessage(output: ICustomDataOutput)
+    {
+        output.writeVarShort(this.subAreaRate);
     }
 
     public deserialize(input: ICustomDataInput)

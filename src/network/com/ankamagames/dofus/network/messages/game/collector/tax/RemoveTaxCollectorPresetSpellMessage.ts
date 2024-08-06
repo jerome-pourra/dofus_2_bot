@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class RemoveTaxCollectorPresetSpellMessage extends NetworkMessage
+export class RemoveTaxCollectorPresetSpellMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5781;
@@ -19,14 +19,43 @@ export class RemoveTaxCollectorPresetSpellMessage extends NetworkMessage
         this.presetId = new Uuid();
     }
 
+    public getMessageId()
+    {
+        return RemoveTaxCollectorPresetSpellMessage.protocolId;
+    }
+
+    public initRemoveTaxCollectorPresetSpellMessage(presetId: Uuid = null, slot: number = 0): RemoveTaxCollectorPresetSpellMessage
+    {
+        this.presetId = presetId;
+        this.slot = slot;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_RemoveTaxCollectorPresetSpellMessage(output);
+    }
+
+    public serializeAs_RemoveTaxCollectorPresetSpellMessage(output: ICustomDataOutput)
+    {
+        this.presetId.serializeAs_Uuid(output);
+        if(this.slot < 0)
+        {
+            throw new Error("Forbidden value (" + this.slot + ") on element slot.");
+        }
+        output.writeByte(this.slot);
     }
 
     public deserialize(input: ICustomDataInput)

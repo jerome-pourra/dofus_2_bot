@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlayDelayedActionFinishedMessage extends NetworkMessage
+export class GameRolePlayDelayedActionFinishedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7896;
@@ -17,14 +17,43 @@ export class GameRolePlayDelayedActionFinishedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlayDelayedActionFinishedMessage.protocolId;
+    }
+
+    public initGameRolePlayDelayedActionFinishedMessage(delayedCharacterId: number = 0, delayTypeId: number = 0): GameRolePlayDelayedActionFinishedMessage
+    {
+        this.delayedCharacterId = delayedCharacterId;
+        this.delayTypeId = delayTypeId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayDelayedActionFinishedMessage(output);
+    }
+
+    public serializeAs_GameRolePlayDelayedActionFinishedMessage(output: ICustomDataOutput)
+    {
+        if(this.delayedCharacterId < -9007199254740992 || this.delayedCharacterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.delayedCharacterId + ") on element delayedCharacterId.");
+        }
+        output.writeDouble(this.delayedCharacterId);
+        output.writeByte(this.delayTypeId);
     }
 
     public deserialize(input: ICustomDataInput)

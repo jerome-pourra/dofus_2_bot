@@ -5,7 +5,7 @@ import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessa
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 import { BooleanByteWrapper } from "./../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class GameActionItemConsumedMessage extends NetworkMessage
+export class GameActionItemConsumedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5525;
@@ -19,14 +19,47 @@ export class GameActionItemConsumedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameActionItemConsumedMessage.protocolId;
+    }
+
+    public initGameActionItemConsumedMessage(success: boolean = false, actionId: number = 0, automaticAction: boolean = false): GameActionItemConsumedMessage
+    {
+        this.success = success;
+        this.actionId = actionId;
+        this.automaticAction = automaticAction;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionItemConsumedMessage(output);
+    }
+
+    public serializeAs_GameActionItemConsumedMessage(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.success);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.automaticAction);
+        output.writeByte(_box0);
+        if(this.actionId < 0)
+        {
+            throw new Error("Forbidden value (" + this.actionId + ") on element actionId.");
+        }
+        output.writeInt(this.actionId);
     }
 
     public deserialize(input: ICustomDataInput)

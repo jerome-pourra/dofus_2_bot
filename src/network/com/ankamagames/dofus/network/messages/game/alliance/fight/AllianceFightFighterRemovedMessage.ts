@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceFightFighterRemovedMessage extends NetworkMessage
+export class AllianceFightFighterRemovedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 944;
@@ -19,14 +19,43 @@ export class AllianceFightFighterRemovedMessage extends NetworkMessage
         this.allianceFightInfo = new SocialFightInfo();
     }
 
+    public getMessageId()
+    {
+        return AllianceFightFighterRemovedMessage.protocolId;
+    }
+
+    public initAllianceFightFighterRemovedMessage(allianceFightInfo: SocialFightInfo = null, fighterId: number = 0): AllianceFightFighterRemovedMessage
+    {
+        this.allianceFightInfo = allianceFightInfo;
+        this.fighterId = fighterId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceFightFighterRemovedMessage(output);
+    }
+
+    public serializeAs_AllianceFightFighterRemovedMessage(output: ICustomDataOutput)
+    {
+        this.allianceFightInfo.serializeAs_SocialFightInfo(output);
+        if(this.fighterId < 0 || this.fighterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.fighterId + ") on element fighterId.");
+        }
+        output.writeVarLong(this.fighterId);
     }
 
     public deserialize(input: ICustomDataInput)

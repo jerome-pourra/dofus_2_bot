@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class OrnamentSelectErrorMessage extends NetworkMessage
+export class OrnamentSelectErrorMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6401;
@@ -16,14 +16,37 @@ export class OrnamentSelectErrorMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return OrnamentSelectErrorMessage.protocolId;
+    }
+
+    public initOrnamentSelectErrorMessage(reason: number = 0): OrnamentSelectErrorMessage
+    {
+        this.reason = reason;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_OrnamentSelectErrorMessage(output);
+    }
+
+    public serializeAs_OrnamentSelectErrorMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.reason);
     }
 
     public deserialize(input: ICustomDataInput)

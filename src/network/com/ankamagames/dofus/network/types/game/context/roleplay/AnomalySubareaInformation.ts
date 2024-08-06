@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class AnomalySubareaInformation
+export class AnomalySubareaInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 4038;
@@ -15,6 +15,41 @@ export class AnomalySubareaInformation
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return AnomalySubareaInformation.protocolId;
+    }
+
+    public initAnomalySubareaInformation(subAreaId: number = 0, rewardRate: number = 0, hasAnomaly: boolean = false, anomalyClosingTime: number = 0): AnomalySubareaInformation
+    {
+        this.subAreaId = subAreaId;
+        this.rewardRate = rewardRate;
+        this.hasAnomaly = hasAnomaly;
+        this.anomalyClosingTime = anomalyClosingTime;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AnomalySubareaInformation(output);
+    }
+
+    public serializeAs_AnomalySubareaInformation(output: ICustomDataOutput)
+    {
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
+        output.writeVarShort(this.rewardRate);
+        output.writeBoolean(this.hasAnomaly);
+        if(this.anomalyClosingTime < 0 || this.anomalyClosingTime > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.anomalyClosingTime + ") on element anomalyClosingTime.");
+        }
+        output.writeVarLong(this.anomalyClosingTime);
     }
 
     public deserialize(input: ICustomDataInput)

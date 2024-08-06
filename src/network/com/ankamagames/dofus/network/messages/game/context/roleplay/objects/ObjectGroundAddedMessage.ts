@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class ObjectGroundAddedMessage extends NetworkMessage
+export class ObjectGroundAddedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3774;
@@ -17,14 +17,47 @@ export class ObjectGroundAddedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ObjectGroundAddedMessage.protocolId;
+    }
+
+    public initObjectGroundAddedMessage(cellId: number = 0, objectGID: number = 0): ObjectGroundAddedMessage
+    {
+        this.cellId = cellId;
+        this.objectGID = objectGID;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectGroundAddedMessage(output);
+    }
+
+    public serializeAs_ObjectGroundAddedMessage(output: ICustomDataOutput)
+    {
+        if(this.cellId < 0 || this.cellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.cellId + ") on element cellId.");
+        }
+        output.writeVarShort(this.cellId);
+        if(this.objectGID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+        }
+        output.writeVarInt(this.objectGID);
     }
 
     public deserialize(input: ICustomDataInput)

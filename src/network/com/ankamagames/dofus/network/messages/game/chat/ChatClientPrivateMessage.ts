@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { ChatAbstractClientMessage } from "./ChatAbstractClientMessage";
 
-export class ChatClientPrivateMessage extends ChatAbstractClientMessage
+export class ChatClientPrivateMessage extends ChatAbstractClientMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7053;
@@ -19,14 +19,40 @@ export class ChatClientPrivateMessage extends ChatAbstractClientMessage
         this.receiver = new AbstractPlayerSearchInformation();
     }
 
+    public getMessageId()
+    {
+        return ChatClientPrivateMessage.protocolId;
+    }
+
+    public initChatClientPrivateMessage(content: string = "", receiver: AbstractPlayerSearchInformation = null): ChatClientPrivateMessage
+    {
+        super.initChatAbstractClientMessage(content);
+        this.receiver = receiver;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChatClientPrivateMessage(output);
+    }
+
+    public serializeAs_ChatClientPrivateMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ChatAbstractClientMessage(output);
+        output.writeShort(this.receiver.getTypeId());
+        this.receiver.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

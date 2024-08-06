@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class PaddockSellRequestMessage extends NetworkMessage
+export class PaddockSellRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6528;
@@ -17,14 +17,43 @@ export class PaddockSellRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PaddockSellRequestMessage.protocolId;
+    }
+
+    public initPaddockSellRequestMessage(price: number = 0, forSale: boolean = false): PaddockSellRequestMessage
+    {
+        this.price = price;
+        this.forSale = forSale;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PaddockSellRequestMessage(output);
+    }
+
+    public serializeAs_PaddockSellRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.price < 0 || this.price > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.price + ") on element price.");
+        }
+        output.writeVarLong(this.price);
+        output.writeBoolean(this.forSale);
     }
 
     public deserialize(input: ICustomDataInput)

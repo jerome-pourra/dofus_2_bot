@@ -5,7 +5,7 @@ import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { HouseInstanceInformations } from "./HouseInstanceInformations";
 import { HouseInformations } from "./HouseInformations";
 
-export class HouseInformationsInside extends HouseInformations
+export class HouseInformationsInside extends HouseInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 2801;
@@ -18,6 +18,42 @@ export class HouseInformationsInside extends HouseInformations
     {
         super();
         this.houseInfos = new HouseInstanceInformations();
+    }
+
+    public getTypeId()
+    {
+        return HouseInformationsInside.protocolId;
+    }
+
+    public initHouseInformationsInside(houseId: number = 0, modelId: number = 0, houseInfos: HouseInstanceInformations = null, worldX: number = 0, worldY: number = 0): HouseInformationsInside
+    {
+        super.initHouseInformations(houseId,modelId);
+        this.houseInfos = houseInfos;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HouseInformationsInside(output);
+    }
+
+    public serializeAs_HouseInformationsInside(output: ICustomDataOutput)
+    {
+        super.serializeAs_HouseInformations(output);
+        output.writeShort(this.houseInfos.getTypeId());
+        this.houseInfos.serialize(output);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
     }
 
     public deserialize(input: ICustomDataInput)

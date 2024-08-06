@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class ServerExperienceModificatorMessage extends NetworkMessage
+export class ServerExperienceModificatorMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9259;
@@ -16,14 +16,41 @@ export class ServerExperienceModificatorMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ServerExperienceModificatorMessage.protocolId;
+    }
+
+    public initServerExperienceModificatorMessage(experiencePercent: number = 0): ServerExperienceModificatorMessage
+    {
+        this.experiencePercent = experiencePercent;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ServerExperienceModificatorMessage(output);
+    }
+
+    public serializeAs_ServerExperienceModificatorMessage(output: ICustomDataOutput)
+    {
+        if(this.experiencePercent < 0)
+        {
+            throw new Error("Forbidden value (" + this.experiencePercent + ") on element experiencePercent.");
+        }
+        output.writeVarShort(this.experiencePercent);
     }
 
     public deserialize(input: ICustomDataInput)

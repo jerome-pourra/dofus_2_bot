@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class CheckFileMessage extends NetworkMessage
+export class CheckFileMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5396;
@@ -18,14 +18,41 @@ export class CheckFileMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CheckFileMessage.protocolId;
+    }
+
+    public initCheckFileMessage(filenameHash: string = "", type: number = 0, value: string = ""): CheckFileMessage
+    {
+        this.filenameHash = filenameHash;
+        this.type = type;
+        this.value = value;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CheckFileMessage(output);
+    }
+
+    public serializeAs_CheckFileMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.filenameHash);
+        output.writeByte(this.type);
+        output.writeUTF(this.value);
     }
 
     public deserialize(input: ICustomDataInput)

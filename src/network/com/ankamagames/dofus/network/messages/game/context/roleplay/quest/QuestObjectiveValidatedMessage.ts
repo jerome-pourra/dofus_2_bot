@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class QuestObjectiveValidatedMessage extends NetworkMessage
+export class QuestObjectiveValidatedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3508;
@@ -17,14 +17,47 @@ export class QuestObjectiveValidatedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return QuestObjectiveValidatedMessage.protocolId;
+    }
+
+    public initQuestObjectiveValidatedMessage(questId: number = 0, objectiveId: number = 0): QuestObjectiveValidatedMessage
+    {
+        this.questId = questId;
+        this.objectiveId = objectiveId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_QuestObjectiveValidatedMessage(output);
+    }
+
+    public serializeAs_QuestObjectiveValidatedMessage(output: ICustomDataOutput)
+    {
+        if(this.questId < 0)
+        {
+            throw new Error("Forbidden value (" + this.questId + ") on element questId.");
+        }
+        output.writeVarShort(this.questId);
+        if(this.objectiveId < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectiveId + ") on element objectiveId.");
+        }
+        output.writeVarShort(this.objectiveId);
     }
 
     public deserialize(input: ICustomDataInput)

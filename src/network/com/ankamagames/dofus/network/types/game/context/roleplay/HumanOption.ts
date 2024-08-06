@@ -2,12 +2,32 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class HumanOption
+export class HumanOption implements INetworkType
 {
 
 	public static readonly protocolId: number = 7701;
 
     public constructor()
+    {
+
+    }
+
+    public getTypeId()
+    {
+        return HumanOption.protocolId;
+    }
+
+    public initHumanOption(): HumanOption
+    {
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HumanOption(output);
+    }
+
+    public serializeAs_HumanOption(output: ICustomDataOutput)
     {
 
     }

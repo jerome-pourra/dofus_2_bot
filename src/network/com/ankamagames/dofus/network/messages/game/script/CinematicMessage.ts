@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class CinematicMessage extends NetworkMessage
+export class CinematicMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 991;
@@ -16,14 +16,41 @@ export class CinematicMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CinematicMessage.protocolId;
+    }
+
+    public initCinematicMessage(cinematicId: number = 0): CinematicMessage
+    {
+        this.cinematicId = cinematicId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CinematicMessage(output);
+    }
+
+    public serializeAs_CinematicMessage(output: ICustomDataOutput)
+    {
+        if(this.cinematicId < 0)
+        {
+            throw new Error("Forbidden value (" + this.cinematicId + ") on element cinematicId.");
+        }
+        output.writeVarShort(this.cinematicId);
     }
 
     public deserialize(input: ICustomDataInput)

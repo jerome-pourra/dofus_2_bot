@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { EntityLook } from "./EntityLook";
 
-export class IndexedEntityLook
+export class IndexedEntityLook implements INetworkType
 {
 
 	public static readonly protocolId: number = 5735;
@@ -14,6 +14,33 @@ export class IndexedEntityLook
     public constructor()
     {
         this.look = new EntityLook();
+    }
+
+    public getTypeId()
+    {
+        return IndexedEntityLook.protocolId;
+    }
+
+    public initIndexedEntityLook(look: EntityLook = null, index: number = 0): IndexedEntityLook
+    {
+        this.look = look;
+        this.index = index;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IndexedEntityLook(output);
+    }
+
+    public serializeAs_IndexedEntityLook(output: ICustomDataOutput)
+    {
+        this.look.serializeAs_EntityLook(output);
+        if(this.index < 0)
+        {
+            throw new Error("Forbidden value (" + this.index + ") on element index.");
+        }
+        output.writeByte(this.index);
     }
 
     public deserialize(input: ICustomDataInput)

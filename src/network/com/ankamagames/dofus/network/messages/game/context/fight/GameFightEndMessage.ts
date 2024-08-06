@@ -7,7 +7,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightEndMessage extends NetworkMessage
+export class GameFightEndMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2386;
@@ -25,14 +25,58 @@ export class GameFightEndMessage extends NetworkMessage
         this.namedPartyTeamsOutcomes = Array<NamedPartyTeamWithOutcome>();
     }
 
+    public getMessageId()
+    {
+        return GameFightEndMessage.protocolId;
+    }
+
+    public initGameFightEndMessage(duration: number = 0, rewardRate: number = 0, lootShareLimitMalus: number = 0, results: Array<FightResultListEntry> = null, namedPartyTeamsOutcomes: Array<NamedPartyTeamWithOutcome> = null): GameFightEndMessage
+    {
+        this.duration = duration;
+        this.rewardRate = rewardRate;
+        this.lootShareLimitMalus = lootShareLimitMalus;
+        this.results = results;
+        this.namedPartyTeamsOutcomes = namedPartyTeamsOutcomes;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightEndMessage(output);
+    }
+
+    public serializeAs_GameFightEndMessage(output: ICustomDataOutput)
+    {
+        if(this.duration < 0)
+        {
+            throw new Error("Forbidden value (" + this.duration + ") on element duration.");
+        }
+        output.writeInt(this.duration);
+        output.writeVarShort(this.rewardRate);
+        output.writeShort(this.lootShareLimitMalus);
+        output.writeShort(this.results.length);
+        for(var _i4: number = 0; _i4 < this.results.length; _i4++)
+        {
+            output.writeShort((this.results[_i4] as FightResultListEntry).getTypeId());
+            (this.results[_i4] as FightResultListEntry).serialize(output);
+        }
+        output.writeShort(this.namedPartyTeamsOutcomes.length);
+        for(var _i5: number = 0; _i5 < this.namedPartyTeamsOutcomes.length; _i5++)
+        {
+            (this.namedPartyTeamsOutcomes[_i5] as NamedPartyTeamWithOutcome).serializeAs_NamedPartyTeamWithOutcome(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

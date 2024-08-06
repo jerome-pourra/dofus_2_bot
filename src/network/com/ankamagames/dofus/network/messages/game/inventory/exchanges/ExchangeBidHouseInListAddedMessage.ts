@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeBidHouseInListAddedMessage extends NetworkMessage
+export class ExchangeBidHouseInListAddedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9001;
@@ -24,14 +24,66 @@ export class ExchangeBidHouseInListAddedMessage extends NetworkMessage
         this.prices = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return ExchangeBidHouseInListAddedMessage.protocolId;
+    }
+
+    public initExchangeBidHouseInListAddedMessage(itemUID: number = 0, objectGID: number = 0, objectType: number = 0, effects: Array<ObjectEffect> = null, prices: Array<number> = null): ExchangeBidHouseInListAddedMessage
+    {
+        this.itemUID = itemUID;
+        this.objectGID = objectGID;
+        this.objectType = objectType;
+        this.effects = effects;
+        this.prices = prices;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeBidHouseInListAddedMessage(output);
+    }
+
+    public serializeAs_ExchangeBidHouseInListAddedMessage(output: ICustomDataOutput)
+    {
+        output.writeInt(this.itemUID);
+        if(this.objectGID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+        }
+        output.writeVarInt(this.objectGID);
+        if(this.objectType < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectType + ") on element objectType.");
+        }
+        output.writeInt(this.objectType);
+        output.writeShort(this.effects.length);
+        for(var _i4: number = 0; _i4 < this.effects.length; _i4++)
+        {
+            output.writeShort((this.effects[_i4] as ObjectEffect).getTypeId());
+            (this.effects[_i4] as ObjectEffect).serialize(output);
+        }
+        output.writeShort(this.prices.length);
+        for(var _i5: number = 0; _i5 < this.prices.length; _i5++)
+        {
+            if(this.prices[_i5] < 0 || this.prices[_i5] > 9007199254740992)
+            {
+                throw new Error("Forbidden value (" + this.prices[_i5] + ") on element 5 (starting at 1) of prices.");
+            }
+            output.writeVarLong(this.prices[_i5]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

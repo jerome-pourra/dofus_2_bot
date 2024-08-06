@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuestLimitationMessage extends NetworkMessage
+export class GuestLimitationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7707;
@@ -16,14 +16,37 @@ export class GuestLimitationMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuestLimitationMessage.protocolId;
+    }
+
+    public initGuestLimitationMessage(reason: number = 0): GuestLimitationMessage
+    {
+        this.reason = reason;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuestLimitationMessage(output);
+    }
+
+    public serializeAs_GuestLimitationMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.reason);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessa
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 import { BooleanByteWrapper } from "./../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class ServerSettingsMessage extends NetworkMessage
+export class ServerSettingsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 154;
@@ -23,14 +23,63 @@ export class ServerSettingsMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ServerSettingsMessage.protocolId;
+    }
+
+    public initServerSettingsMessage(lang: string = "", community: number = 0, gameType: number = -1, isMonoAccount: boolean = false, arenaLeaveBanTime: number = 0, itemMaxLevel: number = 0, hasFreeAutopilot: boolean = false): ServerSettingsMessage
+    {
+        this.lang = lang;
+        this.community = community;
+        this.gameType = gameType;
+        this.isMonoAccount = isMonoAccount;
+        this.arenaLeaveBanTime = arenaLeaveBanTime;
+        this.itemMaxLevel = itemMaxLevel;
+        this.hasFreeAutopilot = hasFreeAutopilot;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ServerSettingsMessage(output);
+    }
+
+    public serializeAs_ServerSettingsMessage(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.isMonoAccount);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.hasFreeAutopilot);
+        output.writeByte(_box0);
+        output.writeUTF(this.lang);
+        if(this.community < 0)
+        {
+            throw new Error("Forbidden value (" + this.community + ") on element community.");
+        }
+        output.writeByte(this.community);
+        output.writeByte(this.gameType);
+        if(this.arenaLeaveBanTime < 0)
+        {
+            throw new Error("Forbidden value (" + this.arenaLeaveBanTime + ") on element arenaLeaveBanTime.");
+        }
+        output.writeVarShort(this.arenaLeaveBanTime);
+        if(this.itemMaxLevel < 0)
+        {
+            throw new Error("Forbidden value (" + this.itemMaxLevel + ") on element itemMaxLevel.");
+        }
+        output.writeInt(this.itemMaxLevel);
     }
 
     public deserialize(input: ICustomDataInput)

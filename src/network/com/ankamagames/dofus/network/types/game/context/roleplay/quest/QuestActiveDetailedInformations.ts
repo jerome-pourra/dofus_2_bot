@@ -5,7 +5,7 @@ import { INetworkType } from "./../../../../../../../jerakine/network/INetworkTy
 import { QuestObjectiveInformations } from "./QuestObjectiveInformations";
 import { QuestActiveInformations } from "./QuestActiveInformations";
 
-export class QuestActiveDetailedInformations extends QuestActiveInformations
+export class QuestActiveDetailedInformations extends QuestActiveInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 7451;
@@ -17,6 +17,40 @@ export class QuestActiveDetailedInformations extends QuestActiveInformations
     {
         super();
         this.objectives = Array<QuestObjectiveInformations>();
+    }
+
+    public getTypeId()
+    {
+        return QuestActiveDetailedInformations.protocolId;
+    }
+
+    public initQuestActiveDetailedInformations(questId: number = 0, stepId: number = 0, objectives: Array<QuestObjectiveInformations> = null): QuestActiveDetailedInformations
+    {
+        super.initQuestActiveInformations(questId);
+        this.stepId = stepId;
+        this.objectives = objectives;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_QuestActiveDetailedInformations(output);
+    }
+
+    public serializeAs_QuestActiveDetailedInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_QuestActiveInformations(output);
+        if(this.stepId < 0)
+        {
+            throw new Error("Forbidden value (" + this.stepId + ") on element stepId.");
+        }
+        output.writeVarShort(this.stepId);
+        output.writeShort(this.objectives.length);
+        for(var _i2: number = 0; _i2 < this.objectives.length; _i2++)
+        {
+            output.writeShort((this.objectives[_i2] as QuestObjectiveInformations).getTypeId());
+            (this.objectives[_i2] as QuestObjectiveInformations).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlayShowMultipleActorsMessage extends NetworkMessage
+export class GameRolePlayShowMultipleActorsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 323;
@@ -19,14 +19,42 @@ export class GameRolePlayShowMultipleActorsMessage extends NetworkMessage
         this.informationsList = Array<GameRolePlayActorInformations>();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlayShowMultipleActorsMessage.protocolId;
+    }
+
+    public initGameRolePlayShowMultipleActorsMessage(informationsList: Array<GameRolePlayActorInformations> = null): GameRolePlayShowMultipleActorsMessage
+    {
+        this.informationsList = informationsList;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayShowMultipleActorsMessage(output);
+    }
+
+    public serializeAs_GameRolePlayShowMultipleActorsMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.informationsList.length);
+        for(var _i1: number = 0; _i1 < this.informationsList.length; _i1++)
+        {
+            output.writeShort((this.informationsList[_i1] as GameRolePlayActorInformations).getTypeId());
+            (this.informationsList[_i1] as GameRolePlayActorInformations).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeStartedBidBuyerMessage extends NetworkMessage
+export class ExchangeStartedBidBuyerMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4280;
@@ -18,14 +18,37 @@ export class ExchangeStartedBidBuyerMessage extends NetworkMessage
         this.buyerDescriptor = new SellerBuyerDescriptor();
     }
 
+    public getMessageId()
+    {
+        return ExchangeStartedBidBuyerMessage.protocolId;
+    }
+
+    public initExchangeStartedBidBuyerMessage(buyerDescriptor: SellerBuyerDescriptor = null): ExchangeStartedBidBuyerMessage
+    {
+        this.buyerDescriptor = buyerDescriptor;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeStartedBidBuyerMessage(output);
+    }
+
+    public serializeAs_ExchangeStartedBidBuyerMessage(output: ICustomDataOutput)
+    {
+        this.buyerDescriptor.serializeAs_SellerBuyerDescriptor(output);
     }
 
     public deserialize(input: ICustomDataInput)

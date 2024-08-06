@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class RankMinimalInformation
+export class RankMinimalInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 1831;
@@ -13,6 +13,33 @@ export class RankMinimalInformation
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return RankMinimalInformation.protocolId;
+    }
+
+    public initRankMinimalInformation(id: number = 0, name: string = ""): RankMinimalInformation
+    {
+        this.id = id;
+        this.name = name;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_RankMinimalInformation(output);
+    }
+
+    public serializeAs_RankMinimalInformation(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarInt(this.id);
+        output.writeUTF(this.name);
     }
 
     public deserialize(input: ICustomDataInput)

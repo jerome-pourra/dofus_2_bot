@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class TrustStatusMessage extends NetworkMessage
+export class TrustStatusMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3339;
@@ -16,14 +16,37 @@ export class TrustStatusMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TrustStatusMessage.protocolId;
+    }
+
+    public initTrustStatusMessage(certified: boolean = false): TrustStatusMessage
+    {
+        this.certified = certified;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TrustStatusMessage(output);
+    }
+
+    public serializeAs_TrustStatusMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.certified);
     }
 
     public deserialize(input: ICustomDataInput)

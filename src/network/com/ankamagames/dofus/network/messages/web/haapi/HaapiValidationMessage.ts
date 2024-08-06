@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class HaapiValidationMessage extends NetworkMessage
+export class HaapiValidationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7090;
@@ -17,14 +17,39 @@ export class HaapiValidationMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return HaapiValidationMessage.protocolId;
+    }
+
+    public initHaapiValidationMessage(action: number = 0, code: number = 0): HaapiValidationMessage
+    {
+        this.action = action;
+        this.code = code;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HaapiValidationMessage(output);
+    }
+
+    public serializeAs_HaapiValidationMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.action);
+        output.writeByte(this.code);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class BufferInformation
+export class BufferInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 7749;
@@ -13,6 +13,37 @@ export class BufferInformation
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return BufferInformation.protocolId;
+    }
+
+    public initBufferInformation(id: number = 0, amount: number = 0): BufferInformation
+    {
+        this.id = id;
+        this.amount = amount;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BufferInformation(output);
+    }
+
+    public serializeAs_BufferInformation(output: ICustomDataOutput)
+    {
+        if(this.id < 0 || this.id > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarLong(this.id);
+        if(this.amount < 0 || this.amount > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.amount + ") on element amount.");
+        }
+        output.writeVarLong(this.amount);
     }
 
     public deserialize(input: ICustomDataInput)

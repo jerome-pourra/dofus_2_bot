@@ -5,7 +5,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class GameRolePlayActorInformations extends GameContextActorInformations
+export class GameRolePlayActorInformations extends GameContextActorInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 8764;
@@ -13,6 +13,27 @@ export class GameRolePlayActorInformations extends GameContextActorInformations
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return GameRolePlayActorInformations.protocolId;
+    }
+
+    public initGameRolePlayActorInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null): GameRolePlayActorInformations
+    {
+        super.initGameContextActorInformations(contextualId,disposition,look);
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayActorInformations(output);
+    }
+
+    public serializeAs_GameRolePlayActorInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameContextActorInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

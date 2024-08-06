@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class DocumentReadingBeginMessage extends NetworkMessage
+export class DocumentReadingBeginMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9246;
@@ -16,14 +16,41 @@ export class DocumentReadingBeginMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return DocumentReadingBeginMessage.protocolId;
+    }
+
+    public initDocumentReadingBeginMessage(documentId: number = 0): DocumentReadingBeginMessage
+    {
+        this.documentId = documentId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_DocumentReadingBeginMessage(output);
+    }
+
+    public serializeAs_DocumentReadingBeginMessage(output: ICustomDataOutput)
+    {
+        if(this.documentId < 0)
+        {
+            throw new Error("Forbidden value (" + this.documentId + ") on element documentId.");
+        }
+        output.writeVarShort(this.documentId);
     }
 
     public deserialize(input: ICustomDataInput)

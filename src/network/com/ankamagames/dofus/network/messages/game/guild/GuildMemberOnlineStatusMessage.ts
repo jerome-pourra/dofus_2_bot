@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildMemberOnlineStatusMessage extends NetworkMessage
+export class GuildMemberOnlineStatusMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8750;
@@ -17,14 +17,43 @@ export class GuildMemberOnlineStatusMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildMemberOnlineStatusMessage.protocolId;
+    }
+
+    public initGuildMemberOnlineStatusMessage(memberId: number = 0, online: boolean = false): GuildMemberOnlineStatusMessage
+    {
+        this.memberId = memberId;
+        this.online = online;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildMemberOnlineStatusMessage(output);
+    }
+
+    public serializeAs_GuildMemberOnlineStatusMessage(output: ICustomDataOutput)
+    {
+        if(this.memberId < 0 || this.memberId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.memberId + ") on element memberId.");
+        }
+        output.writeVarLong(this.memberId);
+        output.writeBoolean(this.online);
     }
 
     public deserialize(input: ICustomDataInput)

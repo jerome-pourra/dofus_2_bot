@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class CharacterLevelUpMessage extends NetworkMessage
+export class CharacterLevelUpMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5797;
@@ -16,14 +16,41 @@ export class CharacterLevelUpMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CharacterLevelUpMessage.protocolId;
+    }
+
+    public initCharacterLevelUpMessage(newLevel: number = 0): CharacterLevelUpMessage
+    {
+        this.newLevel = newLevel;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterLevelUpMessage(output);
+    }
+
+    public serializeAs_CharacterLevelUpMessage(output: ICustomDataOutput)
+    {
+        if(this.newLevel < 0)
+        {
+            throw new Error("Forbidden value (" + this.newLevel + ") on element newLevel.");
+        }
+        output.writeVarShort(this.newLevel);
     }
 
     public deserialize(input: ICustomDataInput)

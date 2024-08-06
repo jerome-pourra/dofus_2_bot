@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class ExchangePodsModifiedMessage extends ExchangeObjectMessage
+export class ExchangePodsModifiedMessage extends ExchangeObjectMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7160;
@@ -17,14 +17,49 @@ export class ExchangePodsModifiedMessage extends ExchangeObjectMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangePodsModifiedMessage.protocolId;
+    }
+
+    public initExchangePodsModifiedMessage(remote: boolean = false, currentWeight: number = 0, maxWeight: number = 0): ExchangePodsModifiedMessage
+    {
+        super.initExchangeObjectMessage(remote);
+        this.currentWeight = currentWeight;
+        this.maxWeight = maxWeight;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangePodsModifiedMessage(output);
+    }
+
+    public serializeAs_ExchangePodsModifiedMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ExchangeObjectMessage(output);
+        if(this.currentWeight < 0)
+        {
+            throw new Error("Forbidden value (" + this.currentWeight + ") on element currentWeight.");
+        }
+        output.writeVarInt(this.currentWeight);
+        if(this.maxWeight < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxWeight + ") on element maxWeight.");
+        }
+        output.writeVarInt(this.maxWeight);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { BasicAllianceInformations } from "./BasicAllianceInformations";
 
-export class BasicNamedAllianceInformations extends BasicAllianceInformations
+export class BasicNamedAllianceInformations extends BasicAllianceInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 5416;
@@ -13,6 +13,29 @@ export class BasicNamedAllianceInformations extends BasicAllianceInformations
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return BasicNamedAllianceInformations.protocolId;
+    }
+
+    public initBasicNamedAllianceInformations(allianceId: number = 0, allianceTag: string = "", allianceName: string = ""): BasicNamedAllianceInformations
+    {
+        super.initBasicAllianceInformations(allianceId,allianceTag);
+        this.allianceName = allianceName;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BasicNamedAllianceInformations(output);
+    }
+
+    public serializeAs_BasicNamedAllianceInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_BasicAllianceInformations(output);
+        output.writeUTF(this.allianceName);
     }
 
     public deserialize(input: ICustomDataInput)

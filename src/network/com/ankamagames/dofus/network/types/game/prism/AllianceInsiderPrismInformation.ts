@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { PrismInformation } from "./PrismInformation";
 
-export class AllianceInsiderPrismInformation extends PrismInformation
+export class AllianceInsiderPrismInformation extends PrismInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 7229;
@@ -20,6 +20,41 @@ export class AllianceInsiderPrismInformation extends PrismInformation
         super();
         this.moduleObject = new ObjectItem();
         this.cristalObject = new ObjectItem();
+    }
+
+    public getTypeId()
+    {
+        return AllianceInsiderPrismInformation.protocolId;
+    }
+
+    public initAllianceInsiderPrismInformation(state: number = 1, placementDate: number = 0, nuggetsCount: number = 0, durability: number = 0, nextEvolutionDate: number = 0, moduleObject: ObjectItem = null, moduleType: number = -1, cristalObject: ObjectItem = null, cristalType: number = -1, cristalNumberLeft: number = 0): AllianceInsiderPrismInformation
+    {
+        super.initPrismInformation(state,placementDate,nuggetsCount,durability,nextEvolutionDate);
+        this.moduleObject = moduleObject;
+        this.moduleType = moduleType;
+        this.cristalObject = cristalObject;
+        this.cristalType = cristalType;
+        this.cristalNumberLeft = cristalNumberLeft;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceInsiderPrismInformation(output);
+    }
+
+    public serializeAs_AllianceInsiderPrismInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_PrismInformation(output);
+        this.moduleObject.serializeAs_ObjectItem(output);
+        output.writeInt(this.moduleType);
+        this.cristalObject.serializeAs_ObjectItem(output);
+        output.writeInt(this.cristalType);
+        if(this.cristalNumberLeft < 0)
+        {
+            throw new Error("Forbidden value (" + this.cristalNumberLeft + ") on element cristalNumberLeft.");
+        }
+        output.writeInt(this.cristalNumberLeft);
     }
 
     public deserialize(input: ICustomDataInput)

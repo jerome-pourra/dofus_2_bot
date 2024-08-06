@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlayArenaRegistrationWarningMessage extends NetworkMessage
+export class GameRolePlayArenaRegistrationWarningMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8542;
@@ -16,14 +16,37 @@ export class GameRolePlayArenaRegistrationWarningMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlayArenaRegistrationWarningMessage.protocolId;
+    }
+
+    public initGameRolePlayArenaRegistrationWarningMessage(battleMode: number = 3): GameRolePlayArenaRegistrationWarningMessage
+    {
+        this.battleMode = battleMode;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayArenaRegistrationWarningMessage(output);
+    }
+
+    public serializeAs_GameRolePlayArenaRegistrationWarningMessage(output: ICustomDataOutput)
+    {
+        output.writeInt(this.battleMode);
     }
 
     public deserialize(input: ICustomDataInput)

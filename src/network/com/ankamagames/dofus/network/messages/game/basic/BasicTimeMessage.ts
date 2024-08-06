@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class BasicTimeMessage extends NetworkMessage
+export class BasicTimeMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4945;
@@ -17,14 +17,43 @@ export class BasicTimeMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return BasicTimeMessage.protocolId;
+    }
+
+    public initBasicTimeMessage(timestamp: number = 0, timezoneOffset: number = 0): BasicTimeMessage
+    {
+        this.timestamp = timestamp;
+        this.timezoneOffset = timezoneOffset;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BasicTimeMessage(output);
+    }
+
+    public serializeAs_BasicTimeMessage(output: ICustomDataOutput)
+    {
+        if(this.timestamp < 0 || this.timestamp > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.timestamp + ") on element timestamp.");
+        }
+        output.writeDouble(this.timestamp);
+        output.writeShort(this.timezoneOffset);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class ContactLookMessage extends NetworkMessage
+export class ContactLookMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4925;
@@ -21,14 +21,51 @@ export class ContactLookMessage extends NetworkMessage
         this.look = new EntityLook();
     }
 
+    public getMessageId()
+    {
+        return ContactLookMessage.protocolId;
+    }
+
+    public initContactLookMessage(requestId: number = 0, playerName: string = "", playerId: number = 0, look: EntityLook = null): ContactLookMessage
+    {
+        this.requestId = requestId;
+        this.playerName = playerName;
+        this.playerId = playerId;
+        this.look = look;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ContactLookMessage(output);
+    }
+
+    public serializeAs_ContactLookMessage(output: ICustomDataOutput)
+    {
+        if(this.requestId < 0)
+        {
+            throw new Error("Forbidden value (" + this.requestId + ") on element requestId.");
+        }
+        output.writeVarInt(this.requestId);
+        output.writeUTF(this.playerName);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        this.look.serializeAs_EntityLook(output);
     }
 
     public deserialize(input: ICustomDataInput)

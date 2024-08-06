@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { BaseSpawnMonsterInformation } from "./BaseSpawnMonsterInformation";
 
-export class SpawnMonsterInformation extends BaseSpawnMonsterInformation
+export class SpawnMonsterInformation extends BaseSpawnMonsterInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 571;
@@ -13,6 +13,33 @@ export class SpawnMonsterInformation extends BaseSpawnMonsterInformation
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return SpawnMonsterInformation.protocolId;
+    }
+
+    public initSpawnMonsterInformation(creatureGenericId: number = 0, creatureGrade: number = 0): SpawnMonsterInformation
+    {
+        super.initBaseSpawnMonsterInformation(creatureGenericId);
+        this.creatureGrade = creatureGrade;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SpawnMonsterInformation(output);
+    }
+
+    public serializeAs_SpawnMonsterInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_BaseSpawnMonsterInformation(output);
+        if(this.creatureGrade < 0)
+        {
+            throw new Error("Forbidden value (" + this.creatureGrade + ") on element creatureGrade.");
+        }
+        output.writeByte(this.creatureGrade);
     }
 
     public deserialize(input: ICustomDataInput)

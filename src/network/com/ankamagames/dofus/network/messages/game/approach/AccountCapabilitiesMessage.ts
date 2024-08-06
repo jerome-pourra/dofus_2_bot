@@ -5,7 +5,7 @@ import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessa
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 import { BooleanByteWrapper } from "./../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class AccountCapabilitiesMessage extends NetworkMessage
+export class AccountCapabilitiesMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8908;
@@ -20,14 +20,49 @@ export class AccountCapabilitiesMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AccountCapabilitiesMessage.protocolId;
+    }
+
+    public initAccountCapabilitiesMessage(accountId: number = 0, tutorialAvailable: boolean = false, status: number = -1, canCreateNewCharacter: boolean = false): AccountCapabilitiesMessage
+    {
+        this.accountId = accountId;
+        this.tutorialAvailable = tutorialAvailable;
+        this.status = status;
+        this.canCreateNewCharacter = canCreateNewCharacter;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AccountCapabilitiesMessage(output);
+    }
+
+    public serializeAs_AccountCapabilitiesMessage(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.tutorialAvailable);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.canCreateNewCharacter);
+        output.writeByte(_box0);
+        if(this.accountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+        }
+        output.writeInt(this.accountId);
+        output.writeByte(this.status);
     }
 
     public deserialize(input: ICustomDataInput)

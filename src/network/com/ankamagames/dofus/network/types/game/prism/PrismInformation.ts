@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class PrismInformation
+export class PrismInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 65;
@@ -16,6 +16,51 @@ export class PrismInformation
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return PrismInformation.protocolId;
+    }
+
+    public initPrismInformation(state: number = 1, placementDate: number = 0, nuggetsCount: number = 0, durability: number = 0, nextEvolutionDate: number = 0): PrismInformation
+    {
+        this.state = state;
+        this.placementDate = placementDate;
+        this.nuggetsCount = nuggetsCount;
+        this.durability = durability;
+        this.nextEvolutionDate = nextEvolutionDate;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PrismInformation(output);
+    }
+
+    public serializeAs_PrismInformation(output: ICustomDataOutput)
+    {
+        output.writeByte(this.state);
+        if(this.placementDate < 0)
+        {
+            throw new Error("Forbidden value (" + this.placementDate + ") on element placementDate.");
+        }
+        output.writeInt(this.placementDate);
+        if(this.nuggetsCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.nuggetsCount + ") on element nuggetsCount.");
+        }
+        output.writeVarInt(this.nuggetsCount);
+        if(this.durability < 0)
+        {
+            throw new Error("Forbidden value (" + this.durability + ") on element durability.");
+        }
+        output.writeInt(this.durability);
+        if(this.nextEvolutionDate < 0 || this.nextEvolutionDate > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.nextEvolutionDate + ") on element nextEvolutionDate.");
+        }
+        output.writeDouble(this.nextEvolutionDate);
     }
 
     public deserialize(input: ICustomDataInput)

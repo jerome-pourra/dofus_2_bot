@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class AccountSubscriptionElapsedDurationMessage extends NetworkMessage
+export class AccountSubscriptionElapsedDurationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5336;
@@ -16,14 +16,41 @@ export class AccountSubscriptionElapsedDurationMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AccountSubscriptionElapsedDurationMessage.protocolId;
+    }
+
+    public initAccountSubscriptionElapsedDurationMessage(subscriptionElapsedDuration: number = 0): AccountSubscriptionElapsedDurationMessage
+    {
+        this.subscriptionElapsedDuration = subscriptionElapsedDuration;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AccountSubscriptionElapsedDurationMessage(output);
+    }
+
+    public serializeAs_AccountSubscriptionElapsedDurationMessage(output: ICustomDataOutput)
+    {
+        if(this.subscriptionElapsedDuration < 0 || this.subscriptionElapsedDuration > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.subscriptionElapsedDuration + ") on element subscriptionElapsedDuration.");
+        }
+        output.writeDouble(this.subscriptionElapsedDuration);
     }
 
     public deserialize(input: ICustomDataInput)

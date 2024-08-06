@@ -6,7 +6,7 @@ import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessa
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 import { BooleanByteWrapper } from "./../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class IgnoredDeleteResultMessage extends NetworkMessage
+export class IgnoredDeleteResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2365;
@@ -21,14 +21,43 @@ export class IgnoredDeleteResultMessage extends NetworkMessage
         this.tag = new AccountTagInformation();
     }
 
+    public getMessageId()
+    {
+        return IgnoredDeleteResultMessage.protocolId;
+    }
+
+    public initIgnoredDeleteResultMessage(success: boolean = false, tag: AccountTagInformation = null, session: boolean = false): IgnoredDeleteResultMessage
+    {
+        this.success = success;
+        this.tag = tag;
+        this.session = session;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IgnoredDeleteResultMessage(output);
+    }
+
+    public serializeAs_IgnoredDeleteResultMessage(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.success);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.session);
+        output.writeByte(_box0);
+        this.tag.serializeAs_AccountTagInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class FinishMoveSetRequestMessage extends NetworkMessage
+export class FinishMoveSetRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6930;
@@ -17,14 +17,43 @@ export class FinishMoveSetRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return FinishMoveSetRequestMessage.protocolId;
+    }
+
+    public initFinishMoveSetRequestMessage(finishMoveId: number = 0, finishMoveState: boolean = false): FinishMoveSetRequestMessage
+    {
+        this.finishMoveId = finishMoveId;
+        this.finishMoveState = finishMoveState;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FinishMoveSetRequestMessage(output);
+    }
+
+    public serializeAs_FinishMoveSetRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.finishMoveId < 0)
+        {
+            throw new Error("Forbidden value (" + this.finishMoveId + ") on element finishMoveId.");
+        }
+        output.writeInt(this.finishMoveId);
+        output.writeBoolean(this.finishMoveState);
     }
 
     public deserialize(input: ICustomDataInput)

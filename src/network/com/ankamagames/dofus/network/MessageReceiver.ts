@@ -1205,7 +1205,7 @@ export class MessageReceiver {
 	private static readonly _types: Array<new () => INetworkMessage> = Array<new () => INetworkMessage>();
 
 	static {
-				this._types[9773] = AdminCommandMessage;
+		this._types[9773] = AdminCommandMessage;
 		this._types[8282] = AdminQuietCommandMessage;
 		this._types[869] = ConsoleCommandsListMessage;
 		this._types[9802] = ConsoleEndMessage;
@@ -1214,7 +1214,7 @@ export class MessageReceiver {
 		this._types[4877] = BasicPongMessage;
 		this._types[2233] = BasicStatMessage;
 		this._types[6918] = BasicStatWithDataMessage;
-		this._types[2] = NetworkDataContainerMessage;
+		this._types[7777] = NetworkDataContainerMessage;
 		this._types[7628] = CredentialsAcknowledgementMessage;
 		this._types[5352] = ForceAccountErrorMessage;
 		this._types[5654] = ForceAccountMessage;
@@ -2401,7 +2401,6 @@ export class MessageReceiver {
 		this._types[7090] = HaapiValidationMessage;
 		this._types[2930] = HaapiValidationRequestMessage;
 		this._types[3498] = ClientYouAreDrunkMessage;
-
 	}
 
     public static getType(id: number): string {

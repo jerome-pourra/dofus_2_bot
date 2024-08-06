@@ -7,7 +7,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { GameRolePlayActorInformations } from "./GameRolePlayActorInformations";
 
-export class GameRolePlayPortalInformations extends GameRolePlayActorInformations
+export class GameRolePlayPortalInformations extends GameRolePlayActorInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 9999;
@@ -18,6 +18,30 @@ export class GameRolePlayPortalInformations extends GameRolePlayActorInformation
     {
         super();
         this.portal = new PortalInformation();
+    }
+
+    public getTypeId()
+    {
+        return GameRolePlayPortalInformations.protocolId;
+    }
+
+    public initGameRolePlayPortalInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, portal: PortalInformation = null): GameRolePlayPortalInformations
+    {
+        super.initGameRolePlayActorInformations(contextualId,disposition,look);
+        this.portal = portal;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayPortalInformations(output);
+    }
+
+    public serializeAs_GameRolePlayPortalInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameRolePlayActorInformations(output);
+        output.writeShort(this.portal.getTypeId());
+        this.portal.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

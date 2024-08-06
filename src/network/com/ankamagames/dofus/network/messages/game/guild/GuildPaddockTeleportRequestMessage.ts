@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildPaddockTeleportRequestMessage extends NetworkMessage
+export class GuildPaddockTeleportRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8533;
@@ -16,14 +16,41 @@ export class GuildPaddockTeleportRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildPaddockTeleportRequestMessage.protocolId;
+    }
+
+    public initGuildPaddockTeleportRequestMessage(paddockId: number = 0): GuildPaddockTeleportRequestMessage
+    {
+        this.paddockId = paddockId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildPaddockTeleportRequestMessage(output);
+    }
+
+    public serializeAs_GuildPaddockTeleportRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.paddockId < 0 || this.paddockId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.paddockId + ") on element paddockId.");
+        }
+        output.writeDouble(this.paddockId);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { EntityLook } from "./EntityLook";
 
-export class SubEntity
+export class SubEntity implements INetworkType
 {
 
 	public static readonly protocolId: number = 9491;
@@ -15,6 +15,35 @@ export class SubEntity
     public constructor()
     {
         this.subEntityLook = new EntityLook();
+    }
+
+    public getTypeId()
+    {
+        return SubEntity.protocolId;
+    }
+
+    public initSubEntity(bindingPointCategory: number = 0, bindingPointIndex: number = 0, subEntityLook: EntityLook = null): SubEntity
+    {
+        this.bindingPointCategory = bindingPointCategory;
+        this.bindingPointIndex = bindingPointIndex;
+        this.subEntityLook = subEntityLook;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SubEntity(output);
+    }
+
+    public serializeAs_SubEntity(output: ICustomDataOutput)
+    {
+        output.writeByte(this.bindingPointCategory);
+        if(this.bindingPointIndex < 0)
+        {
+            throw new Error("Forbidden value (" + this.bindingPointIndex + ") on element bindingPointIndex.");
+        }
+        output.writeByte(this.bindingPointIndex);
+        this.subEntityLook.serializeAs_EntityLook(output);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ZaapRespawnSaveRequestMessage extends NetworkMessage
+export class ZaapRespawnSaveRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3373;
@@ -14,14 +14,36 @@ export class ZaapRespawnSaveRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ZaapRespawnSaveRequestMessage.protocolId;
+    }
+
+    public initZaapRespawnSaveRequestMessage(): ZaapRespawnSaveRequestMessage
+    {
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ZaapRespawnSaveRequestMessage(output);
+    }
+
+    public serializeAs_ZaapRespawnSaveRequestMessage(output: ICustomDataOutput)
+    {
+
     }
 
     public deserialize(input: ICustomDataInput)

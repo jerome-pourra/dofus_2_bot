@@ -4,7 +4,7 @@ import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { SpellForPreset } from "./SpellForPreset";
 import { Preset } from "./Preset";
 
-export class SpellsPreset extends Preset
+export class SpellsPreset extends Preset implements INetworkType
 {
 
 	public static readonly protocolId: number = 7774;
@@ -15,6 +15,33 @@ export class SpellsPreset extends Preset
     {
         super();
         this.spells = Array<SpellForPreset>();
+    }
+
+    public getTypeId()
+    {
+        return SpellsPreset.protocolId;
+    }
+
+    public initSpellsPreset(id: number = 0, spells: Array<SpellForPreset> = null): SpellsPreset
+    {
+        super.initPreset(id);
+        this.spells = spells;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SpellsPreset(output);
+    }
+
+    public serializeAs_SpellsPreset(output: ICustomDataOutput)
+    {
+        super.serializeAs_Preset(output);
+        output.writeShort(this.spells.length);
+        for(var _i1: number = 0; _i1 < this.spells.length; _i1++)
+        {
+            (this.spells[_i1] as SpellForPreset).serializeAs_SpellForPreset(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

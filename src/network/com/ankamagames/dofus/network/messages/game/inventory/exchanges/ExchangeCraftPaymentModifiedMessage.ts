@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeCraftPaymentModifiedMessage extends NetworkMessage
+export class ExchangeCraftPaymentModifiedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2319;
@@ -16,14 +16,41 @@ export class ExchangeCraftPaymentModifiedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeCraftPaymentModifiedMessage.protocolId;
+    }
+
+    public initExchangeCraftPaymentModifiedMessage(goldSum: number = 0): ExchangeCraftPaymentModifiedMessage
+    {
+        this.goldSum = goldSum;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeCraftPaymentModifiedMessage(output);
+    }
+
+    public serializeAs_ExchangeCraftPaymentModifiedMessage(output: ICustomDataOutput)
+    {
+        if(this.goldSum < 0 || this.goldSum > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.goldSum + ") on element goldSum.");
+        }
+        output.writeVarLong(this.goldSum);
     }
 
     public deserialize(input: ICustomDataInput)

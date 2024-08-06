@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeTaxCollectorGetMessage extends NetworkMessage
+export class ExchangeTaxCollectorGetMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3970;
@@ -30,14 +30,85 @@ export class ExchangeTaxCollectorGetMessage extends NetworkMessage
         this.look = new EntityLook();
     }
 
+    public getMessageId()
+    {
+        return ExchangeTaxCollectorGetMessage.protocolId;
+    }
+
+    public initExchangeTaxCollectorGetMessage(collectorName: string = "", worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, userName: string = "", callerId: number = 0, callerName: string = "", pods: number = 0, objectsInfos: Array<ObjectItemGenericQuantity> = null, look: EntityLook = null): ExchangeTaxCollectorGetMessage
+    {
+        this.collectorName = collectorName;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.mapId = mapId;
+        this.subAreaId = subAreaId;
+        this.userName = userName;
+        this.callerId = callerId;
+        this.callerName = callerName;
+        this.pods = pods;
+        this.objectsInfos = objectsInfos;
+        this.look = look;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeTaxCollectorGetMessage(output);
+    }
+
+    public serializeAs_ExchangeTaxCollectorGetMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.collectorName);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
+        output.writeUTF(this.userName);
+        if(this.callerId < 0 || this.callerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.callerId + ") on element callerId.");
+        }
+        output.writeVarLong(this.callerId);
+        output.writeUTF(this.callerName);
+        if(this.pods < 0)
+        {
+            throw new Error("Forbidden value (" + this.pods + ") on element pods.");
+        }
+        output.writeVarShort(this.pods);
+        output.writeShort(this.objectsInfos.length);
+        for(var _i10: number = 0; _i10 < this.objectsInfos.length; _i10++)
+        {
+            (this.objectsInfos[_i10] as ObjectItemGenericQuantity).serializeAs_ObjectItemGenericQuantity(output);
+        }
+        this.look.serializeAs_EntityLook(output);
     }
 
     public deserialize(input: ICustomDataInput)

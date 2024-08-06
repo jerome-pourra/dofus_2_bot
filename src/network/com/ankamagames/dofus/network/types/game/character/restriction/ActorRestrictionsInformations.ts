@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { BooleanByteWrapper } from "./../../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class ActorRestrictionsInformations
+export class ActorRestrictionsInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 9953;
@@ -31,6 +31,69 @@ export class ActorRestrictionsInformations
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return ActorRestrictionsInformations.protocolId;
+    }
+
+    public initActorRestrictionsInformations(cantBeAggressed: boolean = false, cantBeChallenged: boolean = false, cantTrade: boolean = false, cantBeAttackedByMutant: boolean = false, cantRun: boolean = false, forceSlowWalk: boolean = false, cantMinimize: boolean = false, cantMove: boolean = false, cantAggress: boolean = false, cantChallenge: boolean = false, cantExchange: boolean = false, cantAttack: boolean = false, cantChat: boolean = false, cantUseObject: boolean = false, cantUseTaxCollector: boolean = false, cantUseInteractive: boolean = false, cantSpeakToNPC: boolean = false, cantChangeZone: boolean = false, cantAttackMonster: boolean = false): ActorRestrictionsInformations
+    {
+        this.cantBeAggressed = cantBeAggressed;
+        this.cantBeChallenged = cantBeChallenged;
+        this.cantTrade = cantTrade;
+        this.cantBeAttackedByMutant = cantBeAttackedByMutant;
+        this.cantRun = cantRun;
+        this.forceSlowWalk = forceSlowWalk;
+        this.cantMinimize = cantMinimize;
+        this.cantMove = cantMove;
+        this.cantAggress = cantAggress;
+        this.cantChallenge = cantChallenge;
+        this.cantExchange = cantExchange;
+        this.cantAttack = cantAttack;
+        this.cantChat = cantChat;
+        this.cantUseObject = cantUseObject;
+        this.cantUseTaxCollector = cantUseTaxCollector;
+        this.cantUseInteractive = cantUseInteractive;
+        this.cantSpeakToNPC = cantSpeakToNPC;
+        this.cantChangeZone = cantChangeZone;
+        this.cantAttackMonster = cantAttackMonster;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ActorRestrictionsInformations(output);
+    }
+
+    public serializeAs_ActorRestrictionsInformations(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.cantBeAggressed);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.cantBeChallenged);
+        _box0 = BooleanByteWrapper.setFlag(_box0,2,this.cantTrade);
+        _box0 = BooleanByteWrapper.setFlag(_box0,3,this.cantBeAttackedByMutant);
+        _box0 = BooleanByteWrapper.setFlag(_box0,4,this.cantRun);
+        _box0 = BooleanByteWrapper.setFlag(_box0,5,this.forceSlowWalk);
+        _box0 = BooleanByteWrapper.setFlag(_box0,6,this.cantMinimize);
+        _box0 = BooleanByteWrapper.setFlag(_box0,7,this.cantMove);
+        output.writeByte(_box0);
+        var _box1: number = 0;
+        _box1 = BooleanByteWrapper.setFlag(_box1,0,this.cantAggress);
+        _box1 = BooleanByteWrapper.setFlag(_box1,1,this.cantChallenge);
+        _box1 = BooleanByteWrapper.setFlag(_box1,2,this.cantExchange);
+        _box1 = BooleanByteWrapper.setFlag(_box1,3,this.cantAttack);
+        _box1 = BooleanByteWrapper.setFlag(_box1,4,this.cantChat);
+        _box1 = BooleanByteWrapper.setFlag(_box1,5,this.cantUseObject);
+        _box1 = BooleanByteWrapper.setFlag(_box1,6,this.cantUseTaxCollector);
+        _box1 = BooleanByteWrapper.setFlag(_box1,7,this.cantUseInteractive);
+        output.writeByte(_box1);
+        var _box2: number = 0;
+        _box2 = BooleanByteWrapper.setFlag(_box2,0,this.cantSpeakToNPC);
+        _box2 = BooleanByteWrapper.setFlag(_box2,1,this.cantChangeZone);
+        _box2 = BooleanByteWrapper.setFlag(_box2,2,this.cantAttackMonster);
+        output.writeByte(_box2);
     }
 
     public deserialize(input: ICustomDataInput)

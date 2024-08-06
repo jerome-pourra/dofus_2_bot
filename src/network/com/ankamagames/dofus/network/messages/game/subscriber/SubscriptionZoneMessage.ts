@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class SubscriptionZoneMessage extends NetworkMessage
+export class SubscriptionZoneMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8183;
@@ -16,14 +16,37 @@ export class SubscriptionZoneMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return SubscriptionZoneMessage.protocolId;
+    }
+
+    public initSubscriptionZoneMessage(active: boolean = false): SubscriptionZoneMessage
+    {
+        this.active = active;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SubscriptionZoneMessage(output);
+    }
+
+    public serializeAs_SubscriptionZoneMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.active);
     }
 
     public deserialize(input: ICustomDataInput)

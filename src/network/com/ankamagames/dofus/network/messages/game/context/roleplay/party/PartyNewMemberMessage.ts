@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { PartyUpdateMessage } from "./PartyUpdateMessage";
 
-export class PartyNewMemberMessage extends PartyUpdateMessage
+export class PartyNewMemberMessage extends PartyUpdateMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4529;
@@ -15,14 +15,37 @@ export class PartyNewMemberMessage extends PartyUpdateMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyNewMemberMessage.protocolId;
+    }
+
+    public initPartyNewMemberMessage(partyId: number = 0, memberInformations: PartyMemberInformations = null): PartyNewMemberMessage
+    {
+        super.initPartyUpdateMessage(partyId,memberInformations);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyNewMemberMessage(output);
+    }
+
+    public serializeAs_PartyNewMemberMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_PartyUpdateMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

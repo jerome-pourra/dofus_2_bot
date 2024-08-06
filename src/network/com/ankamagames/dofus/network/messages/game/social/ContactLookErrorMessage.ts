@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class ContactLookErrorMessage extends NetworkMessage
+export class ContactLookErrorMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6346;
@@ -16,14 +16,41 @@ export class ContactLookErrorMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ContactLookErrorMessage.protocolId;
+    }
+
+    public initContactLookErrorMessage(requestId: number = 0): ContactLookErrorMessage
+    {
+        this.requestId = requestId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ContactLookErrorMessage(output);
+    }
+
+    public serializeAs_ContactLookErrorMessage(output: ICustomDataOutput)
+    {
+        if(this.requestId < 0)
+        {
+            throw new Error("Forbidden value (" + this.requestId + ") on element requestId.");
+        }
+        output.writeVarInt(this.requestId);
     }
 
     public deserialize(input: ICustomDataInput)

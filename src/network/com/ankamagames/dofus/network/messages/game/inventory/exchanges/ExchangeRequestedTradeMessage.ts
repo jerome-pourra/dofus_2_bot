@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { ExchangeRequestedMessage } from "./ExchangeRequestedMessage";
 
-export class ExchangeRequestedTradeMessage extends ExchangeRequestedMessage
+export class ExchangeRequestedTradeMessage extends ExchangeRequestedMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5103;
@@ -17,14 +17,49 @@ export class ExchangeRequestedTradeMessage extends ExchangeRequestedMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeRequestedTradeMessage.protocolId;
+    }
+
+    public initExchangeRequestedTradeMessage(exchangeType: number = 0, source: number = 0, target: number = 0): ExchangeRequestedTradeMessage
+    {
+        super.initExchangeRequestedMessage(exchangeType);
+        this.source = source;
+        this.target = target;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeRequestedTradeMessage(output);
+    }
+
+    public serializeAs_ExchangeRequestedTradeMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ExchangeRequestedMessage(output);
+        if(this.source < 0 || this.source > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.source + ") on element source.");
+        }
+        output.writeVarLong(this.source);
+        if(this.target < 0 || this.target > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.target + ") on element target.");
+        }
+        output.writeVarLong(this.target);
     }
 
     public deserialize(input: ICustomDataInput)

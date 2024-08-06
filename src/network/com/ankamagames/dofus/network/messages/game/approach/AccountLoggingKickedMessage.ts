@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AccountLoggingKickedMessage extends NetworkMessage
+export class AccountLoggingKickedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2295;
@@ -18,14 +18,53 @@ export class AccountLoggingKickedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AccountLoggingKickedMessage.protocolId;
+    }
+
+    public initAccountLoggingKickedMessage(days: number = 0, hours: number = 0, minutes: number = 0): AccountLoggingKickedMessage
+    {
+        this.days = days;
+        this.hours = hours;
+        this.minutes = minutes;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AccountLoggingKickedMessage(output);
+    }
+
+    public serializeAs_AccountLoggingKickedMessage(output: ICustomDataOutput)
+    {
+        if(this.days < 0)
+        {
+            throw new Error("Forbidden value (" + this.days + ") on element days.");
+        }
+        output.writeVarShort(this.days);
+        if(this.hours < 0)
+        {
+            throw new Error("Forbidden value (" + this.hours + ") on element hours.");
+        }
+        output.writeByte(this.hours);
+        if(this.minutes < 0)
+        {
+            throw new Error("Forbidden value (" + this.minutes + ") on element minutes.");
+        }
+        output.writeByte(this.minutes);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { GameFightPlacementPositionRequestMessage } from "./GameFightPlacementPositionRequestMessage";
 
-export class GameFightPlacementSwapPositionsRequestMessage extends GameFightPlacementPositionRequestMessage
+export class GameFightPlacementSwapPositionsRequestMessage extends GameFightPlacementPositionRequestMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 501;
@@ -16,14 +16,43 @@ export class GameFightPlacementSwapPositionsRequestMessage extends GameFightPlac
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightPlacementSwapPositionsRequestMessage.protocolId;
+    }
+
+    public initGameFightPlacementSwapPositionsRequestMessage(cellId: number = 0, requestedId: number = 0): GameFightPlacementSwapPositionsRequestMessage
+    {
+        super.initGameFightPlacementPositionRequestMessage(cellId);
+        this.requestedId = requestedId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightPlacementSwapPositionsRequestMessage(output);
+    }
+
+    public serializeAs_GameFightPlacementSwapPositionsRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameFightPlacementPositionRequestMessage(output);
+        if(this.requestedId < -9007199254740992 || this.requestedId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.requestedId + ") on element requestedId.");
+        }
+        output.writeDouble(this.requestedId);
     }
 
     public deserialize(input: ICustomDataInput)

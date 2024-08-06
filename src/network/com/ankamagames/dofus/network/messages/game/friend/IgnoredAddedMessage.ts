@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class IgnoredAddedMessage extends NetworkMessage
+export class IgnoredAddedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3797;
@@ -20,14 +20,40 @@ export class IgnoredAddedMessage extends NetworkMessage
         this.ignoreAdded = new IgnoredInformations();
     }
 
+    public getMessageId()
+    {
+        return IgnoredAddedMessage.protocolId;
+    }
+
+    public initIgnoredAddedMessage(ignoreAdded: IgnoredInformations = null, session: boolean = false): IgnoredAddedMessage
+    {
+        this.ignoreAdded = ignoreAdded;
+        this.session = session;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IgnoredAddedMessage(output);
+    }
+
+    public serializeAs_IgnoredAddedMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.ignoreAdded.getTypeId());
+        this.ignoreAdded.serialize(output);
+        output.writeBoolean(this.session);
     }
 
     public deserialize(input: ICustomDataInput)

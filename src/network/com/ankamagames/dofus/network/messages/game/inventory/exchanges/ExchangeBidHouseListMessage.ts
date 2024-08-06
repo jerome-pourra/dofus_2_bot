@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeBidHouseListMessage extends NetworkMessage
+export class ExchangeBidHouseListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6171;
@@ -17,14 +17,43 @@ export class ExchangeBidHouseListMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeBidHouseListMessage.protocolId;
+    }
+
+    public initExchangeBidHouseListMessage(objectGID: number = 0, follow: boolean = false): ExchangeBidHouseListMessage
+    {
+        this.objectGID = objectGID;
+        this.follow = follow;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeBidHouseListMessage(output);
+    }
+
+    public serializeAs_ExchangeBidHouseListMessage(output: ICustomDataOutput)
+    {
+        if(this.objectGID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+        }
+        output.writeVarInt(this.objectGID);
+        output.writeBoolean(this.follow);
     }
 
     public deserialize(input: ICustomDataInput)

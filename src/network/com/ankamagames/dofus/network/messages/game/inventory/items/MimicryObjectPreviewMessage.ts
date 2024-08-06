@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class MimicryObjectPreviewMessage extends NetworkMessage
+export class MimicryObjectPreviewMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2255;
@@ -18,14 +18,37 @@ export class MimicryObjectPreviewMessage extends NetworkMessage
         this.result = new ObjectItem();
     }
 
+    public getMessageId()
+    {
+        return MimicryObjectPreviewMessage.protocolId;
+    }
+
+    public initMimicryObjectPreviewMessage(result: ObjectItem = null): MimicryObjectPreviewMessage
+    {
+        this.result = result;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MimicryObjectPreviewMessage(output);
+    }
+
+    public serializeAs_MimicryObjectPreviewMessage(output: ICustomDataOutput)
+    {
+        this.result.serializeAs_ObjectItem(output);
     }
 
     public deserialize(input: ICustomDataInput)

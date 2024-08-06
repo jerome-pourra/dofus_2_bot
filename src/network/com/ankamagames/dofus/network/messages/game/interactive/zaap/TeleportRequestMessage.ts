@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TeleportRequestMessage extends NetworkMessage
+export class TeleportRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9439;
@@ -18,14 +18,45 @@ export class TeleportRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TeleportRequestMessage.protocolId;
+    }
+
+    public initTeleportRequestMessage(sourceType: number = 0, destinationType: number = 0, mapId: number = 0): TeleportRequestMessage
+    {
+        this.sourceType = sourceType;
+        this.destinationType = destinationType;
+        this.mapId = mapId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TeleportRequestMessage(output);
+    }
+
+    public serializeAs_TeleportRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.sourceType);
+        output.writeByte(this.destinationType);
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
     }
 
     public deserialize(input: ICustomDataInput)

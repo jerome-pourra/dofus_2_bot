@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { CharacterMinimalInformations } from "./CharacterMinimalInformations";
 
-export class CharacterMinimalPlusLookInformations extends CharacterMinimalInformations
+export class CharacterMinimalPlusLookInformations extends CharacterMinimalInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 1529;
@@ -16,6 +16,31 @@ export class CharacterMinimalPlusLookInformations extends CharacterMinimalInform
     {
         super();
         this.entityLook = new EntityLook();
+    }
+
+    public getTypeId()
+    {
+        return CharacterMinimalPlusLookInformations.protocolId;
+    }
+
+    public initCharacterMinimalPlusLookInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0): CharacterMinimalPlusLookInformations
+    {
+        super.initCharacterMinimalInformations(id,name,level);
+        this.entityLook = entityLook;
+        this.breed = breed;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterMinimalPlusLookInformations(output);
+    }
+
+    public serializeAs_CharacterMinimalPlusLookInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterMinimalInformations(output);
+        this.entityLook.serializeAs_EntityLook(output);
+        output.writeByte(this.breed);
     }
 
     public deserialize(input: ICustomDataInput)

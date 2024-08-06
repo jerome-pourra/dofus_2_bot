@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { EntityDispositionInformations } from "./EntityDispositionInformations";
 
-export class GameContextActorPositionInformations
+export class GameContextActorPositionInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 3056;
@@ -15,6 +15,34 @@ export class GameContextActorPositionInformations
     public constructor()
     {
         this.disposition = new EntityDispositionInformations();
+    }
+
+    public getTypeId()
+    {
+        return GameContextActorPositionInformations.protocolId;
+    }
+
+    public initGameContextActorPositionInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null): GameContextActorPositionInformations
+    {
+        this.contextualId = contextualId;
+        this.disposition = disposition;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameContextActorPositionInformations(output);
+    }
+
+    public serializeAs_GameContextActorPositionInformations(output: ICustomDataOutput)
+    {
+        if(this.contextualId < -9007199254740992 || this.contextualId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.contextualId + ") on element contextualId.");
+        }
+        output.writeDouble(this.contextualId);
+        output.writeShort(this.disposition.getTypeId());
+        this.disposition.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

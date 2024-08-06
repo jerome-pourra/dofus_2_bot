@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeReadyMessage extends NetworkMessage
+export class ExchangeReadyMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9547;
@@ -17,14 +17,43 @@ export class ExchangeReadyMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeReadyMessage.protocolId;
+    }
+
+    public initExchangeReadyMessage(ready: boolean = false, step: number = 0): ExchangeReadyMessage
+    {
+        this.ready = ready;
+        this.step = step;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeReadyMessage(output);
+    }
+
+    public serializeAs_ExchangeReadyMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.ready);
+        if(this.step < 0)
+        {
+            throw new Error("Forbidden value (" + this.step + ") on element step.");
+        }
+        output.writeVarShort(this.step);
     }
 
     public deserialize(input: ICustomDataInput)

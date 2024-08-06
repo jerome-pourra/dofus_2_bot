@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { AbstractPartyMessage } from "./AbstractPartyMessage";
 
-export class PartyPledgeLoyaltyRequestMessage extends AbstractPartyMessage
+export class PartyPledgeLoyaltyRequestMessage extends AbstractPartyMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7730;
@@ -16,14 +16,39 @@ export class PartyPledgeLoyaltyRequestMessage extends AbstractPartyMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyPledgeLoyaltyRequestMessage.protocolId;
+    }
+
+    public initPartyPledgeLoyaltyRequestMessage(partyId: number = 0, loyal: boolean = false): PartyPledgeLoyaltyRequestMessage
+    {
+        super.initAbstractPartyMessage(partyId);
+        this.loyal = loyal;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyPledgeLoyaltyRequestMessage(output);
+    }
+
+    public serializeAs_PartyPledgeLoyaltyRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyMessage(output);
+        output.writeBoolean(this.loyal);
     }
 
     public deserialize(input: ICustomDataInput)

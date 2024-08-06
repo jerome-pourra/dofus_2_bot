@@ -5,7 +5,7 @@ import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { HouseInstanceInformations } from "./HouseInstanceInformations";
 import { HouseInformations } from "./HouseInformations";
 
-export class AccountHouseInformations extends HouseInformations
+export class AccountHouseInformations extends HouseInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 8406;
@@ -20,6 +20,54 @@ export class AccountHouseInformations extends HouseInformations
     {
         super();
         this.houseInfos = new HouseInstanceInformations();
+    }
+
+    public getTypeId()
+    {
+        return AccountHouseInformations.protocolId;
+    }
+
+    public initAccountHouseInformations(houseId: number = 0, modelId: number = 0, houseInfos: HouseInstanceInformations = null, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0): AccountHouseInformations
+    {
+        super.initHouseInformations(houseId,modelId);
+        this.houseInfos = houseInfos;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.mapId = mapId;
+        this.subAreaId = subAreaId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AccountHouseInformations(output);
+    }
+
+    public serializeAs_AccountHouseInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_HouseInformations(output);
+        output.writeShort(this.houseInfos.getTypeId());
+        this.houseInfos.serialize(output);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
     }
 
     public deserialize(input: ICustomDataInput)

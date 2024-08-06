@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class UpdateMapPlayersAgressableStatusMessage extends NetworkMessage
+export class UpdateMapPlayersAgressableStatusMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1751;
@@ -18,14 +18,41 @@ export class UpdateMapPlayersAgressableStatusMessage extends NetworkMessage
         this.playerAvAMessages = Array<AgressableStatusMessage>();
     }
 
+    public getMessageId()
+    {
+        return UpdateMapPlayersAgressableStatusMessage.protocolId;
+    }
+
+    public initUpdateMapPlayersAgressableStatusMessage(playerAvAMessages: Array<AgressableStatusMessage> = null): UpdateMapPlayersAgressableStatusMessage
+    {
+        this.playerAvAMessages = playerAvAMessages;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_UpdateMapPlayersAgressableStatusMessage(output);
+    }
+
+    public serializeAs_UpdateMapPlayersAgressableStatusMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.playerAvAMessages.length);
+        for(var _i1: number = 0; _i1 < this.playerAvAMessages.length; _i1++)
+        {
+            (this.playerAvAMessages[_i1] as AgressableStatusMessage).serializeAs_AgressableStatusMessage(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

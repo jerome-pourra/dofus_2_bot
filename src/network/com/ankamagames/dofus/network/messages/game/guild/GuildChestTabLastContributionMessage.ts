@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildChestTabLastContributionMessage extends NetworkMessage
+export class GuildChestTabLastContributionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 683;
@@ -16,14 +16,41 @@ export class GuildChestTabLastContributionMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildChestTabLastContributionMessage.protocolId;
+    }
+
+    public initGuildChestTabLastContributionMessage(lastContributionDate: number = 0): GuildChestTabLastContributionMessage
+    {
+        this.lastContributionDate = lastContributionDate;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildChestTabLastContributionMessage(output);
+    }
+
+    public serializeAs_GuildChestTabLastContributionMessage(output: ICustomDataOutput)
+    {
+        if(this.lastContributionDate < 0 || this.lastContributionDate > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.lastContributionDate + ") on element lastContributionDate.");
+        }
+        output.writeDouble(this.lastContributionDate);
     }
 
     public deserialize(input: ICustomDataInput)

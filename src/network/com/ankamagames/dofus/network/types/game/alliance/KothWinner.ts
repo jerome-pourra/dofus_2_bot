@@ -2,12 +2,32 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class KothWinner
+export class KothWinner implements INetworkType
 {
 
 	public static readonly protocolId: number = 4121;
 
     public constructor()
+    {
+
+    }
+
+    public getTypeId()
+    {
+        return KothWinner.protocolId;
+    }
+
+    public initKothWinner(): KothWinner
+    {
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_KothWinner(output);
+    }
+
+    public serializeAs_KothWinner(output: ICustomDataOutput)
     {
 
     }
