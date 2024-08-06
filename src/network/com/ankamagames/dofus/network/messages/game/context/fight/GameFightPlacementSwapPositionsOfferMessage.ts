@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightPlacementSwapPositionsOfferMessage extends NetworkMessage
+export class GameFightPlacementSwapPositionsOfferMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5124;
@@ -20,14 +20,65 @@ export class GameFightPlacementSwapPositionsOfferMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightPlacementSwapPositionsOfferMessage.protocolId;
+    }
+
+    public initGameFightPlacementSwapPositionsOfferMessage(requestId: number = 0, requesterId: number = 0, requesterCellId: number = 0, requestedId: number = 0, requestedCellId: number = 0): GameFightPlacementSwapPositionsOfferMessage
+    {
+        this.requestId = requestId;
+        this.requesterId = requesterId;
+        this.requesterCellId = requesterCellId;
+        this.requestedId = requestedId;
+        this.requestedCellId = requestedCellId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightPlacementSwapPositionsOfferMessage(output);
+    }
+
+    public serializeAs_GameFightPlacementSwapPositionsOfferMessage(output: ICustomDataOutput)
+    {
+        if(this.requestId < 0)
+        {
+            throw new Error("Forbidden value (" + this.requestId + ") on element requestId.");
+        }
+        output.writeInt(this.requestId);
+        if(this.requesterId < -9007199254740992 || this.requesterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.requesterId + ") on element requesterId.");
+        }
+        output.writeDouble(this.requesterId);
+        if(this.requesterCellId < 0 || this.requesterCellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.requesterCellId + ") on element requesterCellId.");
+        }
+        output.writeVarShort(this.requesterCellId);
+        if(this.requestedId < -9007199254740992 || this.requestedId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.requestedId + ") on element requestedId.");
+        }
+        output.writeDouble(this.requestedId);
+        if(this.requestedCellId < 0 || this.requestedCellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.requestedCellId + ") on element requestedCellId.");
+        }
+        output.writeVarShort(this.requestedCellId);
     }
 
     public deserialize(input: ICustomDataInput)

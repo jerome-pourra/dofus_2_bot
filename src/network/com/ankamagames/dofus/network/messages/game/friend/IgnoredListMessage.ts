@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class IgnoredListMessage extends NetworkMessage
+export class IgnoredListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8123;
@@ -19,14 +19,42 @@ export class IgnoredListMessage extends NetworkMessage
         this.ignoredList = Array<IgnoredInformations>();
     }
 
+    public getMessageId()
+    {
+        return IgnoredListMessage.protocolId;
+    }
+
+    public initIgnoredListMessage(ignoredList: Array<IgnoredInformations> = null): IgnoredListMessage
+    {
+        this.ignoredList = ignoredList;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IgnoredListMessage(output);
+    }
+
+    public serializeAs_IgnoredListMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.ignoredList.length);
+        for(var _i1: number = 0; _i1 < this.ignoredList.length; _i1++)
+        {
+            output.writeShort((this.ignoredList[_i1] as IgnoredInformations).getTypeId());
+            (this.ignoredList[_i1] as IgnoredInformations).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

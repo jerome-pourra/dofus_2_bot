@@ -5,7 +5,7 @@ import { INetworkType } from "./../../../../../../../jerakine/network/INetworkTy
 import { BreachReward } from "./BreachReward";
 import { BreachBranch } from "./BreachBranch";
 
-export class ExtendedBreachBranch extends BreachBranch
+export class ExtendedBreachBranch extends BreachBranch implements INetworkType
 {
 
 	public static readonly protocolId: number = 8307;
@@ -18,6 +18,41 @@ export class ExtendedBreachBranch extends BreachBranch
     {
         super();
         this.rewards = Array<BreachReward>();
+    }
+
+    public getTypeId()
+    {
+        return ExtendedBreachBranch.protocolId;
+    }
+
+    public initExtendedBreachBranch(room: number = 0, element: number = 0, bosses: Array<MonsterInGroupLightInformations> = null, map: number = 0, score: number = 0, relativeScore: number = 0, monsters: Array<MonsterInGroupLightInformations> = null, rewards: Array<BreachReward> = null, modifier: number = 0, prize: number = 0): ExtendedBreachBranch
+    {
+        super.initBreachBranch(room,element,bosses,map,score,relativeScore,monsters);
+        this.rewards = rewards;
+        this.modifier = modifier;
+        this.prize = prize;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExtendedBreachBranch(output);
+    }
+
+    public serializeAs_ExtendedBreachBranch(output: ICustomDataOutput)
+    {
+        super.serializeAs_BreachBranch(output);
+        output.writeShort(this.rewards.length);
+        for(var _i1: number = 0; _i1 < this.rewards.length; _i1++)
+        {
+            (this.rewards[_i1] as BreachReward).serializeAs_BreachReward(output);
+        }
+        output.writeVarInt(this.modifier);
+        if(this.prize < 0)
+        {
+            throw new Error("Forbidden value (" + this.prize + ") on element prize.");
+        }
+        output.writeVarInt(this.prize);
     }
 
     public deserialize(input: ICustomDataInput)

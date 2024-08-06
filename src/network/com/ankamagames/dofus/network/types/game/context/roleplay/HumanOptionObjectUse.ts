@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { HumanOption } from "./HumanOption";
 
-export class HumanOptionObjectUse extends HumanOption
+export class HumanOptionObjectUse extends HumanOption implements INetworkType
 {
 
 	public static readonly protocolId: number = 446;
@@ -15,6 +15,40 @@ export class HumanOptionObjectUse extends HumanOption
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return HumanOptionObjectUse.protocolId;
+    }
+
+    public initHumanOptionObjectUse(delayTypeId: number = 0, delayEndTime: number = 0, objectGID: number = 0): HumanOptionObjectUse
+    {
+        this.delayTypeId = delayTypeId;
+        this.delayEndTime = delayEndTime;
+        this.objectGID = objectGID;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HumanOptionObjectUse(output);
+    }
+
+    public serializeAs_HumanOptionObjectUse(output: ICustomDataOutput)
+    {
+        super.serializeAs_HumanOption(output);
+        output.writeByte(this.delayTypeId);
+        if(this.delayEndTime < 0 || this.delayEndTime > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.delayEndTime + ") on element delayEndTime.");
+        }
+        output.writeDouble(this.delayEndTime);
+        if(this.objectGID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+        }
+        output.writeVarInt(this.objectGID);
     }
 
     public deserialize(input: ICustomDataInput)

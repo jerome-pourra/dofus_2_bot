@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class AlterationsUpdatedMessage extends NetworkMessage
+export class AlterationsUpdatedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 563;
@@ -18,14 +18,41 @@ export class AlterationsUpdatedMessage extends NetworkMessage
         this.alterations = Array<AlterationInfo>();
     }
 
+    public getMessageId()
+    {
+        return AlterationsUpdatedMessage.protocolId;
+    }
+
+    public initAlterationsUpdatedMessage(alterations: Array<AlterationInfo> = null): AlterationsUpdatedMessage
+    {
+        this.alterations = alterations;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AlterationsUpdatedMessage(output);
+    }
+
+    public serializeAs_AlterationsUpdatedMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.alterations.length);
+        for(var _i1: number = 0; _i1 < this.alterations.length; _i1++)
+        {
+            (this.alterations[_i1] as AlterationInfo).serializeAs_AlterationInfo(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

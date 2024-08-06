@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceRecruitmentInvalidateMessage extends NetworkMessage
+export class AllianceRecruitmentInvalidateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 523;
@@ -14,14 +14,36 @@ export class AllianceRecruitmentInvalidateMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AllianceRecruitmentInvalidateMessage.protocolId;
+    }
+
+    public initAllianceRecruitmentInvalidateMessage(): AllianceRecruitmentInvalidateMessage
+    {
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceRecruitmentInvalidateMessage(output);
+    }
+
+    public serializeAs_AllianceRecruitmentInvalidateMessage(output: ICustomDataOutput)
+    {
+
     }
 
     public deserialize(input: ICustomDataInput)

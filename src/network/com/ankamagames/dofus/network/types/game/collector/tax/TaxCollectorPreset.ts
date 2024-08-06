@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { TaxCollectorOrderedSpell } from "./TaxCollectorOrderedSpell";
 
-export class TaxCollectorPreset
+export class TaxCollectorPreset implements INetworkType
 {
 
 	public static readonly protocolId: number = 1854;
@@ -19,6 +19,35 @@ export class TaxCollectorPreset
         this.presetId = new Uuid();
         this.spells = Array<TaxCollectorOrderedSpell>();
         this.characteristics = new CharacterCharacteristics();
+    }
+
+    public getTypeId()
+    {
+        return TaxCollectorPreset.protocolId;
+    }
+
+    public initTaxCollectorPreset(presetId: Uuid = null, spells: Array<TaxCollectorOrderedSpell> = null, characteristics: CharacterCharacteristics = null): TaxCollectorPreset
+    {
+        this.presetId = presetId;
+        this.spells = spells;
+        this.characteristics = characteristics;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorPreset(output);
+    }
+
+    public serializeAs_TaxCollectorPreset(output: ICustomDataOutput)
+    {
+        this.presetId.serializeAs_Uuid(output);
+        output.writeShort(this.spells.length);
+        for(var _i2: number = 0; _i2 < this.spells.length; _i2++)
+        {
+            (this.spells[_i2] as TaxCollectorOrderedSpell).serializeAs_TaxCollectorOrderedSpell(output);
+        }
+        this.characteristics.serializeAs_CharacterCharacteristics(output);
     }
 
     public deserialize(input: ICustomDataInput)

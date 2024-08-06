@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class StorageKamasUpdateMessage extends NetworkMessage
+export class StorageKamasUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8968;
@@ -16,14 +16,41 @@ export class StorageKamasUpdateMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return StorageKamasUpdateMessage.protocolId;
+    }
+
+    public initStorageKamasUpdateMessage(kamasTotal: number = 0): StorageKamasUpdateMessage
+    {
+        this.kamasTotal = kamasTotal;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_StorageKamasUpdateMessage(output);
+    }
+
+    public serializeAs_StorageKamasUpdateMessage(output: ICustomDataOutput)
+    {
+        if(this.kamasTotal < 0 || this.kamasTotal > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.kamasTotal + ") on element kamasTotal.");
+        }
+        output.writeVarLong(this.kamasTotal);
     }
 
     public deserialize(input: ICustomDataInput)

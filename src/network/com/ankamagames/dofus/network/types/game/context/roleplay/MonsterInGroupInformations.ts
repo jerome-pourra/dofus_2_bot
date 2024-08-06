@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { MonsterInGroupLightInformations } from "./MonsterInGroupLightInformations";
 
-export class MonsterInGroupInformations extends MonsterInGroupLightInformations
+export class MonsterInGroupInformations extends MonsterInGroupLightInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 7023;
@@ -15,6 +15,29 @@ export class MonsterInGroupInformations extends MonsterInGroupLightInformations
     {
         super();
         this.look = new EntityLook();
+    }
+
+    public getTypeId()
+    {
+        return MonsterInGroupInformations.protocolId;
+    }
+
+    public initMonsterInGroupInformations(genericId: number = 0, grade: number = 0, level: number = 0, look: EntityLook = null): MonsterInGroupInformations
+    {
+        super.initMonsterInGroupLightInformations(genericId,grade,level);
+        this.look = look;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MonsterInGroupInformations(output);
+    }
+
+    public serializeAs_MonsterInGroupInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_MonsterInGroupLightInformations(output);
+        this.look.serializeAs_EntityLook(output);
     }
 
     public deserialize(input: ICustomDataInput)

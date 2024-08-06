@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightPlacementSwapPositionsCancelledMessage extends NetworkMessage
+export class GameFightPlacementSwapPositionsCancelledMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1579;
@@ -17,14 +17,47 @@ export class GameFightPlacementSwapPositionsCancelledMessage extends NetworkMess
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightPlacementSwapPositionsCancelledMessage.protocolId;
+    }
+
+    public initGameFightPlacementSwapPositionsCancelledMessage(requestId: number = 0, cancellerId: number = 0): GameFightPlacementSwapPositionsCancelledMessage
+    {
+        this.requestId = requestId;
+        this.cancellerId = cancellerId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightPlacementSwapPositionsCancelledMessage(output);
+    }
+
+    public serializeAs_GameFightPlacementSwapPositionsCancelledMessage(output: ICustomDataOutput)
+    {
+        if(this.requestId < 0)
+        {
+            throw new Error("Forbidden value (" + this.requestId + ") on element requestId.");
+        }
+        output.writeInt(this.requestId);
+        if(this.cancellerId < -9007199254740992 || this.cancellerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.cancellerId + ") on element cancellerId.");
+        }
+        output.writeDouble(this.cancellerId);
     }
 
     public deserialize(input: ICustomDataInput)

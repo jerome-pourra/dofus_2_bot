@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { GuildJoinedMessage } from "./GuildJoinedMessage";
 
-export class GuildMembershipMessage extends GuildJoinedMessage
+export class GuildMembershipMessage extends GuildJoinedMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2644;
@@ -15,14 +15,37 @@ export class GuildMembershipMessage extends GuildJoinedMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildMembershipMessage.protocolId;
+    }
+
+    public initGuildMembershipMessage(guildInfo: GuildInformations = null, rankId: number = 0): GuildMembershipMessage
+    {
+        super.initGuildJoinedMessage(guildInfo,rankId);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildMembershipMessage(output);
+    }
+
+    public serializeAs_GuildMembershipMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_GuildJoinedMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

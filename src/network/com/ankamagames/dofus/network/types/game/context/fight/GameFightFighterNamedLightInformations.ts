@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { GameFightFighterLightInformations } from "./GameFightFighterLightInformations";
 
-export class GameFightFighterNamedLightInformations extends GameFightFighterLightInformations
+export class GameFightFighterNamedLightInformations extends GameFightFighterLightInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 5195;
@@ -13,6 +13,29 @@ export class GameFightFighterNamedLightInformations extends GameFightFighterLigh
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return GameFightFighterNamedLightInformations.protocolId;
+    }
+
+    public initGameFightFighterNamedLightInformations(id: number = 0, wave: number = 0, level: number = 0, breed: number = 0, sex: boolean = false, alive: boolean = false, name: string = ""): GameFightFighterNamedLightInformations
+    {
+        super.initGameFightFighterLightInformations(id,wave,level,breed,sex,alive);
+        this.name = name;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightFighterNamedLightInformations(output);
+    }
+
+    public serializeAs_GameFightFighterNamedLightInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameFightFighterLightInformations(output);
+        output.writeUTF(this.name);
     }
 
     public deserialize(input: ICustomDataInput)

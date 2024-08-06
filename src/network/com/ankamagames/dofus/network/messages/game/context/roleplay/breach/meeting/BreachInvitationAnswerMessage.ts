@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class BreachInvitationAnswerMessage extends NetworkMessage
+export class BreachInvitationAnswerMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2262;
@@ -16,14 +16,37 @@ export class BreachInvitationAnswerMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return BreachInvitationAnswerMessage.protocolId;
+    }
+
+    public initBreachInvitationAnswerMessage(accept: boolean = false): BreachInvitationAnswerMessage
+    {
+        this.accept = accept;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachInvitationAnswerMessage(output);
+    }
+
+    public serializeAs_BreachInvitationAnswerMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.accept);
     }
 
     public deserialize(input: ICustomDataInput)

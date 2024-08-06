@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { CharacterSelectionMessage } from "./CharacterSelectionMessage";
 
-export class CharacterFirstSelectionMessage extends CharacterSelectionMessage
+export class CharacterFirstSelectionMessage extends CharacterSelectionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7638;
@@ -16,14 +16,39 @@ export class CharacterFirstSelectionMessage extends CharacterSelectionMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CharacterFirstSelectionMessage.protocolId;
+    }
+
+    public initCharacterFirstSelectionMessage(id: number = 0, doTutorial: boolean = false): CharacterFirstSelectionMessage
+    {
+        super.initCharacterSelectionMessage(id);
+        this.doTutorial = doTutorial;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterFirstSelectionMessage(output);
+    }
+
+    public serializeAs_CharacterFirstSelectionMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterSelectionMessage(output);
+        output.writeBoolean(this.doTutorial);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class AllianceSummaryMessage extends PaginationAnswerAbstractMessage
+export class AllianceSummaryMessage extends PaginationAnswerAbstractMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2436;
@@ -18,14 +18,43 @@ export class AllianceSummaryMessage extends PaginationAnswerAbstractMessage
         this.alliances = Array<AllianceFactSheetInformation>();
     }
 
+    public getMessageId()
+    {
+        return AllianceSummaryMessage.protocolId;
+    }
+
+    public initAllianceSummaryMessage(offset: number = 0, count: number = 0, total: number = 0, alliances: Array<AllianceFactSheetInformation> = null): AllianceSummaryMessage
+    {
+        super.initPaginationAnswerAbstractMessage(offset,count,total);
+        this.alliances = alliances;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceSummaryMessage(output);
+    }
+
+    public serializeAs_AllianceSummaryMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_PaginationAnswerAbstractMessage(output);
+        output.writeShort(this.alliances.length);
+        for(var _i1: number = 0; _i1 < this.alliances.length; _i1++)
+        {
+            (this.alliances[_i1] as AllianceFactSheetInformation).serializeAs_AllianceFactSheetInformation(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

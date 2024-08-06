@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { SkillActionDescription } from "./SkillActionDescription";
 
-export class SkillActionDescriptionCraft extends SkillActionDescription
+export class SkillActionDescriptionCraft extends SkillActionDescription implements INetworkType
 {
 
 	public static readonly protocolId: number = 5905;
@@ -13,6 +13,33 @@ export class SkillActionDescriptionCraft extends SkillActionDescription
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return SkillActionDescriptionCraft.protocolId;
+    }
+
+    public initSkillActionDescriptionCraft(skillId: number = 0, probability: number = 0): SkillActionDescriptionCraft
+    {
+        super.initSkillActionDescription(skillId);
+        this.probability = probability;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SkillActionDescriptionCraft(output);
+    }
+
+    public serializeAs_SkillActionDescriptionCraft(output: ICustomDataOutput)
+    {
+        super.serializeAs_SkillActionDescription(output);
+        if(this.probability < 0)
+        {
+            throw new Error("Forbidden value (" + this.probability + ") on element probability.");
+        }
+        output.writeByte(this.probability);
     }
 
     public deserialize(input: ICustomDataInput)

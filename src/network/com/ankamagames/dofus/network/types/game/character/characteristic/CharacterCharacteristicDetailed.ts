@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { CharacterCharacteristic } from "./CharacterCharacteristic";
 
-export class CharacterCharacteristicDetailed extends CharacterCharacteristic
+export class CharacterCharacteristicDetailed extends CharacterCharacteristic implements INetworkType
 {
 
 	public static readonly protocolId: number = 901;
@@ -17,6 +17,37 @@ export class CharacterCharacteristicDetailed extends CharacterCharacteristic
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return CharacterCharacteristicDetailed.protocolId;
+    }
+
+    public initCharacterCharacteristicDetailed(characteristicId: number = 0, base: number = 0, additional: number = 0, objectsAndMountBonus: number = 0, alignGiftBonus: number = 0, contextModif: number = 0): CharacterCharacteristicDetailed
+    {
+        super.initCharacterCharacteristic(characteristicId);
+        this.base = base;
+        this.additional = additional;
+        this.objectsAndMountBonus = objectsAndMountBonus;
+        this.alignGiftBonus = alignGiftBonus;
+        this.contextModif = contextModif;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterCharacteristicDetailed(output);
+    }
+
+    public serializeAs_CharacterCharacteristicDetailed(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterCharacteristic(output);
+        output.writeVarInt(this.base);
+        output.writeVarInt(this.additional);
+        output.writeVarInt(this.objectsAndMountBonus);
+        output.writeVarInt(this.alignGiftBonus);
+        output.writeVarInt(this.contextModif);
     }
 
     public deserialize(input: ICustomDataInput)

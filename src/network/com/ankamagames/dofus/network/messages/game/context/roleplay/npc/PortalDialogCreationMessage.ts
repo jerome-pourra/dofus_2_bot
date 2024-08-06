@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NpcDialogCreationMessage } from "./NpcDialogCreationMessage";
 
-export class PortalDialogCreationMessage extends NpcDialogCreationMessage
+export class PortalDialogCreationMessage extends NpcDialogCreationMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6302;
@@ -16,14 +16,39 @@ export class PortalDialogCreationMessage extends NpcDialogCreationMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PortalDialogCreationMessage.protocolId;
+    }
+
+    public initPortalDialogCreationMessage(mapId: number = 0, npcId: number = 0, type: number = 0): PortalDialogCreationMessage
+    {
+        super.initNpcDialogCreationMessage(mapId,npcId);
+        this.type = type;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PortalDialogCreationMessage(output);
+    }
+
+    public serializeAs_PortalDialogCreationMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_NpcDialogCreationMessage(output);
+        output.writeInt(this.type);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class CharacterCapabilitiesMessage extends NetworkMessage
+export class CharacterCapabilitiesMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3451;
@@ -16,14 +16,41 @@ export class CharacterCapabilitiesMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CharacterCapabilitiesMessage.protocolId;
+    }
+
+    public initCharacterCapabilitiesMessage(guildEmblemSymbolCategories: number = 0): CharacterCapabilitiesMessage
+    {
+        this.guildEmblemSymbolCategories = guildEmblemSymbolCategories;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterCapabilitiesMessage(output);
+    }
+
+    public serializeAs_CharacterCapabilitiesMessage(output: ICustomDataOutput)
+    {
+        if(this.guildEmblemSymbolCategories < 0)
+        {
+            throw new Error("Forbidden value (" + this.guildEmblemSymbolCategories + ") on element guildEmblemSymbolCategories.");
+        }
+        output.writeVarInt(this.guildEmblemSymbolCategories);
     }
 
     public deserialize(input: ICustomDataInput)

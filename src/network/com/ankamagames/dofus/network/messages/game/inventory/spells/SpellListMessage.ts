@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class SpellListMessage extends NetworkMessage
+export class SpellListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7427;
@@ -19,14 +19,43 @@ export class SpellListMessage extends NetworkMessage
         this.spells = Array<SpellItem>();
     }
 
+    public getMessageId()
+    {
+        return SpellListMessage.protocolId;
+    }
+
+    public initSpellListMessage(spellPrevisualization: boolean = false, spells: Array<SpellItem> = null): SpellListMessage
+    {
+        this.spellPrevisualization = spellPrevisualization;
+        this.spells = spells;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SpellListMessage(output);
+    }
+
+    public serializeAs_SpellListMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.spellPrevisualization);
+        output.writeShort(this.spells.length);
+        for(var _i2: number = 0; _i2 < this.spells.length; _i2++)
+        {
+            (this.spells[_i2] as SpellItem).serializeAs_SpellItem(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

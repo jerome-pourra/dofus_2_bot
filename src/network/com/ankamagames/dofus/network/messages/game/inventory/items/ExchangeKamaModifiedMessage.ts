@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class ExchangeKamaModifiedMessage extends ExchangeObjectMessage
+export class ExchangeKamaModifiedMessage extends ExchangeObjectMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4910;
@@ -16,14 +16,43 @@ export class ExchangeKamaModifiedMessage extends ExchangeObjectMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeKamaModifiedMessage.protocolId;
+    }
+
+    public initExchangeKamaModifiedMessage(remote: boolean = false, quantity: number = 0): ExchangeKamaModifiedMessage
+    {
+        super.initExchangeObjectMessage(remote);
+        this.quantity = quantity;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeKamaModifiedMessage(output);
+    }
+
+    public serializeAs_ExchangeKamaModifiedMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ExchangeObjectMessage(output);
+        if(this.quantity < 0 || this.quantity > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
+        }
+        output.writeVarLong(this.quantity);
     }
 
     public deserialize(input: ICustomDataInput)

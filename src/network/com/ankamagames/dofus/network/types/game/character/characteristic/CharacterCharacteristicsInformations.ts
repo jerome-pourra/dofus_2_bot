@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { CharacterCharacteristic } from "./CharacterCharacteristic";
 
-export class CharacterCharacteristicsInformations
+export class CharacterCharacteristicsInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 4504;
@@ -27,6 +27,82 @@ export class CharacterCharacteristicsInformations
         this.alignmentInfos = new ActorExtendedAlignmentInformations();
         this.characteristics = Array<CharacterCharacteristic>();
         this.spellModifiers = Array<SpellModifierMessage>();
+    }
+
+    public getTypeId()
+    {
+        return CharacterCharacteristicsInformations.protocolId;
+    }
+
+    public initCharacterCharacteristicsInformations(experience: number = 0, experienceLevelFloor: number = 0, experienceNextLevelFloor: number = 0, experienceBonusLimit: number = 0, kamas: number = 0, alignmentInfos: ActorExtendedAlignmentInformations = null, criticalHitWeapon: number = 0, characteristics: Array<CharacterCharacteristic> = null, spellModifiers: Array<SpellModifierMessage> = null, probationTime: number = 0): CharacterCharacteristicsInformations
+    {
+        this.experience = experience;
+        this.experienceLevelFloor = experienceLevelFloor;
+        this.experienceNextLevelFloor = experienceNextLevelFloor;
+        this.experienceBonusLimit = experienceBonusLimit;
+        this.kamas = kamas;
+        this.alignmentInfos = alignmentInfos;
+        this.criticalHitWeapon = criticalHitWeapon;
+        this.characteristics = characteristics;
+        this.spellModifiers = spellModifiers;
+        this.probationTime = probationTime;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterCharacteristicsInformations(output);
+    }
+
+    public serializeAs_CharacterCharacteristicsInformations(output: ICustomDataOutput)
+    {
+        if(this.experience < 0 || this.experience > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.experience + ") on element experience.");
+        }
+        output.writeVarLong(this.experience);
+        if(this.experienceLevelFloor < 0 || this.experienceLevelFloor > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.experienceLevelFloor + ") on element experienceLevelFloor.");
+        }
+        output.writeVarLong(this.experienceLevelFloor);
+        if(this.experienceNextLevelFloor < 0 || this.experienceNextLevelFloor > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.experienceNextLevelFloor + ") on element experienceNextLevelFloor.");
+        }
+        output.writeVarLong(this.experienceNextLevelFloor);
+        if(this.experienceBonusLimit < 0 || this.experienceBonusLimit > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.experienceBonusLimit + ") on element experienceBonusLimit.");
+        }
+        output.writeVarLong(this.experienceBonusLimit);
+        if(this.kamas < 0 || this.kamas > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.kamas + ") on element kamas.");
+        }
+        output.writeVarLong(this.kamas);
+        this.alignmentInfos.serializeAs_ActorExtendedAlignmentInformations(output);
+        if(this.criticalHitWeapon < 0)
+        {
+            throw new Error("Forbidden value (" + this.criticalHitWeapon + ") on element criticalHitWeapon.");
+        }
+        output.writeVarShort(this.criticalHitWeapon);
+        output.writeShort(this.characteristics.length);
+        for(var _i8: number = 0; _i8 < this.characteristics.length; _i8++)
+        {
+            output.writeShort((this.characteristics[_i8] as CharacterCharacteristic).getTypeId());
+            (this.characteristics[_i8] as CharacterCharacteristic).serialize(output);
+        }
+        output.writeShort(this.spellModifiers.length);
+        for(var _i9: number = 0; _i9 < this.spellModifiers.length; _i9++)
+        {
+            (this.spellModifiers[_i9] as SpellModifierMessage).serializeAs_SpellModifierMessage(output);
+        }
+        if(this.probationTime < 0 || this.probationTime > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.probationTime + ") on element probationTime.");
+        }
+        output.writeDouble(this.probationTime);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { ObjectItemMinimalInformation } from "./ObjectItemMinimalInformation";
 
-export class ObjectItemToSellInNpcShop extends ObjectItemMinimalInformation
+export class ObjectItemToSellInNpcShop extends ObjectItemMinimalInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 5301;
@@ -15,6 +15,35 @@ export class ObjectItemToSellInNpcShop extends ObjectItemMinimalInformation
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ObjectItemToSellInNpcShop.protocolId;
+    }
+
+    public initObjectItemToSellInNpcShop(objectGID: number = 0, effects: Array<ObjectEffect> = null, objectPrice: number = 0, buyCriterion: string = ""): ObjectItemToSellInNpcShop
+    {
+        super.initObjectItemMinimalInformation(objectGID,effects);
+        this.objectPrice = objectPrice;
+        this.buyCriterion = buyCriterion;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectItemToSellInNpcShop(output);
+    }
+
+    public serializeAs_ObjectItemToSellInNpcShop(output: ICustomDataOutput)
+    {
+        super.serializeAs_ObjectItemMinimalInformation(output);
+        if(this.objectPrice < 0 || this.objectPrice > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.objectPrice + ") on element objectPrice.");
+        }
+        output.writeVarLong(this.objectPrice);
+        output.writeUTF(this.buyCriterion);
     }
 
     public deserialize(input: ICustomDataInput)

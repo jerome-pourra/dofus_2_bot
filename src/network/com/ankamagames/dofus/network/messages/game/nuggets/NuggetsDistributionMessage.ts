@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class NuggetsDistributionMessage extends NetworkMessage
+export class NuggetsDistributionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3417;
@@ -18,14 +18,41 @@ export class NuggetsDistributionMessage extends NetworkMessage
         this.beneficiaries = Array<NuggetsBeneficiary>();
     }
 
+    public getMessageId()
+    {
+        return NuggetsDistributionMessage.protocolId;
+    }
+
+    public initNuggetsDistributionMessage(beneficiaries: Array<NuggetsBeneficiary> = null): NuggetsDistributionMessage
+    {
+        this.beneficiaries = beneficiaries;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_NuggetsDistributionMessage(output);
+    }
+
+    public serializeAs_NuggetsDistributionMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.beneficiaries.length);
+        for(var _i1: number = 0; _i1 < this.beneficiaries.length; _i1++)
+        {
+            (this.beneficiaries[_i1] as NuggetsBeneficiary).serializeAs_NuggetsBeneficiary(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

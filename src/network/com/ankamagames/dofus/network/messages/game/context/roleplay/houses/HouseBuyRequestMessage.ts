@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class HouseBuyRequestMessage extends NetworkMessage
+export class HouseBuyRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5849;
@@ -16,14 +16,41 @@ export class HouseBuyRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return HouseBuyRequestMessage.protocolId;
+    }
+
+    public initHouseBuyRequestMessage(proposedPrice: number = 0): HouseBuyRequestMessage
+    {
+        this.proposedPrice = proposedPrice;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HouseBuyRequestMessage(output);
+    }
+
+    public serializeAs_HouseBuyRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.proposedPrice < 0 || this.proposedPrice > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.proposedPrice + ") on element proposedPrice.");
+        }
+        output.writeVarLong(this.proposedPrice);
     }
 
     public deserialize(input: ICustomDataInput)

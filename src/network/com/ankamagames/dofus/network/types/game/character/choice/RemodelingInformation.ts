@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class RemodelingInformation
+export class RemodelingInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 3743;
@@ -16,6 +16,43 @@ export class RemodelingInformation
     public constructor()
     {
         this.colors = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return RemodelingInformation.protocolId;
+    }
+
+    public initRemodelingInformation(name: string = "", breed: number = 0, sex: boolean = false, cosmeticId: number = 0, colors: Array<number> = null): RemodelingInformation
+    {
+        this.name = name;
+        this.breed = breed;
+        this.sex = sex;
+        this.cosmeticId = cosmeticId;
+        this.colors = colors;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_RemodelingInformation(output);
+    }
+
+    public serializeAs_RemodelingInformation(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.name);
+        output.writeByte(this.breed);
+        output.writeBoolean(this.sex);
+        if(this.cosmeticId < 0)
+        {
+            throw new Error("Forbidden value (" + this.cosmeticId + ") on element cosmeticId.");
+        }
+        output.writeVarShort(this.cosmeticId);
+        output.writeShort(this.colors.length);
+        for(var _i5: number = 0; _i5 < this.colors.length; _i5++)
+        {
+            output.writeInt(this.colors[_i5]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GameContextMoveMultipleElementsMessage extends NetworkMessage
+export class GameContextMoveMultipleElementsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7368;
@@ -18,14 +18,41 @@ export class GameContextMoveMultipleElementsMessage extends NetworkMessage
         this.movements = Array<EntityMovementInformations>();
     }
 
+    public getMessageId()
+    {
+        return GameContextMoveMultipleElementsMessage.protocolId;
+    }
+
+    public initGameContextMoveMultipleElementsMessage(movements: Array<EntityMovementInformations> = null): GameContextMoveMultipleElementsMessage
+    {
+        this.movements = movements;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameContextMoveMultipleElementsMessage(output);
+    }
+
+    public serializeAs_GameContextMoveMultipleElementsMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.movements.length);
+        for(var _i1: number = 0; _i1 < this.movements.length; _i1++)
+        {
+            (this.movements[_i1] as EntityMovementInformations).serializeAs_EntityMovementInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

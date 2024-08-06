@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildKickRequestMessage extends NetworkMessage
+export class GuildKickRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9738;
@@ -16,14 +16,41 @@ export class GuildKickRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildKickRequestMessage.protocolId;
+    }
+
+    public initGuildKickRequestMessage(kickedId: number = 0): GuildKickRequestMessage
+    {
+        this.kickedId = kickedId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildKickRequestMessage(output);
+    }
+
+    public serializeAs_GuildKickRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.kickedId < 0 || this.kickedId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.kickedId + ") on element kickedId.");
+        }
+        output.writeVarLong(this.kickedId);
     }
 
     public deserialize(input: ICustomDataInput)

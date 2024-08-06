@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class FightPhase
+export class FightPhase implements INetworkType
 {
 
 	public static readonly protocolId: number = 2770;
@@ -13,6 +13,33 @@ export class FightPhase
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return FightPhase.protocolId;
+    }
+
+    public initFightPhase(phase: number = 0, phaseEndTimeStamp: number = 0): FightPhase
+    {
+        this.phase = phase;
+        this.phaseEndTimeStamp = phaseEndTimeStamp;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightPhase(output);
+    }
+
+    public serializeAs_FightPhase(output: ICustomDataOutput)
+    {
+        output.writeByte(this.phase);
+        if(this.phaseEndTimeStamp < -9007199254740992 || this.phaseEndTimeStamp > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.phaseEndTimeStamp + ") on element phaseEndTimeStamp.");
+        }
+        output.writeDouble(this.phaseEndTimeStamp);
     }
 
     public deserialize(input: ICustomDataInput)

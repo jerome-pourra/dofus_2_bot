@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { GameContextRemoveMultipleElementsMessage } from "./GameContextRemoveMultipleElementsMessage";
 
-export class GameContextRemoveMultipleElementsWithEventsMessage extends GameContextRemoveMultipleElementsMessage
+export class GameContextRemoveMultipleElementsWithEventsMessage extends GameContextRemoveMultipleElementsMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1167;
@@ -17,14 +17,47 @@ export class GameContextRemoveMultipleElementsWithEventsMessage extends GameCont
         this.elementEventIds = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return GameContextRemoveMultipleElementsWithEventsMessage.protocolId;
+    }
+
+    public initGameContextRemoveMultipleElementsWithEventsMessage(elementsIds: Array<number> = null, elementEventIds: Array<number> = null): GameContextRemoveMultipleElementsWithEventsMessage
+    {
+        super.initGameContextRemoveMultipleElementsMessage(elementsIds);
+        this.elementEventIds = elementEventIds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameContextRemoveMultipleElementsWithEventsMessage(output);
+    }
+
+    public serializeAs_GameContextRemoveMultipleElementsWithEventsMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameContextRemoveMultipleElementsMessage(output);
+        output.writeShort(this.elementEventIds.length);
+        for(var _i1: number = 0; _i1 < this.elementEventIds.length; _i1++)
+        {
+            if(this.elementEventIds[_i1] < 0)
+            {
+                throw new Error("Forbidden value (" + this.elementEventIds[_i1] + ") on element 1 (starting at 1) of elementEventIds.");
+            }
+            output.writeByte(this.elementEventIds[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

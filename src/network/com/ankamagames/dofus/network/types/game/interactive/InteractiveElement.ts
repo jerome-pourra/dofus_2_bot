@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { InteractiveElementSkill } from "./InteractiveElementSkill";
 
-export class InteractiveElement
+export class InteractiveElement implements INetworkType
 {
 
 	public static readonly protocolId: number = 6065;
@@ -19,6 +19,49 @@ export class InteractiveElement
     {
         this.enabledSkills = Array<InteractiveElementSkill>();
         this.disabledSkills = Array<InteractiveElementSkill>();
+    }
+
+    public getTypeId()
+    {
+        return InteractiveElement.protocolId;
+    }
+
+    public initInteractiveElement(elementId: number = 0, elementTypeId: number = 0, enabledSkills: Array<InteractiveElementSkill> = null, disabledSkills: Array<InteractiveElementSkill> = null, onCurrentMap: boolean = false): InteractiveElement
+    {
+        this.elementId = elementId;
+        this.elementTypeId = elementTypeId;
+        this.enabledSkills = enabledSkills;
+        this.disabledSkills = disabledSkills;
+        this.onCurrentMap = onCurrentMap;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_InteractiveElement(output);
+    }
+
+    public serializeAs_InteractiveElement(output: ICustomDataOutput)
+    {
+        if(this.elementId < 0)
+        {
+            throw new Error("Forbidden value (" + this.elementId + ") on element elementId.");
+        }
+        output.writeInt(this.elementId);
+        output.writeInt(this.elementTypeId);
+        output.writeShort(this.enabledSkills.length);
+        for(var _i3: number = 0; _i3 < this.enabledSkills.length; _i3++)
+        {
+            output.writeShort((this.enabledSkills[_i3] as InteractiveElementSkill).getTypeId());
+            (this.enabledSkills[_i3] as InteractiveElementSkill).serialize(output);
+        }
+        output.writeShort(this.disabledSkills.length);
+        for(var _i4: number = 0; _i4 < this.disabledSkills.length; _i4++)
+        {
+            output.writeShort((this.disabledSkills[_i4] as InteractiveElementSkill).getTypeId());
+            (this.disabledSkills[_i4] as InteractiveElementSkill).serialize(output);
+        }
+        output.writeBoolean(this.onCurrentMap);
     }
 
     public deserialize(input: ICustomDataInput)

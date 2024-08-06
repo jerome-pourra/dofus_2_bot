@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class GameActionFightModifyEffectsDurationMessage extends AbstractGameActionMessage
+export class GameActionFightModifyEffectsDurationMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9731;
@@ -17,14 +17,45 @@ export class GameActionFightModifyEffectsDurationMessage extends AbstractGameAct
         super();
     }
 
+    public getMessageId()
+    {
+        return GameActionFightModifyEffectsDurationMessage.protocolId;
+    }
+
+    public initGameActionFightModifyEffectsDurationMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, delta: number = 0): GameActionFightModifyEffectsDurationMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.targetId = targetId;
+        this.delta = delta;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionFightModifyEffectsDurationMessage(output);
+    }
+
+    public serializeAs_GameActionFightModifyEffectsDurationMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        if(this.targetId < -9007199254740992 || this.targetId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+        }
+        output.writeDouble(this.targetId);
+        output.writeShort(this.delta);
     }
 
     public deserialize(input: ICustomDataInput)

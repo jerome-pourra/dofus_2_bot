@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../../../jerakine/network
 import { INetworkMessage } from "./../../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../../jerakine/network/NetworkMessage";
 
-export class AlignmentWarEffortProgressionMessage extends NetworkMessage
+export class AlignmentWarEffortProgressionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2045;
@@ -18,14 +18,41 @@ export class AlignmentWarEffortProgressionMessage extends NetworkMessage
         this.effortProgressions = Array<AlignmentWarEffortInformation>();
     }
 
+    public getMessageId()
+    {
+        return AlignmentWarEffortProgressionMessage.protocolId;
+    }
+
+    public initAlignmentWarEffortProgressionMessage(effortProgressions: Array<AlignmentWarEffortInformation> = null): AlignmentWarEffortProgressionMessage
+    {
+        this.effortProgressions = effortProgressions;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AlignmentWarEffortProgressionMessage(output);
+    }
+
+    public serializeAs_AlignmentWarEffortProgressionMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.effortProgressions.length);
+        for(var _i1: number = 0; _i1 < this.effortProgressions.length; _i1++)
+        {
+            (this.effortProgressions[_i1] as AlignmentWarEffortInformation).serializeAs_AlignmentWarEffortInformation(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

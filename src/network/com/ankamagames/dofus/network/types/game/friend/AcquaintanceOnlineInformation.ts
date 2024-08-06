@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { AcquaintanceInformation } from "./AcquaintanceInformation";
 
-export class AcquaintanceOnlineInformation extends AcquaintanceInformation
+export class AcquaintanceOnlineInformation extends AcquaintanceInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 251;
@@ -20,6 +20,44 @@ export class AcquaintanceOnlineInformation extends AcquaintanceInformation
     {
         super();
         this.status = new PlayerStatus();
+    }
+
+    public getTypeId()
+    {
+        return AcquaintanceOnlineInformation.protocolId;
+    }
+
+    public initAcquaintanceOnlineInformation(accountId: number = 0, accountTag: AccountTagInformation = null, playerState: number = 99, playerId: number = 0, playerName: string = "", moodSmileyId: number = 0, status: PlayerStatus = null): AcquaintanceOnlineInformation
+    {
+        super.initAcquaintanceInformation(accountId,accountTag,playerState);
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.moodSmileyId = moodSmileyId;
+        this.status = status;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AcquaintanceOnlineInformation(output);
+    }
+
+    public serializeAs_AcquaintanceOnlineInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_AcquaintanceInformation(output);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeUTF(this.playerName);
+        if(this.moodSmileyId < 0)
+        {
+            throw new Error("Forbidden value (" + this.moodSmileyId + ") on element moodSmileyId.");
+        }
+        output.writeVarShort(this.moodSmileyId);
+        output.writeShort(this.status.getTypeId());
+        this.status.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

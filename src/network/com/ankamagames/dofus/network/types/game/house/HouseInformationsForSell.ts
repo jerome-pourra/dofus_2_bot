@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class HouseInformationsForSell
+export class HouseInformationsForSell implements INetworkType
 {
 
 	public static readonly protocolId: number = 6977;
@@ -27,6 +27,81 @@ export class HouseInformationsForSell
     {
         this.ownerTag = new AccountTagInformation();
         this.skillListIds = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return HouseInformationsForSell.protocolId;
+    }
+
+    public initHouseInformationsForSell(instanceId: number = 0, secondHand: boolean = false, modelId: number = 0, ownerTag: AccountTagInformation = null, hasOwner: boolean = false, ownerCharacterName: string = "", worldX: number = 0, worldY: number = 0, subAreaId: number = 0, nbRoom: number = 0, nbChest: number = 0, skillListIds: Array<number> = null, isLocked: boolean = false, price: number = 0): HouseInformationsForSell
+    {
+        this.instanceId = instanceId;
+        this.secondHand = secondHand;
+        this.modelId = modelId;
+        this.ownerTag = ownerTag;
+        this.hasOwner = hasOwner;
+        this.ownerCharacterName = ownerCharacterName;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.subAreaId = subAreaId;
+        this.nbRoom = nbRoom;
+        this.nbChest = nbChest;
+        this.skillListIds = skillListIds;
+        this.isLocked = isLocked;
+        this.price = price;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HouseInformationsForSell(output);
+    }
+
+    public serializeAs_HouseInformationsForSell(output: ICustomDataOutput)
+    {
+        if(this.instanceId < 0)
+        {
+            throw new Error("Forbidden value (" + this.instanceId + ") on element instanceId.");
+        }
+        output.writeInt(this.instanceId);
+        output.writeBoolean(this.secondHand);
+        if(this.modelId < 0)
+        {
+            throw new Error("Forbidden value (" + this.modelId + ") on element modelId.");
+        }
+        output.writeVarInt(this.modelId);
+        this.ownerTag.serializeAs_AccountTagInformation(output);
+        output.writeBoolean(this.hasOwner);
+        output.writeUTF(this.ownerCharacterName);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
+        output.writeByte(this.nbRoom);
+        output.writeByte(this.nbChest);
+        output.writeShort(this.skillListIds.length);
+        for(var _i12: number = 0; _i12 < this.skillListIds.length; _i12++)
+        {
+            output.writeInt(this.skillListIds[_i12]);
+        }
+        output.writeBoolean(this.isLocked);
+        if(this.price < 0 || this.price > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.price + ") on element price.");
+        }
+        output.writeVarLong(this.price);
     }
 
     public deserialize(input: ICustomDataInput)

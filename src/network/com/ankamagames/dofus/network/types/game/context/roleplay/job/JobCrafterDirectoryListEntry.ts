@@ -4,7 +4,7 @@ import { INetworkType } from "./../../../../../../../jerakine/network/INetworkTy
 import { JobCrafterDirectoryEntryPlayerInfo } from "./JobCrafterDirectoryEntryPlayerInfo";
 import { JobCrafterDirectoryEntryJobInfo } from "./JobCrafterDirectoryEntryJobInfo";
 
-export class JobCrafterDirectoryListEntry
+export class JobCrafterDirectoryListEntry implements INetworkType
 {
 
 	public static readonly protocolId: number = 7693;
@@ -16,6 +16,29 @@ export class JobCrafterDirectoryListEntry
     {
         this.playerInfo = new JobCrafterDirectoryEntryPlayerInfo();
         this.jobInfo = new JobCrafterDirectoryEntryJobInfo();
+    }
+
+    public getTypeId()
+    {
+        return JobCrafterDirectoryListEntry.protocolId;
+    }
+
+    public initJobCrafterDirectoryListEntry(playerInfo: JobCrafterDirectoryEntryPlayerInfo = null, jobInfo: JobCrafterDirectoryEntryJobInfo = null): JobCrafterDirectoryListEntry
+    {
+        this.playerInfo = playerInfo;
+        this.jobInfo = jobInfo;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_JobCrafterDirectoryListEntry(output);
+    }
+
+    public serializeAs_JobCrafterDirectoryListEntry(output: ICustomDataOutput)
+    {
+        this.playerInfo.serializeAs_JobCrafterDirectoryEntryPlayerInfo(output);
+        this.jobInfo.serializeAs_JobCrafterDirectoryEntryJobInfo(output);
     }
 
     public deserialize(input: ICustomDataInput)

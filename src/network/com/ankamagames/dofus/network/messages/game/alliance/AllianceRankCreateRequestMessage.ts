@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceRankCreateRequestMessage extends NetworkMessage
+export class AllianceRankCreateRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9486;
@@ -18,14 +18,49 @@ export class AllianceRankCreateRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AllianceRankCreateRequestMessage.protocolId;
+    }
+
+    public initAllianceRankCreateRequestMessage(parentRankId: number = 0, gfxId: number = 0, name: string = ""): AllianceRankCreateRequestMessage
+    {
+        this.parentRankId = parentRankId;
+        this.gfxId = gfxId;
+        this.name = name;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceRankCreateRequestMessage(output);
+    }
+
+    public serializeAs_AllianceRankCreateRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.parentRankId < 0)
+        {
+            throw new Error("Forbidden value (" + this.parentRankId + ") on element parentRankId.");
+        }
+        output.writeVarInt(this.parentRankId);
+        if(this.gfxId < 0)
+        {
+            throw new Error("Forbidden value (" + this.gfxId + ") on element gfxId.");
+        }
+        output.writeVarInt(this.gfxId);
+        output.writeUTF(this.name);
     }
 
     public deserialize(input: ICustomDataInput)

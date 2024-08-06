@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { AbstractPartyMemberInFightMessage } from "./AbstractPartyMemberInFightMessage";
 
-export class PartyMemberInStandardFightMessage extends AbstractPartyMemberInFightMessage
+export class PartyMemberInStandardFightMessage extends AbstractPartyMemberInFightMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8285;
@@ -18,14 +18,39 @@ export class PartyMemberInStandardFightMessage extends AbstractPartyMemberInFigh
         this.fightMap = new MapCoordinatesExtended();
     }
 
+    public getMessageId()
+    {
+        return PartyMemberInStandardFightMessage.protocolId;
+    }
+
+    public initPartyMemberInStandardFightMessage(partyId: number = 0, reason: number = 0, memberId: number = 0, memberAccountId: number = 0, memberName: string = "", fightId: number = 0, timeBeforeFightStart: number = 0, fightMap: MapCoordinatesExtended = null): PartyMemberInStandardFightMessage
+    {
+        super.initAbstractPartyMemberInFightMessage(partyId,reason,memberId,memberAccountId,memberName,fightId,timeBeforeFightStart);
+        this.fightMap = fightMap;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyMemberInStandardFightMessage(output);
+    }
+
+    public serializeAs_PartyMemberInStandardFightMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyMemberInFightMessage(output);
+        this.fightMap.serializeAs_MapCoordinatesExtended(output);
     }
 
     public deserialize(input: ICustomDataInput)

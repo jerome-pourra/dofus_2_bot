@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { ChatAbstractServerMessage } from "./ChatAbstractServerMessage";
 
-export class ChatServerMessage extends ChatAbstractServerMessage
+export class ChatServerMessage extends ChatAbstractServerMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6772;
@@ -19,14 +19,53 @@ export class ChatServerMessage extends ChatAbstractServerMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ChatServerMessage.protocolId;
+    }
+
+    public initChatServerMessage(channel: number = 0, content: string = "", timestamp: number = 0, fingerprint: string = "", senderId: number = 0, senderName: string = "", prefix: string = "", senderAccountId: number = 0): ChatServerMessage
+    {
+        super.initChatAbstractServerMessage(channel,content,timestamp,fingerprint);
+        this.senderId = senderId;
+        this.senderName = senderName;
+        this.prefix = prefix;
+        this.senderAccountId = senderAccountId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChatServerMessage(output);
+    }
+
+    public serializeAs_ChatServerMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ChatAbstractServerMessage(output);
+        if(this.senderId < -9007199254740992 || this.senderId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.senderId + ") on element senderId.");
+        }
+        output.writeDouble(this.senderId);
+        output.writeUTF(this.senderName);
+        output.writeUTF(this.prefix);
+        if(this.senderAccountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.senderAccountId + ") on element senderAccountId.");
+        }
+        output.writeInt(this.senderAccountId);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class CharacterSelectedForceMessage extends NetworkMessage
+export class CharacterSelectedForceMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4050;
@@ -16,14 +16,41 @@ export class CharacterSelectedForceMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CharacterSelectedForceMessage.protocolId;
+    }
+
+    public initCharacterSelectedForceMessage(id: number = 0): CharacterSelectedForceMessage
+    {
+        this.id = id;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterSelectedForceMessage(output);
+    }
+
+    public serializeAs_CharacterSelectedForceMessage(output: ICustomDataOutput)
+    {
+        if(this.id < 1 || this.id > 2147483647)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeInt(this.id);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { DebtInformation } from "./DebtInformation";
 
-export class KamaDebtInformation extends DebtInformation
+export class KamaDebtInformation extends DebtInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 2104;
@@ -13,6 +13,33 @@ export class KamaDebtInformation extends DebtInformation
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return KamaDebtInformation.protocolId;
+    }
+
+    public initKamaDebtInformation(id: number = 0, timestamp: number = 0, kamas: number = 0): KamaDebtInformation
+    {
+        super.initDebtInformation(id,timestamp);
+        this.kamas = kamas;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_KamaDebtInformation(output);
+    }
+
+    public serializeAs_KamaDebtInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_DebtInformation(output);
+        if(this.kamas < 0 || this.kamas > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.kamas + ") on element kamas.");
+        }
+        output.writeVarLong(this.kamas);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class KohScore
+export class KohScore implements INetworkType
 {
 
 	public static readonly protocolId: number = 5560;
@@ -14,6 +14,31 @@ export class KohScore
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return KohScore.protocolId;
+    }
+
+    public initKohScore(avaScoreTypeEnum: number = 1, roundScores: number = 0, cumulScores: number = 0): KohScore
+    {
+        this.avaScoreTypeEnum = avaScoreTypeEnum;
+        this.roundScores = roundScores;
+        this.cumulScores = cumulScores;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_KohScore(output);
+    }
+
+    public serializeAs_KohScore(output: ICustomDataOutput)
+    {
+        output.writeByte(this.avaScoreTypeEnum);
+        output.writeInt(this.roundScores);
+        output.writeInt(this.cumulScores);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class AbstractCharacterInformation
+export class AbstractCharacterInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 5789;
@@ -12,6 +12,31 @@ export class AbstractCharacterInformation
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return AbstractCharacterInformation.protocolId;
+    }
+
+    public initAbstractCharacterInformation(id: number = 0): AbstractCharacterInformation
+    {
+        this.id = id;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AbstractCharacterInformation(output);
+    }
+
+    public serializeAs_AbstractCharacterInformation(output: ICustomDataOutput)
+    {
+        if(this.id < 0 || this.id > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarLong(this.id);
     }
 
     public deserialize(input: ICustomDataInput)

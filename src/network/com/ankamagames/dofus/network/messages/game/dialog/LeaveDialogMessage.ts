@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class LeaveDialogMessage extends NetworkMessage
+export class LeaveDialogMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6689;
@@ -16,14 +16,37 @@ export class LeaveDialogMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return LeaveDialogMessage.protocolId;
+    }
+
+    public initLeaveDialogMessage(dialogType: number = 0): LeaveDialogMessage
+    {
+        this.dialogType = dialogType;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_LeaveDialogMessage(output);
+    }
+
+    public serializeAs_LeaveDialogMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.dialogType);
     }
 
     public deserialize(input: ICustomDataInput)

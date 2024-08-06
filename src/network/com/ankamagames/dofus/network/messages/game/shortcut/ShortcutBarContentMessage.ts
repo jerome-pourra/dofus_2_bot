@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class ShortcutBarContentMessage extends NetworkMessage
+export class ShortcutBarContentMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9158;
@@ -20,14 +20,44 @@ export class ShortcutBarContentMessage extends NetworkMessage
         this.shortcuts = Array<Shortcut>();
     }
 
+    public getMessageId()
+    {
+        return ShortcutBarContentMessage.protocolId;
+    }
+
+    public initShortcutBarContentMessage(barType: number = 0, shortcuts: Array<Shortcut> = null): ShortcutBarContentMessage
+    {
+        this.barType = barType;
+        this.shortcuts = shortcuts;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ShortcutBarContentMessage(output);
+    }
+
+    public serializeAs_ShortcutBarContentMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.barType);
+        output.writeShort(this.shortcuts.length);
+        for(var _i2: number = 0; _i2 < this.shortcuts.length; _i2++)
+        {
+            output.writeShort((this.shortcuts[_i2] as Shortcut).getTypeId());
+            (this.shortcuts[_i2] as Shortcut).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

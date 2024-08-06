@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceModificationResultMessage extends NetworkMessage
+export class AllianceModificationResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3693;
@@ -16,14 +16,37 @@ export class AllianceModificationResultMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AllianceModificationResultMessage.protocolId;
+    }
+
+    public initAllianceModificationResultMessage(result: number = 0): AllianceModificationResultMessage
+    {
+        this.result = result;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceModificationResultMessage(output);
+    }
+
+    public serializeAs_AllianceModificationResultMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.result);
     }
 
     public deserialize(input: ICustomDataInput)

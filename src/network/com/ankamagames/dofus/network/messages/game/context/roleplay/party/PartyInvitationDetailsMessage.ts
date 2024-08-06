@@ -7,7 +7,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { AbstractPartyMessage } from "./AbstractPartyMessage";
 
-export class PartyInvitationDetailsMessage extends AbstractPartyMessage
+export class PartyInvitationDetailsMessage extends AbstractPartyMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8607;
@@ -27,14 +27,68 @@ export class PartyInvitationDetailsMessage extends AbstractPartyMessage
         this.guests = Array<PartyGuestInformations>();
     }
 
+    public getMessageId()
+    {
+        return PartyInvitationDetailsMessage.protocolId;
+    }
+
+    public initPartyInvitationDetailsMessage(partyId: number = 0, partyType: number = 0, partyName: string = "", fromId: number = 0, fromName: string = "", leaderId: number = 0, members: Array<PartyInvitationMemberInformations> = null, guests: Array<PartyGuestInformations> = null): PartyInvitationDetailsMessage
+    {
+        super.initAbstractPartyMessage(partyId);
+        this.partyType = partyType;
+        this.partyName = partyName;
+        this.fromId = fromId;
+        this.fromName = fromName;
+        this.leaderId = leaderId;
+        this.members = members;
+        this.guests = guests;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyInvitationDetailsMessage(output);
+    }
+
+    public serializeAs_PartyInvitationDetailsMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyMessage(output);
+        output.writeByte(this.partyType);
+        output.writeUTF(this.partyName);
+        if(this.fromId < 0 || this.fromId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.fromId + ") on element fromId.");
+        }
+        output.writeVarLong(this.fromId);
+        output.writeUTF(this.fromName);
+        if(this.leaderId < 0 || this.leaderId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.leaderId + ") on element leaderId.");
+        }
+        output.writeVarLong(this.leaderId);
+        output.writeShort(this.members.length);
+        for(var _i6: number = 0; _i6 < this.members.length; _i6++)
+        {
+            output.writeShort((this.members[_i6] as PartyInvitationMemberInformations).getTypeId());
+            (this.members[_i6] as PartyInvitationMemberInformations).serialize(output);
+        }
+        output.writeShort(this.guests.length);
+        for(var _i7: number = 0; _i7 < this.guests.length; _i7++)
+        {
+            (this.guests[_i7] as PartyGuestInformations).serializeAs_PartyGuestInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

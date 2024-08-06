@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { AbstractContactInformations } from "./AbstractContactInformations";
 
-export class IgnoredInformations extends AbstractContactInformations
+export class IgnoredInformations extends AbstractContactInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 2099;
@@ -12,6 +12,27 @@ export class IgnoredInformations extends AbstractContactInformations
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return IgnoredInformations.protocolId;
+    }
+
+    public initIgnoredInformations(accountId: number = 0, accountTag: AccountTagInformation = null): IgnoredInformations
+    {
+        super.initAbstractContactInformations(accountId,accountTag);
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IgnoredInformations(output);
+    }
+
+    public serializeAs_IgnoredInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractContactInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TaxCollectorPresetsMessage extends NetworkMessage
+export class TaxCollectorPresetsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9900;
@@ -18,14 +18,41 @@ export class TaxCollectorPresetsMessage extends NetworkMessage
         this.presets = Array<TaxCollectorPreset>();
     }
 
+    public getMessageId()
+    {
+        return TaxCollectorPresetsMessage.protocolId;
+    }
+
+    public initTaxCollectorPresetsMessage(presets: Array<TaxCollectorPreset> = null): TaxCollectorPresetsMessage
+    {
+        this.presets = presets;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorPresetsMessage(output);
+    }
+
+    public serializeAs_TaxCollectorPresetsMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.presets.length);
+        for(var _i1: number = 0; _i1 < this.presets.length; _i1++)
+        {
+            (this.presets[_i1] as TaxCollectorPreset).serializeAs_TaxCollectorPreset(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

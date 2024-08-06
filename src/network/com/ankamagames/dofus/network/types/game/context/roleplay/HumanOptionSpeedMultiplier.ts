@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { HumanOption } from "./HumanOption";
 
-export class HumanOptionSpeedMultiplier extends HumanOption
+export class HumanOptionSpeedMultiplier extends HumanOption implements INetworkType
 {
 
 	public static readonly protocolId: number = 4364;
@@ -13,6 +13,32 @@ export class HumanOptionSpeedMultiplier extends HumanOption
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return HumanOptionSpeedMultiplier.protocolId;
+    }
+
+    public initHumanOptionSpeedMultiplier(speedMultiplier: number = 0): HumanOptionSpeedMultiplier
+    {
+        this.speedMultiplier = speedMultiplier;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HumanOptionSpeedMultiplier(output);
+    }
+
+    public serializeAs_HumanOptionSpeedMultiplier(output: ICustomDataOutput)
+    {
+        super.serializeAs_HumanOption(output);
+        if(this.speedMultiplier < 0)
+        {
+            throw new Error("Forbidden value (" + this.speedMultiplier + ") on element speedMultiplier.");
+        }
+        output.writeVarInt(this.speedMultiplier);
     }
 
     public deserialize(input: ICustomDataInput)

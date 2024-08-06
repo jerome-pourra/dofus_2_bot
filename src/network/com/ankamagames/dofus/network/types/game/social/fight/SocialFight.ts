@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { SocialFightInfo } from "./SocialFightInfo";
 
-export class SocialFight
+export class SocialFight implements INetworkType
 {
 
 	public static readonly protocolId: number = 2810;
@@ -21,6 +21,41 @@ export class SocialFight
         this.attackers = Array<CharacterMinimalPlusLookInformations>();
         this.defenders = Array<CharacterMinimalPlusLookInformations>();
         this.phase = new FightPhase();
+    }
+
+    public getTypeId()
+    {
+        return SocialFight.protocolId;
+    }
+
+    public initSocialFight(socialFightInfo: SocialFightInfo = null, attackers: Array<CharacterMinimalPlusLookInformations> = null, defenders: Array<CharacterMinimalPlusLookInformations> = null, phase: FightPhase = null): SocialFight
+    {
+        this.socialFightInfo = socialFightInfo;
+        this.attackers = attackers;
+        this.defenders = defenders;
+        this.phase = phase;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SocialFight(output);
+    }
+
+    public serializeAs_SocialFight(output: ICustomDataOutput)
+    {
+        this.socialFightInfo.serializeAs_SocialFightInfo(output);
+        output.writeShort(this.attackers.length);
+        for(var _i2: number = 0; _i2 < this.attackers.length; _i2++)
+        {
+            (this.attackers[_i2] as CharacterMinimalPlusLookInformations).serializeAs_CharacterMinimalPlusLookInformations(output);
+        }
+        output.writeShort(this.defenders.length);
+        for(var _i3: number = 0; _i3 < this.defenders.length; _i3++)
+        {
+            (this.defenders[_i3] as CharacterMinimalPlusLookInformations).serializeAs_CharacterMinimalPlusLookInformations(output);
+        }
+        this.phase.serializeAs_FightPhase(output);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AchievementsPioneerRanksMessage extends NetworkMessage
+export class AchievementsPioneerRanksMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3443;
@@ -18,14 +18,41 @@ export class AchievementsPioneerRanksMessage extends NetworkMessage
         this.achievementsPioneerRanks = Array<AchievementPioneerRank>();
     }
 
+    public getMessageId()
+    {
+        return AchievementsPioneerRanksMessage.protocolId;
+    }
+
+    public initAchievementsPioneerRanksMessage(achievementsPioneerRanks: Array<AchievementPioneerRank> = null): AchievementsPioneerRanksMessage
+    {
+        this.achievementsPioneerRanks = achievementsPioneerRanks;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AchievementsPioneerRanksMessage(output);
+    }
+
+    public serializeAs_AchievementsPioneerRanksMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.achievementsPioneerRanks.length);
+        for(var _i1: number = 0; _i1 < this.achievementsPioneerRanks.length; _i1++)
+        {
+            (this.achievementsPioneerRanks[_i1] as AchievementPioneerRank).serializeAs_AchievementPioneerRank(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

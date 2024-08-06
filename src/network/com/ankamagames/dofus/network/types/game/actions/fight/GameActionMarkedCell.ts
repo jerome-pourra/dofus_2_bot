@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class GameActionMarkedCell
+export class GameActionMarkedCell implements INetworkType
 {
 
 	public static readonly protocolId: number = 5710;
@@ -15,6 +15,37 @@ export class GameActionMarkedCell
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return GameActionMarkedCell.protocolId;
+    }
+
+    public initGameActionMarkedCell(cellId: number = 0, zoneSize: number = 0, cellColor: number = 0, cellsType: number = 0): GameActionMarkedCell
+    {
+        this.cellId = cellId;
+        this.zoneSize = zoneSize;
+        this.cellColor = cellColor;
+        this.cellsType = cellsType;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionMarkedCell(output);
+    }
+
+    public serializeAs_GameActionMarkedCell(output: ICustomDataOutput)
+    {
+        if(this.cellId < 0 || this.cellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.cellId + ") on element cellId.");
+        }
+        output.writeVarShort(this.cellId);
+        output.writeByte(this.zoneSize);
+        output.writeInt(this.cellColor);
+        output.writeByte(this.cellsType);
     }
 
     public deserialize(input: ICustomDataInput)

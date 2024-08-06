@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class AccountHouseMessage extends NetworkMessage
+export class AccountHouseMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7345;
@@ -18,14 +18,41 @@ export class AccountHouseMessage extends NetworkMessage
         this.houses = Array<AccountHouseInformations>();
     }
 
+    public getMessageId()
+    {
+        return AccountHouseMessage.protocolId;
+    }
+
+    public initAccountHouseMessage(houses: Array<AccountHouseInformations> = null): AccountHouseMessage
+    {
+        this.houses = houses;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AccountHouseMessage(output);
+    }
+
+    public serializeAs_AccountHouseMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.houses.length);
+        for(var _i1: number = 0; _i1 < this.houses.length; _i1++)
+        {
+            (this.houses[_i1] as AccountHouseInformations).serializeAs_AccountHouseInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

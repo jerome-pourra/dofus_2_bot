@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class PaginationRequestAbstractMessage extends NetworkMessage
+export class PaginationRequestAbstractMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6633;
@@ -17,14 +17,47 @@ export class PaginationRequestAbstractMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PaginationRequestAbstractMessage.protocolId;
+    }
+
+    public initPaginationRequestAbstractMessage(offset: number = 0, count: number = 0): PaginationRequestAbstractMessage
+    {
+        this.offset = offset;
+        this.count = count;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PaginationRequestAbstractMessage(output);
+    }
+
+    public serializeAs_PaginationRequestAbstractMessage(output: ICustomDataOutput)
+    {
+        if(this.offset < 0 || this.offset > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.offset + ") on element offset.");
+        }
+        output.writeDouble(this.offset);
+        if(this.count < 0 || this.count > 4294967295)
+        {
+            throw new Error("Forbidden value (" + this.count + ") on element count.");
+        }
+        output.writeUnsignedInt(this.count);
     }
 
     public deserialize(input: ICustomDataInput)

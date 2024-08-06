@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class HouseGuildNoneMessage extends NetworkMessage
+export class HouseGuildNoneMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7676;
@@ -18,14 +18,49 @@ export class HouseGuildNoneMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return HouseGuildNoneMessage.protocolId;
+    }
+
+    public initHouseGuildNoneMessage(houseId: number = 0, instanceId: number = 0, secondHand: boolean = false): HouseGuildNoneMessage
+    {
+        this.houseId = houseId;
+        this.instanceId = instanceId;
+        this.secondHand = secondHand;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HouseGuildNoneMessage(output);
+    }
+
+    public serializeAs_HouseGuildNoneMessage(output: ICustomDataOutput)
+    {
+        if(this.houseId < 0)
+        {
+            throw new Error("Forbidden value (" + this.houseId + ") on element houseId.");
+        }
+        output.writeVarInt(this.houseId);
+        if(this.instanceId < 0)
+        {
+            throw new Error("Forbidden value (" + this.instanceId + ") on element instanceId.");
+        }
+        output.writeInt(this.instanceId);
+        output.writeBoolean(this.secondHand);
     }
 
     public deserialize(input: ICustomDataInput)

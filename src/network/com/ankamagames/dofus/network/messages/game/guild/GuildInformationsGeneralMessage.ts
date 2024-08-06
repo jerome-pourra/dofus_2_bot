@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildInformationsGeneralMessage extends NetworkMessage
+export class GuildInformationsGeneralMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4406;
@@ -22,14 +22,69 @@ export class GuildInformationsGeneralMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildInformationsGeneralMessage.protocolId;
+    }
+
+    public initGuildInformationsGeneralMessage(abandonnedPaddock: boolean = false, level: number = 0, expLevelFloor: number = 0, experience: number = 0, expNextLevelFloor: number = 0, creationDate: number = 0, score: number = 0): GuildInformationsGeneralMessage
+    {
+        this.abandonnedPaddock = abandonnedPaddock;
+        this.level = level;
+        this.expLevelFloor = expLevelFloor;
+        this.experience = experience;
+        this.expNextLevelFloor = expNextLevelFloor;
+        this.creationDate = creationDate;
+        this.score = score;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildInformationsGeneralMessage(output);
+    }
+
+    public serializeAs_GuildInformationsGeneralMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.abandonnedPaddock);
+        if(this.level < 0 || this.level > 255)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeByte(this.level);
+        if(this.expLevelFloor < 0 || this.expLevelFloor > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.expLevelFloor + ") on element expLevelFloor.");
+        }
+        output.writeVarLong(this.expLevelFloor);
+        if(this.experience < 0 || this.experience > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.experience + ") on element experience.");
+        }
+        output.writeVarLong(this.experience);
+        if(this.expNextLevelFloor < 0 || this.expNextLevelFloor > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.expNextLevelFloor + ") on element expNextLevelFloor.");
+        }
+        output.writeVarLong(this.expNextLevelFloor);
+        if(this.creationDate < 0)
+        {
+            throw new Error("Forbidden value (" + this.creationDate + ") on element creationDate.");
+        }
+        output.writeInt(this.creationDate);
+        output.writeInt(this.score);
     }
 
     public deserialize(input: ICustomDataInput)

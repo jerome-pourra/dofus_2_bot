@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class ChangeThemeRequestMessage extends NetworkMessage
+export class ChangeThemeRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4899;
@@ -16,14 +16,37 @@ export class ChangeThemeRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ChangeThemeRequestMessage.protocolId;
+    }
+
+    public initChangeThemeRequestMessage(theme: number = 0): ChangeThemeRequestMessage
+    {
+        this.theme = theme;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChangeThemeRequestMessage(output);
+    }
+
+    public serializeAs_ChangeThemeRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.theme);
     }
 
     public deserialize(input: ICustomDataInput)

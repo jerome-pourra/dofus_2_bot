@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ChannelEnablingChangeMessage extends NetworkMessage
+export class ChannelEnablingChangeMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7739;
@@ -17,14 +17,39 @@ export class ChannelEnablingChangeMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ChannelEnablingChangeMessage.protocolId;
+    }
+
+    public initChannelEnablingChangeMessage(channel: number = 0, enable: boolean = false): ChannelEnablingChangeMessage
+    {
+        this.channel = channel;
+        this.enable = enable;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChannelEnablingChangeMessage(output);
+    }
+
+    public serializeAs_ChannelEnablingChangeMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.channel);
+        output.writeBoolean(this.enable);
     }
 
     public deserialize(input: ICustomDataInput)

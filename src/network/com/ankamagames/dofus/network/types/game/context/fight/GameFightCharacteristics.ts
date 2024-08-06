@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class GameFightCharacteristics
+export class GameFightCharacteristics implements INetworkType
 {
 
 	public static readonly protocolId: number = 714;
@@ -16,6 +16,37 @@ export class GameFightCharacteristics
     public constructor()
     {
         this.characteristics = new CharacterCharacteristics();
+    }
+
+    public getTypeId()
+    {
+        return GameFightCharacteristics.protocolId;
+    }
+
+    public initGameFightCharacteristics(characteristics: CharacterCharacteristics = null, summoner: number = 0, summoned: boolean = false, invisibilityState: number = 0): GameFightCharacteristics
+    {
+        this.characteristics = characteristics;
+        this.summoner = summoner;
+        this.summoned = summoned;
+        this.invisibilityState = invisibilityState;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightCharacteristics(output);
+    }
+
+    public serializeAs_GameFightCharacteristics(output: ICustomDataOutput)
+    {
+        this.characteristics.serializeAs_CharacterCharacteristics(output);
+        if(this.summoner < -9007199254740992 || this.summoner > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.summoner + ") on element summoner.");
+        }
+        output.writeDouble(this.summoner);
+        output.writeBoolean(this.summoned);
+        output.writeByte(this.invisibilityState);
     }
 
     public deserialize(input: ICustomDataInput)

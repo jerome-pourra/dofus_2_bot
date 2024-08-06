@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { BooleanByteWrapper } from "./../../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class GameFightFighterLightInformations
+export class GameFightFighterLightInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 4794;
@@ -18,6 +18,51 @@ export class GameFightFighterLightInformations
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return GameFightFighterLightInformations.protocolId;
+    }
+
+    public initGameFightFighterLightInformations(id: number = 0, wave: number = 0, level: number = 0, breed: number = 0, sex: boolean = false, alive: boolean = false): GameFightFighterLightInformations
+    {
+        this.id = id;
+        this.wave = wave;
+        this.level = level;
+        this.breed = breed;
+        this.sex = sex;
+        this.alive = alive;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightFighterLightInformations(output);
+    }
+
+    public serializeAs_GameFightFighterLightInformations(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.sex);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.alive);
+        output.writeByte(_box0);
+        if(this.id < -9007199254740992 || this.id > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeDouble(this.id);
+        if(this.wave < 0)
+        {
+            throw new Error("Forbidden value (" + this.wave + ") on element wave.");
+        }
+        output.writeByte(this.wave);
+        if(this.level < 0)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeVarShort(this.level);
+        output.writeByte(this.breed);
     }
 
     public deserialize(input: ICustomDataInput)

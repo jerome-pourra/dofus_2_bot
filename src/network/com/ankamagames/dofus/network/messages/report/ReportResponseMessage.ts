@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class ReportResponseMessage extends NetworkMessage
+export class ReportResponseMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8138;
@@ -16,14 +16,37 @@ export class ReportResponseMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ReportResponseMessage.protocolId;
+    }
+
+    public initReportResponseMessage(success: boolean = false): ReportResponseMessage
+    {
+        this.success = success;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ReportResponseMessage(output);
+    }
+
+    public serializeAs_ReportResponseMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.success);
     }
 
     public deserialize(input: ICustomDataInput)

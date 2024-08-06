@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { ActorAlignmentInformations } from "./ActorAlignmentInformations";
 
-export class ActorExtendedAlignmentInformations extends ActorAlignmentInformations
+export class ActorExtendedAlignmentInformations extends ActorAlignmentInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 4048;
@@ -16,6 +16,47 @@ export class ActorExtendedAlignmentInformations extends ActorAlignmentInformatio
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ActorExtendedAlignmentInformations.protocolId;
+    }
+
+    public initActorExtendedAlignmentInformations(alignmentSide: number = 0, alignmentValue: number = 0, alignmentGrade: number = 0, characterPower: number = 0, honor: number = 0, honorGradeFloor: number = 0, honorNextGradeFloor: number = 0, aggressable: number = 0): ActorExtendedAlignmentInformations
+    {
+        super.initActorAlignmentInformations(alignmentSide,alignmentValue,alignmentGrade,characterPower);
+        this.honor = honor;
+        this.honorGradeFloor = honorGradeFloor;
+        this.honorNextGradeFloor = honorNextGradeFloor;
+        this.aggressable = aggressable;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ActorExtendedAlignmentInformations(output);
+    }
+
+    public serializeAs_ActorExtendedAlignmentInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_ActorAlignmentInformations(output);
+        if(this.honor < 0 || this.honor > 20000)
+        {
+            throw new Error("Forbidden value (" + this.honor + ") on element honor.");
+        }
+        output.writeVarShort(this.honor);
+        if(this.honorGradeFloor < 0 || this.honorGradeFloor > 20000)
+        {
+            throw new Error("Forbidden value (" + this.honorGradeFloor + ") on element honorGradeFloor.");
+        }
+        output.writeVarShort(this.honorGradeFloor);
+        if(this.honorNextGradeFloor < 0 || this.honorNextGradeFloor > 20000)
+        {
+            throw new Error("Forbidden value (" + this.honorNextGradeFloor + ") on element honorNextGradeFloor.");
+        }
+        output.writeVarShort(this.honorNextGradeFloor);
+        output.writeByte(this.aggressable);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { BooleanByteWrapper } from "./../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class HouseInstanceInformations
+export class HouseInstanceInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 3219;
@@ -21,6 +21,51 @@ export class HouseInstanceInformations
     public constructor()
     {
         this.ownerTag = new AccountTagInformation();
+    }
+
+    public getTypeId()
+    {
+        return HouseInstanceInformations.protocolId;
+    }
+
+    public initHouseInstanceInformations(instanceId: number = 0, secondHand: boolean = false, isLocked: boolean = false, ownerTag: AccountTagInformation = null, hasOwner: boolean = false, price: number = 0, isSaleLocked: boolean = false, isAdminLocked: boolean = false): HouseInstanceInformations
+    {
+        this.instanceId = instanceId;
+        this.secondHand = secondHand;
+        this.isLocked = isLocked;
+        this.ownerTag = ownerTag;
+        this.hasOwner = hasOwner;
+        this.price = price;
+        this.isSaleLocked = isSaleLocked;
+        this.isAdminLocked = isAdminLocked;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HouseInstanceInformations(output);
+    }
+
+    public serializeAs_HouseInstanceInformations(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.secondHand);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.isLocked);
+        _box0 = BooleanByteWrapper.setFlag(_box0,2,this.hasOwner);
+        _box0 = BooleanByteWrapper.setFlag(_box0,3,this.isSaleLocked);
+        _box0 = BooleanByteWrapper.setFlag(_box0,4,this.isAdminLocked);
+        output.writeByte(_box0);
+        if(this.instanceId < 0)
+        {
+            throw new Error("Forbidden value (" + this.instanceId + ") on element instanceId.");
+        }
+        output.writeInt(this.instanceId);
+        this.ownerTag.serializeAs_AccountTagInformation(output);
+        if(this.price < -9007199254740992 || this.price > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.price + ") on element price.");
+        }
+        output.writeVarLong(this.price);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -365,13 +365,12 @@ import { TrustCertificate } from "./types/secure/TrustCertificate";
 import { Version } from "./types/version/Version";
 import { BufferInformation } from "./types/web/haapi/BufferInformation";
 
-
 export class ProtocolTypeManager {
 
 	private static readonly _types: Array<{ new(): any }> = Array<{ new(): any }>();
 	
 	static {
-				this._types[1300] = AbstractPlayerSearchInformation;
+		this._types[1300] = AbstractPlayerSearchInformation;
 		this._types[3196] = AccountTagInformation;
 		this._types[1815] = StatisticData;
 		this._types[7901] = StatisticDataBoolean;
@@ -737,7 +736,6 @@ export class ProtocolTypeManager {
 		this._types[3311] = TrustCertificate;
 		this._types[580] = Version;
 		this._types[7749] = BufferInformation;
-
 	}
 
 	public static getInstance<T>(base: { new(): T }, typeId: number): T {

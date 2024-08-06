@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class ApplicationPlayerInformation
+export class ApplicationPlayerInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 9959;
@@ -22,6 +22,55 @@ export class ApplicationPlayerInformation
     public constructor()
     {
         this.status = new PlayerStatus();
+    }
+
+    public getTypeId()
+    {
+        return ApplicationPlayerInformation.protocolId;
+    }
+
+    public initApplicationPlayerInformation(playerId: number = 0, playerName: string = "", breed: number = 0, sex: boolean = false, level: number = 0, accountId: number = 0, accountTag: string = "", accountNickname: string = "", status: PlayerStatus = null): ApplicationPlayerInformation
+    {
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.breed = breed;
+        this.sex = sex;
+        this.level = level;
+        this.accountId = accountId;
+        this.accountTag = accountTag;
+        this.accountNickname = accountNickname;
+        this.status = status;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ApplicationPlayerInformation(output);
+    }
+
+    public serializeAs_ApplicationPlayerInformation(output: ICustomDataOutput)
+    {
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeUTF(this.playerName);
+        output.writeByte(this.breed);
+        output.writeBoolean(this.sex);
+        if(this.level < 0)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeVarInt(this.level);
+        if(this.accountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+        }
+        output.writeVarInt(this.accountId);
+        output.writeUTF(this.accountTag);
+        output.writeUTF(this.accountNickname);
+        this.status.serializeAs_PlayerStatus(output);
     }
 
     public deserialize(input: ICustomDataInput)

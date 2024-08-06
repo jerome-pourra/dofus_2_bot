@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class JobDescriptionMessage extends NetworkMessage
+export class JobDescriptionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9539;
@@ -18,14 +18,41 @@ export class JobDescriptionMessage extends NetworkMessage
         this.jobsDescription = Array<JobDescription>();
     }
 
+    public getMessageId()
+    {
+        return JobDescriptionMessage.protocolId;
+    }
+
+    public initJobDescriptionMessage(jobsDescription: Array<JobDescription> = null): JobDescriptionMessage
+    {
+        this.jobsDescription = jobsDescription;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_JobDescriptionMessage(output);
+    }
+
+    public serializeAs_JobDescriptionMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.jobsDescription.length);
+        for(var _i1: number = 0; _i1 < this.jobsDescription.length; _i1++)
+        {
+            (this.jobsDescription[_i1] as JobDescription).serializeAs_JobDescription(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

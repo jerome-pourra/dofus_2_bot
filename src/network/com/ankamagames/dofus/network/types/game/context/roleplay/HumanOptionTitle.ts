@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { HumanOption } from "./HumanOption";
 
-export class HumanOptionTitle extends HumanOption
+export class HumanOptionTitle extends HumanOption implements INetworkType
 {
 
 	public static readonly protocolId: number = 2189;
@@ -14,6 +14,34 @@ export class HumanOptionTitle extends HumanOption
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return HumanOptionTitle.protocolId;
+    }
+
+    public initHumanOptionTitle(titleId: number = 0, titleParam: string = ""): HumanOptionTitle
+    {
+        this.titleId = titleId;
+        this.titleParam = titleParam;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HumanOptionTitle(output);
+    }
+
+    public serializeAs_HumanOptionTitle(output: ICustomDataOutput)
+    {
+        super.serializeAs_HumanOption(output);
+        if(this.titleId < 0)
+        {
+            throw new Error("Forbidden value (" + this.titleId + ") on element titleId.");
+        }
+        output.writeVarShort(this.titleId);
+        output.writeUTF(this.titleParam);
     }
 
     public deserialize(input: ICustomDataInput)

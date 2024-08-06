@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { HouseSellRequestMessage } from "./HouseSellRequestMessage";
 
-export class HouseSellFromInsideRequestMessage extends HouseSellRequestMessage
+export class HouseSellFromInsideRequestMessage extends HouseSellRequestMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6061;
@@ -14,14 +14,37 @@ export class HouseSellFromInsideRequestMessage extends HouseSellRequestMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return HouseSellFromInsideRequestMessage.protocolId;
+    }
+
+    public initHouseSellFromInsideRequestMessage(instanceId: number = 0, amount: number = 0, forSale: boolean = false): HouseSellFromInsideRequestMessage
+    {
+        super.initHouseSellRequestMessage(instanceId,amount,forSale);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HouseSellFromInsideRequestMessage(output);
+    }
+
+    public serializeAs_HouseSellFromInsideRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_HouseSellRequestMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

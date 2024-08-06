@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class BreachTeleportResponseMessage extends NetworkMessage
+export class BreachTeleportResponseMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1178;
@@ -16,14 +16,37 @@ export class BreachTeleportResponseMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return BreachTeleportResponseMessage.protocolId;
+    }
+
+    public initBreachTeleportResponseMessage(teleported: boolean = false): BreachTeleportResponseMessage
+    {
+        this.teleported = teleported;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachTeleportResponseMessage(output);
+    }
+
+    public serializeAs_BreachTeleportResponseMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.teleported);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { SpellsPreset } from "./SpellsPreset";
 import { SpellForPreset } from "./SpellForPreset";
 import { Preset } from "./Preset";
 
-export class ForgettableSpellsPreset extends Preset
+export class ForgettableSpellsPreset extends Preset implements INetworkType
 {
 
 	public static readonly protocolId: number = 6253;
@@ -18,6 +18,35 @@ export class ForgettableSpellsPreset extends Preset
         super();
         this.baseSpellsPreset = new SpellsPreset();
         this.forgettableSpells = Array<SpellForPreset>();
+    }
+
+    public getTypeId()
+    {
+        return ForgettableSpellsPreset.protocolId;
+    }
+
+    public initForgettableSpellsPreset(id: number = 0, baseSpellsPreset: SpellsPreset = null, forgettableSpells: Array<SpellForPreset> = null): ForgettableSpellsPreset
+    {
+        super.initPreset(id);
+        this.baseSpellsPreset = baseSpellsPreset;
+        this.forgettableSpells = forgettableSpells;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ForgettableSpellsPreset(output);
+    }
+
+    public serializeAs_ForgettableSpellsPreset(output: ICustomDataOutput)
+    {
+        super.serializeAs_Preset(output);
+        this.baseSpellsPreset.serializeAs_SpellsPreset(output);
+        output.writeShort(this.forgettableSpells.length);
+        for(var _i2: number = 0; _i2 < this.forgettableSpells.length; _i2++)
+        {
+            (this.forgettableSpells[_i2] as SpellForPreset).serializeAs_SpellForPreset(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

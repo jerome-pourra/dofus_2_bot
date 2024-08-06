@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { AbstractPartyMessage } from "./AbstractPartyMessage";
 
-export class PartyLeaveRequestMessage extends AbstractPartyMessage
+export class PartyLeaveRequestMessage extends AbstractPartyMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6779;
@@ -14,14 +14,37 @@ export class PartyLeaveRequestMessage extends AbstractPartyMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyLeaveRequestMessage.protocolId;
+    }
+
+    public initPartyLeaveRequestMessage(partyId: number = 0): PartyLeaveRequestMessage
+    {
+        super.initAbstractPartyMessage(partyId);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyLeaveRequestMessage(output);
+    }
+
+    public serializeAs_PartyLeaveRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

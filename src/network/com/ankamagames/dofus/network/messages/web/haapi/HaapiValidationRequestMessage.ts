@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class HaapiValidationRequestMessage extends NetworkMessage
+export class HaapiValidationRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2930;
@@ -16,14 +16,37 @@ export class HaapiValidationRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return HaapiValidationRequestMessage.protocolId;
+    }
+
+    public initHaapiValidationRequestMessage(transaction: string = ""): HaapiValidationRequestMessage
+    {
+        this.transaction = transaction;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HaapiValidationRequestMessage(output);
+    }
+
+    public serializeAs_HaapiValidationRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.transaction);
     }
 
     public deserialize(input: ICustomDataInput)

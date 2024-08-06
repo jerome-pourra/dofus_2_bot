@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightNewRoundMessage extends NetworkMessage
+export class GameFightNewRoundMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8261;
@@ -16,14 +16,41 @@ export class GameFightNewRoundMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightNewRoundMessage.protocolId;
+    }
+
+    public initGameFightNewRoundMessage(roundNumber: number = 0): GameFightNewRoundMessage
+    {
+        this.roundNumber = roundNumber;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightNewRoundMessage(output);
+    }
+
+    public serializeAs_GameFightNewRoundMessage(output: ICustomDataOutput)
+    {
+        if(this.roundNumber < 0)
+        {
+            throw new Error("Forbidden value (" + this.roundNumber + ") on element roundNumber.");
+        }
+        output.writeVarInt(this.roundNumber);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightNewWaveMessage extends NetworkMessage
+export class GameFightNewWaveMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4448;
@@ -18,14 +18,45 @@ export class GameFightNewWaveMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightNewWaveMessage.protocolId;
+    }
+
+    public initGameFightNewWaveMessage(id: number = 0, teamId: number = 2, nbTurnBeforeNextWave: number = 0): GameFightNewWaveMessage
+    {
+        this.id = id;
+        this.teamId = teamId;
+        this.nbTurnBeforeNextWave = nbTurnBeforeNextWave;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightNewWaveMessage(output);
+    }
+
+    public serializeAs_GameFightNewWaveMessage(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeByte(this.id);
+        output.writeByte(this.teamId);
+        output.writeShort(this.nbTurnBeforeNextWave);
     }
 
     public deserialize(input: ICustomDataInput)

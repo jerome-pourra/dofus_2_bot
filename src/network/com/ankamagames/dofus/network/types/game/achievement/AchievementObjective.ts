@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class AchievementObjective
+export class AchievementObjective implements INetworkType
 {
 
 	public static readonly protocolId: number = 2341;
@@ -13,6 +13,37 @@ export class AchievementObjective
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return AchievementObjective.protocolId;
+    }
+
+    public initAchievementObjective(id: number = 0, maxValue: number = 0): AchievementObjective
+    {
+        this.id = id;
+        this.maxValue = maxValue;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AchievementObjective(output);
+    }
+
+    public serializeAs_AchievementObjective(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarInt(this.id);
+        if(this.maxValue < 0 || this.maxValue > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.maxValue + ") on element maxValue.");
+        }
+        output.writeVarLong(this.maxValue);
     }
 
     public deserialize(input: ICustomDataInput)

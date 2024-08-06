@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class StartExchangeTaxCollectorEquipmentMessage extends NetworkMessage
+export class StartExchangeTaxCollectorEquipmentMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 878;
@@ -16,14 +16,41 @@ export class StartExchangeTaxCollectorEquipmentMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return StartExchangeTaxCollectorEquipmentMessage.protocolId;
+    }
+
+    public initStartExchangeTaxCollectorEquipmentMessage(uid: number = 0): StartExchangeTaxCollectorEquipmentMessage
+    {
+        this.uid = uid;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_StartExchangeTaxCollectorEquipmentMessage(output);
+    }
+
+    public serializeAs_StartExchangeTaxCollectorEquipmentMessage(output: ICustomDataOutput)
+    {
+        if(this.uid < 0 || this.uid > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.uid + ") on element uid.");
+        }
+        output.writeDouble(this.uid);
     }
 
     public deserialize(input: ICustomDataInput)

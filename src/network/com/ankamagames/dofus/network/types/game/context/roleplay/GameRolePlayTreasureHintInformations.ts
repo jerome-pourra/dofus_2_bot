@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { GameRolePlayActorInformations } from "./GameRolePlayActorInformations";
 
-export class GameRolePlayTreasureHintInformations extends GameRolePlayActorInformations
+export class GameRolePlayTreasureHintInformations extends GameRolePlayActorInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 9279;
@@ -15,6 +15,33 @@ export class GameRolePlayTreasureHintInformations extends GameRolePlayActorInfor
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return GameRolePlayTreasureHintInformations.protocolId;
+    }
+
+    public initGameRolePlayTreasureHintInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, npcId: number = 0): GameRolePlayTreasureHintInformations
+    {
+        super.initGameRolePlayActorInformations(contextualId,disposition,look);
+        this.npcId = npcId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayTreasureHintInformations(output);
+    }
+
+    public serializeAs_GameRolePlayTreasureHintInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameRolePlayActorInformations(output);
+        if(this.npcId < 0)
+        {
+            throw new Error("Forbidden value (" + this.npcId + ") on element npcId.");
+        }
+        output.writeVarShort(this.npcId);
     }
 
     public deserialize(input: ICustomDataInput)

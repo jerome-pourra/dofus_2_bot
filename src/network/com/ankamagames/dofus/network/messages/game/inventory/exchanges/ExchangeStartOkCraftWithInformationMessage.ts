@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { ExchangeStartOkCraftMessage } from "./ExchangeStartOkCraftMessage";
 
-export class ExchangeStartOkCraftWithInformationMessage extends ExchangeStartOkCraftMessage
+export class ExchangeStartOkCraftWithInformationMessage extends ExchangeStartOkCraftMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4096;
@@ -16,14 +16,42 @@ export class ExchangeStartOkCraftWithInformationMessage extends ExchangeStartOkC
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeStartOkCraftWithInformationMessage.protocolId;
+    }
+
+    public initExchangeStartOkCraftWithInformationMessage(skillId: number = 0): ExchangeStartOkCraftWithInformationMessage
+    {
+        this.skillId = skillId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeStartOkCraftWithInformationMessage(output);
+    }
+
+    public serializeAs_ExchangeStartOkCraftWithInformationMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ExchangeStartOkCraftMessage(output);
+        if(this.skillId < 0)
+        {
+            throw new Error("Forbidden value (" + this.skillId + ") on element skillId.");
+        }
+        output.writeVarInt(this.skillId);
     }
 
     public deserialize(input: ICustomDataInput)

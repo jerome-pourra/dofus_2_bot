@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class QuestStepInfoRequestMessage extends NetworkMessage
+export class QuestStepInfoRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5778;
@@ -16,14 +16,41 @@ export class QuestStepInfoRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return QuestStepInfoRequestMessage.protocolId;
+    }
+
+    public initQuestStepInfoRequestMessage(questId: number = 0): QuestStepInfoRequestMessage
+    {
+        this.questId = questId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_QuestStepInfoRequestMessage(output);
+    }
+
+    public serializeAs_QuestStepInfoRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.questId < 0)
+        {
+            throw new Error("Forbidden value (" + this.questId + ") on element questId.");
+        }
+        output.writeVarShort(this.questId);
     }
 
     public deserialize(input: ICustomDataInput)

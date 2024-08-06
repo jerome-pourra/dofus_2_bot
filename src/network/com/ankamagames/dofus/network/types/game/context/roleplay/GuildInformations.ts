@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { BasicGuildInformations } from "./BasicGuildInformations";
 
-export class GuildInformations extends BasicGuildInformations
+export class GuildInformations extends BasicGuildInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 7929;
@@ -15,6 +15,29 @@ export class GuildInformations extends BasicGuildInformations
     {
         super();
         this.guildEmblem = new SocialEmblem();
+    }
+
+    public getTypeId()
+    {
+        return GuildInformations.protocolId;
+    }
+
+    public initGuildInformations(guildId: number = 0, guildName: string = "", guildLevel: number = 0, guildEmblem: SocialEmblem = null): GuildInformations
+    {
+        super.initBasicGuildInformations(guildId,guildName,guildLevel);
+        this.guildEmblem = guildEmblem;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildInformations(output);
+    }
+
+    public serializeAs_GuildInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_BasicGuildInformations(output);
+        this.guildEmblem.serializeAs_SocialEmblem(output);
     }
 
     public deserialize(input: ICustomDataInput)

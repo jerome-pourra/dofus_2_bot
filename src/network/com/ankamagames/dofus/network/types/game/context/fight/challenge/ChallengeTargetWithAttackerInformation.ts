@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 import { ChallengeTargetInformation } from "./ChallengeTargetInformation";
 
-export class ChallengeTargetWithAttackerInformation extends ChallengeTargetInformation
+export class ChallengeTargetWithAttackerInformation extends ChallengeTargetInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 540;
@@ -14,6 +14,37 @@ export class ChallengeTargetWithAttackerInformation extends ChallengeTargetInfor
     {
         super();
         this.attackersIds = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return ChallengeTargetWithAttackerInformation.protocolId;
+    }
+
+    public initChallengeTargetWithAttackerInformation(targetId: number = 0, targetCell: number = 0, attackersIds: Array<number> = null): ChallengeTargetWithAttackerInformation
+    {
+        super.initChallengeTargetInformation(targetId,targetCell);
+        this.attackersIds = attackersIds;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChallengeTargetWithAttackerInformation(output);
+    }
+
+    public serializeAs_ChallengeTargetWithAttackerInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_ChallengeTargetInformation(output);
+        output.writeShort(this.attackersIds.length);
+        for(var _i1: number = 0; _i1 < this.attackersIds.length; _i1++)
+        {
+            if(this.attackersIds[_i1] < -9007199254740992 || this.attackersIds[_i1] > 9007199254740992)
+            {
+                throw new Error("Forbidden value (" + this.attackersIds[_i1] + ") on element 1 (starting at 1) of attackersIds.");
+            }
+            output.writeDouble(this.attackersIds[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

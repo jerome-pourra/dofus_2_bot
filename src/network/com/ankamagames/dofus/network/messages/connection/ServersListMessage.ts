@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class ServersListMessage extends NetworkMessage
+export class ServersListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9500;
@@ -19,14 +19,43 @@ export class ServersListMessage extends NetworkMessage
         this.servers = Array<GameServerInformations>();
     }
 
+    public getMessageId()
+    {
+        return ServersListMessage.protocolId;
+    }
+
+    public initServersListMessage(servers: Array<GameServerInformations> = null, canCreateNewCharacter: boolean = false): ServersListMessage
+    {
+        this.servers = servers;
+        this.canCreateNewCharacter = canCreateNewCharacter;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ServersListMessage(output);
+    }
+
+    public serializeAs_ServersListMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.servers.length);
+        for(var _i1: number = 0; _i1 < this.servers.length; _i1++)
+        {
+            (this.servers[_i1] as GameServerInformations).serializeAs_GameServerInformations(output);
+        }
+        output.writeBoolean(this.canCreateNewCharacter);
     }
 
     public deserialize(input: ICustomDataInput)

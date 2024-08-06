@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 
-export class GuildBulletinSetRequestMessage extends SocialNoticeSetRequestMessage
+export class GuildBulletinSetRequestMessage extends SocialNoticeSetRequestMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5517;
@@ -16,14 +16,38 @@ export class GuildBulletinSetRequestMessage extends SocialNoticeSetRequestMessag
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildBulletinSetRequestMessage.protocolId;
+    }
+
+    public initGuildBulletinSetRequestMessage(content: string = ""): GuildBulletinSetRequestMessage
+    {
+        this.content = content;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildBulletinSetRequestMessage(output);
+    }
+
+    public serializeAs_GuildBulletinSetRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_SocialNoticeSetRequestMessage(output);
+        output.writeUTF(this.content);
     }
 
     public deserialize(input: ICustomDataInput)

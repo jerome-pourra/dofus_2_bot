@@ -6,7 +6,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class GameActionFightDispellableEffectMessage extends AbstractGameActionMessage
+export class GameActionFightDispellableEffectMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3071;
@@ -19,14 +19,40 @@ export class GameActionFightDispellableEffectMessage extends AbstractGameActionM
         this.effect = new AbstractFightDispellableEffect();
     }
 
+    public getMessageId()
+    {
+        return GameActionFightDispellableEffectMessage.protocolId;
+    }
+
+    public initGameActionFightDispellableEffectMessage(actionId: number = 0, sourceId: number = 0, effect: AbstractFightDispellableEffect = null): GameActionFightDispellableEffectMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.effect = effect;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionFightDispellableEffectMessage(output);
+    }
+
+    public serializeAs_GameActionFightDispellableEffectMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        output.writeShort(this.effect.getTypeId());
+        this.effect.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

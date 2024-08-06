@@ -6,7 +6,7 @@ import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage"
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 import { BooleanByteWrapper } from "./../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class IdentificationMessage extends NetworkMessage
+export class IdentificationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9262;
@@ -29,14 +29,71 @@ export class IdentificationMessage extends NetworkMessage
         this.failedAttempts = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return IdentificationMessage.protocolId;
+    }
+
+    public initIdentificationMessage(version: Version = null, lang: string = "", credentials: Array<number> = null, serverId: number = 0, autoconnect: boolean = false, useCertificate: boolean = false, useLoginToken: boolean = false, sessionOptionalSalt: number = 0, failedAttempts: Array<number> = null): IdentificationMessage
+    {
+        this.version = version;
+        this.lang = lang;
+        this.credentials = credentials;
+        this.serverId = serverId;
+        this.autoconnect = autoconnect;
+        this.useCertificate = useCertificate;
+        this.useLoginToken = useLoginToken;
+        this.sessionOptionalSalt = sessionOptionalSalt;
+        this.failedAttempts = failedAttempts;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IdentificationMessage(output);
+    }
+
+    public serializeAs_IdentificationMessage(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.autoconnect);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.useCertificate);
+        _box0 = BooleanByteWrapper.setFlag(_box0,2,this.useLoginToken);
+        output.writeByte(_box0);
+        this.version.serializeAs_Version(output);
+        output.writeUTF(this.lang);
+        output.writeVarInt(this.credentials.length);
+        for(var _i3: number = 0; _i3 < this.credentials.length; _i3++)
+        {
+            output.writeByte(this.credentials[_i3]);
+        }
+        output.writeShort(this.serverId);
+        if(this.sessionOptionalSalt < -9007199254740992 || this.sessionOptionalSalt > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.sessionOptionalSalt + ") on element sessionOptionalSalt.");
+        }
+        output.writeVarLong(this.sessionOptionalSalt);
+        output.writeShort(this.failedAttempts.length);
+        for(var _i9: number = 0; _i9 < this.failedAttempts.length; _i9++)
+        {
+            if(this.failedAttempts[_i9] < 0)
+            {
+                throw new Error("Forbidden value (" + this.failedAttempts[_i9] + ") on element 9 (starting at 1) of failedAttempts.");
+            }
+            output.writeVarShort(this.failedAttempts[_i9]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

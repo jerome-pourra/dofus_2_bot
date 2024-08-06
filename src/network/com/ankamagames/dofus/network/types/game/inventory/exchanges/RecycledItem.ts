@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class RecycledItem
+export class RecycledItem implements INetworkType
 {
 
 	public static readonly protocolId: number = 2736;
@@ -13,6 +13,37 @@ export class RecycledItem
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return RecycledItem.protocolId;
+    }
+
+    public initRecycledItem(id: number = 0, qty: number = 0): RecycledItem
+    {
+        this.id = id;
+        this.qty = qty;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_RecycledItem(output);
+    }
+
+    public serializeAs_RecycledItem(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarInt(this.id);
+        if(this.qty < 0 || this.qty > 4294967295)
+        {
+            throw new Error("Forbidden value (" + this.qty + ") on element qty.");
+        }
+        output.writeUnsignedInt(this.qty);
     }
 
     public deserialize(input: ICustomDataInput)

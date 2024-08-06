@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceListApplicationModifiedMessage extends NetworkMessage
+export class AllianceListApplicationModifiedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3470;
@@ -20,14 +20,45 @@ export class AllianceListApplicationModifiedMessage extends NetworkMessage
         this.apply = new SocialApplicationInformation();
     }
 
+    public getMessageId()
+    {
+        return AllianceListApplicationModifiedMessage.protocolId;
+    }
+
+    public initAllianceListApplicationModifiedMessage(apply: SocialApplicationInformation = null, state: number = 0, playerId: number = 0): AllianceListApplicationModifiedMessage
+    {
+        this.apply = apply;
+        this.state = state;
+        this.playerId = playerId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceListApplicationModifiedMessage(output);
+    }
+
+    public serializeAs_AllianceListApplicationModifiedMessage(output: ICustomDataOutput)
+    {
+        this.apply.serializeAs_SocialApplicationInformation(output);
+        output.writeByte(this.state);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
     }
 
     public deserialize(input: ICustomDataInput)

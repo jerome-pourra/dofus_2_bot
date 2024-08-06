@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class FollowedQuestsMessage extends NetworkMessage
+export class FollowedQuestsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6589;
@@ -18,14 +18,41 @@ export class FollowedQuestsMessage extends NetworkMessage
         this.quests = Array<QuestActiveDetailedInformations>();
     }
 
+    public getMessageId()
+    {
+        return FollowedQuestsMessage.protocolId;
+    }
+
+    public initFollowedQuestsMessage(quests: Array<QuestActiveDetailedInformations> = null): FollowedQuestsMessage
+    {
+        this.quests = quests;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FollowedQuestsMessage(output);
+    }
+
+    public serializeAs_FollowedQuestsMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.quests.length);
+        for(var _i1: number = 0; _i1 < this.quests.length; _i1++)
+        {
+            (this.quests[_i1] as QuestActiveDetailedInformations).serializeAs_QuestActiveDetailedInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

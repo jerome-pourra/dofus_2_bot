@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class QueueStatusMessage extends NetworkMessage
+export class QueueStatusMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4838;
@@ -17,14 +17,47 @@ export class QueueStatusMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return QueueStatusMessage.protocolId;
+    }
+
+    public initQueueStatusMessage(position: number = 0, total: number = 0): QueueStatusMessage
+    {
+        this.position = position;
+        this.total = total;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_QueueStatusMessage(output);
+    }
+
+    public serializeAs_QueueStatusMessage(output: ICustomDataOutput)
+    {
+        if(this.position < 0 || this.position > 65535)
+        {
+            throw new Error("Forbidden value (" + this.position + ") on element position.");
+        }
+        output.writeShort(this.position);
+        if(this.total < 0 || this.total > 65535)
+        {
+            throw new Error("Forbidden value (" + this.total + ") on element total.");
+        }
+        output.writeShort(this.total);
     }
 
     public deserialize(input: ICustomDataInput)

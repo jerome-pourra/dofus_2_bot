@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class SocialNoticeSetErrorMessage extends NetworkMessage
+export class SocialNoticeSetErrorMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3100;
@@ -16,14 +16,37 @@ export class SocialNoticeSetErrorMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return SocialNoticeSetErrorMessage.protocolId;
+    }
+
+    public initSocialNoticeSetErrorMessage(reason: number = 0): SocialNoticeSetErrorMessage
+    {
+        this.reason = reason;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SocialNoticeSetErrorMessage(output);
+    }
+
+    public serializeAs_SocialNoticeSetErrorMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.reason);
     }
 
     public deserialize(input: ICustomDataInput)

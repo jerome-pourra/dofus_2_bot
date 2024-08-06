@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class InviteInHavenBagMessage extends NetworkMessage
+export class InviteInHavenBagMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 949;
@@ -19,14 +19,39 @@ export class InviteInHavenBagMessage extends NetworkMessage
         this.guestInformations = new CharacterMinimalInformations();
     }
 
+    public getMessageId()
+    {
+        return InviteInHavenBagMessage.protocolId;
+    }
+
+    public initInviteInHavenBagMessage(guestInformations: CharacterMinimalInformations = null, accept: boolean = false): InviteInHavenBagMessage
+    {
+        this.guestInformations = guestInformations;
+        this.accept = accept;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_InviteInHavenBagMessage(output);
+    }
+
+    public serializeAs_InviteInHavenBagMessage(output: ICustomDataOutput)
+    {
+        this.guestInformations.serializeAs_CharacterMinimalInformations(output);
+        output.writeBoolean(this.accept);
     }
 
     public deserialize(input: ICustomDataInput)

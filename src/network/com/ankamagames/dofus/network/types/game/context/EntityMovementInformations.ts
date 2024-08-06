@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class EntityMovementInformations
+export class EntityMovementInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 4990;
@@ -13,6 +13,33 @@ export class EntityMovementInformations
     public constructor()
     {
         this.steps = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return EntityMovementInformations.protocolId;
+    }
+
+    public initEntityMovementInformations(id: number = 0, steps: Array<number> = null): EntityMovementInformations
+    {
+        this.id = id;
+        this.steps = steps;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_EntityMovementInformations(output);
+    }
+
+    public serializeAs_EntityMovementInformations(output: ICustomDataOutput)
+    {
+        output.writeInt(this.id);
+        output.writeShort(this.steps.length);
+        for(var _i2: number = 0; _i2 < this.steps.length; _i2++)
+        {
+            output.writeByte(this.steps[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

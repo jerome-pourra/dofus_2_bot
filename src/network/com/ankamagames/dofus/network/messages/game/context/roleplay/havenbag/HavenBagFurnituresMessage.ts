@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class HavenBagFurnituresMessage extends NetworkMessage
+export class HavenBagFurnituresMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 135;
@@ -18,14 +18,41 @@ export class HavenBagFurnituresMessage extends NetworkMessage
         this.furnituresInfos = Array<HavenBagFurnitureInformation>();
     }
 
+    public getMessageId()
+    {
+        return HavenBagFurnituresMessage.protocolId;
+    }
+
+    public initHavenBagFurnituresMessage(furnituresInfos: Array<HavenBagFurnitureInformation> = null): HavenBagFurnituresMessage
+    {
+        this.furnituresInfos = furnituresInfos;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HavenBagFurnituresMessage(output);
+    }
+
+    public serializeAs_HavenBagFurnituresMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.furnituresInfos.length);
+        for(var _i1: number = 0; _i1 < this.furnituresInfos.length; _i1++)
+        {
+            (this.furnituresInfos[_i1] as HavenBagFurnitureInformation).serializeAs_HavenBagFurnitureInformation(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

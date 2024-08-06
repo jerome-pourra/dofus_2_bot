@@ -5,7 +5,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class PartyInvitationMemberInformations extends CharacterBaseInformations
+export class PartyInvitationMemberInformations extends CharacterBaseInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 3577;
@@ -20,6 +20,57 @@ export class PartyInvitationMemberInformations extends CharacterBaseInformations
     {
         super();
         this.entities = Array<PartyEntityBaseInformation>();
+    }
+
+    public getTypeId()
+    {
+        return PartyInvitationMemberInformations.protocolId;
+    }
+
+    public initPartyInvitationMemberInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0, sex: boolean = false, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, entities: Array<PartyEntityBaseInformation> = null): PartyInvitationMemberInformations
+    {
+        super.initCharacterBaseInformations(id,name,level,entityLook,breed,sex);
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.mapId = mapId;
+        this.subAreaId = subAreaId;
+        this.entities = entities;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyInvitationMemberInformations(output);
+    }
+
+    public serializeAs_PartyInvitationMemberInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterBaseInformations(output);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
+        output.writeShort(this.entities.length);
+        for(var _i5: number = 0; _i5 < this.entities.length; _i5++)
+        {
+            (this.entities[_i5] as PartyEntityBaseInformation).serializeAs_PartyEntityBaseInformation(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

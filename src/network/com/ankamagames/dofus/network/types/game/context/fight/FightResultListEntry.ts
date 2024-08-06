@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { FightLoot } from "./FightLoot";
 
-export class FightResultListEntry
+export class FightResultListEntry implements INetworkType
 {
 
 	public static readonly protocolId: number = 3594;
@@ -15,6 +15,35 @@ export class FightResultListEntry
     public constructor()
     {
         this.rewards = new FightLoot();
+    }
+
+    public getTypeId()
+    {
+        return FightResultListEntry.protocolId;
+    }
+
+    public initFightResultListEntry(outcome: number = 0, wave: number = 0, rewards: FightLoot = null): FightResultListEntry
+    {
+        this.outcome = outcome;
+        this.wave = wave;
+        this.rewards = rewards;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightResultListEntry(output);
+    }
+
+    public serializeAs_FightResultListEntry(output: ICustomDataOutput)
+    {
+        output.writeVarShort(this.outcome);
+        if(this.wave < 0)
+        {
+            throw new Error("Forbidden value (" + this.wave + ") on element wave.");
+        }
+        output.writeByte(this.wave);
+        this.rewards.serializeAs_FightLoot(output);
     }
 
     public deserialize(input: ICustomDataInput)

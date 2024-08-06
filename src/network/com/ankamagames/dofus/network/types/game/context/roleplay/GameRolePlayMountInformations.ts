@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { GameRolePlayNamedActorInformations } from "./GameRolePlayNamedActorInformations";
 
-export class GameRolePlayMountInformations extends GameRolePlayNamedActorInformations
+export class GameRolePlayMountInformations extends GameRolePlayNamedActorInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 9212;
@@ -16,6 +16,35 @@ export class GameRolePlayMountInformations extends GameRolePlayNamedActorInforma
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return GameRolePlayMountInformations.protocolId;
+    }
+
+    public initGameRolePlayMountInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, name: string = "", ownerName: string = "", level: number = 0): GameRolePlayMountInformations
+    {
+        super.initGameRolePlayNamedActorInformations(contextualId,disposition,look,name);
+        this.ownerName = ownerName;
+        this.level = level;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayMountInformations(output);
+    }
+
+    public serializeAs_GameRolePlayMountInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameRolePlayNamedActorInformations(output);
+        output.writeUTF(this.ownerName);
+        if(this.level < 0 || this.level > 255)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeByte(this.level);
     }
 
     public deserialize(input: ICustomDataInput)

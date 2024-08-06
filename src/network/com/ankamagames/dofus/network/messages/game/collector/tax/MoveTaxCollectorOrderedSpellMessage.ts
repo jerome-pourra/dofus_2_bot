@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class MoveTaxCollectorOrderedSpellMessage extends NetworkMessage
+export class MoveTaxCollectorOrderedSpellMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8918;
@@ -18,14 +18,53 @@ export class MoveTaxCollectorOrderedSpellMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return MoveTaxCollectorOrderedSpellMessage.protocolId;
+    }
+
+    public initMoveTaxCollectorOrderedSpellMessage(taxCollectorId: number = 0, movedFrom: number = 0, movedTo: number = 0): MoveTaxCollectorOrderedSpellMessage
+    {
+        this.taxCollectorId = taxCollectorId;
+        this.movedFrom = movedFrom;
+        this.movedTo = movedTo;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MoveTaxCollectorOrderedSpellMessage(output);
+    }
+
+    public serializeAs_MoveTaxCollectorOrderedSpellMessage(output: ICustomDataOutput)
+    {
+        if(this.taxCollectorId < 0 || this.taxCollectorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.taxCollectorId + ") on element taxCollectorId.");
+        }
+        output.writeDouble(this.taxCollectorId);
+        if(this.movedFrom < 0)
+        {
+            throw new Error("Forbidden value (" + this.movedFrom + ") on element movedFrom.");
+        }
+        output.writeByte(this.movedFrom);
+        if(this.movedTo < 0)
+        {
+            throw new Error("Forbidden value (" + this.movedTo + ") on element movedTo.");
+        }
+        output.writeByte(this.movedTo);
     }
 
     public deserialize(input: ICustomDataInput)

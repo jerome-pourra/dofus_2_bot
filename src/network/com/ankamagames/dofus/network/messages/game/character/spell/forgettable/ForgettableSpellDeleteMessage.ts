@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class ForgettableSpellDeleteMessage extends NetworkMessage
+export class ForgettableSpellDeleteMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4353;
@@ -18,14 +18,47 @@ export class ForgettableSpellDeleteMessage extends NetworkMessage
         this.spells = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return ForgettableSpellDeleteMessage.protocolId;
+    }
+
+    public initForgettableSpellDeleteMessage(reason: number = 0, spells: Array<number> = null): ForgettableSpellDeleteMessage
+    {
+        this.reason = reason;
+        this.spells = spells;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ForgettableSpellDeleteMessage(output);
+    }
+
+    public serializeAs_ForgettableSpellDeleteMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.reason);
+        output.writeShort(this.spells.length);
+        for(var _i2: number = 0; _i2 < this.spells.length; _i2++)
+        {
+            if(this.spells[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.spells[_i2] + ") on element 2 (starting at 1) of spells.");
+            }
+            output.writeInt(this.spells[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

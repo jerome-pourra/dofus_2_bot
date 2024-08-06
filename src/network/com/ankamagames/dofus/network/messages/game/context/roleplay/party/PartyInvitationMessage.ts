@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { AbstractPartyMessage } from "./AbstractPartyMessage";
 
-export class PartyInvitationMessage extends AbstractPartyMessage
+export class PartyInvitationMessage extends AbstractPartyMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 729;
@@ -21,14 +21,61 @@ export class PartyInvitationMessage extends AbstractPartyMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyInvitationMessage.protocolId;
+    }
+
+    public initPartyInvitationMessage(partyId: number = 0, partyType: number = 0, partyName: string = "", maxParticipants: number = 0, fromId: number = 0, fromName: string = "", toId: number = 0): PartyInvitationMessage
+    {
+        super.initAbstractPartyMessage(partyId);
+        this.partyType = partyType;
+        this.partyName = partyName;
+        this.maxParticipants = maxParticipants;
+        this.fromId = fromId;
+        this.fromName = fromName;
+        this.toId = toId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyInvitationMessage(output);
+    }
+
+    public serializeAs_PartyInvitationMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyMessage(output);
+        output.writeByte(this.partyType);
+        output.writeUTF(this.partyName);
+        if(this.maxParticipants < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxParticipants + ") on element maxParticipants.");
+        }
+        output.writeByte(this.maxParticipants);
+        if(this.fromId < 0 || this.fromId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.fromId + ") on element fromId.");
+        }
+        output.writeVarLong(this.fromId);
+        output.writeUTF(this.fromName);
+        if(this.toId < 0 || this.toId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.toId + ") on element toId.");
+        }
+        output.writeVarLong(this.toId);
     }
 
     public deserialize(input: ICustomDataInput)

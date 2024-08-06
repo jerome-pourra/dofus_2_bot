@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class EntityDispositionInformations
+export class EntityDispositionInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 2447;
@@ -13,6 +13,33 @@ export class EntityDispositionInformations
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return EntityDispositionInformations.protocolId;
+    }
+
+    public initEntityDispositionInformations(cellId: number = 0, direction: number = 1): EntityDispositionInformations
+    {
+        this.cellId = cellId;
+        this.direction = direction;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_EntityDispositionInformations(output);
+    }
+
+    public serializeAs_EntityDispositionInformations(output: ICustomDataOutput)
+    {
+        if(this.cellId < -1 || this.cellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.cellId + ") on element cellId.");
+        }
+        output.writeShort(this.cellId);
+        output.writeByte(this.direction);
     }
 
     public deserialize(input: ICustomDataInput)

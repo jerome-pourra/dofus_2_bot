@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { Item } from "./Item";
 
-export class ObjectItemToSell extends Item
+export class ObjectItemToSell extends Item implements INetworkType
 {
 
 	public static readonly protocolId: number = 9372;
@@ -20,6 +20,57 @@ export class ObjectItemToSell extends Item
     {
         super();
         this.effects = Array<ObjectEffect>();
+    }
+
+    public getTypeId()
+    {
+        return ObjectItemToSell.protocolId;
+    }
+
+    public initObjectItemToSell(objectGID: number = 0, effects: Array<ObjectEffect> = null, objectUID: number = 0, quantity: number = 0, objectPrice: number = 0): ObjectItemToSell
+    {
+        this.objectGID = objectGID;
+        this.effects = effects;
+        this.objectUID = objectUID;
+        this.quantity = quantity;
+        this.objectPrice = objectPrice;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectItemToSell(output);
+    }
+
+    public serializeAs_ObjectItemToSell(output: ICustomDataOutput)
+    {
+        super.serializeAs_Item(output);
+        if(this.objectGID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+        }
+        output.writeVarInt(this.objectGID);
+        output.writeShort(this.effects.length);
+        for(var _i2: number = 0; _i2 < this.effects.length; _i2++)
+        {
+            output.writeShort((this.effects[_i2] as ObjectEffect).getTypeId());
+            (this.effects[_i2] as ObjectEffect).serialize(output);
+        }
+        if(this.objectUID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+        }
+        output.writeVarInt(this.objectUID);
+        if(this.quantity < 0)
+        {
+            throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
+        }
+        output.writeVarInt(this.quantity);
+        if(this.objectPrice < 0 || this.objectPrice > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.objectPrice + ") on element objectPrice.");
+        }
+        output.writeVarLong(this.objectPrice);
     }
 
     public deserialize(input: ICustomDataInput)

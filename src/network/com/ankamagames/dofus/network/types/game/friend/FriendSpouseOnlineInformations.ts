@@ -6,7 +6,7 @@ import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { BooleanByteWrapper } from "./../../../../../jerakine/network/utils/BooleanByteWrapper";
 import { FriendSpouseInformations } from "./FriendSpouseInformations";
 
-export class FriendSpouseOnlineInformations extends FriendSpouseInformations
+export class FriendSpouseOnlineInformations extends FriendSpouseInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 8676;
@@ -19,6 +19,45 @@ export class FriendSpouseOnlineInformations extends FriendSpouseInformations
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return FriendSpouseOnlineInformations.protocolId;
+    }
+
+    public initFriendSpouseOnlineInformations(spouseAccountId: number = 0, spouseId: number = 0, spouseName: string = "", spouseLevel: number = 0, breed: number = 0, sex: number = 0, spouseEntityLook: EntityLook = null, guildInfo: GuildInformations = null, alignmentSide: number = 0, mapId: number = 0, subAreaId: number = 0, inFight: boolean = false, followSpouse: boolean = false): FriendSpouseOnlineInformations
+    {
+        super.initFriendSpouseInformations(spouseAccountId,spouseId,spouseName,spouseLevel,breed,sex,spouseEntityLook,guildInfo,alignmentSide);
+        this.mapId = mapId;
+        this.subAreaId = subAreaId;
+        this.inFight = inFight;
+        this.followSpouse = followSpouse;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FriendSpouseOnlineInformations(output);
+    }
+
+    public serializeAs_FriendSpouseOnlineInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_FriendSpouseInformations(output);
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.inFight);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.followSpouse);
+        output.writeByte(_box0);
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
     }
 
     public deserialize(input: ICustomDataInput)

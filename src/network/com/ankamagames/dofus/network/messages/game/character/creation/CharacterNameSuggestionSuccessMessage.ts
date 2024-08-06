@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class CharacterNameSuggestionSuccessMessage extends NetworkMessage
+export class CharacterNameSuggestionSuccessMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2208;
@@ -16,14 +16,37 @@ export class CharacterNameSuggestionSuccessMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CharacterNameSuggestionSuccessMessage.protocolId;
+    }
+
+    public initCharacterNameSuggestionSuccessMessage(suggestion: string = ""): CharacterNameSuggestionSuccessMessage
+    {
+        this.suggestion = suggestion;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterNameSuggestionSuccessMessage(output);
+    }
+
+    public serializeAs_CharacterNameSuggestionSuccessMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.suggestion);
     }
 
     public deserialize(input: ICustomDataInput)

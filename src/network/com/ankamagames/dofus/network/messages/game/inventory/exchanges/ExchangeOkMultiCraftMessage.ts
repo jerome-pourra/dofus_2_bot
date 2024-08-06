@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeOkMultiCraftMessage extends NetworkMessage
+export class ExchangeOkMultiCraftMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4122;
@@ -18,14 +18,49 @@ export class ExchangeOkMultiCraftMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeOkMultiCraftMessage.protocolId;
+    }
+
+    public initExchangeOkMultiCraftMessage(initiatorId: number = 0, otherId: number = 0, role: number = 0): ExchangeOkMultiCraftMessage
+    {
+        this.initiatorId = initiatorId;
+        this.otherId = otherId;
+        this.role = role;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeOkMultiCraftMessage(output);
+    }
+
+    public serializeAs_ExchangeOkMultiCraftMessage(output: ICustomDataOutput)
+    {
+        if(this.initiatorId < 0 || this.initiatorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.initiatorId + ") on element initiatorId.");
+        }
+        output.writeVarLong(this.initiatorId);
+        if(this.otherId < 0 || this.otherId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.otherId + ") on element otherId.");
+        }
+        output.writeVarLong(this.otherId);
+        output.writeByte(this.role);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { AbstractPartyEventMessage } from "./AbstractPartyEventMessage";
 
-export class PartyUpdateLightMessage extends AbstractPartyEventMessage
+export class PartyUpdateLightMessage extends AbstractPartyEventMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4231;
@@ -20,14 +20,67 @@ export class PartyUpdateLightMessage extends AbstractPartyEventMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyUpdateLightMessage.protocolId;
+    }
+
+    public initPartyUpdateLightMessage(partyId: number = 0, id: number = 0, lifePoints: number = 0, maxLifePoints: number = 0, prospecting: number = 0, regenRate: number = 0): PartyUpdateLightMessage
+    {
+        super.initAbstractPartyEventMessage(partyId);
+        this.id = id;
+        this.lifePoints = lifePoints;
+        this.maxLifePoints = maxLifePoints;
+        this.prospecting = prospecting;
+        this.regenRate = regenRate;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyUpdateLightMessage(output);
+    }
+
+    public serializeAs_PartyUpdateLightMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyEventMessage(output);
+        if(this.id < 0 || this.id > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarLong(this.id);
+        if(this.lifePoints < 0)
+        {
+            throw new Error("Forbidden value (" + this.lifePoints + ") on element lifePoints.");
+        }
+        output.writeVarInt(this.lifePoints);
+        if(this.maxLifePoints < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxLifePoints + ") on element maxLifePoints.");
+        }
+        output.writeVarInt(this.maxLifePoints);
+        if(this.prospecting < 0)
+        {
+            throw new Error("Forbidden value (" + this.prospecting + ") on element prospecting.");
+        }
+        output.writeVarInt(this.prospecting);
+        if(this.regenRate < 0 || this.regenRate > 255)
+        {
+            throw new Error("Forbidden value (" + this.regenRate + ") on element regenRate.");
+        }
+        output.writeByte(this.regenRate);
     }
 
     public deserialize(input: ICustomDataInput)

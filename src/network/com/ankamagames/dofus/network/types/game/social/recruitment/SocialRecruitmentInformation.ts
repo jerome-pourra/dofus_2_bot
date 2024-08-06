@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { BooleanByteWrapper } from "./../../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class SocialRecruitmentInformation
+export class SocialRecruitmentInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 2211;
@@ -25,6 +25,79 @@ export class SocialRecruitmentInformation
     {
         this.selectedLanguages = Array<number>();
         this.selectedCriterion = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return SocialRecruitmentInformation.protocolId;
+    }
+
+    public initSocialRecruitmentInformation(socialId: number = 0, recruitmentType: number = 0, recruitmentTitle: string = "", recruitmentText: string = "", selectedLanguages: Array<number> = null, selectedCriterion: Array<number> = null, minLevel: number = 0, minLevelFacultative: boolean = false, invalidatedByModeration: boolean = false, lastEditPlayerName: string = "", lastEditDate: number = 0, recruitmentAutoLocked: boolean = false): SocialRecruitmentInformation
+    {
+        this.socialId = socialId;
+        this.recruitmentType = recruitmentType;
+        this.recruitmentTitle = recruitmentTitle;
+        this.recruitmentText = recruitmentText;
+        this.selectedLanguages = selectedLanguages;
+        this.selectedCriterion = selectedCriterion;
+        this.minLevel = minLevel;
+        this.minLevelFacultative = minLevelFacultative;
+        this.invalidatedByModeration = invalidatedByModeration;
+        this.lastEditPlayerName = lastEditPlayerName;
+        this.lastEditDate = lastEditDate;
+        this.recruitmentAutoLocked = recruitmentAutoLocked;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SocialRecruitmentInformation(output);
+    }
+
+    public serializeAs_SocialRecruitmentInformation(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.minLevelFacultative);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.invalidatedByModeration);
+        _box0 = BooleanByteWrapper.setFlag(_box0,2,this.recruitmentAutoLocked);
+        output.writeByte(_box0);
+        if(this.socialId < 0)
+        {
+            throw new Error("Forbidden value (" + this.socialId + ") on element socialId.");
+        }
+        output.writeVarInt(this.socialId);
+        output.writeByte(this.recruitmentType);
+        output.writeUTF(this.recruitmentTitle);
+        output.writeUTF(this.recruitmentText);
+        output.writeShort(this.selectedLanguages.length);
+        for(var _i5: number = 0; _i5 < this.selectedLanguages.length; _i5++)
+        {
+            if(this.selectedLanguages[_i5] < 0)
+            {
+                throw new Error("Forbidden value (" + this.selectedLanguages[_i5] + ") on element 5 (starting at 1) of selectedLanguages.");
+            }
+            output.writeVarInt(this.selectedLanguages[_i5]);
+        }
+        output.writeShort(this.selectedCriterion.length);
+        for(var _i6: number = 0; _i6 < this.selectedCriterion.length; _i6++)
+        {
+            if(this.selectedCriterion[_i6] < 0)
+            {
+                throw new Error("Forbidden value (" + this.selectedCriterion[_i6] + ") on element 6 (starting at 1) of selectedCriterion.");
+            }
+            output.writeVarInt(this.selectedCriterion[_i6]);
+        }
+        if(this.minLevel < 0)
+        {
+            throw new Error("Forbidden value (" + this.minLevel + ") on element minLevel.");
+        }
+        output.writeShort(this.minLevel);
+        output.writeUTF(this.lastEditPlayerName);
+        if(this.lastEditDate < -9007199254740992 || this.lastEditDate > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.lastEditDate + ") on element lastEditDate.");
+        }
+        output.writeDouble(this.lastEditDate);
     }
 
     public deserialize(input: ICustomDataInput)

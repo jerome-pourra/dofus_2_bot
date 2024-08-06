@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class FriendSpouseInformations
+export class FriendSpouseInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 8260;
@@ -23,6 +23,55 @@ export class FriendSpouseInformations
     {
         this.spouseEntityLook = new EntityLook();
         this.guildInfo = new GuildInformations();
+    }
+
+    public getTypeId()
+    {
+        return FriendSpouseInformations.protocolId;
+    }
+
+    public initFriendSpouseInformations(spouseAccountId: number = 0, spouseId: number = 0, spouseName: string = "", spouseLevel: number = 0, breed: number = 0, sex: number = 0, spouseEntityLook: EntityLook = null, guildInfo: GuildInformations = null, alignmentSide: number = 0): FriendSpouseInformations
+    {
+        this.spouseAccountId = spouseAccountId;
+        this.spouseId = spouseId;
+        this.spouseName = spouseName;
+        this.spouseLevel = spouseLevel;
+        this.breed = breed;
+        this.sex = sex;
+        this.spouseEntityLook = spouseEntityLook;
+        this.guildInfo = guildInfo;
+        this.alignmentSide = alignmentSide;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FriendSpouseInformations(output);
+    }
+
+    public serializeAs_FriendSpouseInformations(output: ICustomDataOutput)
+    {
+        if(this.spouseAccountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.spouseAccountId + ") on element spouseAccountId.");
+        }
+        output.writeInt(this.spouseAccountId);
+        if(this.spouseId < 0 || this.spouseId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.spouseId + ") on element spouseId.");
+        }
+        output.writeVarLong(this.spouseId);
+        output.writeUTF(this.spouseName);
+        if(this.spouseLevel < 0)
+        {
+            throw new Error("Forbidden value (" + this.spouseLevel + ") on element spouseLevel.");
+        }
+        output.writeVarShort(this.spouseLevel);
+        output.writeByte(this.breed);
+        output.writeByte(this.sex);
+        this.spouseEntityLook.serializeAs_EntityLook(output);
+        this.guildInfo.serializeAs_GuildInformations(output);
+        output.writeByte(this.alignmentSide);
     }
 
     public deserialize(input: ICustomDataInput)

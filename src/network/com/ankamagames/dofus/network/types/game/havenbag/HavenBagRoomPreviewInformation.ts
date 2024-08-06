@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class HavenBagRoomPreviewInformation
+export class HavenBagRoomPreviewInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 8049;
@@ -13,6 +13,33 @@ export class HavenBagRoomPreviewInformation
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return HavenBagRoomPreviewInformation.protocolId;
+    }
+
+    public initHavenBagRoomPreviewInformation(roomId: number = 0, themeId: number = 0): HavenBagRoomPreviewInformation
+    {
+        this.roomId = roomId;
+        this.themeId = themeId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HavenBagRoomPreviewInformation(output);
+    }
+
+    public serializeAs_HavenBagRoomPreviewInformation(output: ICustomDataOutput)
+    {
+        if(this.roomId < 0 || this.roomId > 255)
+        {
+            throw new Error("Forbidden value (" + this.roomId + ") on element roomId.");
+        }
+        output.writeByte(this.roomId);
+        output.writeByte(this.themeId);
     }
 
     public deserialize(input: ICustomDataInput)

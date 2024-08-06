@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlayFightRequestCanceledMessage extends NetworkMessage
+export class GameRolePlayFightRequestCanceledMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5826;
@@ -18,14 +18,53 @@ export class GameRolePlayFightRequestCanceledMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlayFightRequestCanceledMessage.protocolId;
+    }
+
+    public initGameRolePlayFightRequestCanceledMessage(fightId: number = 0, sourceId: number = 0, targetId: number = 0): GameRolePlayFightRequestCanceledMessage
+    {
+        this.fightId = fightId;
+        this.sourceId = sourceId;
+        this.targetId = targetId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayFightRequestCanceledMessage(output);
+    }
+
+    public serializeAs_GameRolePlayFightRequestCanceledMessage(output: ICustomDataOutput)
+    {
+        if(this.fightId < 0)
+        {
+            throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+        }
+        output.writeVarShort(this.fightId);
+        if(this.sourceId < -9007199254740992 || this.sourceId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.sourceId + ") on element sourceId.");
+        }
+        output.writeDouble(this.sourceId);
+        if(this.targetId < -9007199254740992 || this.targetId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+        }
+        output.writeDouble(this.targetId);
     }
 
     public deserialize(input: ICustomDataInput)

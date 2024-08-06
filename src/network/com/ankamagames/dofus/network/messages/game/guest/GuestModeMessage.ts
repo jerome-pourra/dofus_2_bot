@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuestModeMessage extends NetworkMessage
+export class GuestModeMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5810;
@@ -16,14 +16,37 @@ export class GuestModeMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuestModeMessage.protocolId;
+    }
+
+    public initGuestModeMessage(active: boolean = false): GuestModeMessage
+    {
+        this.active = active;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuestModeMessage(output);
+    }
+
+    public serializeAs_GuestModeMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.active);
     }
 
     public deserialize(input: ICustomDataInput)

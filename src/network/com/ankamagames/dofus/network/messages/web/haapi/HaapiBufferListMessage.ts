@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class HaapiBufferListMessage extends NetworkMessage
+export class HaapiBufferListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3;
@@ -18,14 +18,41 @@ export class HaapiBufferListMessage extends NetworkMessage
         this.buffers = Array<BufferInformation>();
     }
 
+    public getMessageId()
+    {
+        return HaapiBufferListMessage.protocolId;
+    }
+
+    public initHaapiBufferListMessage(buffers: Array<BufferInformation> = null): HaapiBufferListMessage
+    {
+        this.buffers = buffers;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HaapiBufferListMessage(output);
+    }
+
+    public serializeAs_HaapiBufferListMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.buffers.length);
+        for(var _i1: number = 0; _i1 < this.buffers.length; _i1++)
+        {
+            (this.buffers[_i1] as BufferInformation).serializeAs_BufferInformation(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class CharacterCanBeCreatedResultMessage extends NetworkMessage
+export class CharacterCanBeCreatedResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7317;
@@ -16,14 +16,37 @@ export class CharacterCanBeCreatedResultMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CharacterCanBeCreatedResultMessage.protocolId;
+    }
+
+    public initCharacterCanBeCreatedResultMessage(yesYouCan: boolean = false): CharacterCanBeCreatedResultMessage
+    {
+        this.yesYouCan = yesYouCan;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterCanBeCreatedResultMessage(output);
+    }
+
+    public serializeAs_CharacterCanBeCreatedResultMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.yesYouCan);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class GuildRankActivity extends GuildLogbookEntryBasicInformation
+export class GuildRankActivity extends GuildLogbookEntryBasicInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 3270;
@@ -16,6 +16,31 @@ export class GuildRankActivity extends GuildLogbookEntryBasicInformation
     {
         super();
         this.guildRankMinimalInfos = new RankMinimalInformation();
+    }
+
+    public getTypeId()
+    {
+        return GuildRankActivity.protocolId;
+    }
+
+    public initGuildRankActivity(id: number = 0, date: number = 0, rankActivityType: number = 0, guildRankMinimalInfos: RankMinimalInformation = null): GuildRankActivity
+    {
+        super.initGuildLogbookEntryBasicInformation(id,date);
+        this.rankActivityType = rankActivityType;
+        this.guildRankMinimalInfos = guildRankMinimalInfos;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildRankActivity(output);
+    }
+
+    public serializeAs_GuildRankActivity(output: ICustomDataOutput)
+    {
+        super.serializeAs_GuildLogbookEntryBasicInformation(output);
+        output.writeByte(this.rankActivityType);
+        this.guildRankMinimalInfos.serializeAs_RankMinimalInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

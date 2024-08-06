@@ -1,6 +1,6 @@
-import { IDataInput } from "../../../../utils/IDataInput";
+import { IDataOutput } from "../../../../utils/IDataOutput";
 
-export interface ICustomDataOutput extends IDataInput {
+export interface ICustomDataOutput extends IDataOutput {
 
 	writeVarInt(param1: number): void;
 	writeVarShort(param1: number): void;

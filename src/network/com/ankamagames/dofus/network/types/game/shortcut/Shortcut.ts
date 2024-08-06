@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class Shortcut
+export class Shortcut implements INetworkType
 {
 
 	public static readonly protocolId: number = 5117;
@@ -12,6 +12,31 @@ export class Shortcut
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return Shortcut.protocolId;
+    }
+
+    public initShortcut(slot: number = 0): Shortcut
+    {
+        this.slot = slot;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_Shortcut(output);
+    }
+
+    public serializeAs_Shortcut(output: ICustomDataOutput)
+    {
+        if(this.slot < 0 || this.slot > 99)
+        {
+            throw new Error("Forbidden value (" + this.slot + ") on element slot.");
+        }
+        output.writeByte(this.slot);
     }
 
     public deserialize(input: ICustomDataInput)

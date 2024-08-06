@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeCraftResultMessage extends NetworkMessage
+export class ExchangeCraftResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7869;
@@ -16,14 +16,37 @@ export class ExchangeCraftResultMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeCraftResultMessage.protocolId;
+    }
+
+    public initExchangeCraftResultMessage(craftResult: number = 0): ExchangeCraftResultMessage
+    {
+        this.craftResult = craftResult;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeCraftResultMessage(output);
+    }
+
+    public serializeAs_ExchangeCraftResultMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.craftResult);
     }
 
     public deserialize(input: ICustomDataInput)

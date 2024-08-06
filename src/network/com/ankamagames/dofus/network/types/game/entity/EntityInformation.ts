@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class EntityInformation
+export class EntityInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 9779;
@@ -14,6 +14,39 @@ export class EntityInformation
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return EntityInformation.protocolId;
+    }
+
+    public initEntityInformation(id: number = 0, experience: number = 0, status: boolean = false): EntityInformation
+    {
+        this.id = id;
+        this.experience = experience;
+        this.status = status;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_EntityInformation(output);
+    }
+
+    public serializeAs_EntityInformation(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarShort(this.id);
+        if(this.experience < 0)
+        {
+            throw new Error("Forbidden value (" + this.experience + ") on element experience.");
+        }
+        output.writeVarInt(this.experience);
+        output.writeBoolean(this.status);
     }
 
     public deserialize(input: ICustomDataInput)

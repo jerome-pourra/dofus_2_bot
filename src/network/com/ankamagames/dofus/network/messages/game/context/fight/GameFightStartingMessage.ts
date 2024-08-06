@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightStartingMessage extends NetworkMessage
+export class GameFightStartingMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6131;
@@ -22,14 +22,63 @@ export class GameFightStartingMessage extends NetworkMessage
         this.monsters = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return GameFightStartingMessage.protocolId;
+    }
+
+    public initGameFightStartingMessage(fightType: number = 0, fightId: number = 0, attackerId: number = 0, defenderId: number = 0, containsBoss: boolean = false, monsters: Array<number> = null): GameFightStartingMessage
+    {
+        this.fightType = fightType;
+        this.fightId = fightId;
+        this.attackerId = attackerId;
+        this.defenderId = defenderId;
+        this.containsBoss = containsBoss;
+        this.monsters = monsters;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightStartingMessage(output);
+    }
+
+    public serializeAs_GameFightStartingMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.fightType);
+        if(this.fightId < 0)
+        {
+            throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+        }
+        output.writeVarShort(this.fightId);
+        if(this.attackerId < -9007199254740992 || this.attackerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.attackerId + ") on element attackerId.");
+        }
+        output.writeDouble(this.attackerId);
+        if(this.defenderId < -9007199254740992 || this.defenderId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.defenderId + ") on element defenderId.");
+        }
+        output.writeDouble(this.defenderId);
+        output.writeBoolean(this.containsBoss);
+        output.writeShort(this.monsters.length);
+        for(var _i6: number = 0; _i6 < this.monsters.length; _i6++)
+        {
+            output.writeInt(this.monsters[_i6]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

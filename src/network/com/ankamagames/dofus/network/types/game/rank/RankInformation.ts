@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { RankMinimalInformation } from "./RankMinimalInformation";
 
-export class RankInformation extends RankMinimalInformation
+export class RankInformation extends RankMinimalInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 3538;
@@ -17,6 +17,51 @@ export class RankInformation extends RankMinimalInformation
     {
         super();
         this.rights = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return RankInformation.protocolId;
+    }
+
+    public initRankInformation(id: number = 0, name: string = "", order: number = 0, gfxId: number = 0, modifiable: boolean = false, rights: Array<number> = null): RankInformation
+    {
+        super.initRankMinimalInformation(id,name);
+        this.order = order;
+        this.gfxId = gfxId;
+        this.modifiable = modifiable;
+        this.rights = rights;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_RankInformation(output);
+    }
+
+    public serializeAs_RankInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_RankMinimalInformation(output);
+        if(this.order < 0)
+        {
+            throw new Error("Forbidden value (" + this.order + ") on element order.");
+        }
+        output.writeVarInt(this.order);
+        if(this.gfxId < 0)
+        {
+            throw new Error("Forbidden value (" + this.gfxId + ") on element gfxId.");
+        }
+        output.writeVarInt(this.gfxId);
+        output.writeBoolean(this.modifiable);
+        output.writeShort(this.rights.length);
+        for(var _i4: number = 0; _i4 < this.rights.length; _i4++)
+        {
+            if(this.rights[_i4] < 0)
+            {
+                throw new Error("Forbidden value (" + this.rights[_i4] + ") on element 4 (starting at 1) of rights.");
+            }
+            output.writeVarInt(this.rights[_i4]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class UpdateMountCharacteristicsMessage extends NetworkMessage
+export class UpdateMountCharacteristicsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1346;
@@ -20,14 +20,44 @@ export class UpdateMountCharacteristicsMessage extends NetworkMessage
         this.boostToUpdateList = Array<UpdateMountCharacteristic>();
     }
 
+    public getMessageId()
+    {
+        return UpdateMountCharacteristicsMessage.protocolId;
+    }
+
+    public initUpdateMountCharacteristicsMessage(rideId: number = 0, boostToUpdateList: Array<UpdateMountCharacteristic> = null): UpdateMountCharacteristicsMessage
+    {
+        this.rideId = rideId;
+        this.boostToUpdateList = boostToUpdateList;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_UpdateMountCharacteristicsMessage(output);
+    }
+
+    public serializeAs_UpdateMountCharacteristicsMessage(output: ICustomDataOutput)
+    {
+        output.writeVarInt(this.rideId);
+        output.writeShort(this.boostToUpdateList.length);
+        for(var _i2: number = 0; _i2 < this.boostToUpdateList.length; _i2++)
+        {
+            output.writeShort((this.boostToUpdateList[_i2] as UpdateMountCharacteristic).getTypeId());
+            (this.boostToUpdateList[_i2] as UpdateMountCharacteristic).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

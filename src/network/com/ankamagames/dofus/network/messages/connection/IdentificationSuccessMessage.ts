@@ -6,7 +6,7 @@ import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage"
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 import { BooleanByteWrapper } from "./../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class IdentificationSuccessMessage extends NetworkMessage
+export class IdentificationSuccessMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6104;
@@ -29,14 +29,79 @@ export class IdentificationSuccessMessage extends NetworkMessage
         this.accountTag = new AccountTagInformation();
     }
 
+    public getMessageId()
+    {
+        return IdentificationSuccessMessage.protocolId;
+    }
+
+    public initIdentificationSuccessMessage(login: string = "", accountTag: AccountTagInformation = null, accountId: number = 0, communityId: number = 0, hasRights: boolean = false, hasReportRight: boolean = false, hasForceRight: boolean = false, accountCreation: number = 0, subscriptionEndDate: number = 0, wasAlreadyConnected: boolean = false, havenbagAvailableRoom: number = 0): IdentificationSuccessMessage
+    {
+        this.login = login;
+        this.accountTag = accountTag;
+        this.accountId = accountId;
+        this.communityId = communityId;
+        this.hasRights = hasRights;
+        this.hasReportRight = hasReportRight;
+        this.hasForceRight = hasForceRight;
+        this.accountCreation = accountCreation;
+        this.subscriptionEndDate = subscriptionEndDate;
+        this.wasAlreadyConnected = wasAlreadyConnected;
+        this.havenbagAvailableRoom = havenbagAvailableRoom;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IdentificationSuccessMessage(output);
+    }
+
+    public serializeAs_IdentificationSuccessMessage(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.hasRights);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.hasReportRight);
+        _box0 = BooleanByteWrapper.setFlag(_box0,2,this.hasForceRight);
+        _box0 = BooleanByteWrapper.setFlag(_box0,3,this.wasAlreadyConnected);
+        output.writeByte(_box0);
+        output.writeUTF(this.login);
+        this.accountTag.serializeAs_AccountTagInformation(output);
+        if(this.accountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+        }
+        output.writeInt(this.accountId);
+        if(this.communityId < 0)
+        {
+            throw new Error("Forbidden value (" + this.communityId + ") on element communityId.");
+        }
+        output.writeByte(this.communityId);
+        if(this.accountCreation < 0 || this.accountCreation > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.accountCreation + ") on element accountCreation.");
+        }
+        output.writeDouble(this.accountCreation);
+        if(this.subscriptionEndDate < 0 || this.subscriptionEndDate > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.subscriptionEndDate + ") on element subscriptionEndDate.");
+        }
+        output.writeDouble(this.subscriptionEndDate);
+        if(this.havenbagAvailableRoom < 0 || this.havenbagAvailableRoom > 255)
+        {
+            throw new Error("Forbidden value (" + this.havenbagAvailableRoom + ") on element havenbagAvailableRoom.");
+        }
+        output.writeByte(this.havenbagAvailableRoom);
     }
 
     public deserialize(input: ICustomDataInput)

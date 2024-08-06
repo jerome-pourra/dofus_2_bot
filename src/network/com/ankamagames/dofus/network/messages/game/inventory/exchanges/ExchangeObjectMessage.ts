@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeObjectMessage extends NetworkMessage
+export class ExchangeObjectMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3411;
@@ -16,14 +16,37 @@ export class ExchangeObjectMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeObjectMessage.protocolId;
+    }
+
+    public initExchangeObjectMessage(remote: boolean = false): ExchangeObjectMessage
+    {
+        this.remote = remote;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeObjectMessage(output);
+    }
+
+    public serializeAs_ExchangeObjectMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.remote);
     }
 
     public deserialize(input: ICustomDataInput)

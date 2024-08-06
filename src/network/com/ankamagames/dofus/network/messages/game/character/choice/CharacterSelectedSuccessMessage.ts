@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class CharacterSelectedSuccessMessage extends NetworkMessage
+export class CharacterSelectedSuccessMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4299;
@@ -19,14 +19,39 @@ export class CharacterSelectedSuccessMessage extends NetworkMessage
         this.infos = new CharacterBaseInformations();
     }
 
+    public getMessageId()
+    {
+        return CharacterSelectedSuccessMessage.protocolId;
+    }
+
+    public initCharacterSelectedSuccessMessage(infos: CharacterBaseInformations = null, isCollectingStats: boolean = false): CharacterSelectedSuccessMessage
+    {
+        this.infos = infos;
+        this.isCollectingStats = isCollectingStats;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterSelectedSuccessMessage(output);
+    }
+
+    public serializeAs_CharacterSelectedSuccessMessage(output: ICustomDataOutput)
+    {
+        this.infos.serializeAs_CharacterBaseInformations(output);
+        output.writeBoolean(this.isCollectingStats);
     }
 
     public deserialize(input: ICustomDataInput)

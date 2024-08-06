@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class EnabledChannelsMessage extends NetworkMessage
+export class EnabledChannelsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2625;
@@ -19,14 +19,47 @@ export class EnabledChannelsMessage extends NetworkMessage
         this.disallowed = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return EnabledChannelsMessage.protocolId;
+    }
+
+    public initEnabledChannelsMessage(channels: Array<number> = null, disallowed: Array<number> = null): EnabledChannelsMessage
+    {
+        this.channels = channels;
+        this.disallowed = disallowed;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_EnabledChannelsMessage(output);
+    }
+
+    public serializeAs_EnabledChannelsMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.channels.length);
+        for(var _i1: number = 0; _i1 < this.channels.length; _i1++)
+        {
+            output.writeByte(this.channels[_i1]);
+        }
+        output.writeShort(this.disallowed.length);
+        for(var _i2: number = 0; _i2 < this.disallowed.length; _i2++)
+        {
+            output.writeByte(this.disallowed[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

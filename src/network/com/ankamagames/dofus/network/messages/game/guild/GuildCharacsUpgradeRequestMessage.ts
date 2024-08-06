@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildCharacsUpgradeRequestMessage extends NetworkMessage
+export class GuildCharacsUpgradeRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 237;
@@ -16,14 +16,37 @@ export class GuildCharacsUpgradeRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildCharacsUpgradeRequestMessage.protocolId;
+    }
+
+    public initGuildCharacsUpgradeRequestMessage(charaTypeTarget: number = 0): GuildCharacsUpgradeRequestMessage
+    {
+        this.charaTypeTarget = charaTypeTarget;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildCharacsUpgradeRequestMessage(output);
+    }
+
+    public serializeAs_GuildCharacsUpgradeRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.charaTypeTarget);
     }
 
     public deserialize(input: ICustomDataInput)

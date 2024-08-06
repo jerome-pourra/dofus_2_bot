@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceMemberStartWarningOnConnectionMessage extends NetworkMessage
+export class AllianceMemberStartWarningOnConnectionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3707;
@@ -14,14 +14,36 @@ export class AllianceMemberStartWarningOnConnectionMessage extends NetworkMessag
         super();
     }
 
+    public getMessageId()
+    {
+        return AllianceMemberStartWarningOnConnectionMessage.protocolId;
+    }
+
+    public initAllianceMemberStartWarningOnConnectionMessage(): AllianceMemberStartWarningOnConnectionMessage
+    {
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceMemberStartWarningOnConnectionMessage(output);
+    }
+
+    public serializeAs_AllianceMemberStartWarningOnConnectionMessage(output: ICustomDataOutput)
+    {
+
     }
 
     public deserialize(input: ICustomDataInput)

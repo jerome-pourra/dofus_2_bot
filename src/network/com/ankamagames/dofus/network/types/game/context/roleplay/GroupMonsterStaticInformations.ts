@@ -4,7 +4,7 @@ import { INetworkType } from "./../../../../../../jerakine/network/INetworkType"
 import { MonsterInGroupLightInformations } from "./MonsterInGroupLightInformations";
 import { MonsterInGroupInformations } from "./MonsterInGroupInformations";
 
-export class GroupMonsterStaticInformations
+export class GroupMonsterStaticInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 5953;
@@ -16,6 +16,33 @@ export class GroupMonsterStaticInformations
     {
         this.mainCreatureLightInfos = new MonsterInGroupLightInformations();
         this.underlings = Array<MonsterInGroupInformations>();
+    }
+
+    public getTypeId()
+    {
+        return GroupMonsterStaticInformations.protocolId;
+    }
+
+    public initGroupMonsterStaticInformations(mainCreatureLightInfos: MonsterInGroupLightInformations = null, underlings: Array<MonsterInGroupInformations> = null): GroupMonsterStaticInformations
+    {
+        this.mainCreatureLightInfos = mainCreatureLightInfos;
+        this.underlings = underlings;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GroupMonsterStaticInformations(output);
+    }
+
+    public serializeAs_GroupMonsterStaticInformations(output: ICustomDataOutput)
+    {
+        this.mainCreatureLightInfos.serializeAs_MonsterInGroupLightInformations(output);
+        output.writeShort(this.underlings.length);
+        for(var _i2: number = 0; _i2 < this.underlings.length; _i2++)
+        {
+            (this.underlings[_i2] as MonsterInGroupInformations).serializeAs_MonsterInGroupInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

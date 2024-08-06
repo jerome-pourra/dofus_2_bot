@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class GameRolePlayNpcQuestFlag
+export class GameRolePlayNpcQuestFlag implements INetworkType
 {
 
 	public static readonly protocolId: number = 6478;
@@ -14,6 +14,45 @@ export class GameRolePlayNpcQuestFlag
     {
         this.questsToValidId = Array<number>();
         this.questsToStartId = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return GameRolePlayNpcQuestFlag.protocolId;
+    }
+
+    public initGameRolePlayNpcQuestFlag(questsToValidId: Array<number> = null, questsToStartId: Array<number> = null): GameRolePlayNpcQuestFlag
+    {
+        this.questsToValidId = questsToValidId;
+        this.questsToStartId = questsToStartId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayNpcQuestFlag(output);
+    }
+
+    public serializeAs_GameRolePlayNpcQuestFlag(output: ICustomDataOutput)
+    {
+        output.writeShort(this.questsToValidId.length);
+        for(var _i1: number = 0; _i1 < this.questsToValidId.length; _i1++)
+        {
+            if(this.questsToValidId[_i1] < 0)
+            {
+                throw new Error("Forbidden value (" + this.questsToValidId[_i1] + ") on element 1 (starting at 1) of questsToValidId.");
+            }
+            output.writeVarShort(this.questsToValidId[_i1]);
+        }
+        output.writeShort(this.questsToStartId.length);
+        for(var _i2: number = 0; _i2 < this.questsToStartId.length; _i2++)
+        {
+            if(this.questsToStartId[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.questsToStartId[_i2] + ") on element 2 (starting at 1) of questsToStartId.");
+            }
+            output.writeVarShort(this.questsToStartId[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

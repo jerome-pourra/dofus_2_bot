@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkType } from "./../../../../jerakine/network/INetworkType";
 import { AbstractPlayerSearchInformation } from "./AbstractPlayerSearchInformation";
 
-export class PlayerSearchCharacterNameInformation extends AbstractPlayerSearchInformation
+export class PlayerSearchCharacterNameInformation extends AbstractPlayerSearchInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 3022;
@@ -13,6 +13,28 @@ export class PlayerSearchCharacterNameInformation extends AbstractPlayerSearchIn
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return PlayerSearchCharacterNameInformation.protocolId;
+    }
+
+    public initPlayerSearchCharacterNameInformation(name: string = ""): PlayerSearchCharacterNameInformation
+    {
+        this.name = name;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PlayerSearchCharacterNameInformation(output);
+    }
+
+    public serializeAs_PlayerSearchCharacterNameInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPlayerSearchInformation(output);
+        output.writeUTF(this.name);
     }
 
     public deserialize(input: ICustomDataInput)

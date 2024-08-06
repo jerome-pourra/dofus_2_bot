@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class JobAllowMultiCraftRequestMessage extends NetworkMessage
+export class JobAllowMultiCraftRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1737;
@@ -16,14 +16,37 @@ export class JobAllowMultiCraftRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return JobAllowMultiCraftRequestMessage.protocolId;
+    }
+
+    public initJobAllowMultiCraftRequestMessage(enabled: boolean = false): JobAllowMultiCraftRequestMessage
+    {
+        this.enabled = enabled;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_JobAllowMultiCraftRequestMessage(output);
+    }
+
+    public serializeAs_JobAllowMultiCraftRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.enabled);
     }
 
     public deserialize(input: ICustomDataInput)

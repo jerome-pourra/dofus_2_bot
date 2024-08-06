@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { AbstractPartyEventMessage } from "./AbstractPartyEventMessage";
 
-export class PartyUpdateMessage extends AbstractPartyEventMessage
+export class PartyUpdateMessage extends AbstractPartyEventMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5707;
@@ -19,14 +19,40 @@ export class PartyUpdateMessage extends AbstractPartyEventMessage
         this.memberInformations = new PartyMemberInformations();
     }
 
+    public getMessageId()
+    {
+        return PartyUpdateMessage.protocolId;
+    }
+
+    public initPartyUpdateMessage(partyId: number = 0, memberInformations: PartyMemberInformations = null): PartyUpdateMessage
+    {
+        super.initAbstractPartyEventMessage(partyId);
+        this.memberInformations = memberInformations;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyUpdateMessage(output);
+    }
+
+    public serializeAs_PartyUpdateMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyEventMessage(output);
+        output.writeShort(this.memberInformations.getTypeId());
+        this.memberInformations.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

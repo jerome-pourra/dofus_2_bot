@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class InteractiveUsedMessage extends NetworkMessage
+export class InteractiveUsedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3900;
@@ -20,14 +20,61 @@ export class InteractiveUsedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return InteractiveUsedMessage.protocolId;
+    }
+
+    public initInteractiveUsedMessage(entityId: number = 0, elemId: number = 0, skillId: number = 0, duration: number = 0, canMove: boolean = false): InteractiveUsedMessage
+    {
+        this.entityId = entityId;
+        this.elemId = elemId;
+        this.skillId = skillId;
+        this.duration = duration;
+        this.canMove = canMove;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_InteractiveUsedMessage(output);
+    }
+
+    public serializeAs_InteractiveUsedMessage(output: ICustomDataOutput)
+    {
+        if(this.entityId < 0 || this.entityId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.entityId + ") on element entityId.");
+        }
+        output.writeVarLong(this.entityId);
+        if(this.elemId < 0)
+        {
+            throw new Error("Forbidden value (" + this.elemId + ") on element elemId.");
+        }
+        output.writeVarInt(this.elemId);
+        if(this.skillId < 0)
+        {
+            throw new Error("Forbidden value (" + this.skillId + ") on element skillId.");
+        }
+        output.writeVarShort(this.skillId);
+        if(this.duration < 0)
+        {
+            throw new Error("Forbidden value (" + this.duration + ") on element duration.");
+        }
+        output.writeVarShort(this.duration);
+        output.writeBoolean(this.canMove);
     }
 
     public deserialize(input: ICustomDataInput)

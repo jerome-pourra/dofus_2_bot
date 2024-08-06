@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlayArenaSwitchToFightServerMessage extends NetworkMessage
+export class GameRolePlayArenaSwitchToFightServerMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4751;
@@ -19,14 +19,49 @@ export class GameRolePlayArenaSwitchToFightServerMessage extends NetworkMessage
         this.ports = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlayArenaSwitchToFightServerMessage.protocolId;
+    }
+
+    public initGameRolePlayArenaSwitchToFightServerMessage(address: string = "", ports: Array<number> = null, token: string = ""): GameRolePlayArenaSwitchToFightServerMessage
+    {
+        this.address = address;
+        this.ports = ports;
+        this.token = token;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayArenaSwitchToFightServerMessage(output);
+    }
+
+    public serializeAs_GameRolePlayArenaSwitchToFightServerMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.address);
+        output.writeShort(this.ports.length);
+        for(var _i2: number = 0; _i2 < this.ports.length; _i2++)
+        {
+            if(this.ports[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.ports[_i2] + ") on element 2 (starting at 1) of ports.");
+            }
+            output.writeVarShort(this.ports[_i2]);
+        }
+        output.writeUTF(this.token);
     }
 
     public deserialize(input: ICustomDataInput)

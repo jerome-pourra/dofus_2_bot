@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../jerakine/network/ICustomDataInpu
 import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../jerakine/network/INetworkType";
 
-export class AccountTagInformation
+export class AccountTagInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 3196;
@@ -13,6 +13,29 @@ export class AccountTagInformation
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return AccountTagInformation.protocolId;
+    }
+
+    public initAccountTagInformation(nickname: string = "", tagNumber: string = ""): AccountTagInformation
+    {
+        this.nickname = nickname;
+        this.tagNumber = tagNumber;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AccountTagInformation(output);
+    }
+
+    public serializeAs_AccountTagInformation(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.nickname);
+        output.writeUTF(this.tagNumber);
     }
 
     public deserialize(input: ICustomDataInput)

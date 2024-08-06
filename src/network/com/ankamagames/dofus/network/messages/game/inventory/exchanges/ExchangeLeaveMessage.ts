@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class ExchangeLeaveMessage extends LeaveDialogMessage
+export class ExchangeLeaveMessage extends LeaveDialogMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 384;
@@ -16,14 +16,39 @@ export class ExchangeLeaveMessage extends LeaveDialogMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeLeaveMessage.protocolId;
+    }
+
+    public initExchangeLeaveMessage(dialogType: number = 0, success: boolean = false): ExchangeLeaveMessage
+    {
+        super.initLeaveDialogMessage(dialogType);
+        this.success = success;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeLeaveMessage(output);
+    }
+
+    public serializeAs_ExchangeLeaveMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_LeaveDialogMessage(output);
+        output.writeBoolean(this.success);
     }
 
     public deserialize(input: ICustomDataInput)

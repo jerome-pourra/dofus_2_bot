@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlaySpellAnimMessage extends NetworkMessage
+export class GameRolePlaySpellAnimMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1173;
@@ -20,14 +20,65 @@ export class GameRolePlaySpellAnimMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlaySpellAnimMessage.protocolId;
+    }
+
+    public initGameRolePlaySpellAnimMessage(casterId: number = 0, targetCellId: number = 0, spellId: number = 0, spellLevel: number = 0, direction: number = 0): GameRolePlaySpellAnimMessage
+    {
+        this.casterId = casterId;
+        this.targetCellId = targetCellId;
+        this.spellId = spellId;
+        this.spellLevel = spellLevel;
+        this.direction = direction;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlaySpellAnimMessage(output);
+    }
+
+    public serializeAs_GameRolePlaySpellAnimMessage(output: ICustomDataOutput)
+    {
+        if(this.casterId < 0 || this.casterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.casterId + ") on element casterId.");
+        }
+        output.writeVarLong(this.casterId);
+        if(this.targetCellId < 0 || this.targetCellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.targetCellId + ") on element targetCellId.");
+        }
+        output.writeVarShort(this.targetCellId);
+        if(this.spellId < 0)
+        {
+            throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
+        }
+        output.writeVarShort(this.spellId);
+        if(this.spellLevel < 1 || this.spellLevel > 32767)
+        {
+            throw new Error("Forbidden value (" + this.spellLevel + ") on element spellLevel.");
+        }
+        output.writeShort(this.spellLevel);
+        if(this.direction < -1 || this.direction > 8)
+        {
+            throw new Error("Forbidden value (" + this.direction + ") on element direction.");
+        }
+        output.writeShort(this.direction);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -7,7 +7,7 @@ import { INetworkType } from "./../../../../../../jerakine/network/INetworkType"
 import { GroupMonsterStaticInformations } from "./GroupMonsterStaticInformations";
 import { GameRolePlayActorInformations } from "./GameRolePlayActorInformations";
 
-export class GameRolePlayGroupMonsterInformations extends GameRolePlayActorInformations
+export class GameRolePlayGroupMonsterInformations extends GameRolePlayActorInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 7360;
@@ -21,6 +21,40 @@ export class GameRolePlayGroupMonsterInformations extends GameRolePlayActorInfor
     {
         super();
         this.staticInfos = new GroupMonsterStaticInformations();
+    }
+
+    public getTypeId()
+    {
+        return GameRolePlayGroupMonsterInformations.protocolId;
+    }
+
+    public initGameRolePlayGroupMonsterInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, staticInfos: GroupMonsterStaticInformations = null, lootShare: number = 0, alignmentSide: number = 0, hasHardcoreDrop: boolean = false): GameRolePlayGroupMonsterInformations
+    {
+        super.initGameRolePlayActorInformations(contextualId,disposition,look);
+        this.staticInfos = staticInfos;
+        this.lootShare = lootShare;
+        this.alignmentSide = alignmentSide;
+        this.hasHardcoreDrop = hasHardcoreDrop;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayGroupMonsterInformations(output);
+    }
+
+    public serializeAs_GameRolePlayGroupMonsterInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameRolePlayActorInformations(output);
+        output.writeShort(this.staticInfos.getTypeId());
+        this.staticInfos.serialize(output);
+        if(this.lootShare < -1 || this.lootShare > 8)
+        {
+            throw new Error("Forbidden value (" + this.lootShare + ") on element lootShare.");
+        }
+        output.writeByte(this.lootShare);
+        output.writeByte(this.alignmentSide);
+        output.writeBoolean(this.hasHardcoreDrop);
     }
 
     public deserialize(input: ICustomDataInput)

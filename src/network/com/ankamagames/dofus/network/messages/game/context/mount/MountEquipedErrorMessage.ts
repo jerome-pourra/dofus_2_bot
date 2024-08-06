@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class MountEquipedErrorMessage extends NetworkMessage
+export class MountEquipedErrorMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5171;
@@ -16,14 +16,37 @@ export class MountEquipedErrorMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return MountEquipedErrorMessage.protocolId;
+    }
+
+    public initMountEquipedErrorMessage(errorType: number = 0): MountEquipedErrorMessage
+    {
+        this.errorType = errorType;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MountEquipedErrorMessage(output);
+    }
+
+    public serializeAs_MountEquipedErrorMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.errorType);
     }
 
     public deserialize(input: ICustomDataInput)

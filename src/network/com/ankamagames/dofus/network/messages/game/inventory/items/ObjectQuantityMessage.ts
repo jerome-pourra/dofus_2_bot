@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ObjectQuantityMessage extends NetworkMessage
+export class ObjectQuantityMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 204;
@@ -18,14 +18,49 @@ export class ObjectQuantityMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ObjectQuantityMessage.protocolId;
+    }
+
+    public initObjectQuantityMessage(objectUID: number = 0, quantity: number = 0, origin: number = 0): ObjectQuantityMessage
+    {
+        this.objectUID = objectUID;
+        this.quantity = quantity;
+        this.origin = origin;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectQuantityMessage(output);
+    }
+
+    public serializeAs_ObjectQuantityMessage(output: ICustomDataOutput)
+    {
+        if(this.objectUID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+        }
+        output.writeVarInt(this.objectUID);
+        if(this.quantity < 0)
+        {
+            throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
+        }
+        output.writeVarInt(this.quantity);
+        output.writeByte(this.origin);
     }
 
     public deserialize(input: ICustomDataInput)

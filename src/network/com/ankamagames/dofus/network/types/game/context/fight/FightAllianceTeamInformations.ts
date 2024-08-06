@@ -1,9 +1,10 @@
 import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDataInput";
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
+import { FightTeamMemberInformations } from "./FightTeamMemberInformations";
 import { FightTeamInformations } from "./FightTeamInformations";
 
-export class FightAllianceTeamInformations extends FightTeamInformations
+export class FightAllianceTeamInformations extends FightTeamInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 8585;
@@ -13,6 +14,29 @@ export class FightAllianceTeamInformations extends FightTeamInformations
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return FightAllianceTeamInformations.protocolId;
+    }
+
+    public initFightAllianceTeamInformations(teamId: number = 2, leaderId: number = 0, teamSide: number = 0, teamTypeId: number = 0, nbWaves: number = 0, teamMembers: Array<FightTeamMemberInformations> = null, relation: number = 0): FightAllianceTeamInformations
+    {
+        super.initFightTeamInformations(teamId,leaderId,teamSide,teamTypeId,nbWaves,teamMembers);
+        this.relation = relation;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightAllianceTeamInformations(output);
+    }
+
+    public serializeAs_FightAllianceTeamInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_FightTeamInformations(output);
+        output.writeByte(this.relation);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlayArenaPlayerBehavioursMessage extends NetworkMessage
+export class GameRolePlayArenaPlayerBehavioursMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1302;
@@ -20,14 +20,53 @@ export class GameRolePlayArenaPlayerBehavioursMessage extends NetworkMessage
         this.sanctions = Array<string>();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlayArenaPlayerBehavioursMessage.protocolId;
+    }
+
+    public initGameRolePlayArenaPlayerBehavioursMessage(flags: Array<string> = null, sanctions: Array<string> = null, banDuration: number = 0): GameRolePlayArenaPlayerBehavioursMessage
+    {
+        this.flags = flags;
+        this.sanctions = sanctions;
+        this.banDuration = banDuration;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayArenaPlayerBehavioursMessage(output);
+    }
+
+    public serializeAs_GameRolePlayArenaPlayerBehavioursMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.flags.length);
+        for(var _i1: number = 0; _i1 < this.flags.length; _i1++)
+        {
+            output.writeUTF(this.flags[_i1]);
+        }
+        output.writeShort(this.sanctions.length);
+        for(var _i2: number = 0; _i2 < this.sanctions.length; _i2++)
+        {
+            output.writeUTF(this.sanctions[_i2]);
+        }
+        if(this.banDuration < 0)
+        {
+            throw new Error("Forbidden value (" + this.banDuration + ") on element banDuration.");
+        }
+        output.writeInt(this.banDuration);
     }
 
     public deserialize(input: ICustomDataInput)

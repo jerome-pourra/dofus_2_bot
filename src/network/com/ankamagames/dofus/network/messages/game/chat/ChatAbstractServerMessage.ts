@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class ChatAbstractServerMessage extends NetworkMessage
+export class ChatAbstractServerMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1770;
@@ -19,14 +19,47 @@ export class ChatAbstractServerMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ChatAbstractServerMessage.protocolId;
+    }
+
+    public initChatAbstractServerMessage(channel: number = 0, content: string = "", timestamp: number = 0, fingerprint: string = ""): ChatAbstractServerMessage
+    {
+        this.channel = channel;
+        this.content = content;
+        this.timestamp = timestamp;
+        this.fingerprint = fingerprint;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChatAbstractServerMessage(output);
+    }
+
+    public serializeAs_ChatAbstractServerMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.channel);
+        output.writeUTF(this.content);
+        if(this.timestamp < 0)
+        {
+            throw new Error("Forbidden value (" + this.timestamp + ") on element timestamp.");
+        }
+        output.writeInt(this.timestamp);
+        output.writeUTF(this.fingerprint);
     }
 
     public deserialize(input: ICustomDataInput)

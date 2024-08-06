@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ObjectDeletedMessage extends NetworkMessage
+export class ObjectDeletedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6668;
@@ -16,14 +16,41 @@ export class ObjectDeletedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ObjectDeletedMessage.protocolId;
+    }
+
+    public initObjectDeletedMessage(objectUID: number = 0): ObjectDeletedMessage
+    {
+        this.objectUID = objectUID;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectDeletedMessage(output);
+    }
+
+    public serializeAs_ObjectDeletedMessage(output: ICustomDataOutput)
+    {
+        if(this.objectUID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+        }
+        output.writeVarInt(this.objectUID);
     }
 
     public deserialize(input: ICustomDataInput)

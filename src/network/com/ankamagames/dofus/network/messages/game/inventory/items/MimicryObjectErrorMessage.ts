@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { SymbioticObjectErrorMessage } from "./SymbioticObjectErrorMessage";
 
-export class MimicryObjectErrorMessage extends SymbioticObjectErrorMessage
+export class MimicryObjectErrorMessage extends SymbioticObjectErrorMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3920;
@@ -16,14 +16,39 @@ export class MimicryObjectErrorMessage extends SymbioticObjectErrorMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return MimicryObjectErrorMessage.protocolId;
+    }
+
+    public initMimicryObjectErrorMessage(reason: number = 0, errorCode: number = 0, preview: boolean = false): MimicryObjectErrorMessage
+    {
+        super.initSymbioticObjectErrorMessage(reason,errorCode);
+        this.preview = preview;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MimicryObjectErrorMessage(output);
+    }
+
+    public serializeAs_MimicryObjectErrorMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_SymbioticObjectErrorMessage(output);
+        output.writeBoolean(this.preview);
     }
 
     public deserialize(input: ICustomDataInput)

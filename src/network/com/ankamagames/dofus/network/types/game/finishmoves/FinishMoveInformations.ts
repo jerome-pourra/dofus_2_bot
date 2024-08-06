@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class FinishMoveInformations
+export class FinishMoveInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 8829;
@@ -13,6 +13,33 @@ export class FinishMoveInformations
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return FinishMoveInformations.protocolId;
+    }
+
+    public initFinishMoveInformations(finishMoveId: number = 0, finishMoveState: boolean = false): FinishMoveInformations
+    {
+        this.finishMoveId = finishMoveId;
+        this.finishMoveState = finishMoveState;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FinishMoveInformations(output);
+    }
+
+    public serializeAs_FinishMoveInformations(output: ICustomDataOutput)
+    {
+        if(this.finishMoveId < 0)
+        {
+            throw new Error("Forbidden value (" + this.finishMoveId + ") on element finishMoveId.");
+        }
+        output.writeInt(this.finishMoveId);
+        output.writeBoolean(this.finishMoveState);
     }
 
     public deserialize(input: ICustomDataInput)

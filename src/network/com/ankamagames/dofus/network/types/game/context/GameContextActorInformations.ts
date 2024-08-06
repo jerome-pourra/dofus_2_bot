@@ -2,9 +2,10 @@ import { EntityLook } from "./../look/EntityLook";
 import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataInput";
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
+import { EntityDispositionInformations } from "./EntityDispositionInformations";
 import { GameContextActorPositionInformations } from "./GameContextActorPositionInformations";
 
-export class GameContextActorInformations extends GameContextActorPositionInformations
+export class GameContextActorInformations extends GameContextActorPositionInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 9060;
@@ -15,6 +16,29 @@ export class GameContextActorInformations extends GameContextActorPositionInform
     {
         super();
         this.look = new EntityLook();
+    }
+
+    public getTypeId()
+    {
+        return GameContextActorInformations.protocolId;
+    }
+
+    public initGameContextActorInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null): GameContextActorInformations
+    {
+        super.initGameContextActorPositionInformations(contextualId,disposition);
+        this.look = look;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameContextActorInformations(output);
+    }
+
+    public serializeAs_GameContextActorInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameContextActorPositionInformations(output);
+        this.look.serializeAs_EntityLook(output);
     }
 
     public deserialize(input: ICustomDataInput)

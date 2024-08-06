@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { CharacterMinimalInformations } from "./CharacterMinimalInformations";
 
-export class CharacterMinimalSocialPublicInformations extends CharacterMinimalInformations
+export class CharacterMinimalSocialPublicInformations extends CharacterMinimalInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 5126;
@@ -15,6 +15,29 @@ export class CharacterMinimalSocialPublicInformations extends CharacterMinimalIn
     {
         super();
         this.rank = new RankPublicInformation();
+    }
+
+    public getTypeId()
+    {
+        return CharacterMinimalSocialPublicInformations.protocolId;
+    }
+
+    public initCharacterMinimalSocialPublicInformations(id: number = 0, name: string = "", level: number = 0, rank: RankPublicInformation = null): CharacterMinimalSocialPublicInformations
+    {
+        super.initCharacterMinimalInformations(id,name,level);
+        this.rank = rank;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterMinimalSocialPublicInformations(output);
+    }
+
+    public serializeAs_CharacterMinimalSocialPublicInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterMinimalInformations(output);
+        this.rank.serializeAs_RankPublicInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

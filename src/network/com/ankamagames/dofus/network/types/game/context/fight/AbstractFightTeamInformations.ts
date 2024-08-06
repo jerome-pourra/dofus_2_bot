@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class AbstractFightTeamInformations
+export class AbstractFightTeamInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 8432;
@@ -16,6 +16,43 @@ export class AbstractFightTeamInformations
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return AbstractFightTeamInformations.protocolId;
+    }
+
+    public initAbstractFightTeamInformations(teamId: number = 2, leaderId: number = 0, teamSide: number = 0, teamTypeId: number = 0, nbWaves: number = 0): AbstractFightTeamInformations
+    {
+        this.teamId = teamId;
+        this.leaderId = leaderId;
+        this.teamSide = teamSide;
+        this.teamTypeId = teamTypeId;
+        this.nbWaves = nbWaves;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AbstractFightTeamInformations(output);
+    }
+
+    public serializeAs_AbstractFightTeamInformations(output: ICustomDataOutput)
+    {
+        output.writeByte(this.teamId);
+        if(this.leaderId < -9007199254740992 || this.leaderId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.leaderId + ") on element leaderId.");
+        }
+        output.writeDouble(this.leaderId);
+        output.writeByte(this.teamSide);
+        output.writeByte(this.teamTypeId);
+        if(this.nbWaves < 0)
+        {
+            throw new Error("Forbidden value (" + this.nbWaves + ") on element nbWaves.");
+        }
+        output.writeByte(this.nbWaves);
     }
 
     public deserialize(input: ICustomDataInput)

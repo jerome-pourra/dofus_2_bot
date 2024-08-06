@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class BasicStatMessage extends NetworkMessage
+export class BasicStatMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2233;
@@ -17,14 +17,43 @@ export class BasicStatMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return BasicStatMessage.protocolId;
+    }
+
+    public initBasicStatMessage(timeSpent: number = 0, statId: number = 0): BasicStatMessage
+    {
+        this.timeSpent = timeSpent;
+        this.statId = statId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BasicStatMessage(output);
+    }
+
+    public serializeAs_BasicStatMessage(output: ICustomDataOutput)
+    {
+        if(this.timeSpent < 0 || this.timeSpent > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.timeSpent + ") on element timeSpent.");
+        }
+        output.writeDouble(this.timeSpent);
+        output.writeVarShort(this.statId);
     }
 
     public deserialize(input: ICustomDataInput)

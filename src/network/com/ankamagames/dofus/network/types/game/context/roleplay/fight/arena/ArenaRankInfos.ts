@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkType } from "./../../../../../../../../jerakine/network/INetworkType";
 import { ArenaLeagueRanking } from "./ArenaLeagueRanking";
 
-export class ArenaRankInfos
+export class ArenaRankInfos implements INetworkType
 {
 
 	public static readonly protocolId: number = 2174;
@@ -21,6 +21,75 @@ export class ArenaRankInfos
     public constructor()
     {
         this.leagueRanking = new ArenaLeagueRanking();
+    }
+
+    public getTypeId()
+    {
+        return ArenaRankInfos.protocolId;
+    }
+
+    public initArenaRankInfos(arenaType: number = 3, leagueRanking: ArenaLeagueRanking = null, bestLeagueId: number = 0, bestRating: number = 0, dailyVictoryCount: number = 0, seasonVictoryCount: number = 0, dailyFightcount: number = 0, seasonFightcount: number = 0, numFightNeededForLadder: number = 0): ArenaRankInfos
+    {
+        this.arenaType = arenaType;
+        this.leagueRanking = leagueRanking;
+        this.bestLeagueId = bestLeagueId;
+        this.bestRating = bestRating;
+        this.dailyVictoryCount = dailyVictoryCount;
+        this.seasonVictoryCount = seasonVictoryCount;
+        this.dailyFightcount = dailyFightcount;
+        this.seasonFightcount = seasonFightcount;
+        this.numFightNeededForLadder = numFightNeededForLadder;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ArenaRankInfos(output);
+    }
+
+    public serializeAs_ArenaRankInfos(output: ICustomDataOutput)
+    {
+        output.writeInt(this.arenaType);
+        if(this.leagueRanking == null)
+        {
+            output.writeByte(0);
+        }
+        else
+        {
+            output.writeByte(1);
+            this.leagueRanking.serializeAs_ArenaLeagueRanking(output);
+        }
+        output.writeVarShort(this.bestLeagueId);
+        if(this.bestRating < 0 || this.bestRating > 20000)
+        {
+            throw new Error("Forbidden value (" + this.bestRating + ") on element bestRating.");
+        }
+        output.writeInt(this.bestRating);
+        if(this.dailyVictoryCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.dailyVictoryCount + ") on element dailyVictoryCount.");
+        }
+        output.writeVarShort(this.dailyVictoryCount);
+        if(this.seasonVictoryCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.seasonVictoryCount + ") on element seasonVictoryCount.");
+        }
+        output.writeVarShort(this.seasonVictoryCount);
+        if(this.dailyFightcount < 0)
+        {
+            throw new Error("Forbidden value (" + this.dailyFightcount + ") on element dailyFightcount.");
+        }
+        output.writeVarShort(this.dailyFightcount);
+        if(this.seasonFightcount < 0)
+        {
+            throw new Error("Forbidden value (" + this.seasonFightcount + ") on element seasonFightcount.");
+        }
+        output.writeVarShort(this.seasonFightcount);
+        if(this.numFightNeededForLadder < 0)
+        {
+            throw new Error("Forbidden value (" + this.numFightNeededForLadder + ") on element numFightNeededForLadder.");
+        }
+        output.writeShort(this.numFightNeededForLadder);
     }
 
     public deserialize(input: ICustomDataInput)

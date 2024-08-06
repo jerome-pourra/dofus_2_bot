@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class TreasureHuntDigRequestAnswerMessage extends NetworkMessage
+export class TreasureHuntDigRequestAnswerMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3567;
@@ -17,14 +17,39 @@ export class TreasureHuntDigRequestAnswerMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TreasureHuntDigRequestAnswerMessage.protocolId;
+    }
+
+    public initTreasureHuntDigRequestAnswerMessage(questType: number = 0, result: number = 0): TreasureHuntDigRequestAnswerMessage
+    {
+        this.questType = questType;
+        this.result = result;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TreasureHuntDigRequestAnswerMessage(output);
+    }
+
+    public serializeAs_TreasureHuntDigRequestAnswerMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.questType);
+        output.writeByte(this.result);
     }
 
     public deserialize(input: ICustomDataInput)

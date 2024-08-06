@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { PartyInvitationMessage } from "./PartyInvitationMessage";
 
-export class PartyInvitationDungeonMessage extends PartyInvitationMessage
+export class PartyInvitationDungeonMessage extends PartyInvitationMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3539;
@@ -16,14 +16,43 @@ export class PartyInvitationDungeonMessage extends PartyInvitationMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyInvitationDungeonMessage.protocolId;
+    }
+
+    public initPartyInvitationDungeonMessage(partyId: number = 0, partyType: number = 0, partyName: string = "", maxParticipants: number = 0, fromId: number = 0, fromName: string = "", toId: number = 0, dungeonId: number = 0): PartyInvitationDungeonMessage
+    {
+        super.initPartyInvitationMessage(partyId,partyType,partyName,maxParticipants,fromId,fromName,toId);
+        this.dungeonId = dungeonId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyInvitationDungeonMessage(output);
+    }
+
+    public serializeAs_PartyInvitationDungeonMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_PartyInvitationMessage(output);
+        if(this.dungeonId < 0)
+        {
+            throw new Error("Forbidden value (" + this.dungeonId + ") on element dungeonId.");
+        }
+        output.writeVarShort(this.dungeonId);
     }
 
     public deserialize(input: ICustomDataInput)

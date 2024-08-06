@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightRemoveTeamMemberMessage extends NetworkMessage
+export class GameFightRemoveTeamMemberMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7301;
@@ -18,14 +18,49 @@ export class GameFightRemoveTeamMemberMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightRemoveTeamMemberMessage.protocolId;
+    }
+
+    public initGameFightRemoveTeamMemberMessage(fightId: number = 0, teamId: number = 2, charId: number = 0): GameFightRemoveTeamMemberMessage
+    {
+        this.fightId = fightId;
+        this.teamId = teamId;
+        this.charId = charId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightRemoveTeamMemberMessage(output);
+    }
+
+    public serializeAs_GameFightRemoveTeamMemberMessage(output: ICustomDataOutput)
+    {
+        if(this.fightId < 0)
+        {
+            throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+        }
+        output.writeVarShort(this.fightId);
+        output.writeByte(this.teamId);
+        if(this.charId < -9007199254740992 || this.charId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.charId + ") on element charId.");
+        }
+        output.writeDouble(this.charId);
     }
 
     public deserialize(input: ICustomDataInput)

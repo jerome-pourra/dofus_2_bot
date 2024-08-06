@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeMountSterilizeFromPaddockMessage extends NetworkMessage
+export class ExchangeMountSterilizeFromPaddockMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7996;
@@ -19,14 +19,51 @@ export class ExchangeMountSterilizeFromPaddockMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeMountSterilizeFromPaddockMessage.protocolId;
+    }
+
+    public initExchangeMountSterilizeFromPaddockMessage(name: string = "", worldX: number = 0, worldY: number = 0, sterilizator: string = ""): ExchangeMountSterilizeFromPaddockMessage
+    {
+        this.name = name;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.sterilizator = sterilizator;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeMountSterilizeFromPaddockMessage(output);
+    }
+
+    public serializeAs_ExchangeMountSterilizeFromPaddockMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.name);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
+        output.writeUTF(this.sterilizator);
     }
 
     public deserialize(input: ICustomDataInput)

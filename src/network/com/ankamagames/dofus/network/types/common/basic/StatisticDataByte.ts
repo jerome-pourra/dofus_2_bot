@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { StatisticData } from "./StatisticData";
 
-export class StatisticDataByte extends StatisticData
+export class StatisticDataByte extends StatisticData implements INetworkType
 {
 
 	public static readonly protocolId: number = 4573;
@@ -13,6 +13,28 @@ export class StatisticDataByte extends StatisticData
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return StatisticDataByte.protocolId;
+    }
+
+    public initStatisticDataByte(value: number = 0): StatisticDataByte
+    {
+        this.value = value;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_StatisticDataByte(output);
+    }
+
+    public serializeAs_StatisticDataByte(output: ICustomDataOutput)
+    {
+        super.serializeAs_StatisticData(output);
+        output.writeByte(this.value);
     }
 
     public deserialize(input: ICustomDataInput)

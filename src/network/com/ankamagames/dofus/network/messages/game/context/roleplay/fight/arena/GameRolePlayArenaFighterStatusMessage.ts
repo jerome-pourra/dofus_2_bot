@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class GameRolePlayArenaFighterStatusMessage extends NetworkMessage
+export class GameRolePlayArenaFighterStatusMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3114;
@@ -18,14 +18,49 @@ export class GameRolePlayArenaFighterStatusMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameRolePlayArenaFighterStatusMessage.protocolId;
+    }
+
+    public initGameRolePlayArenaFighterStatusMessage(fightId: number = 0, playerId: number = 0, accepted: boolean = false): GameRolePlayArenaFighterStatusMessage
+    {
+        this.fightId = fightId;
+        this.playerId = playerId;
+        this.accepted = accepted;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayArenaFighterStatusMessage(output);
+    }
+
+    public serializeAs_GameRolePlayArenaFighterStatusMessage(output: ICustomDataOutput)
+    {
+        if(this.fightId < 0)
+        {
+            throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+        }
+        output.writeVarShort(this.fightId);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeBoolean(this.accepted);
     }
 
     public deserialize(input: ICustomDataInput)

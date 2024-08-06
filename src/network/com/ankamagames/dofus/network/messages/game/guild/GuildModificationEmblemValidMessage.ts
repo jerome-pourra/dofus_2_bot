@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildModificationEmblemValidMessage extends NetworkMessage
+export class GuildModificationEmblemValidMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4735;
@@ -18,14 +18,37 @@ export class GuildModificationEmblemValidMessage extends NetworkMessage
         this.guildEmblem = new SocialEmblem();
     }
 
+    public getMessageId()
+    {
+        return GuildModificationEmblemValidMessage.protocolId;
+    }
+
+    public initGuildModificationEmblemValidMessage(guildEmblem: SocialEmblem = null): GuildModificationEmblemValidMessage
+    {
+        this.guildEmblem = guildEmblem;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildModificationEmblemValidMessage(output);
+    }
+
+    public serializeAs_GuildModificationEmblemValidMessage(output: ICustomDataOutput)
+    {
+        this.guildEmblem.serializeAs_SocialEmblem(output);
     }
 
     public deserialize(input: ICustomDataInput)

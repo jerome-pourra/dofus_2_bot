@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class ForceAccountStatusMessage extends NetworkMessage
+export class ForceAccountStatusMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 25;
@@ -19,14 +19,47 @@ export class ForceAccountStatusMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ForceAccountStatusMessage.protocolId;
+    }
+
+    public initForceAccountStatusMessage(force: boolean = false, forcedAccountId: number = 0, forcedNickname: string = "", forcedTag: string = ""): ForceAccountStatusMessage
+    {
+        this.force = force;
+        this.forcedAccountId = forcedAccountId;
+        this.forcedNickname = forcedNickname;
+        this.forcedTag = forcedTag;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ForceAccountStatusMessage(output);
+    }
+
+    public serializeAs_ForceAccountStatusMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.force);
+        if(this.forcedAccountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.forcedAccountId + ") on element forcedAccountId.");
+        }
+        output.writeInt(this.forcedAccountId);
+        output.writeUTF(this.forcedNickname);
+        output.writeUTF(this.forcedTag);
     }
 
     public deserialize(input: ICustomDataInput)

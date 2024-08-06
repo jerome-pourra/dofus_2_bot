@@ -12,7 +12,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { MapComplementaryInformationsDataMessage } from "./MapComplementaryInformationsDataMessage";
 
-export class MapComplementaryInformationsDataInHavenBagMessage extends MapComplementaryInformationsDataMessage
+export class MapComplementaryInformationsDataInHavenBagMessage extends MapComplementaryInformationsDataMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2021;
@@ -28,14 +28,53 @@ export class MapComplementaryInformationsDataInHavenBagMessage extends MapComple
         this.ownerInformations = new CharacterMinimalInformations();
     }
 
+    public getMessageId()
+    {
+        return MapComplementaryInformationsDataInHavenBagMessage.protocolId;
+    }
+
+    public initMapComplementaryInformationsDataInHavenBagMessage(subAreaId: number = 0, mapId: number = 0, houses: Array<HouseInformations> = null, actors: Array<GameRolePlayActorInformations> = null, interactiveElements: Array<InteractiveElement> = null, statedElements: Array<StatedElement> = null, obstacles: Array<MapObstacle> = null, fights: Array<FightCommonInformations> = null, hasAggressiveMonsters: boolean = false, fightStartPositions: FightStartingPositions = null, ownerInformations: CharacterMinimalInformations = null, theme: number = 0, roomId: number = 0, maxRoomId: number = 0): MapComplementaryInformationsDataInHavenBagMessage
+    {
+        super.initMapComplementaryInformationsDataMessage(subAreaId,mapId,houses,actors,interactiveElements,statedElements,obstacles,fights,hasAggressiveMonsters,fightStartPositions);
+        this.ownerInformations = ownerInformations;
+        this.theme = theme;
+        this.roomId = roomId;
+        this.maxRoomId = maxRoomId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MapComplementaryInformationsDataInHavenBagMessage(output);
+    }
+
+    public serializeAs_MapComplementaryInformationsDataInHavenBagMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_MapComplementaryInformationsDataMessage(output);
+        this.ownerInformations.serializeAs_CharacterMinimalInformations(output);
+        output.writeByte(this.theme);
+        if(this.roomId < 0)
+        {
+            throw new Error("Forbidden value (" + this.roomId + ") on element roomId.");
+        }
+        output.writeByte(this.roomId);
+        if(this.maxRoomId < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxRoomId + ") on element maxRoomId.");
+        }
+        output.writeByte(this.maxRoomId);
     }
 
     public deserialize(input: ICustomDataInput)

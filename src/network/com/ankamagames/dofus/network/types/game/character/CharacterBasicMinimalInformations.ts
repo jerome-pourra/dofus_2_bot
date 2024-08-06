@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { AbstractCharacterInformation } from "./AbstractCharacterInformation";
 
-export class CharacterBasicMinimalInformations extends AbstractCharacterInformation
+export class CharacterBasicMinimalInformations extends AbstractCharacterInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 6994;
@@ -13,6 +13,29 @@ export class CharacterBasicMinimalInformations extends AbstractCharacterInformat
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return CharacterBasicMinimalInformations.protocolId;
+    }
+
+    public initCharacterBasicMinimalInformations(id: number = 0, name: string = ""): CharacterBasicMinimalInformations
+    {
+        super.initAbstractCharacterInformation(id);
+        this.name = name;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterBasicMinimalInformations(output);
+    }
+
+    public serializeAs_CharacterBasicMinimalInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractCharacterInformation(output);
+        output.writeUTF(this.name);
     }
 
     public deserialize(input: ICustomDataInput)

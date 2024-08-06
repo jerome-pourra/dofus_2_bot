@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { ExchangeCraftResultMessage } from "./ExchangeCraftResultMessage";
 
-export class ExchangeCraftResultWithObjectIdMessage extends ExchangeCraftResultMessage
+export class ExchangeCraftResultWithObjectIdMessage extends ExchangeCraftResultMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1423;
@@ -16,14 +16,43 @@ export class ExchangeCraftResultWithObjectIdMessage extends ExchangeCraftResultM
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeCraftResultWithObjectIdMessage.protocolId;
+    }
+
+    public initExchangeCraftResultWithObjectIdMessage(craftResult: number = 0, objectGenericId: number = 0): ExchangeCraftResultWithObjectIdMessage
+    {
+        super.initExchangeCraftResultMessage(craftResult);
+        this.objectGenericId = objectGenericId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeCraftResultWithObjectIdMessage(output);
+    }
+
+    public serializeAs_ExchangeCraftResultWithObjectIdMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ExchangeCraftResultMessage(output);
+        if(this.objectGenericId < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectGenericId + ") on element objectGenericId.");
+        }
+        output.writeVarInt(this.objectGenericId);
     }
 
     public deserialize(input: ICustomDataInput)

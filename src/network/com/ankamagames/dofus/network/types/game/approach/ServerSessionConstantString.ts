@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { ServerSessionConstant } from "./ServerSessionConstant";
 
-export class ServerSessionConstantString extends ServerSessionConstant
+export class ServerSessionConstantString extends ServerSessionConstant implements INetworkType
 {
 
 	public static readonly protocolId: number = 7359;
@@ -13,6 +13,29 @@ export class ServerSessionConstantString extends ServerSessionConstant
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ServerSessionConstantString.protocolId;
+    }
+
+    public initServerSessionConstantString(id: number = 0, value: string = ""): ServerSessionConstantString
+    {
+        super.initServerSessionConstant(id);
+        this.value = value;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ServerSessionConstantString(output);
+    }
+
+    public serializeAs_ServerSessionConstantString(output: ICustomDataOutput)
+    {
+        super.serializeAs_ServerSessionConstant(output);
+        output.writeUTF(this.value);
     }
 
     public deserialize(input: ICustomDataInput)

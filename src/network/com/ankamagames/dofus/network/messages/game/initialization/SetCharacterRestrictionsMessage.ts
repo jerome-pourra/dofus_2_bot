@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class SetCharacterRestrictionsMessage extends NetworkMessage
+export class SetCharacterRestrictionsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1324;
@@ -19,14 +19,43 @@ export class SetCharacterRestrictionsMessage extends NetworkMessage
         this.restrictions = new ActorRestrictionsInformations();
     }
 
+    public getMessageId()
+    {
+        return SetCharacterRestrictionsMessage.protocolId;
+    }
+
+    public initSetCharacterRestrictionsMessage(actorId: number = 0, restrictions: ActorRestrictionsInformations = null): SetCharacterRestrictionsMessage
+    {
+        this.actorId = actorId;
+        this.restrictions = restrictions;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SetCharacterRestrictionsMessage(output);
+    }
+
+    public serializeAs_SetCharacterRestrictionsMessage(output: ICustomDataOutput)
+    {
+        if(this.actorId < -9007199254740992 || this.actorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.actorId + ") on element actorId.");
+        }
+        output.writeDouble(this.actorId);
+        this.restrictions.serializeAs_ActorRestrictionsInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

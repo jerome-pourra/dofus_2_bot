@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class BreachInvitationRequestMessage extends NetworkMessage
+export class BreachInvitationRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4414;
@@ -17,14 +17,45 @@ export class BreachInvitationRequestMessage extends NetworkMessage
         this.guests = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return BreachInvitationRequestMessage.protocolId;
+    }
+
+    public initBreachInvitationRequestMessage(guests: Array<number> = null): BreachInvitationRequestMessage
+    {
+        this.guests = guests;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachInvitationRequestMessage(output);
+    }
+
+    public serializeAs_BreachInvitationRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.guests.length);
+        for(var _i1: number = 0; _i1 < this.guests.length; _i1++)
+        {
+            if(this.guests[_i1] < 0 || this.guests[_i1] > 9007199254740992)
+            {
+                throw new Error("Forbidden value (" + this.guests[_i1] + ") on element 1 (starting at 1) of guests.");
+            }
+            output.writeVarLong(this.guests[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

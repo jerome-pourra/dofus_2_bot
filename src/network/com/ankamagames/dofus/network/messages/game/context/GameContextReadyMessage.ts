@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GameContextReadyMessage extends NetworkMessage
+export class GameContextReadyMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9237;
@@ -16,14 +16,41 @@ export class GameContextReadyMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameContextReadyMessage.protocolId;
+    }
+
+    public initGameContextReadyMessage(mapId: number = 0): GameContextReadyMessage
+    {
+        this.mapId = mapId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameContextReadyMessage(output);
+    }
+
+    public serializeAs_GameContextReadyMessage(output: ICustomDataOutput)
+    {
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
     }
 
     public deserialize(input: ICustomDataInput)

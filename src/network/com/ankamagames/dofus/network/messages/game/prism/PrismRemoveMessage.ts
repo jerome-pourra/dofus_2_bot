@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class PrismRemoveMessage extends NetworkMessage
+export class PrismRemoveMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4672;
@@ -18,14 +18,37 @@ export class PrismRemoveMessage extends NetworkMessage
         this.prism = new PrismGeolocalizedInformation();
     }
 
+    public getMessageId()
+    {
+        return PrismRemoveMessage.protocolId;
+    }
+
+    public initPrismRemoveMessage(prism: PrismGeolocalizedInformation = null): PrismRemoveMessage
+    {
+        this.prism = prism;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PrismRemoveMessage(output);
+    }
+
+    public serializeAs_PrismRemoveMessage(output: ICustomDataOutput)
+    {
+        this.prism.serializeAs_PrismGeolocalizedInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

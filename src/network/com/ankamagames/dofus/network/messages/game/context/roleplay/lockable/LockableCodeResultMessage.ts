@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class LockableCodeResultMessage extends NetworkMessage
+export class LockableCodeResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7522;
@@ -16,14 +16,37 @@ export class LockableCodeResultMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return LockableCodeResultMessage.protocolId;
+    }
+
+    public initLockableCodeResultMessage(result: number = 0): LockableCodeResultMessage
+    {
+        this.result = result;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_LockableCodeResultMessage(output);
+    }
+
+    public serializeAs_LockableCodeResultMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.result);
     }
 
     public deserialize(input: ICustomDataInput)

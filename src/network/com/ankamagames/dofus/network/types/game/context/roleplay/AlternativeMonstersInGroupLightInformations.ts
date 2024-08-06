@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { MonsterInGroupLightInformations } from "./MonsterInGroupLightInformations";
 
-export class AlternativeMonstersInGroupLightInformations
+export class AlternativeMonstersInGroupLightInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 6089;
@@ -14,6 +14,33 @@ export class AlternativeMonstersInGroupLightInformations
     public constructor()
     {
         this.monsters = Array<MonsterInGroupLightInformations>();
+    }
+
+    public getTypeId()
+    {
+        return AlternativeMonstersInGroupLightInformations.protocolId;
+    }
+
+    public initAlternativeMonstersInGroupLightInformations(playerCount: number = 0, monsters: Array<MonsterInGroupLightInformations> = null): AlternativeMonstersInGroupLightInformations
+    {
+        this.playerCount = playerCount;
+        this.monsters = monsters;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AlternativeMonstersInGroupLightInformations(output);
+    }
+
+    public serializeAs_AlternativeMonstersInGroupLightInformations(output: ICustomDataOutput)
+    {
+        output.writeInt(this.playerCount);
+        output.writeShort(this.monsters.length);
+        for(var _i2: number = 0; _i2 < this.monsters.length; _i2++)
+        {
+            (this.monsters[_i2] as MonsterInGroupLightInformations).serializeAs_MonsterInGroupLightInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

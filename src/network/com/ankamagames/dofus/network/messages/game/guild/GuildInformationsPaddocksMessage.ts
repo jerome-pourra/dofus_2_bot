@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildInformationsPaddocksMessage extends NetworkMessage
+export class GuildInformationsPaddocksMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7168;
@@ -19,14 +19,47 @@ export class GuildInformationsPaddocksMessage extends NetworkMessage
         this.paddocksInformations = Array<PaddockContentInformations>();
     }
 
+    public getMessageId()
+    {
+        return GuildInformationsPaddocksMessage.protocolId;
+    }
+
+    public initGuildInformationsPaddocksMessage(nbPaddockMax: number = 0, paddocksInformations: Array<PaddockContentInformations> = null): GuildInformationsPaddocksMessage
+    {
+        this.nbPaddockMax = nbPaddockMax;
+        this.paddocksInformations = paddocksInformations;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildInformationsPaddocksMessage(output);
+    }
+
+    public serializeAs_GuildInformationsPaddocksMessage(output: ICustomDataOutput)
+    {
+        if(this.nbPaddockMax < 0)
+        {
+            throw new Error("Forbidden value (" + this.nbPaddockMax + ") on element nbPaddockMax.");
+        }
+        output.writeByte(this.nbPaddockMax);
+        output.writeShort(this.paddocksInformations.length);
+        for(var _i2: number = 0; _i2 < this.paddocksInformations.length; _i2++)
+        {
+            (this.paddocksInformations[_i2] as PaddockContentInformations).serializeAs_PaddockContentInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

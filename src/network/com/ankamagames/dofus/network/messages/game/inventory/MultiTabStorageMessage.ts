@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class MultiTabStorageMessage extends NetworkMessage
+export class MultiTabStorageMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7356;
@@ -18,14 +18,41 @@ export class MultiTabStorageMessage extends NetworkMessage
         this.tabs = Array<StorageTabInformation>();
     }
 
+    public getMessageId()
+    {
+        return MultiTabStorageMessage.protocolId;
+    }
+
+    public initMultiTabStorageMessage(tabs: Array<StorageTabInformation> = null): MultiTabStorageMessage
+    {
+        this.tabs = tabs;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MultiTabStorageMessage(output);
+    }
+
+    public serializeAs_MultiTabStorageMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.tabs.length);
+        for(var _i1: number = 0; _i1 < this.tabs.length; _i1++)
+        {
+            (this.tabs[_i1] as StorageTabInformation).serializeAs_StorageTabInformation(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -6,7 +6,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class GameActionFightMultipleSummonMessage extends AbstractGameActionMessage
+export class GameActionFightMultipleSummonMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8549;
@@ -19,14 +19,44 @@ export class GameActionFightMultipleSummonMessage extends AbstractGameActionMess
         this.summons = Array<GameContextSummonsInformation>();
     }
 
+    public getMessageId()
+    {
+        return GameActionFightMultipleSummonMessage.protocolId;
+    }
+
+    public initGameActionFightMultipleSummonMessage(actionId: number = 0, sourceId: number = 0, summons: Array<GameContextSummonsInformation> = null): GameActionFightMultipleSummonMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.summons = summons;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionFightMultipleSummonMessage(output);
+    }
+
+    public serializeAs_GameActionFightMultipleSummonMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        output.writeShort(this.summons.length);
+        for(var _i1: number = 0; _i1 < this.summons.length; _i1++)
+        {
+            output.writeShort((this.summons[_i1] as GameContextSummonsInformation).getTypeId());
+            (this.summons[_i1] as GameContextSummonsInformation).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

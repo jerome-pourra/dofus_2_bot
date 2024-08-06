@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class MonsterBoosts
+export class MonsterBoosts implements INetworkType
 {
 
 	public static readonly protocolId: number = 1084;
@@ -14,6 +14,43 @@ export class MonsterBoosts
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return MonsterBoosts.protocolId;
+    }
+
+    public initMonsterBoosts(id: number = 0, xpBoost: number = 0, dropBoost: number = 0): MonsterBoosts
+    {
+        this.id = id;
+        this.xpBoost = xpBoost;
+        this.dropBoost = dropBoost;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MonsterBoosts(output);
+    }
+
+    public serializeAs_MonsterBoosts(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarInt(this.id);
+        if(this.xpBoost < 0)
+        {
+            throw new Error("Forbidden value (" + this.xpBoost + ") on element xpBoost.");
+        }
+        output.writeVarShort(this.xpBoost);
+        if(this.dropBoost < 0)
+        {
+            throw new Error("Forbidden value (" + this.dropBoost + ") on element dropBoost.");
+        }
+        output.writeVarShort(this.dropBoost);
     }
 
     public deserialize(input: ICustomDataInput)

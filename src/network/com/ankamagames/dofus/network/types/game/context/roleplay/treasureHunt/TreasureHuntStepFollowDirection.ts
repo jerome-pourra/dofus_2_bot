@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 import { TreasureHuntStep } from "./TreasureHuntStep";
 
-export class TreasureHuntStepFollowDirection extends TreasureHuntStep
+export class TreasureHuntStepFollowDirection extends TreasureHuntStep implements INetworkType
 {
 
 	public static readonly protocolId: number = 9008;
@@ -14,6 +14,34 @@ export class TreasureHuntStepFollowDirection extends TreasureHuntStep
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return TreasureHuntStepFollowDirection.protocolId;
+    }
+
+    public initTreasureHuntStepFollowDirection(direction: number = 1, mapCount: number = 0): TreasureHuntStepFollowDirection
+    {
+        this.direction = direction;
+        this.mapCount = mapCount;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TreasureHuntStepFollowDirection(output);
+    }
+
+    public serializeAs_TreasureHuntStepFollowDirection(output: ICustomDataOutput)
+    {
+        super.serializeAs_TreasureHuntStep(output);
+        output.writeByte(this.direction);
+        if(this.mapCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.mapCount + ") on element mapCount.");
+        }
+        output.writeVarShort(this.mapCount);
     }
 
     public deserialize(input: ICustomDataInput)

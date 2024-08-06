@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class HouseToSellListMessage extends NetworkMessage
+export class HouseToSellListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8317;
@@ -20,14 +20,53 @@ export class HouseToSellListMessage extends NetworkMessage
         this.houseList = Array<HouseInformationsForSell>();
     }
 
+    public getMessageId()
+    {
+        return HouseToSellListMessage.protocolId;
+    }
+
+    public initHouseToSellListMessage(pageIndex: number = 0, totalPage: number = 0, houseList: Array<HouseInformationsForSell> = null): HouseToSellListMessage
+    {
+        this.pageIndex = pageIndex;
+        this.totalPage = totalPage;
+        this.houseList = houseList;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HouseToSellListMessage(output);
+    }
+
+    public serializeAs_HouseToSellListMessage(output: ICustomDataOutput)
+    {
+        if(this.pageIndex < 0)
+        {
+            throw new Error("Forbidden value (" + this.pageIndex + ") on element pageIndex.");
+        }
+        output.writeVarShort(this.pageIndex);
+        if(this.totalPage < 0)
+        {
+            throw new Error("Forbidden value (" + this.totalPage + ") on element totalPage.");
+        }
+        output.writeVarShort(this.totalPage);
+        output.writeShort(this.houseList.length);
+        for(var _i3: number = 0; _i3 < this.houseList.length; _i3++)
+        {
+            (this.houseList[_i3] as HouseInformationsForSell).serializeAs_HouseInformationsForSell(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

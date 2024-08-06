@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeStartOkRecycleTradeMessage extends NetworkMessage
+export class ExchangeStartOkRecycleTradeMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1067;
@@ -21,14 +21,67 @@ export class ExchangeStartOkRecycleTradeMessage extends NetworkMessage
         this.adjacentSubareaUnpossessed = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return ExchangeStartOkRecycleTradeMessage.protocolId;
+    }
+
+    public initExchangeStartOkRecycleTradeMessage(percentToPrism: number = 0, percentToPlayer: number = 0, adjacentSubareaPossessed: Array<number> = null, adjacentSubareaUnpossessed: Array<number> = null): ExchangeStartOkRecycleTradeMessage
+    {
+        this.percentToPrism = percentToPrism;
+        this.percentToPlayer = percentToPlayer;
+        this.adjacentSubareaPossessed = adjacentSubareaPossessed;
+        this.adjacentSubareaUnpossessed = adjacentSubareaUnpossessed;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeStartOkRecycleTradeMessage(output);
+    }
+
+    public serializeAs_ExchangeStartOkRecycleTradeMessage(output: ICustomDataOutput)
+    {
+        if(this.percentToPrism < 0)
+        {
+            throw new Error("Forbidden value (" + this.percentToPrism + ") on element percentToPrism.");
+        }
+        output.writeShort(this.percentToPrism);
+        if(this.percentToPlayer < 0)
+        {
+            throw new Error("Forbidden value (" + this.percentToPlayer + ") on element percentToPlayer.");
+        }
+        output.writeShort(this.percentToPlayer);
+        output.writeShort(this.adjacentSubareaPossessed.length);
+        for(var _i3: number = 0; _i3 < this.adjacentSubareaPossessed.length; _i3++)
+        {
+            if(this.adjacentSubareaPossessed[_i3] < 0)
+            {
+                throw new Error("Forbidden value (" + this.adjacentSubareaPossessed[_i3] + ") on element 3 (starting at 1) of adjacentSubareaPossessed.");
+            }
+            output.writeInt(this.adjacentSubareaPossessed[_i3]);
+        }
+        output.writeShort(this.adjacentSubareaUnpossessed.length);
+        for(var _i4: number = 0; _i4 < this.adjacentSubareaUnpossessed.length; _i4++)
+        {
+            if(this.adjacentSubareaUnpossessed[_i4] < 0)
+            {
+                throw new Error("Forbidden value (" + this.adjacentSubareaUnpossessed[_i4] + ") on element 4 (starting at 1) of adjacentSubareaUnpossessed.");
+            }
+            output.writeInt(this.adjacentSubareaUnpossessed[_i4]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class GameActionFightUnmarkCellsMessage extends AbstractGameActionMessage
+export class GameActionFightUnmarkCellsMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9827;
@@ -16,14 +16,39 @@ export class GameActionFightUnmarkCellsMessage extends AbstractGameActionMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameActionFightUnmarkCellsMessage.protocolId;
+    }
+
+    public initGameActionFightUnmarkCellsMessage(actionId: number = 0, sourceId: number = 0, markId: number = 0): GameActionFightUnmarkCellsMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.markId = markId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionFightUnmarkCellsMessage(output);
+    }
+
+    public serializeAs_GameActionFightUnmarkCellsMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        output.writeShort(this.markId);
     }
 
     public deserialize(input: ICustomDataInput)

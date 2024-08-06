@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class ServerStatusUpdateMessage extends NetworkMessage
+export class ServerStatusUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4424;
@@ -18,14 +18,37 @@ export class ServerStatusUpdateMessage extends NetworkMessage
         this.server = new GameServerInformations();
     }
 
+    public getMessageId()
+    {
+        return ServerStatusUpdateMessage.protocolId;
+    }
+
+    public initServerStatusUpdateMessage(server: GameServerInformations = null): ServerStatusUpdateMessage
+    {
+        this.server = server;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ServerStatusUpdateMessage(output);
+    }
+
+    public serializeAs_ServerStatusUpdateMessage(output: ICustomDataOutput)
+    {
+        this.server.serializeAs_GameServerInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

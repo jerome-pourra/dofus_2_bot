@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ActivitySuggestionsRequestMessage extends NetworkMessage
+export class ActivitySuggestionsRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5447;
@@ -20,14 +20,65 @@ export class ActivitySuggestionsRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ActivitySuggestionsRequestMessage.protocolId;
+    }
+
+    public initActivitySuggestionsRequestMessage(minLevel: number = 0, maxLevel: number = 0, areaId: number = 0, activityCategoryId: number = 0, nbCards: number = 0): ActivitySuggestionsRequestMessage
+    {
+        this.minLevel = minLevel;
+        this.maxLevel = maxLevel;
+        this.areaId = areaId;
+        this.activityCategoryId = activityCategoryId;
+        this.nbCards = nbCards;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ActivitySuggestionsRequestMessage(output);
+    }
+
+    public serializeAs_ActivitySuggestionsRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.minLevel < 0)
+        {
+            throw new Error("Forbidden value (" + this.minLevel + ") on element minLevel.");
+        }
+        output.writeVarShort(this.minLevel);
+        if(this.maxLevel < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxLevel + ") on element maxLevel.");
+        }
+        output.writeVarShort(this.maxLevel);
+        if(this.areaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.areaId + ") on element areaId.");
+        }
+        output.writeVarShort(this.areaId);
+        if(this.activityCategoryId < 0)
+        {
+            throw new Error("Forbidden value (" + this.activityCategoryId + ") on element activityCategoryId.");
+        }
+        output.writeVarShort(this.activityCategoryId);
+        if(this.nbCards < 0 || this.nbCards > 65535)
+        {
+            throw new Error("Forbidden value (" + this.nbCards + ") on element nbCards.");
+        }
+        output.writeShort(this.nbCards);
     }
 
     public deserialize(input: ICustomDataInput)

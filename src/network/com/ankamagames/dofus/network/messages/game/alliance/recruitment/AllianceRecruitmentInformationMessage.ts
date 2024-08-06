@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceRecruitmentInformationMessage extends NetworkMessage
+export class AllianceRecruitmentInformationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 977;
@@ -18,14 +18,37 @@ export class AllianceRecruitmentInformationMessage extends NetworkMessage
         this.recruitmentData = new AllianceRecruitmentInformation();
     }
 
+    public getMessageId()
+    {
+        return AllianceRecruitmentInformationMessage.protocolId;
+    }
+
+    public initAllianceRecruitmentInformationMessage(recruitmentData: AllianceRecruitmentInformation = null): AllianceRecruitmentInformationMessage
+    {
+        this.recruitmentData = recruitmentData;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceRecruitmentInformationMessage(output);
+    }
+
+    public serializeAs_AllianceRecruitmentInformationMessage(output: ICustomDataOutput)
+    {
+        this.recruitmentData.serializeAs_AllianceRecruitmentInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

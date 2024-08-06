@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class ChallengeResultMessage extends NetworkMessage
+export class ChallengeResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5894;
@@ -17,14 +17,43 @@ export class ChallengeResultMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ChallengeResultMessage.protocolId;
+    }
+
+    public initChallengeResultMessage(challengeId: number = 0, success: boolean = false): ChallengeResultMessage
+    {
+        this.challengeId = challengeId;
+        this.success = success;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChallengeResultMessage(output);
+    }
+
+    public serializeAs_ChallengeResultMessage(output: ICustomDataOutput)
+    {
+        if(this.challengeId < 0)
+        {
+            throw new Error("Forbidden value (" + this.challengeId + ") on element challengeId.");
+        }
+        output.writeVarInt(this.challengeId);
+        output.writeBoolean(this.success);
     }
 
     public deserialize(input: ICustomDataInput)

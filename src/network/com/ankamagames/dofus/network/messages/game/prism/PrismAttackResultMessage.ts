@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class PrismAttackResultMessage extends NetworkMessage
+export class PrismAttackResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8541;
@@ -19,14 +19,39 @@ export class PrismAttackResultMessage extends NetworkMessage
         this.prism = new PrismGeolocalizedInformation();
     }
 
+    public getMessageId()
+    {
+        return PrismAttackResultMessage.protocolId;
+    }
+
+    public initPrismAttackResultMessage(prism: PrismGeolocalizedInformation = null, result: number = 0): PrismAttackResultMessage
+    {
+        this.prism = prism;
+        this.result = result;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PrismAttackResultMessage(output);
+    }
+
+    public serializeAs_PrismAttackResultMessage(output: ICustomDataOutput)
+    {
+        this.prism.serializeAs_PrismGeolocalizedInformation(output);
+        output.writeByte(this.result);
     }
 
     public deserialize(input: ICustomDataInput)

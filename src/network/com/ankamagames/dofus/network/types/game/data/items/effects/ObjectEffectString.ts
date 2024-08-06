@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 import { ObjectEffect } from "./ObjectEffect";
 
-export class ObjectEffectString extends ObjectEffect
+export class ObjectEffectString extends ObjectEffect implements INetworkType
 {
 
 	public static readonly protocolId: number = 3424;
@@ -13,6 +13,29 @@ export class ObjectEffectString extends ObjectEffect
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ObjectEffectString.protocolId;
+    }
+
+    public initObjectEffectString(actionId: number = 0, value: string = ""): ObjectEffectString
+    {
+        super.initObjectEffect(actionId);
+        this.value = value;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectEffectString(output);
+    }
+
+    public serializeAs_ObjectEffectString(output: ICustomDataOutput)
+    {
+        super.serializeAs_ObjectEffect(output);
+        output.writeUTF(this.value);
     }
 
     public deserialize(input: ICustomDataInput)

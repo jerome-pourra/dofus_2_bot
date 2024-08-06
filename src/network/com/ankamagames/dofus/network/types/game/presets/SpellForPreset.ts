@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class SpellForPreset
+export class SpellForPreset implements INetworkType
 {
 
 	public static readonly protocolId: number = 1457;
@@ -13,6 +13,37 @@ export class SpellForPreset
     public constructor()
     {
         this.shortcuts = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return SpellForPreset.protocolId;
+    }
+
+    public initSpellForPreset(spellId: number = 0, shortcuts: Array<number> = null): SpellForPreset
+    {
+        this.spellId = spellId;
+        this.shortcuts = shortcuts;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SpellForPreset(output);
+    }
+
+    public serializeAs_SpellForPreset(output: ICustomDataOutput)
+    {
+        if(this.spellId < 0)
+        {
+            throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
+        }
+        output.writeVarShort(this.spellId);
+        output.writeShort(this.shortcuts.length);
+        for(var _i2: number = 0; _i2 < this.shortcuts.length; _i2++)
+        {
+            output.writeShort(this.shortcuts[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

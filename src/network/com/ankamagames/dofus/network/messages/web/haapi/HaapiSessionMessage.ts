@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class HaapiSessionMessage extends NetworkMessage
+export class HaapiSessionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4199;
@@ -17,14 +17,39 @@ export class HaapiSessionMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return HaapiSessionMessage.protocolId;
+    }
+
+    public initHaapiSessionMessage(key: string = "", type: number = 0): HaapiSessionMessage
+    {
+        this.key = key;
+        this.type = type;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HaapiSessionMessage(output);
+    }
+
+    public serializeAs_HaapiSessionMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.key);
+        output.writeByte(this.type);
     }
 
     public deserialize(input: ICustomDataInput)

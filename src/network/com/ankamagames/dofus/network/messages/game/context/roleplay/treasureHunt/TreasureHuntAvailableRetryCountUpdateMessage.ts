@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class TreasureHuntAvailableRetryCountUpdateMessage extends NetworkMessage
+export class TreasureHuntAvailableRetryCountUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1628;
@@ -17,14 +17,39 @@ export class TreasureHuntAvailableRetryCountUpdateMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TreasureHuntAvailableRetryCountUpdateMessage.protocolId;
+    }
+
+    public initTreasureHuntAvailableRetryCountUpdateMessage(questType: number = 0, availableRetryCount: number = 0): TreasureHuntAvailableRetryCountUpdateMessage
+    {
+        this.questType = questType;
+        this.availableRetryCount = availableRetryCount;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TreasureHuntAvailableRetryCountUpdateMessage(output);
+    }
+
+    public serializeAs_TreasureHuntAvailableRetryCountUpdateMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.questType);
+        output.writeInt(this.availableRetryCount);
     }
 
     public deserialize(input: ICustomDataInput)

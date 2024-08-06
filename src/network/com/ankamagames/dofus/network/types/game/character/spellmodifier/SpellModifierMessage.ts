@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class SpellModifierMessage
+export class SpellModifierMessage implements INetworkType
 {
 
 	public static readonly protocolId: number = 2892;
@@ -16,6 +16,39 @@ export class SpellModifierMessage
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return SpellModifierMessage.protocolId;
+    }
+
+    public initSpellModifierMessage(spellId: number = 0, actionType: number = 0, modifierType: number = 0, context: number = 0, equipment: number = 0): SpellModifierMessage
+    {
+        this.spellId = spellId;
+        this.actionType = actionType;
+        this.modifierType = modifierType;
+        this.context = context;
+        this.equipment = equipment;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SpellModifierMessage(output);
+    }
+
+    public serializeAs_SpellModifierMessage(output: ICustomDataOutput)
+    {
+        if(this.spellId < 0)
+        {
+            throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
+        }
+        output.writeVarShort(this.spellId);
+        output.writeByte(this.actionType);
+        output.writeByte(this.modifierType);
+        output.writeInt(this.context);
+        output.writeInt(this.equipment);
     }
 
     public deserialize(input: ICustomDataInput)

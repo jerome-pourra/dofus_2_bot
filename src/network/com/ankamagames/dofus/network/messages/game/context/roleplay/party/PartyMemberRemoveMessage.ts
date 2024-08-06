@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { AbstractPartyEventMessage } from "./AbstractPartyEventMessage";
 
-export class PartyMemberRemoveMessage extends AbstractPartyEventMessage
+export class PartyMemberRemoveMessage extends AbstractPartyEventMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7328;
@@ -16,14 +16,43 @@ export class PartyMemberRemoveMessage extends AbstractPartyEventMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyMemberRemoveMessage.protocolId;
+    }
+
+    public initPartyMemberRemoveMessage(partyId: number = 0, leavingPlayerId: number = 0): PartyMemberRemoveMessage
+    {
+        super.initAbstractPartyEventMessage(partyId);
+        this.leavingPlayerId = leavingPlayerId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyMemberRemoveMessage(output);
+    }
+
+    public serializeAs_PartyMemberRemoveMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyEventMessage(output);
+        if(this.leavingPlayerId < 0 || this.leavingPlayerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.leavingPlayerId + ") on element leavingPlayerId.");
+        }
+        output.writeVarLong(this.leavingPlayerId);
     }
 
     public deserialize(input: ICustomDataInput)

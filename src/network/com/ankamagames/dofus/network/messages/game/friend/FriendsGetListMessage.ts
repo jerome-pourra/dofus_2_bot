@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class FriendsGetListMessage extends NetworkMessage
+export class FriendsGetListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 14;
@@ -14,14 +14,36 @@ export class FriendsGetListMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return FriendsGetListMessage.protocolId;
+    }
+
+    public initFriendsGetListMessage(): FriendsGetListMessage
+    {
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FriendsGetListMessage(output);
+    }
+
+    public serializeAs_FriendsGetListMessage(output: ICustomDataOutput)
+    {
+
     }
 
     public deserialize(input: ICustomDataInput)

@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class ActorAlignmentInformations
+export class ActorAlignmentInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 2626;
@@ -15,6 +15,45 @@ export class ActorAlignmentInformations
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return ActorAlignmentInformations.protocolId;
+    }
+
+    public initActorAlignmentInformations(alignmentSide: number = 0, alignmentValue: number = 0, alignmentGrade: number = 0, characterPower: number = 0): ActorAlignmentInformations
+    {
+        this.alignmentSide = alignmentSide;
+        this.alignmentValue = alignmentValue;
+        this.alignmentGrade = alignmentGrade;
+        this.characterPower = characterPower;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ActorAlignmentInformations(output);
+    }
+
+    public serializeAs_ActorAlignmentInformations(output: ICustomDataOutput)
+    {
+        output.writeByte(this.alignmentSide);
+        if(this.alignmentValue < 0)
+        {
+            throw new Error("Forbidden value (" + this.alignmentValue + ") on element alignmentValue.");
+        }
+        output.writeByte(this.alignmentValue);
+        if(this.alignmentGrade < 0)
+        {
+            throw new Error("Forbidden value (" + this.alignmentGrade + ") on element alignmentGrade.");
+        }
+        output.writeByte(this.alignmentGrade);
+        if(this.characterPower < -9007199254740992 || this.characterPower > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.characterPower + ") on element characterPower.");
+        }
+        output.writeDouble(this.characterPower);
     }
 
     public deserialize(input: ICustomDataInput)

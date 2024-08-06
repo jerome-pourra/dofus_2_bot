@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightLeaveMessage extends NetworkMessage
+export class GameFightLeaveMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6974;
@@ -16,14 +16,41 @@ export class GameFightLeaveMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightLeaveMessage.protocolId;
+    }
+
+    public initGameFightLeaveMessage(charId: number = 0): GameFightLeaveMessage
+    {
+        this.charId = charId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightLeaveMessage(output);
+    }
+
+    public serializeAs_GameFightLeaveMessage(output: ICustomDataOutput)
+    {
+        if(this.charId < -9007199254740992 || this.charId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.charId + ") on element charId.");
+        }
+        output.writeDouble(this.charId);
     }
 
     public deserialize(input: ICustomDataInput)

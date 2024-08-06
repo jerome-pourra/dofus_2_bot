@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class FriendsListMessage extends NetworkMessage
+export class FriendsListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4172;
@@ -19,14 +19,42 @@ export class FriendsListMessage extends NetworkMessage
         this.friendsList = Array<FriendInformations>();
     }
 
+    public getMessageId()
+    {
+        return FriendsListMessage.protocolId;
+    }
+
+    public initFriendsListMessage(friendsList: Array<FriendInformations> = null): FriendsListMessage
+    {
+        this.friendsList = friendsList;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FriendsListMessage(output);
+    }
+
+    public serializeAs_FriendsListMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.friendsList.length);
+        for(var _i1: number = 0; _i1 < this.friendsList.length; _i1++)
+        {
+            output.writeShort((this.friendsList[_i1] as FriendInformations).getTypeId());
+            (this.friendsList[_i1] as FriendInformations).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

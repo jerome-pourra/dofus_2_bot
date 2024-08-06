@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ObjectJobAddedMessage extends NetworkMessage
+export class ObjectJobAddedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5441;
@@ -16,14 +16,41 @@ export class ObjectJobAddedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ObjectJobAddedMessage.protocolId;
+    }
+
+    public initObjectJobAddedMessage(jobId: number = 0): ObjectJobAddedMessage
+    {
+        this.jobId = jobId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectJobAddedMessage(output);
+    }
+
+    public serializeAs_ObjectJobAddedMessage(output: ICustomDataOutput)
+    {
+        if(this.jobId < 0)
+        {
+            throw new Error("Forbidden value (" + this.jobId + ") on element jobId.");
+        }
+        output.writeByte(this.jobId);
     }
 
     public deserialize(input: ICustomDataInput)

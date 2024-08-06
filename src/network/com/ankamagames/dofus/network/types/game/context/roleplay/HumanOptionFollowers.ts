@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { HumanOption } from "./HumanOption";
 
-export class HumanOptionFollowers extends HumanOption
+export class HumanOptionFollowers extends HumanOption implements INetworkType
 {
 
 	public static readonly protocolId: number = 8287;
@@ -15,6 +15,32 @@ export class HumanOptionFollowers extends HumanOption
     {
         super();
         this.followingCharactersLook = Array<IndexedEntityLook>();
+    }
+
+    public getTypeId()
+    {
+        return HumanOptionFollowers.protocolId;
+    }
+
+    public initHumanOptionFollowers(followingCharactersLook: Array<IndexedEntityLook> = null): HumanOptionFollowers
+    {
+        this.followingCharactersLook = followingCharactersLook;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HumanOptionFollowers(output);
+    }
+
+    public serializeAs_HumanOptionFollowers(output: ICustomDataOutput)
+    {
+        super.serializeAs_HumanOption(output);
+        output.writeShort(this.followingCharactersLook.length);
+        for(var _i1: number = 0; _i1 < this.followingCharactersLook.length; _i1++)
+        {
+            (this.followingCharactersLook[_i1] as IndexedEntityLook).serializeAs_IndexedEntityLook(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

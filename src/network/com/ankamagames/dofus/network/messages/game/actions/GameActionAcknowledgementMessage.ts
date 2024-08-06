@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GameActionAcknowledgementMessage extends NetworkMessage
+export class GameActionAcknowledgementMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5751;
@@ -17,14 +17,39 @@ export class GameActionAcknowledgementMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameActionAcknowledgementMessage.protocolId;
+    }
+
+    public initGameActionAcknowledgementMessage(valid: boolean = false, actionId: number = 0): GameActionAcknowledgementMessage
+    {
+        this.valid = valid;
+        this.actionId = actionId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionAcknowledgementMessage(output);
+    }
+
+    public serializeAs_GameActionAcknowledgementMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.valid);
+        output.writeByte(this.actionId);
     }
 
     public deserialize(input: ICustomDataInput)

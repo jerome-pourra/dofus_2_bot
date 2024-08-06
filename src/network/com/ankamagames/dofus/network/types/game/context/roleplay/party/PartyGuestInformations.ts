@@ -6,7 +6,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class PartyGuestInformations
+export class PartyGuestInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 3127;
@@ -25,6 +25,54 @@ export class PartyGuestInformations
         this.guestLook = new EntityLook();
         this.status = new PlayerStatus();
         this.entities = Array<PartyEntityBaseInformation>();
+    }
+
+    public getTypeId()
+    {
+        return PartyGuestInformations.protocolId;
+    }
+
+    public initPartyGuestInformations(guestId: number = 0, hostId: number = 0, name: string = "", guestLook: EntityLook = null, breed: number = 0, sex: boolean = false, status: PlayerStatus = null, entities: Array<PartyEntityBaseInformation> = null): PartyGuestInformations
+    {
+        this.guestId = guestId;
+        this.hostId = hostId;
+        this.name = name;
+        this.guestLook = guestLook;
+        this.breed = breed;
+        this.sex = sex;
+        this.status = status;
+        this.entities = entities;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyGuestInformations(output);
+    }
+
+    public serializeAs_PartyGuestInformations(output: ICustomDataOutput)
+    {
+        if(this.guestId < 0 || this.guestId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.guestId + ") on element guestId.");
+        }
+        output.writeVarLong(this.guestId);
+        if(this.hostId < 0 || this.hostId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.hostId + ") on element hostId.");
+        }
+        output.writeVarLong(this.hostId);
+        output.writeUTF(this.name);
+        this.guestLook.serializeAs_EntityLook(output);
+        output.writeByte(this.breed);
+        output.writeBoolean(this.sex);
+        output.writeShort(this.status.getTypeId());
+        this.status.serialize(output);
+        output.writeShort(this.entities.length);
+        for(var _i8: number = 0; _i8 < this.entities.length; _i8++)
+        {
+            (this.entities[_i8] as PartyEntityBaseInformation).serializeAs_PartyEntityBaseInformation(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

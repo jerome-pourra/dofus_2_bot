@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AchievementRewardSuccessMessage extends NetworkMessage
+export class AchievementRewardSuccessMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1060;
@@ -16,14 +16,37 @@ export class AchievementRewardSuccessMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AchievementRewardSuccessMessage.protocolId;
+    }
+
+    public initAchievementRewardSuccessMessage(achievementId: number = 0): AchievementRewardSuccessMessage
+    {
+        this.achievementId = achievementId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AchievementRewardSuccessMessage(output);
+    }
+
+    public serializeAs_AchievementRewardSuccessMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.achievementId);
     }
 
     public deserialize(input: ICustomDataInput)

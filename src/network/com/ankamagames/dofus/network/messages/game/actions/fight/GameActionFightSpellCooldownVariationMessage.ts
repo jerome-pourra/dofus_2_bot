@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class GameActionFightSpellCooldownVariationMessage extends AbstractGameActionMessage
+export class GameActionFightSpellCooldownVariationMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 766;
@@ -18,14 +18,51 @@ export class GameActionFightSpellCooldownVariationMessage extends AbstractGameAc
         super();
     }
 
+    public getMessageId()
+    {
+        return GameActionFightSpellCooldownVariationMessage.protocolId;
+    }
+
+    public initGameActionFightSpellCooldownVariationMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, spellId: number = 0, value: number = 0): GameActionFightSpellCooldownVariationMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.targetId = targetId;
+        this.spellId = spellId;
+        this.value = value;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionFightSpellCooldownVariationMessage(output);
+    }
+
+    public serializeAs_GameActionFightSpellCooldownVariationMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        if(this.targetId < -9007199254740992 || this.targetId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+        }
+        output.writeDouble(this.targetId);
+        if(this.spellId < 0)
+        {
+            throw new Error("Forbidden value (" + this.spellId + ") on element spellId.");
+        }
+        output.writeVarShort(this.spellId);
+        output.writeVarShort(this.value);
     }
 
     public deserialize(input: ICustomDataInput)

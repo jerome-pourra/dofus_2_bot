@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { ExchangeBidPriceMessage } from "./ExchangeBidPriceMessage";
 
-export class ExchangeBidPriceForSellerMessage extends ExchangeBidPriceMessage
+export class ExchangeBidPriceForSellerMessage extends ExchangeBidPriceMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7209;
@@ -18,14 +18,49 @@ export class ExchangeBidPriceForSellerMessage extends ExchangeBidPriceMessage
         this.minimalPrices = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return ExchangeBidPriceForSellerMessage.protocolId;
+    }
+
+    public initExchangeBidPriceForSellerMessage(genericId: number = 0, averagePrice: number = 0, allIdentical: boolean = false, minimalPrices: Array<number> = null): ExchangeBidPriceForSellerMessage
+    {
+        super.initExchangeBidPriceMessage(genericId,averagePrice);
+        this.allIdentical = allIdentical;
+        this.minimalPrices = minimalPrices;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeBidPriceForSellerMessage(output);
+    }
+
+    public serializeAs_ExchangeBidPriceForSellerMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ExchangeBidPriceMessage(output);
+        output.writeBoolean(this.allIdentical);
+        output.writeShort(this.minimalPrices.length);
+        for(var _i2: number = 0; _i2 < this.minimalPrices.length; _i2++)
+        {
+            if(this.minimalPrices[_i2] < 0 || this.minimalPrices[_i2] > 9007199254740992)
+            {
+                throw new Error("Forbidden value (" + this.minimalPrices[_i2] + ") on element 2 (starting at 1) of minimalPrices.");
+            }
+            output.writeVarLong(this.minimalPrices[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

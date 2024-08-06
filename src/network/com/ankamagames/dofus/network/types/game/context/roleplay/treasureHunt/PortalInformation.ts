@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class PortalInformation
+export class PortalInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 2396;
@@ -13,6 +13,29 @@ export class PortalInformation
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return PortalInformation.protocolId;
+    }
+
+    public initPortalInformation(portalId: number = 0, areaId: number = 0): PortalInformation
+    {
+        this.portalId = portalId;
+        this.areaId = areaId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PortalInformation(output);
+    }
+
+    public serializeAs_PortalInformation(output: ICustomDataOutput)
+    {
+        output.writeInt(this.portalId);
+        output.writeShort(this.areaId);
     }
 
     public deserialize(input: ICustomDataInput)

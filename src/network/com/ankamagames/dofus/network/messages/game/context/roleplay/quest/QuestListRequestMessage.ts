@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class QuestListRequestMessage extends NetworkMessage
+export class QuestListRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7114;
@@ -14,14 +14,36 @@ export class QuestListRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return QuestListRequestMessage.protocolId;
+    }
+
+    public initQuestListRequestMessage(): QuestListRequestMessage
+    {
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_QuestListRequestMessage(output);
+    }
+
+    public serializeAs_QuestListRequestMessage(output: ICustomDataOutput)
+    {
+
     }
 
     public deserialize(input: ICustomDataInput)

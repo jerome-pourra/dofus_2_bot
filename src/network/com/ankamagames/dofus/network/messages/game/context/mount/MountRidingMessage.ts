@@ -5,7 +5,7 @@ import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMe
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 import { BooleanByteWrapper } from "./../../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class MountRidingMessage extends NetworkMessage
+export class MountRidingMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3880;
@@ -18,14 +18,41 @@ export class MountRidingMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return MountRidingMessage.protocolId;
+    }
+
+    public initMountRidingMessage(isRiding: boolean = false, isAutopilot: boolean = false): MountRidingMessage
+    {
+        this.isRiding = isRiding;
+        this.isAutopilot = isAutopilot;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MountRidingMessage(output);
+    }
+
+    public serializeAs_MountRidingMessage(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.isRiding);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.isAutopilot);
+        output.writeByte(_box0);
     }
 
     public deserialize(input: ICustomDataInput)

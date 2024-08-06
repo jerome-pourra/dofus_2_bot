@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class CharacterDeletionRequestMessage extends NetworkMessage
+export class CharacterDeletionRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1489;
@@ -17,14 +17,43 @@ export class CharacterDeletionRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CharacterDeletionRequestMessage.protocolId;
+    }
+
+    public initCharacterDeletionRequestMessage(characterId: number = 0, secretAnswerHash: string = ""): CharacterDeletionRequestMessage
+    {
+        this.characterId = characterId;
+        this.secretAnswerHash = secretAnswerHash;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterDeletionRequestMessage(output);
+    }
+
+    public serializeAs_CharacterDeletionRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.characterId < 0 || this.characterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.characterId + ") on element characterId.");
+        }
+        output.writeVarLong(this.characterId);
+        output.writeUTF(this.secretAnswerHash);
     }
 
     public deserialize(input: ICustomDataInput)

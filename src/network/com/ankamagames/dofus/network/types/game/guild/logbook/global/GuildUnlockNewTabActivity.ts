@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class GuildUnlockNewTabActivity extends GuildLogbookEntryBasicInformation
+export class GuildUnlockNewTabActivity extends GuildLogbookEntryBasicInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 7681;
@@ -11,6 +11,27 @@ export class GuildUnlockNewTabActivity extends GuildLogbookEntryBasicInformation
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return GuildUnlockNewTabActivity.protocolId;
+    }
+
+    public initGuildUnlockNewTabActivity(id: number = 0, date: number = 0): GuildUnlockNewTabActivity
+    {
+        super.initGuildLogbookEntryBasicInformation(id,date);
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildUnlockNewTabActivity(output);
+    }
+
+    public serializeAs_GuildUnlockNewTabActivity(output: ICustomDataOutput)
+    {
+        super.serializeAs_GuildLogbookEntryBasicInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

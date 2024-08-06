@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class IgnoredAddRequestMessage extends NetworkMessage
+export class IgnoredAddRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5112;
@@ -20,14 +20,40 @@ export class IgnoredAddRequestMessage extends NetworkMessage
         this.target = new AbstractPlayerSearchInformation();
     }
 
+    public getMessageId()
+    {
+        return IgnoredAddRequestMessage.protocolId;
+    }
+
+    public initIgnoredAddRequestMessage(target: AbstractPlayerSearchInformation = null, session: boolean = false): IgnoredAddRequestMessage
+    {
+        this.target = target;
+        this.session = session;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IgnoredAddRequestMessage(output);
+    }
+
+    public serializeAs_IgnoredAddRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.target.getTypeId());
+        this.target.serialize(output);
+        output.writeBoolean(this.session);
     }
 
     public deserialize(input: ICustomDataInput)

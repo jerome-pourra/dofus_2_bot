@@ -3,8 +3,9 @@ import { AllianceInformation } from "./../context/roleplay/AllianceInformation";
 import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataInput";
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
+import { SocialEmblem } from "./SocialEmblem";
 
-export class AllianceFactSheetInformation extends AllianceInformation
+export class AllianceFactSheetInformation extends AllianceInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 6340;
@@ -19,6 +20,53 @@ export class AllianceFactSheetInformation extends AllianceInformation
     {
         super();
         this.recruitment = new AllianceRecruitmentInformation();
+    }
+
+    public getTypeId()
+    {
+        return AllianceFactSheetInformation.protocolId;
+    }
+
+    public initAllianceFactSheetInformation(allianceId: number = 0, allianceTag: string = "", allianceName: string = "", allianceEmblem: SocialEmblem = null, creationDate: number = 0, nbMembers: number = 0, nbSubarea: number = 0, nbTaxCollectors: number = 0, recruitment: AllianceRecruitmentInformation = null): AllianceFactSheetInformation
+    {
+        super.initAllianceInformation(allianceId,allianceTag,allianceName,allianceEmblem);
+        this.creationDate = creationDate;
+        this.nbMembers = nbMembers;
+        this.nbSubarea = nbSubarea;
+        this.nbTaxCollectors = nbTaxCollectors;
+        this.recruitment = recruitment;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceFactSheetInformation(output);
+    }
+
+    public serializeAs_AllianceFactSheetInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_AllianceInformation(output);
+        if(this.creationDate < 0)
+        {
+            throw new Error("Forbidden value (" + this.creationDate + ") on element creationDate.");
+        }
+        output.writeInt(this.creationDate);
+        if(this.nbMembers < 0)
+        {
+            throw new Error("Forbidden value (" + this.nbMembers + ") on element nbMembers.");
+        }
+        output.writeVarShort(this.nbMembers);
+        if(this.nbSubarea < 0)
+        {
+            throw new Error("Forbidden value (" + this.nbSubarea + ") on element nbSubarea.");
+        }
+        output.writeVarShort(this.nbSubarea);
+        if(this.nbTaxCollectors < 0)
+        {
+            throw new Error("Forbidden value (" + this.nbTaxCollectors + ") on element nbTaxCollectors.");
+        }
+        output.writeVarShort(this.nbTaxCollectors);
+        this.recruitment.serializeAs_AllianceRecruitmentInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class RefreshCharacterStatsMessage extends NetworkMessage
+export class RefreshCharacterStatsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2710;
@@ -19,14 +19,43 @@ export class RefreshCharacterStatsMessage extends NetworkMessage
         this.stats = new GameFightCharacteristics();
     }
 
+    public getMessageId()
+    {
+        return RefreshCharacterStatsMessage.protocolId;
+    }
+
+    public initRefreshCharacterStatsMessage(fighterId: number = 0, stats: GameFightCharacteristics = null): RefreshCharacterStatsMessage
+    {
+        this.fighterId = fighterId;
+        this.stats = stats;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_RefreshCharacterStatsMessage(output);
+    }
+
+    public serializeAs_RefreshCharacterStatsMessage(output: ICustomDataOutput)
+    {
+        if(this.fighterId < -9007199254740992 || this.fighterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.fighterId + ") on element fighterId.");
+        }
+        output.writeDouble(this.fighterId);
+        this.stats.serializeAs_GameFightCharacteristics(output);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { BooleanByteWrapper } from "./../../../../../../../jerakine/network/util
 import { ObjectEffectInteger } from "./ObjectEffectInteger";
 import { ObjectEffect } from "./ObjectEffect";
 
-export class ObjectEffectMount extends ObjectEffect
+export class ObjectEffectMount extends ObjectEffect implements INetworkType
 {
 
 	public static readonly protocolId: number = 3353;
@@ -30,6 +30,89 @@ export class ObjectEffectMount extends ObjectEffect
         super();
         this.effects = Array<ObjectEffectInteger>();
         this.capacities = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return ObjectEffectMount.protocolId;
+    }
+
+    public initObjectEffectMount(actionId: number = 0, id: number = 0, expirationDate: number = 0, model: number = 0, name: string = "", owner: string = "", level: number = 0, sex: boolean = false, isRideable: boolean = false, isFeconded: boolean = false, isFecondationReady: boolean = false, reproductionCount: number = 0, reproductionCountMax: number = 0, effects: Array<ObjectEffectInteger> = null, capacities: Array<number> = null): ObjectEffectMount
+    {
+        super.initObjectEffect(actionId);
+        this.id = id;
+        this.expirationDate = expirationDate;
+        this.model = model;
+        this.name = name;
+        this.owner = owner;
+        this.level = level;
+        this.sex = sex;
+        this.isRideable = isRideable;
+        this.isFeconded = isFeconded;
+        this.isFecondationReady = isFecondationReady;
+        this.reproductionCount = reproductionCount;
+        this.reproductionCountMax = reproductionCountMax;
+        this.effects = effects;
+        this.capacities = capacities;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectEffectMount(output);
+    }
+
+    public serializeAs_ObjectEffectMount(output: ICustomDataOutput)
+    {
+        super.serializeAs_ObjectEffect(output);
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.sex);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.isRideable);
+        _box0 = BooleanByteWrapper.setFlag(_box0,2,this.isFeconded);
+        _box0 = BooleanByteWrapper.setFlag(_box0,3,this.isFecondationReady);
+        output.writeByte(_box0);
+        if(this.id < 0 || this.id > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarLong(this.id);
+        if(this.expirationDate < 0 || this.expirationDate > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.expirationDate + ") on element expirationDate.");
+        }
+        output.writeVarLong(this.expirationDate);
+        if(this.model < 0)
+        {
+            throw new Error("Forbidden value (" + this.model + ") on element model.");
+        }
+        output.writeVarInt(this.model);
+        output.writeUTF(this.name);
+        output.writeUTF(this.owner);
+        if(this.level < 0)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeByte(this.level);
+        output.writeVarInt(this.reproductionCount);
+        if(this.reproductionCountMax < 0)
+        {
+            throw new Error("Forbidden value (" + this.reproductionCountMax + ") on element reproductionCountMax.");
+        }
+        output.writeVarInt(this.reproductionCountMax);
+        output.writeShort(this.effects.length);
+        for(var _i13: number = 0; _i13 < this.effects.length; _i13++)
+        {
+            (this.effects[_i13] as ObjectEffectInteger).serializeAs_ObjectEffectInteger(output);
+        }
+        output.writeShort(this.capacities.length);
+        for(var _i14: number = 0; _i14 < this.capacities.length; _i14++)
+        {
+            if(this.capacities[_i14] < 0)
+            {
+                throw new Error("Forbidden value (" + this.capacities[_i14] + ") on element 14 (starting at 1) of capacities.");
+            }
+            output.writeVarInt(this.capacities[_i14]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

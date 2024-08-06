@@ -4,7 +4,7 @@ import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { SimpleCharacterCharacteristicForPreset } from "./SimpleCharacterCharacteristicForPreset";
 import { Preset } from "./Preset";
 
-export class StatsPreset extends Preset
+export class StatsPreset extends Preset implements INetworkType
 {
 
 	public static readonly protocolId: number = 1993;
@@ -15,6 +15,33 @@ export class StatsPreset extends Preset
     {
         super();
         this.stats = Array<SimpleCharacterCharacteristicForPreset>();
+    }
+
+    public getTypeId()
+    {
+        return StatsPreset.protocolId;
+    }
+
+    public initStatsPreset(id: number = 0, stats: Array<SimpleCharacterCharacteristicForPreset> = null): StatsPreset
+    {
+        super.initPreset(id);
+        this.stats = stats;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_StatsPreset(output);
+    }
+
+    public serializeAs_StatsPreset(output: ICustomDataOutput)
+    {
+        super.serializeAs_Preset(output);
+        output.writeShort(this.stats.length);
+        for(var _i1: number = 0; _i1 < this.stats.length; _i1++)
+        {
+            (this.stats[_i1] as SimpleCharacterCharacteristicForPreset).serializeAs_SimpleCharacterCharacteristicForPreset(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

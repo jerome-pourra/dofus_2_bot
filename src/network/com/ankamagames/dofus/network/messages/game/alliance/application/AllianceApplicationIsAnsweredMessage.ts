@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceApplicationIsAnsweredMessage extends NetworkMessage
+export class AllianceApplicationIsAnsweredMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4844;
@@ -19,14 +19,39 @@ export class AllianceApplicationIsAnsweredMessage extends NetworkMessage
         this.allianceInformation = new AllianceInformation();
     }
 
+    public getMessageId()
+    {
+        return AllianceApplicationIsAnsweredMessage.protocolId;
+    }
+
+    public initAllianceApplicationIsAnsweredMessage(accepted: boolean = false, allianceInformation: AllianceInformation = null): AllianceApplicationIsAnsweredMessage
+    {
+        this.accepted = accepted;
+        this.allianceInformation = allianceInformation;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceApplicationIsAnsweredMessage(output);
+    }
+
+    public serializeAs_AllianceApplicationIsAnsweredMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.accepted);
+        this.allianceInformation.serializeAs_AllianceInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

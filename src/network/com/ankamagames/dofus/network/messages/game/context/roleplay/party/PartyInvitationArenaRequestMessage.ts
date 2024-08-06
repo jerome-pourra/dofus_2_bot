@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { PartyInvitationRequestMessage } from "./PartyInvitationRequestMessage";
 
-export class PartyInvitationArenaRequestMessage extends PartyInvitationRequestMessage
+export class PartyInvitationArenaRequestMessage extends PartyInvitationRequestMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2774;
@@ -15,14 +15,37 @@ export class PartyInvitationArenaRequestMessage extends PartyInvitationRequestMe
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyInvitationArenaRequestMessage.protocolId;
+    }
+
+    public initPartyInvitationArenaRequestMessage(target: AbstractPlayerSearchInformation = null): PartyInvitationArenaRequestMessage
+    {
+        super.initPartyInvitationRequestMessage(target);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyInvitationArenaRequestMessage(output);
+    }
+
+    public serializeAs_PartyInvitationArenaRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_PartyInvitationRequestMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

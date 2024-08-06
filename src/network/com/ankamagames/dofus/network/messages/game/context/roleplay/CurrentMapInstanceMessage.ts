@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { CurrentMapMessage } from "./CurrentMapMessage";
 
-export class CurrentMapInstanceMessage extends CurrentMapMessage
+export class CurrentMapInstanceMessage extends CurrentMapMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5476;
@@ -16,14 +16,43 @@ export class CurrentMapInstanceMessage extends CurrentMapMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CurrentMapInstanceMessage.protocolId;
+    }
+
+    public initCurrentMapInstanceMessage(mapId: number = 0, instantiatedMapId: number = 0): CurrentMapInstanceMessage
+    {
+        super.initCurrentMapMessage(mapId);
+        this.instantiatedMapId = instantiatedMapId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CurrentMapInstanceMessage(output);
+    }
+
+    public serializeAs_CurrentMapInstanceMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_CurrentMapMessage(output);
+        if(this.instantiatedMapId < 0 || this.instantiatedMapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.instantiatedMapId + ") on element instantiatedMapId.");
+        }
+        output.writeDouble(this.instantiatedMapId);
     }
 
     public deserialize(input: ICustomDataInput)

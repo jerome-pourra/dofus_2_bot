@@ -9,7 +9,7 @@ import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { BooleanByteWrapper } from "./../../../../../jerakine/network/utils/BooleanByteWrapper";
 import { FriendInformations } from "./FriendInformations";
 
-export class FriendOnlineInformations extends FriendInformations
+export class FriendOnlineInformations extends FriendInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 9348;
@@ -30,6 +30,62 @@ export class FriendOnlineInformations extends FriendInformations
         super();
         this.guildInfo = new GuildInformations();
         this.status = new PlayerStatus();
+    }
+
+    public getTypeId()
+    {
+        return FriendOnlineInformations.protocolId;
+    }
+
+    public initFriendOnlineInformations(accountId: number = 0, accountTag: AccountTagInformation = null, playerState: number = 99, lastConnection: number = 0, achievementPoints: number = 0, leagueId: number = 0, ladderPosition: number = 0, playerId: number = 0, playerName: string = "", level: number = 0, alignmentSide: number = 0, breed: number = 0, sex: boolean = false, guildInfo: GuildInformations = null, moodSmileyId: number = 0, status: PlayerStatus = null, havenBagShared: boolean = false): FriendOnlineInformations
+    {
+        super.initFriendInformations(accountId,accountTag,playerState,lastConnection,achievementPoints,leagueId,ladderPosition);
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.level = level;
+        this.alignmentSide = alignmentSide;
+        this.breed = breed;
+        this.sex = sex;
+        this.guildInfo = guildInfo;
+        this.moodSmileyId = moodSmileyId;
+        this.status = status;
+        this.havenBagShared = havenBagShared;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FriendOnlineInformations(output);
+    }
+
+    public serializeAs_FriendOnlineInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_FriendInformations(output);
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.sex);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.havenBagShared);
+        output.writeByte(_box0);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeUTF(this.playerName);
+        if(this.level < 0)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeVarShort(this.level);
+        output.writeByte(this.alignmentSide);
+        output.writeByte(this.breed);
+        this.guildInfo.serializeAs_GuildInformations(output);
+        if(this.moodSmileyId < 0)
+        {
+            throw new Error("Forbidden value (" + this.moodSmileyId + ") on element moodSmileyId.");
+        }
+        output.writeVarShort(this.moodSmileyId);
+        output.writeShort(this.status.getTypeId());
+        this.status.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

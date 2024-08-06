@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeObjectTransfertListWithQuantityToInvMessage extends NetworkMessage
+export class ExchangeObjectTransfertListWithQuantityToInvMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 166;
@@ -19,14 +19,55 @@ export class ExchangeObjectTransfertListWithQuantityToInvMessage extends Network
         this.qtys = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return ExchangeObjectTransfertListWithQuantityToInvMessage.protocolId;
+    }
+
+    public initExchangeObjectTransfertListWithQuantityToInvMessage(ids: Array<number> = null, qtys: Array<number> = null): ExchangeObjectTransfertListWithQuantityToInvMessage
+    {
+        this.ids = ids;
+        this.qtys = qtys;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeObjectTransfertListWithQuantityToInvMessage(output);
+    }
+
+    public serializeAs_ExchangeObjectTransfertListWithQuantityToInvMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.ids.length);
+        for(var _i1: number = 0; _i1 < this.ids.length; _i1++)
+        {
+            if(this.ids[_i1] < 0)
+            {
+                throw new Error("Forbidden value (" + this.ids[_i1] + ") on element 1 (starting at 1) of ids.");
+            }
+            output.writeVarInt(this.ids[_i1]);
+        }
+        output.writeShort(this.qtys.length);
+        for(var _i2: number = 0; _i2 < this.qtys.length; _i2++)
+        {
+            if(this.qtys[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.qtys[_i2] + ") on element 2 (starting at 1) of qtys.");
+            }
+            output.writeVarInt(this.qtys[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class AddTaxCollectorOrderedSpellMessage extends NetworkMessage
+export class AddTaxCollectorOrderedSpellMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8298;
@@ -19,14 +19,43 @@ export class AddTaxCollectorOrderedSpellMessage extends NetworkMessage
         this.spell = new TaxCollectorOrderedSpell();
     }
 
+    public getMessageId()
+    {
+        return AddTaxCollectorOrderedSpellMessage.protocolId;
+    }
+
+    public initAddTaxCollectorOrderedSpellMessage(taxCollectorId: number = 0, spell: TaxCollectorOrderedSpell = null): AddTaxCollectorOrderedSpellMessage
+    {
+        this.taxCollectorId = taxCollectorId;
+        this.spell = spell;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AddTaxCollectorOrderedSpellMessage(output);
+    }
+
+    public serializeAs_AddTaxCollectorOrderedSpellMessage(output: ICustomDataOutput)
+    {
+        if(this.taxCollectorId < 0 || this.taxCollectorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.taxCollectorId + ") on element taxCollectorId.");
+        }
+        output.writeDouble(this.taxCollectorId);
+        this.spell.serializeAs_TaxCollectorOrderedSpell(output);
     }
 
     public deserialize(input: ICustomDataInput)

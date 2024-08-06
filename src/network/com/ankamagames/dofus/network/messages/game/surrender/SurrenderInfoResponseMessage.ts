@@ -7,7 +7,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class SurrenderInfoResponseMessage extends NetworkMessage
+export class SurrenderInfoResponseMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 99;
@@ -23,14 +23,43 @@ export class SurrenderInfoResponseMessage extends NetworkMessage
         this.surrenderVoteResponse = new SurrenderVoteResponse();
     }
 
+    public getMessageId()
+    {
+        return SurrenderInfoResponseMessage.protocolId;
+    }
+
+    public initSurrenderInfoResponseMessage(hasSanction: boolean = false, surrenderResponse: SurrenderResponse = null, surrenderVoteResponse: SurrenderVoteResponse = null): SurrenderInfoResponseMessage
+    {
+        this.hasSanction = hasSanction;
+        this.surrenderResponse = surrenderResponse;
+        this.surrenderVoteResponse = surrenderVoteResponse;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SurrenderInfoResponseMessage(output);
+    }
+
+    public serializeAs_SurrenderInfoResponseMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.hasSanction);
+        output.writeShort(this.surrenderResponse.getTypeId());
+        this.surrenderResponse.serialize(output);
+        output.writeShort(this.surrenderVoteResponse.getTypeId());
+        this.surrenderVoteResponse.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

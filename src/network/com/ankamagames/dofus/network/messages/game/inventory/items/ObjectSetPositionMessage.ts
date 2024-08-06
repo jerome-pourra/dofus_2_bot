@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ObjectSetPositionMessage extends NetworkMessage
+export class ObjectSetPositionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5569;
@@ -18,14 +18,49 @@ export class ObjectSetPositionMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ObjectSetPositionMessage.protocolId;
+    }
+
+    public initObjectSetPositionMessage(objectUID: number = 0, position: number = 63, quantity: number = 0): ObjectSetPositionMessage
+    {
+        this.objectUID = objectUID;
+        this.position = position;
+        this.quantity = quantity;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectSetPositionMessage(output);
+    }
+
+    public serializeAs_ObjectSetPositionMessage(output: ICustomDataOutput)
+    {
+        if(this.objectUID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+        }
+        output.writeVarInt(this.objectUID);
+        output.writeShort(this.position);
+        if(this.quantity < 0)
+        {
+            throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
+        }
+        output.writeVarInt(this.quantity);
     }
 
     public deserialize(input: ICustomDataInput)

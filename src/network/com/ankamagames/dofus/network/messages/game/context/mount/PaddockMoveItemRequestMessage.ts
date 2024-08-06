@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class PaddockMoveItemRequestMessage extends NetworkMessage
+export class PaddockMoveItemRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6071;
@@ -17,14 +17,47 @@ export class PaddockMoveItemRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PaddockMoveItemRequestMessage.protocolId;
+    }
+
+    public initPaddockMoveItemRequestMessage(oldCellId: number = 0, newCellId: number = 0): PaddockMoveItemRequestMessage
+    {
+        this.oldCellId = oldCellId;
+        this.newCellId = newCellId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PaddockMoveItemRequestMessage(output);
+    }
+
+    public serializeAs_PaddockMoveItemRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.oldCellId < 0 || this.oldCellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.oldCellId + ") on element oldCellId.");
+        }
+        output.writeVarShort(this.oldCellId);
+        if(this.newCellId < 0 || this.newCellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.newCellId + ") on element newCellId.");
+        }
+        output.writeVarShort(this.newCellId);
     }
 
     public deserialize(input: ICustomDataInput)

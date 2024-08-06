@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class ForceAccountMessage extends NetworkMessage
+export class ForceAccountMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5654;
@@ -16,14 +16,41 @@ export class ForceAccountMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ForceAccountMessage.protocolId;
+    }
+
+    public initForceAccountMessage(accountId: number = 0): ForceAccountMessage
+    {
+        this.accountId = accountId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ForceAccountMessage(output);
+    }
+
+    public serializeAs_ForceAccountMessage(output: ICustomDataOutput)
+    {
+        if(this.accountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+        }
+        output.writeInt(this.accountId);
     }
 
     public deserialize(input: ICustomDataInput)

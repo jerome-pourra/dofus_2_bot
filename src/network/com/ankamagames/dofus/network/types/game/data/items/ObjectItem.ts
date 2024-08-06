@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { Item } from "./Item";
 
-export class ObjectItem extends Item
+export class ObjectItem extends Item implements INetworkType
 {
 
 	public static readonly protocolId: number = 1685;
@@ -21,6 +21,55 @@ export class ObjectItem extends Item
     {
         super();
         this.effects = Array<ObjectEffect>();
+    }
+
+    public getTypeId()
+    {
+        return ObjectItem.protocolId;
+    }
+
+    public initObjectItem(position: number = 63, objectGID: number = 0, effects: Array<ObjectEffect> = null, objectUID: number = 0, quantity: number = 0, favorite: boolean = false): ObjectItem
+    {
+        this.position = position;
+        this.objectGID = objectGID;
+        this.effects = effects;
+        this.objectUID = objectUID;
+        this.quantity = quantity;
+        this.favorite = favorite;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectItem(output);
+    }
+
+    public serializeAs_ObjectItem(output: ICustomDataOutput)
+    {
+        super.serializeAs_Item(output);
+        output.writeShort(this.position);
+        if(this.objectGID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+        }
+        output.writeVarInt(this.objectGID);
+        output.writeShort(this.effects.length);
+        for(var _i3: number = 0; _i3 < this.effects.length; _i3++)
+        {
+            output.writeShort((this.effects[_i3] as ObjectEffect).getTypeId());
+            (this.effects[_i3] as ObjectEffect).serialize(output);
+        }
+        if(this.objectUID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+        }
+        output.writeVarInt(this.objectUID);
+        if(this.quantity < 0)
+        {
+            throw new Error("Forbidden value (" + this.quantity + ") on element quantity.");
+        }
+        output.writeVarInt(this.quantity);
+        output.writeBoolean(this.favorite);
     }
 
     public deserialize(input: ICustomDataInput)

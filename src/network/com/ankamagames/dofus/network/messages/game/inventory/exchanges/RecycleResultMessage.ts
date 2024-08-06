@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class RecycleResultMessage extends NetworkMessage
+export class RecycleResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4137;
@@ -17,14 +17,47 @@ export class RecycleResultMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return RecycleResultMessage.protocolId;
+    }
+
+    public initRecycleResultMessage(nuggetsForPrism: number = 0, nuggetsForPlayer: number = 0): RecycleResultMessage
+    {
+        this.nuggetsForPrism = nuggetsForPrism;
+        this.nuggetsForPlayer = nuggetsForPlayer;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_RecycleResultMessage(output);
+    }
+
+    public serializeAs_RecycleResultMessage(output: ICustomDataOutput)
+    {
+        if(this.nuggetsForPrism < 0)
+        {
+            throw new Error("Forbidden value (" + this.nuggetsForPrism + ") on element nuggetsForPrism.");
+        }
+        output.writeVarInt(this.nuggetsForPrism);
+        if(this.nuggetsForPlayer < 0)
+        {
+            throw new Error("Forbidden value (" + this.nuggetsForPlayer + ") on element nuggetsForPlayer.");
+        }
+        output.writeVarInt(this.nuggetsForPlayer);
     }
 
     public deserialize(input: ICustomDataInput)

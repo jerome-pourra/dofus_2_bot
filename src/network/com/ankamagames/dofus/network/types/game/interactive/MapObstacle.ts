@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class MapObstacle
+export class MapObstacle implements INetworkType
 {
 
 	public static readonly protocolId: number = 9518;
@@ -13,6 +13,33 @@ export class MapObstacle
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return MapObstacle.protocolId;
+    }
+
+    public initMapObstacle(obstacleCellId: number = 0, state: number = 0): MapObstacle
+    {
+        this.obstacleCellId = obstacleCellId;
+        this.state = state;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MapObstacle(output);
+    }
+
+    public serializeAs_MapObstacle(output: ICustomDataOutput)
+    {
+        if(this.obstacleCellId < 0 || this.obstacleCellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.obstacleCellId + ") on element obstacleCellId.");
+        }
+        output.writeVarShort(this.obstacleCellId);
+        output.writeByte(this.state);
     }
 
     public deserialize(input: ICustomDataInput)

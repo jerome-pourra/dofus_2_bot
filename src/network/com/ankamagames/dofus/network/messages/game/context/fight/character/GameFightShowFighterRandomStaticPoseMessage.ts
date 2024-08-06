@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { GameFightShowFighterMessage } from "./GameFightShowFighterMessage";
 
-export class GameFightShowFighterRandomStaticPoseMessage extends GameFightShowFighterMessage
+export class GameFightShowFighterRandomStaticPoseMessage extends GameFightShowFighterMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7583;
@@ -15,14 +15,37 @@ export class GameFightShowFighterRandomStaticPoseMessage extends GameFightShowFi
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightShowFighterRandomStaticPoseMessage.protocolId;
+    }
+
+    public initGameFightShowFighterRandomStaticPoseMessage(informations: GameFightFighterInformations = null): GameFightShowFighterRandomStaticPoseMessage
+    {
+        super.initGameFightShowFighterMessage(informations);
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightShowFighterRandomStaticPoseMessage(output);
+    }
+
+    public serializeAs_GameFightShowFighterRandomStaticPoseMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameFightShowFighterMessage(output);
     }
 
     public deserialize(input: ICustomDataInput)

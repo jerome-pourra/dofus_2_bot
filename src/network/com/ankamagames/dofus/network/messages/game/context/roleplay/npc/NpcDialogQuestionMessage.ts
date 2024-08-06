@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class NpcDialogQuestionMessage extends NetworkMessage
+export class NpcDialogQuestionMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5481;
@@ -20,14 +20,57 @@ export class NpcDialogQuestionMessage extends NetworkMessage
         this.visibleReplies = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return NpcDialogQuestionMessage.protocolId;
+    }
+
+    public initNpcDialogQuestionMessage(messageId: number = 0, dialogParams: Array<string> = null, visibleReplies: Array<number> = null): NpcDialogQuestionMessage
+    {
+        this.messageId = messageId;
+        this.dialogParams = dialogParams;
+        this.visibleReplies = visibleReplies;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_NpcDialogQuestionMessage(output);
+    }
+
+    public serializeAs_NpcDialogQuestionMessage(output: ICustomDataOutput)
+    {
+        if(this.messageId < 0)
+        {
+            throw new Error("Forbidden value (" + this.messageId + ") on element messageId.");
+        }
+        output.writeVarInt(this.messageId);
+        output.writeShort(this.dialogParams.length);
+        for(var _i2: number = 0; _i2 < this.dialogParams.length; _i2++)
+        {
+            output.writeUTF(this.dialogParams[_i2]);
+        }
+        output.writeShort(this.visibleReplies.length);
+        for(var _i3: number = 0; _i3 < this.visibleReplies.length; _i3++)
+        {
+            if(this.visibleReplies[_i3] < 0)
+            {
+                throw new Error("Forbidden value (" + this.visibleReplies[_i3] + ") on element 3 (starting at 1) of visibleReplies.");
+            }
+            output.writeVarInt(this.visibleReplies[_i3]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

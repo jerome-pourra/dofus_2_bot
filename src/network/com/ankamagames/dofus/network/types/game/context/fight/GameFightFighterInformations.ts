@@ -8,7 +8,7 @@ import { INetworkType } from "./../../../../../../jerakine/network/INetworkType"
 import { GameContextBasicSpawnInformation } from "./GameContextBasicSpawnInformation";
 import { GameFightCharacteristics } from "./GameFightCharacteristics";
 
-export class GameFightFighterInformations extends GameContextActorInformations
+export class GameFightFighterInformations extends GameContextActorInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 5601;
@@ -24,6 +24,48 @@ export class GameFightFighterInformations extends GameContextActorInformations
         this.spawnInfo = new GameContextBasicSpawnInformation();
         this.stats = new GameFightCharacteristics();
         this.previousPositions = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return GameFightFighterInformations.protocolId;
+    }
+
+    public initGameFightFighterInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, spawnInfo: GameContextBasicSpawnInformation = null, wave: number = 0, stats: GameFightCharacteristics = null, previousPositions: Array<number> = null): GameFightFighterInformations
+    {
+        super.initGameContextActorInformations(contextualId,disposition,look);
+        this.spawnInfo = spawnInfo;
+        this.wave = wave;
+        this.stats = stats;
+        this.previousPositions = previousPositions;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightFighterInformations(output);
+    }
+
+    public serializeAs_GameFightFighterInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameContextActorInformations(output);
+        this.spawnInfo.serializeAs_GameContextBasicSpawnInformation(output);
+        if(this.wave < 0)
+        {
+            throw new Error("Forbidden value (" + this.wave + ") on element wave.");
+        }
+        output.writeByte(this.wave);
+        output.writeShort(this.stats.getTypeId());
+        this.stats.serialize(output);
+        output.writeShort(this.previousPositions.length);
+        for(var _i4: number = 0; _i4 < this.previousPositions.length; _i4++)
+        {
+            if(this.previousPositions[_i4] < 0 || this.previousPositions[_i4] > 559)
+            {
+                throw new Error("Forbidden value (" + this.previousPositions[_i4] + ") on element 4 (starting at 1) of previousPositions.");
+            }
+            output.writeVarShort(this.previousPositions[_i4]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

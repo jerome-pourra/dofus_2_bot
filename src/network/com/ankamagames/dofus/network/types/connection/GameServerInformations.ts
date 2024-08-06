@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkType } from "./../../../../jerakine/network/INetworkType";
 import { BooleanByteWrapper } from "./../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class GameServerInformations
+export class GameServerInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 4792;
@@ -21,6 +21,61 @@ export class GameServerInformations
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return GameServerInformations.protocolId;
+    }
+
+    public initGameServerInformations(id: number = 0, type: number = -1, isMonoAccount: boolean = false, status: number = 1, completion: number = 0, isSelectable: boolean = false, charactersCount: number = 0, charactersSlots: number = 0, date: number = 0): GameServerInformations
+    {
+        this.id = id;
+        this.type = type;
+        this.isMonoAccount = isMonoAccount;
+        this.status = status;
+        this.completion = completion;
+        this.isSelectable = isSelectable;
+        this.charactersCount = charactersCount;
+        this.charactersSlots = charactersSlots;
+        this.date = date;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameServerInformations(output);
+    }
+
+    public serializeAs_GameServerInformations(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.isMonoAccount);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.isSelectable);
+        output.writeByte(_box0);
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarShort(this.id);
+        output.writeByte(this.type);
+        output.writeByte(this.status);
+        output.writeByte(this.completion);
+        if(this.charactersCount < 0)
+        {
+            throw new Error("Forbidden value (" + this.charactersCount + ") on element charactersCount.");
+        }
+        output.writeByte(this.charactersCount);
+        if(this.charactersSlots < 0)
+        {
+            throw new Error("Forbidden value (" + this.charactersSlots + ") on element charactersSlots.");
+        }
+        output.writeByte(this.charactersSlots);
+        if(this.date < -9007199254740992 || this.date > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.date + ") on element date.");
+        }
+        output.writeDouble(this.date);
     }
 
     public deserialize(input: ICustomDataInput)
@@ -45,7 +100,6 @@ export class GameServerInformations
         this._charactersCountFunc(input);
         this._charactersSlotsFunc(input);
         this._dateFunc(input);
-        
     }
 
     private _idFunc(input: ICustomDataInput)

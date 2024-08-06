@@ -4,7 +4,7 @@ import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { MountInformationsForPaddock } from "./MountInformationsForPaddock";
 import { PaddockInformations } from "./PaddockInformations";
 
-export class PaddockContentInformations extends PaddockInformations
+export class PaddockContentInformations extends PaddockInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 6426;
@@ -21,6 +21,65 @@ export class PaddockContentInformations extends PaddockInformations
     {
         super();
         this.mountsInformations = Array<MountInformationsForPaddock>();
+    }
+
+    public getTypeId()
+    {
+        return PaddockContentInformations.protocolId;
+    }
+
+    public initPaddockContentInformations(maxOutdoorMount: number = 0, maxItems: number = 0, paddockId: number = 0, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, abandonned: boolean = false, mountsInformations: Array<MountInformationsForPaddock> = null): PaddockContentInformations
+    {
+        super.initPaddockInformations(maxOutdoorMount,maxItems);
+        this.paddockId = paddockId;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.mapId = mapId;
+        this.subAreaId = subAreaId;
+        this.abandonned = abandonned;
+        this.mountsInformations = mountsInformations;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PaddockContentInformations(output);
+    }
+
+    public serializeAs_PaddockContentInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_PaddockInformations(output);
+        if(this.paddockId < 0 || this.paddockId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.paddockId + ") on element paddockId.");
+        }
+        output.writeDouble(this.paddockId);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
+        output.writeBoolean(this.abandonned);
+        output.writeShort(this.mountsInformations.length);
+        for(var _i7: number = 0; _i7 < this.mountsInformations.length; _i7++)
+        {
+            (this.mountsInformations[_i7] as MountInformationsForPaddock).serializeAs_MountInformationsForPaddock(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

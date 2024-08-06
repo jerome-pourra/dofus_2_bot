@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class GameFightEffectTriggerCount
+export class GameFightEffectTriggerCount implements INetworkType
 {
 
 	public static readonly protocolId: number = 7405;
@@ -14,6 +14,43 @@ export class GameFightEffectTriggerCount
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return GameFightEffectTriggerCount.protocolId;
+    }
+
+    public initGameFightEffectTriggerCount(effectId: number = 0, targetId: number = 0, count: number = 0): GameFightEffectTriggerCount
+    {
+        this.effectId = effectId;
+        this.targetId = targetId;
+        this.count = count;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightEffectTriggerCount(output);
+    }
+
+    public serializeAs_GameFightEffectTriggerCount(output: ICustomDataOutput)
+    {
+        if(this.effectId < 0)
+        {
+            throw new Error("Forbidden value (" + this.effectId + ") on element effectId.");
+        }
+        output.writeVarInt(this.effectId);
+        if(this.targetId < -9007199254740992 || this.targetId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+        }
+        output.writeDouble(this.targetId);
+        if(this.count < 0)
+        {
+            throw new Error("Forbidden value (" + this.count + ") on element count.");
+        }
+        output.writeShort(this.count);
     }
 
     public deserialize(input: ICustomDataInput)

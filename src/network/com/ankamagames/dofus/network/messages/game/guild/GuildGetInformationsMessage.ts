@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildGetInformationsMessage extends NetworkMessage
+export class GuildGetInformationsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 592;
@@ -16,14 +16,37 @@ export class GuildGetInformationsMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildGetInformationsMessage.protocolId;
+    }
+
+    public initGuildGetInformationsMessage(infoType: number = 0): GuildGetInformationsMessage
+    {
+        this.infoType = infoType;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildGetInformationsMessage(output);
+    }
+
+    public serializeAs_GuildGetInformationsMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.infoType);
     }
 
     public deserialize(input: ICustomDataInput)

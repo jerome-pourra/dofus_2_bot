@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkMessage } from "./../../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../../jerakine/network/NetworkMessage";
 
-export class BreachInvitationCloseMessage extends NetworkMessage
+export class BreachInvitationCloseMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6049;
@@ -18,14 +18,37 @@ export class BreachInvitationCloseMessage extends NetworkMessage
         this.host = new CharacterMinimalInformations();
     }
 
+    public getMessageId()
+    {
+        return BreachInvitationCloseMessage.protocolId;
+    }
+
+    public initBreachInvitationCloseMessage(host: CharacterMinimalInformations = null): BreachInvitationCloseMessage
+    {
+        this.host = host;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachInvitationCloseMessage(output);
+    }
+
+    public serializeAs_BreachInvitationCloseMessage(output: ICustomDataOutput)
+    {
+        this.host.serializeAs_CharacterMinimalInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

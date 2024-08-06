@@ -13,8 +13,8 @@ export interface IDataInput {
     readDouble(): number;
     readUTF(): string;
     
-    readBytes(param1: Buffer, param2: number, param3: number): void;
-    readMultiByte(param1: number, param2: BufferEncoding): string;
+    readBytes(buffer: Buffer, offset?: number, length?: number): void;
+    readMultiByte(length: number, charset?: BufferEncoding): string;
     readObject(): any;
 
 }

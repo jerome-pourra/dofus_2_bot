@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class HouseKickRequestMessage extends NetworkMessage
+export class HouseKickRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7559;
@@ -16,14 +16,41 @@ export class HouseKickRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return HouseKickRequestMessage.protocolId;
+    }
+
+    public initHouseKickRequestMessage(id: number = 0): HouseKickRequestMessage
+    {
+        this.id = id;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HouseKickRequestMessage(output);
+    }
+
+    public serializeAs_HouseKickRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.id < 0 || this.id > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarLong(this.id);
     }
 
     public deserialize(input: ICustomDataInput)

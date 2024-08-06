@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class TreasureHuntFlag
+export class TreasureHuntFlag implements INetworkType
 {
 
 	public static readonly protocolId: number = 8258;
@@ -13,6 +13,33 @@ export class TreasureHuntFlag
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return TreasureHuntFlag.protocolId;
+    }
+
+    public initTreasureHuntFlag(mapId: number = 0, state: number = 0): TreasureHuntFlag
+    {
+        this.mapId = mapId;
+        this.state = state;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TreasureHuntFlag(output);
+    }
+
+    public serializeAs_TreasureHuntFlag(output: ICustomDataOutput)
+    {
+        if(this.mapId < 0 || this.mapId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.mapId + ") on element mapId.");
+        }
+        output.writeDouble(this.mapId);
+        output.writeByte(this.state);
     }
 
     public deserialize(input: ICustomDataInput)

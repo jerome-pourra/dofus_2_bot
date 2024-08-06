@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ObjectsQuantityMessage extends NetworkMessage
+export class ObjectsQuantityMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5664;
@@ -18,14 +18,41 @@ export class ObjectsQuantityMessage extends NetworkMessage
         this.objectsUIDAndQty = Array<ObjectItemQuantity>();
     }
 
+    public getMessageId()
+    {
+        return ObjectsQuantityMessage.protocolId;
+    }
+
+    public initObjectsQuantityMessage(objectsUIDAndQty: Array<ObjectItemQuantity> = null): ObjectsQuantityMessage
+    {
+        this.objectsUIDAndQty = objectsUIDAndQty;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectsQuantityMessage(output);
+    }
+
+    public serializeAs_ObjectsQuantityMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.objectsUIDAndQty.length);
+        for(var _i1: number = 0; _i1 < this.objectsUIDAndQty.length; _i1++)
+        {
+            (this.objectsUIDAndQty[_i1] as ObjectItemQuantity).serializeAs_ObjectItemQuantity(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

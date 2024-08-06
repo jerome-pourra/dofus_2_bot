@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class TaxCollectorStaticInformations
+export class TaxCollectorStaticInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 1672;
@@ -17,6 +17,47 @@ export class TaxCollectorStaticInformations
     public constructor()
     {
         this.allianceIdentity = new AllianceInformation();
+    }
+
+    public getTypeId()
+    {
+        return TaxCollectorStaticInformations.protocolId;
+    }
+
+    public initTaxCollectorStaticInformations(firstNameId: number = 0, lastNameId: number = 0, allianceIdentity: AllianceInformation = null, callerId: number = 0, uid: string = ""): TaxCollectorStaticInformations
+    {
+        this.firstNameId = firstNameId;
+        this.lastNameId = lastNameId;
+        this.allianceIdentity = allianceIdentity;
+        this.callerId = callerId;
+        this.uid = uid;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorStaticInformations(output);
+    }
+
+    public serializeAs_TaxCollectorStaticInformations(output: ICustomDataOutput)
+    {
+        if(this.firstNameId < 0)
+        {
+            throw new Error("Forbidden value (" + this.firstNameId + ") on element firstNameId.");
+        }
+        output.writeVarShort(this.firstNameId);
+        if(this.lastNameId < 0)
+        {
+            throw new Error("Forbidden value (" + this.lastNameId + ") on element lastNameId.");
+        }
+        output.writeVarShort(this.lastNameId);
+        this.allianceIdentity.serializeAs_AllianceInformation(output);
+        if(this.callerId < 0 || this.callerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.callerId + ") on element callerId.");
+        }
+        output.writeVarLong(this.callerId);
+        output.writeUTF(this.uid);
     }
 
     public deserialize(input: ICustomDataInput)

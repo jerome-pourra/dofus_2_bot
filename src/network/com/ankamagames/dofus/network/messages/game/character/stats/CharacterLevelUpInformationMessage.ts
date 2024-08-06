@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { CharacterLevelUpMessage } from "./CharacterLevelUpMessage";
 
-export class CharacterLevelUpInformationMessage extends CharacterLevelUpMessage
+export class CharacterLevelUpInformationMessage extends CharacterLevelUpMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3031;
@@ -17,14 +17,45 @@ export class CharacterLevelUpInformationMessage extends CharacterLevelUpMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return CharacterLevelUpInformationMessage.protocolId;
+    }
+
+    public initCharacterLevelUpInformationMessage(newLevel: number = 0, name: string = "", id: number = 0): CharacterLevelUpInformationMessage
+    {
+        super.initCharacterLevelUpMessage(newLevel);
+        this.name = name;
+        this.id = id;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterLevelUpInformationMessage(output);
+    }
+
+    public serializeAs_CharacterLevelUpInformationMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterLevelUpMessage(output);
+        output.writeUTF(this.name);
+        if(this.id < 0 || this.id > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarLong(this.id);
     }
 
     public deserialize(input: ICustomDataInput)

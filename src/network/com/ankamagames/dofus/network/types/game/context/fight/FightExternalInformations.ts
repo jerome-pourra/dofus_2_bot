@@ -4,7 +4,7 @@ import { INetworkType } from "./../../../../../../jerakine/network/INetworkType"
 import { FightTeamLightInformations } from "./FightTeamLightInformations";
 import { FightOptionsInformations } from "./FightOptionsInformations";
 
-export class FightExternalInformations
+export class FightExternalInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 3630;
@@ -20,6 +20,51 @@ export class FightExternalInformations
     {
         this.fightTeams = Array<FightTeamLightInformations>(2);
         this.fightTeamsOptions = Array<FightOptionsInformations>(2);
+    }
+
+    public getTypeId()
+    {
+        return FightExternalInformations.protocolId;
+    }
+
+    public initFightExternalInformations(fightId: number = 0, fightType: number = 0, fightStart: number = 0, fightSpectatorLocked: boolean = false, fightTeams: Array<FightTeamLightInformations> = null, fightTeamsOptions: Array<FightOptionsInformations> = null): FightExternalInformations
+    {
+        this.fightId = fightId;
+        this.fightType = fightType;
+        this.fightStart = fightStart;
+        this.fightSpectatorLocked = fightSpectatorLocked;
+        this.fightTeams = fightTeams;
+        this.fightTeamsOptions = fightTeamsOptions;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightExternalInformations(output);
+    }
+
+    public serializeAs_FightExternalInformations(output: ICustomDataOutput)
+    {
+        if(this.fightId < 0)
+        {
+            throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+        }
+        output.writeVarShort(this.fightId);
+        output.writeByte(this.fightType);
+        if(this.fightStart < 0)
+        {
+            throw new Error("Forbidden value (" + this.fightStart + ") on element fightStart.");
+        }
+        output.writeInt(this.fightStart);
+        output.writeBoolean(this.fightSpectatorLocked);
+        for(var _i5: number = 0; _i5 < 2; _i5++)
+        {
+            this.fightTeams[_i5].serializeAs_FightTeamLightInformations(output);
+        }
+        for(var _i6: number = 0; _i6 < 2; _i6++)
+        {
+            this.fightTeamsOptions[_i6].serializeAs_FightOptionsInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

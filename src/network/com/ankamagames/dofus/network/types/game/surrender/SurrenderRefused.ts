@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { SurrenderResponse } from "./SurrenderResponse";
 
-export class SurrenderRefused extends SurrenderResponse
+export class SurrenderRefused extends SurrenderResponse implements INetworkType
 {
 
 	public static readonly protocolId: number = 8906;
@@ -11,6 +11,26 @@ export class SurrenderRefused extends SurrenderResponse
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return SurrenderRefused.protocolId;
+    }
+
+    public initSurrenderRefused(): SurrenderRefused
+    {
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SurrenderRefused(output);
+    }
+
+    public serializeAs_SurrenderRefused(output: ICustomDataOutput)
+    {
+
     }
 
     public deserialize(input: ICustomDataInput)

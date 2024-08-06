@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class FriendAddFailureMessage extends NetworkMessage
+export class FriendAddFailureMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6674;
@@ -16,14 +16,37 @@ export class FriendAddFailureMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return FriendAddFailureMessage.protocolId;
+    }
+
+    public initFriendAddFailureMessage(reason: number = 0): FriendAddFailureMessage
+    {
+        this.reason = reason;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FriendAddFailureMessage(output);
+    }
+
+    public serializeAs_FriendAddFailureMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.reason);
     }
 
     public deserialize(input: ICustomDataInput)

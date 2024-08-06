@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class FightStartingPositions
+export class FightStartingPositions implements INetworkType
 {
 
 	public static readonly protocolId: number = 5557;
@@ -14,6 +14,45 @@ export class FightStartingPositions
     {
         this.positionsForChallengers = Array<number>();
         this.positionsForDefenders = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return FightStartingPositions.protocolId;
+    }
+
+    public initFightStartingPositions(positionsForChallengers: Array<number> = null, positionsForDefenders: Array<number> = null): FightStartingPositions
+    {
+        this.positionsForChallengers = positionsForChallengers;
+        this.positionsForDefenders = positionsForDefenders;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightStartingPositions(output);
+    }
+
+    public serializeAs_FightStartingPositions(output: ICustomDataOutput)
+    {
+        output.writeShort(this.positionsForChallengers.length);
+        for(var _i1: number = 0; _i1 < this.positionsForChallengers.length; _i1++)
+        {
+            if(this.positionsForChallengers[_i1] < 0 || this.positionsForChallengers[_i1] > 559)
+            {
+                throw new Error("Forbidden value (" + this.positionsForChallengers[_i1] + ") on element 1 (starting at 1) of positionsForChallengers.");
+            }
+            output.writeVarShort(this.positionsForChallengers[_i1]);
+        }
+        output.writeShort(this.positionsForDefenders.length);
+        for(var _i2: number = 0; _i2 < this.positionsForDefenders.length; _i2++)
+        {
+            if(this.positionsForDefenders[_i2] < 0 || this.positionsForDefenders[_i2] > 559)
+            {
+                throw new Error("Forbidden value (" + this.positionsForDefenders[_i2] + ") on element 2 (starting at 1) of positionsForDefenders.");
+            }
+            output.writeVarShort(this.positionsForDefenders[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

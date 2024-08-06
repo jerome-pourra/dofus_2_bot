@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { BooleanByteWrapper } from "./../../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class FightOptionsInformations
+export class FightOptionsInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 1574;
@@ -16,6 +16,35 @@ export class FightOptionsInformations
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return FightOptionsInformations.protocolId;
+    }
+
+    public initFightOptionsInformations(isSecret: boolean = false, isRestrictedToPartyOnly: boolean = false, isClosed: boolean = false, isAskingForHelp: boolean = false): FightOptionsInformations
+    {
+        this.isSecret = isSecret;
+        this.isRestrictedToPartyOnly = isRestrictedToPartyOnly;
+        this.isClosed = isClosed;
+        this.isAskingForHelp = isAskingForHelp;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightOptionsInformations(output);
+    }
+
+    public serializeAs_FightOptionsInformations(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.isSecret);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.isRestrictedToPartyOnly);
+        _box0 = BooleanByteWrapper.setFlag(_box0,2,this.isClosed);
+        _box0 = BooleanByteWrapper.setFlag(_box0,3,this.isAskingForHelp);
+        output.writeByte(_box0);
     }
 
     public deserialize(input: ICustomDataInput)

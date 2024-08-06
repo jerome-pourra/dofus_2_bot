@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class NuggetsInformationMessage extends NetworkMessage
+export class NuggetsInformationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5214;
@@ -16,14 +16,37 @@ export class NuggetsInformationMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return NuggetsInformationMessage.protocolId;
+    }
+
+    public initNuggetsInformationMessage(nuggetsQuantity: number = 0): NuggetsInformationMessage
+    {
+        this.nuggetsQuantity = nuggetsQuantity;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_NuggetsInformationMessage(output);
+    }
+
+    public serializeAs_NuggetsInformationMessage(output: ICustomDataOutput)
+    {
+        output.writeInt(this.nuggetsQuantity);
     }
 
     public deserialize(input: ICustomDataInput)

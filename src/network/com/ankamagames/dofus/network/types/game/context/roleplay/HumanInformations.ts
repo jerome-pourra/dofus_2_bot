@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { HumanOption } from "./HumanOption";
 
-export class HumanInformations
+export class HumanInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 495;
@@ -18,6 +18,36 @@ export class HumanInformations
     {
         this.restrictions = new ActorRestrictionsInformations();
         this.options = Array<HumanOption>();
+    }
+
+    public getTypeId()
+    {
+        return HumanInformations.protocolId;
+    }
+
+    public initHumanInformations(restrictions: ActorRestrictionsInformations = null, sex: boolean = false, options: Array<HumanOption> = null): HumanInformations
+    {
+        this.restrictions = restrictions;
+        this.sex = sex;
+        this.options = options;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HumanInformations(output);
+    }
+
+    public serializeAs_HumanInformations(output: ICustomDataOutput)
+    {
+        this.restrictions.serializeAs_ActorRestrictionsInformations(output);
+        output.writeBoolean(this.sex);
+        output.writeShort(this.options.length);
+        for(var _i3: number = 0; _i3 < this.options.length; _i3++)
+        {
+            output.writeShort((this.options[_i3] as HumanOption).getTypeId());
+            (this.options[_i3] as HumanOption).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

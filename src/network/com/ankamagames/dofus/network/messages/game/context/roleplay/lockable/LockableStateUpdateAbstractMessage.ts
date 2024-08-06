@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class LockableStateUpdateAbstractMessage extends NetworkMessage
+export class LockableStateUpdateAbstractMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 107;
@@ -16,14 +16,37 @@ export class LockableStateUpdateAbstractMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return LockableStateUpdateAbstractMessage.protocolId;
+    }
+
+    public initLockableStateUpdateAbstractMessage(locked: boolean = false): LockableStateUpdateAbstractMessage
+    {
+        this.locked = locked;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_LockableStateUpdateAbstractMessage(output);
+    }
+
+    public serializeAs_LockableStateUpdateAbstractMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.locked);
     }
 
     public deserialize(input: ICustomDataInput)

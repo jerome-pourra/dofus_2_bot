@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightPlacementSwapPositionsAcceptMessage extends NetworkMessage
+export class GameFightPlacementSwapPositionsAcceptMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 870;
@@ -16,14 +16,41 @@ export class GameFightPlacementSwapPositionsAcceptMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightPlacementSwapPositionsAcceptMessage.protocolId;
+    }
+
+    public initGameFightPlacementSwapPositionsAcceptMessage(requestId: number = 0): GameFightPlacementSwapPositionsAcceptMessage
+    {
+        this.requestId = requestId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightPlacementSwapPositionsAcceptMessage(output);
+    }
+
+    public serializeAs_GameFightPlacementSwapPositionsAcceptMessage(output: ICustomDataOutput)
+    {
+        if(this.requestId < 0)
+        {
+            throw new Error("Forbidden value (" + this.requestId + ") on element requestId.");
+        }
+        output.writeInt(this.requestId);
     }
 
     public deserialize(input: ICustomDataInput)

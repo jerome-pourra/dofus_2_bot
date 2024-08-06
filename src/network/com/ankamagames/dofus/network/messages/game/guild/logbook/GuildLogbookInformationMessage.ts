@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GuildLogbookInformationMessage extends NetworkMessage
+export class GuildLogbookInformationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7376;
@@ -21,14 +21,49 @@ export class GuildLogbookInformationMessage extends NetworkMessage
         this.chestActivities = Array<GuildLogbookEntryBasicInformation>();
     }
 
+    public getMessageId()
+    {
+        return GuildLogbookInformationMessage.protocolId;
+    }
+
+    public initGuildLogbookInformationMessage(globalActivities: Array<GuildLogbookEntryBasicInformation> = null, chestActivities: Array<GuildLogbookEntryBasicInformation> = null): GuildLogbookInformationMessage
+    {
+        this.globalActivities = globalActivities;
+        this.chestActivities = chestActivities;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildLogbookInformationMessage(output);
+    }
+
+    public serializeAs_GuildLogbookInformationMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.globalActivities.length);
+        for(var _i1: number = 0; _i1 < this.globalActivities.length; _i1++)
+        {
+            output.writeShort((this.globalActivities[_i1] as GuildLogbookEntryBasicInformation).getTypeId());
+            (this.globalActivities[_i1] as GuildLogbookEntryBasicInformation).serialize(output);
+        }
+        output.writeShort(this.chestActivities.length);
+        for(var _i2: number = 0; _i2 < this.chestActivities.length; _i2++)
+        {
+            output.writeShort((this.chestActivities[_i2] as GuildLogbookEntryBasicInformation).getTypeId());
+            (this.chestActivities[_i2] as GuildLogbookEntryBasicInformation).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

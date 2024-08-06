@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class GuildLogbookEntryBasicInformation
+export class GuildLogbookEntryBasicInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 8590;
@@ -13,6 +13,37 @@ export class GuildLogbookEntryBasicInformation
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return GuildLogbookEntryBasicInformation.protocolId;
+    }
+
+    public initGuildLogbookEntryBasicInformation(id: number = 0, date: number = 0): GuildLogbookEntryBasicInformation
+    {
+        this.id = id;
+        this.date = date;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildLogbookEntryBasicInformation(output);
+    }
+
+    public serializeAs_GuildLogbookEntryBasicInformation(output: ICustomDataOutput)
+    {
+        if(this.id < 0)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeVarInt(this.id);
+        if(this.date < 0 || this.date > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.date + ") on element date.");
+        }
+        output.writeDouble(this.date);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../../../../jerakine/network/ICu
 import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../../jerakine/network/INetworkType";
 
-export class PartyEntityBaseInformation
+export class PartyEntityBaseInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 5790;
@@ -15,6 +15,39 @@ export class PartyEntityBaseInformation
     public constructor()
     {
         this.entityLook = new EntityLook();
+    }
+
+    public getTypeId()
+    {
+        return PartyEntityBaseInformation.protocolId;
+    }
+
+    public initPartyEntityBaseInformation(indexId: number = 0, entityModelId: number = 0, entityLook: EntityLook = null): PartyEntityBaseInformation
+    {
+        this.indexId = indexId;
+        this.entityModelId = entityModelId;
+        this.entityLook = entityLook;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyEntityBaseInformation(output);
+    }
+
+    public serializeAs_PartyEntityBaseInformation(output: ICustomDataOutput)
+    {
+        if(this.indexId < 0)
+        {
+            throw new Error("Forbidden value (" + this.indexId + ") on element indexId.");
+        }
+        output.writeByte(this.indexId);
+        if(this.entityModelId < 0)
+        {
+            throw new Error("Forbidden value (" + this.entityModelId + ") on element entityModelId.");
+        }
+        output.writeByte(this.entityModelId);
+        this.entityLook.serializeAs_EntityLook(output);
     }
 
     public deserialize(input: ICustomDataInput)

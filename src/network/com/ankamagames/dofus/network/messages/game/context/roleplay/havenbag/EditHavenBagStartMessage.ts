@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class EditHavenBagStartMessage extends NetworkMessage
+export class EditHavenBagStartMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9417;
@@ -14,14 +14,36 @@ export class EditHavenBagStartMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return EditHavenBagStartMessage.protocolId;
+    }
+
+    public initEditHavenBagStartMessage(): EditHavenBagStartMessage
+    {
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_EditHavenBagStartMessage(output);
+    }
+
+    public serializeAs_EditHavenBagStartMessage(output: ICustomDataOutput)
+    {
+
     }
 
     public deserialize(input: ICustomDataInput)

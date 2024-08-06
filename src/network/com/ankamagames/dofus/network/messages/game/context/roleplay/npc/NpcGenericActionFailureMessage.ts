@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class NpcGenericActionFailureMessage extends NetworkMessage
+export class NpcGenericActionFailureMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5877;
@@ -14,14 +14,36 @@ export class NpcGenericActionFailureMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return NpcGenericActionFailureMessage.protocolId;
+    }
+
+    public initNpcGenericActionFailureMessage(): NpcGenericActionFailureMessage
+    {
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_NpcGenericActionFailureMessage(output);
+    }
+
+    public serializeAs_NpcGenericActionFailureMessage(output: ICustomDataOutput)
+    {
+
     }
 
     public deserialize(input: ICustomDataInput)

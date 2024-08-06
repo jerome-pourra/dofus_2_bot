@@ -5,7 +5,7 @@ import { INetworkType } from "./../../../../../../jerakine/network/INetworkType"
 import { FightTeamInformations } from "./FightTeamInformations";
 import { FightOptionsInformations } from "./FightOptionsInformations";
 
-export class FightCommonInformations
+export class FightCommonInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 9113;
@@ -21,6 +21,56 @@ export class FightCommonInformations
         this.fightTeams = Array<FightTeamInformations>();
         this.fightTeamsPositions = Array<number>();
         this.fightTeamsOptions = Array<FightOptionsInformations>();
+    }
+
+    public getTypeId()
+    {
+        return FightCommonInformations.protocolId;
+    }
+
+    public initFightCommonInformations(fightId: number = 0, fightType: number = 0, fightTeams: Array<FightTeamInformations> = null, fightTeamsPositions: Array<number> = null, fightTeamsOptions: Array<FightOptionsInformations> = null): FightCommonInformations
+    {
+        this.fightId = fightId;
+        this.fightType = fightType;
+        this.fightTeams = fightTeams;
+        this.fightTeamsPositions = fightTeamsPositions;
+        this.fightTeamsOptions = fightTeamsOptions;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_FightCommonInformations(output);
+    }
+
+    public serializeAs_FightCommonInformations(output: ICustomDataOutput)
+    {
+        if(this.fightId < 0)
+        {
+            throw new Error("Forbidden value (" + this.fightId + ") on element fightId.");
+        }
+        output.writeVarShort(this.fightId);
+        output.writeByte(this.fightType);
+        output.writeShort(this.fightTeams.length);
+        for(var _i3: number = 0; _i3 < this.fightTeams.length; _i3++)
+        {
+            output.writeShort((this.fightTeams[_i3] as FightTeamInformations).getTypeId());
+            (this.fightTeams[_i3] as FightTeamInformations).serialize(output);
+        }
+        output.writeShort(this.fightTeamsPositions.length);
+        for(var _i4: number = 0; _i4 < this.fightTeamsPositions.length; _i4++)
+        {
+            if(this.fightTeamsPositions[_i4] < 0 || this.fightTeamsPositions[_i4] > 559)
+            {
+                throw new Error("Forbidden value (" + this.fightTeamsPositions[_i4] + ") on element 4 (starting at 1) of fightTeamsPositions.");
+            }
+            output.writeVarShort(this.fightTeamsPositions[_i4]);
+        }
+        output.writeShort(this.fightTeamsOptions.length);
+        for(var _i5: number = 0; _i5 < this.fightTeamsOptions.length; _i5++)
+        {
+            (this.fightTeamsOptions[_i5] as FightOptionsInformations).serializeAs_FightOptionsInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

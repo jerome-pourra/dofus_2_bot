@@ -7,7 +7,7 @@ import { SpawnInformation } from "./SpawnInformation";
 import { GameFightCharacteristics } from "./GameFightCharacteristics";
 import { GameContextBasicSpawnInformation } from "./GameContextBasicSpawnInformation";
 
-export class GameContextSummonsInformation
+export class GameContextSummonsInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 5419;
@@ -24,6 +24,46 @@ export class GameContextSummonsInformation
         this.look = new EntityLook();
         this.stats = new GameFightCharacteristics();
         this.summons = Array<GameContextBasicSpawnInformation>();
+    }
+
+    public getTypeId()
+    {
+        return GameContextSummonsInformation.protocolId;
+    }
+
+    public initGameContextSummonsInformation(spawnInformation: SpawnInformation = null, wave: number = 0, look: EntityLook = null, stats: GameFightCharacteristics = null, summons: Array<GameContextBasicSpawnInformation> = null): GameContextSummonsInformation
+    {
+        this.spawnInformation = spawnInformation;
+        this.wave = wave;
+        this.look = look;
+        this.stats = stats;
+        this.summons = summons;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameContextSummonsInformation(output);
+    }
+
+    public serializeAs_GameContextSummonsInformation(output: ICustomDataOutput)
+    {
+        output.writeShort(this.spawnInformation.getTypeId());
+        this.spawnInformation.serialize(output);
+        if(this.wave < 0)
+        {
+            throw new Error("Forbidden value (" + this.wave + ") on element wave.");
+        }
+        output.writeByte(this.wave);
+        this.look.serializeAs_EntityLook(output);
+        output.writeShort(this.stats.getTypeId());
+        this.stats.serialize(output);
+        output.writeShort(this.summons.length);
+        for(var _i5: number = 0; _i5 < this.summons.length; _i5++)
+        {
+            output.writeShort((this.summons[_i5] as GameContextBasicSpawnInformation).getTypeId());
+            (this.summons[_i5] as GameContextBasicSpawnInformation).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

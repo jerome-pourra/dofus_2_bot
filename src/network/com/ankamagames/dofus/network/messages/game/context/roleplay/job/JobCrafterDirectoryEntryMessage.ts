@@ -7,7 +7,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class JobCrafterDirectoryEntryMessage extends NetworkMessage
+export class JobCrafterDirectoryEntryMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2116;
@@ -24,14 +24,45 @@ export class JobCrafterDirectoryEntryMessage extends NetworkMessage
         this.playerLook = new EntityLook();
     }
 
+    public getMessageId()
+    {
+        return JobCrafterDirectoryEntryMessage.protocolId;
+    }
+
+    public initJobCrafterDirectoryEntryMessage(playerInfo: JobCrafterDirectoryEntryPlayerInfo = null, jobInfoList: Array<JobCrafterDirectoryEntryJobInfo> = null, playerLook: EntityLook = null): JobCrafterDirectoryEntryMessage
+    {
+        this.playerInfo = playerInfo;
+        this.jobInfoList = jobInfoList;
+        this.playerLook = playerLook;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_JobCrafterDirectoryEntryMessage(output);
+    }
+
+    public serializeAs_JobCrafterDirectoryEntryMessage(output: ICustomDataOutput)
+    {
+        this.playerInfo.serializeAs_JobCrafterDirectoryEntryPlayerInfo(output);
+        output.writeShort(this.jobInfoList.length);
+        for(var _i2: number = 0; _i2 < this.jobInfoList.length; _i2++)
+        {
+            (this.jobInfoList[_i2] as JobCrafterDirectoryEntryJobInfo).serializeAs_JobCrafterDirectoryEntryJobInfo(output);
+        }
+        this.playerLook.serializeAs_EntityLook(output);
     }
 
     public deserialize(input: ICustomDataInput)

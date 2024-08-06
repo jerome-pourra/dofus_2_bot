@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { IconPresetSaveRequestMessage } from "./IconPresetSaveRequestMessage";
 
-export class IconNamedPresetSaveRequestMessage extends IconPresetSaveRequestMessage
+export class IconNamedPresetSaveRequestMessage extends IconPresetSaveRequestMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6922;
@@ -17,14 +17,41 @@ export class IconNamedPresetSaveRequestMessage extends IconPresetSaveRequestMess
         super();
     }
 
+    public getMessageId()
+    {
+        return IconNamedPresetSaveRequestMessage.protocolId;
+    }
+
+    public initIconNamedPresetSaveRequestMessage(presetId: number = 0, symbolId: number = 0, updateData: boolean = false, name: string = "", type: number = 0): IconNamedPresetSaveRequestMessage
+    {
+        super.initIconPresetSaveRequestMessage(presetId,symbolId,updateData);
+        this.name = name;
+        this.type = type;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IconNamedPresetSaveRequestMessage(output);
+    }
+
+    public serializeAs_IconNamedPresetSaveRequestMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_IconPresetSaveRequestMessage(output);
+        output.writeUTF(this.name);
+        output.writeByte(this.type);
     }
 
     public deserialize(input: ICustomDataInput)

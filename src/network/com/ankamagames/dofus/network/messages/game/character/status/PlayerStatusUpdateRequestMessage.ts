@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class PlayerStatusUpdateRequestMessage extends NetworkMessage
+export class PlayerStatusUpdateRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4213;
@@ -19,14 +19,38 @@ export class PlayerStatusUpdateRequestMessage extends NetworkMessage
         this.status = new PlayerStatus();
     }
 
+    public getMessageId()
+    {
+        return PlayerStatusUpdateRequestMessage.protocolId;
+    }
+
+    public initPlayerStatusUpdateRequestMessage(status: PlayerStatus = null): PlayerStatusUpdateRequestMessage
+    {
+        this.status = status;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PlayerStatusUpdateRequestMessage(output);
+    }
+
+    public serializeAs_PlayerStatusUpdateRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.status.getTypeId());
+        this.status.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

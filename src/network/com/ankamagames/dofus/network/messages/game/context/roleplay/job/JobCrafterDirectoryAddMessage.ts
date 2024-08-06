@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class JobCrafterDirectoryAddMessage extends NetworkMessage
+export class JobCrafterDirectoryAddMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9328;
@@ -18,14 +18,37 @@ export class JobCrafterDirectoryAddMessage extends NetworkMessage
         this.listEntry = new JobCrafterDirectoryListEntry();
     }
 
+    public getMessageId()
+    {
+        return JobCrafterDirectoryAddMessage.protocolId;
+    }
+
+    public initJobCrafterDirectoryAddMessage(listEntry: JobCrafterDirectoryListEntry = null): JobCrafterDirectoryAddMessage
+    {
+        this.listEntry = listEntry;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_JobCrafterDirectoryAddMessage(output);
+    }
+
+    public serializeAs_JobCrafterDirectoryAddMessage(output: ICustomDataOutput)
+    {
+        this.listEntry.serializeAs_JobCrafterDirectoryListEntry(output);
     }
 
     public deserialize(input: ICustomDataInput)

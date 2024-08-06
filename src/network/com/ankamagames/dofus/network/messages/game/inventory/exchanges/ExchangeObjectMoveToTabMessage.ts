@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeObjectMoveToTabMessage extends NetworkMessage
+export class ExchangeObjectMoveToTabMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1002;
@@ -18,14 +18,49 @@ export class ExchangeObjectMoveToTabMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeObjectMoveToTabMessage.protocolId;
+    }
+
+    public initExchangeObjectMoveToTabMessage(objectUID: number = 0, quantity: number = 0, tabNumber: number = 0): ExchangeObjectMoveToTabMessage
+    {
+        this.objectUID = objectUID;
+        this.quantity = quantity;
+        this.tabNumber = tabNumber;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeObjectMoveToTabMessage(output);
+    }
+
+    public serializeAs_ExchangeObjectMoveToTabMessage(output: ICustomDataOutput)
+    {
+        if(this.objectUID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectUID + ") on element objectUID.");
+        }
+        output.writeVarInt(this.objectUID);
+        output.writeVarInt(this.quantity);
+        if(this.tabNumber < 0)
+        {
+            throw new Error("Forbidden value (" + this.tabNumber + ") on element tabNumber.");
+        }
+        output.writeVarInt(this.tabNumber);
     }
 
     public deserialize(input: ICustomDataInput)

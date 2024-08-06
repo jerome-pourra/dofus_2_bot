@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeObjectTransfertListToInvMessage extends NetworkMessage
+export class ExchangeObjectTransfertListToInvMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8793;
@@ -17,14 +17,45 @@ export class ExchangeObjectTransfertListToInvMessage extends NetworkMessage
         this.ids = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return ExchangeObjectTransfertListToInvMessage.protocolId;
+    }
+
+    public initExchangeObjectTransfertListToInvMessage(ids: Array<number> = null): ExchangeObjectTransfertListToInvMessage
+    {
+        this.ids = ids;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeObjectTransfertListToInvMessage(output);
+    }
+
+    public serializeAs_ExchangeObjectTransfertListToInvMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.ids.length);
+        for(var _i1: number = 0; _i1 < this.ids.length; _i1++)
+        {
+            if(this.ids[_i1] < 0)
+            {
+                throw new Error("Forbidden value (" + this.ids[_i1] + ") on element 1 (starting at 1) of ids.");
+            }
+            output.writeVarInt(this.ids[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

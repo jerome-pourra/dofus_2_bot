@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeStartOkMulticraftCrafterMessage extends NetworkMessage
+export class ExchangeStartOkMulticraftCrafterMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7458;
@@ -16,14 +16,41 @@ export class ExchangeStartOkMulticraftCrafterMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeStartOkMulticraftCrafterMessage.protocolId;
+    }
+
+    public initExchangeStartOkMulticraftCrafterMessage(skillId: number = 0): ExchangeStartOkMulticraftCrafterMessage
+    {
+        this.skillId = skillId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeStartOkMulticraftCrafterMessage(output);
+    }
+
+    public serializeAs_ExchangeStartOkMulticraftCrafterMessage(output: ICustomDataOutput)
+    {
+        if(this.skillId < 0)
+        {
+            throw new Error("Forbidden value (" + this.skillId + ") on element skillId.");
+        }
+        output.writeVarInt(this.skillId);
     }
 
     public deserialize(input: ICustomDataInput)

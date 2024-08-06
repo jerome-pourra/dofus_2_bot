@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ChatSmileyExtraPackListMessage extends NetworkMessage
+export class ChatSmileyExtraPackListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3973;
@@ -17,14 +17,45 @@ export class ChatSmileyExtraPackListMessage extends NetworkMessage
         this.packIds = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return ChatSmileyExtraPackListMessage.protocolId;
+    }
+
+    public initChatSmileyExtraPackListMessage(packIds: Array<number> = null): ChatSmileyExtraPackListMessage
+    {
+        this.packIds = packIds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChatSmileyExtraPackListMessage(output);
+    }
+
+    public serializeAs_ChatSmileyExtraPackListMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.packIds.length);
+        for(var _i1: number = 0; _i1 < this.packIds.length; _i1++)
+        {
+            if(this.packIds[_i1] < 0)
+            {
+                throw new Error("Forbidden value (" + this.packIds[_i1] + ") on element 1 (starting at 1) of packIds.");
+            }
+            output.writeByte(this.packIds[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

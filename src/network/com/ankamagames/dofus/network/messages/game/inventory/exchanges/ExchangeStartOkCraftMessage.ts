@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeStartOkCraftMessage extends NetworkMessage
+export class ExchangeStartOkCraftMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6203;
@@ -14,14 +14,36 @@ export class ExchangeStartOkCraftMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ExchangeStartOkCraftMessage.protocolId;
+    }
+
+    public initExchangeStartOkCraftMessage(): ExchangeStartOkCraftMessage
+    {
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeStartOkCraftMessage(output);
+    }
+
+    public serializeAs_ExchangeStartOkCraftMessage(output: ICustomDataOutput)
+    {
+
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { Item } from "./Item";
 
-export class ObjectItemMinimalInformation extends Item
+export class ObjectItemMinimalInformation extends Item implements INetworkType
 {
 
 	public static readonly protocolId: number = 9931;
@@ -17,6 +17,39 @@ export class ObjectItemMinimalInformation extends Item
     {
         super();
         this.effects = Array<ObjectEffect>();
+    }
+
+    public getTypeId()
+    {
+        return ObjectItemMinimalInformation.protocolId;
+    }
+
+    public initObjectItemMinimalInformation(objectGID: number = 0, effects: Array<ObjectEffect> = null): ObjectItemMinimalInformation
+    {
+        this.objectGID = objectGID;
+        this.effects = effects;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectItemMinimalInformation(output);
+    }
+
+    public serializeAs_ObjectItemMinimalInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_Item(output);
+        if(this.objectGID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+        }
+        output.writeVarInt(this.objectGID);
+        output.writeShort(this.effects.length);
+        for(var _i2: number = 0; _i2 < this.effects.length; _i2++)
+        {
+            output.writeShort((this.effects[_i2] as ObjectEffect).getTypeId());
+            (this.effects[_i2] as ObjectEffect).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

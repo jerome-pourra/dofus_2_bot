@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceApplicationPresenceMessage extends NetworkMessage
+export class AllianceApplicationPresenceMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8886;
@@ -16,14 +16,37 @@ export class AllianceApplicationPresenceMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AllianceApplicationPresenceMessage.protocolId;
+    }
+
+    public initAllianceApplicationPresenceMessage(isApplication: boolean = false): AllianceApplicationPresenceMessage
+    {
+        this.isApplication = isApplication;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceApplicationPresenceMessage(output);
+    }
+
+    public serializeAs_AllianceApplicationPresenceMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.isApplication);
     }
 
     public deserialize(input: ICustomDataInput)

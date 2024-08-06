@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TaxCollectorAttackedResultMessage extends NetworkMessage
+export class TaxCollectorAttackedResultMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4787;
@@ -22,14 +22,41 @@ export class TaxCollectorAttackedResultMessage extends NetworkMessage
         this.alliance = new BasicAllianceInformations();
     }
 
+    public getMessageId()
+    {
+        return TaxCollectorAttackedResultMessage.protocolId;
+    }
+
+    public initTaxCollectorAttackedResultMessage(deadOrAlive: boolean = false, basicInfos: TaxCollectorBasicInformations = null, alliance: BasicAllianceInformations = null): TaxCollectorAttackedResultMessage
+    {
+        this.deadOrAlive = deadOrAlive;
+        this.basicInfos = basicInfos;
+        this.alliance = alliance;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorAttackedResultMessage(output);
+    }
+
+    public serializeAs_TaxCollectorAttackedResultMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.deadOrAlive);
+        this.basicInfos.serializeAs_TaxCollectorBasicInformations(output);
+        this.alliance.serializeAs_BasicAllianceInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)

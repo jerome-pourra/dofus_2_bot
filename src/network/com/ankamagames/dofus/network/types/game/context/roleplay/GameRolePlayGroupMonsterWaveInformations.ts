@@ -7,7 +7,7 @@ import { INetworkType } from "./../../../../../../jerakine/network/INetworkType"
 import { GroupMonsterStaticInformations } from "./GroupMonsterStaticInformations";
 import { GameRolePlayGroupMonsterInformations } from "./GameRolePlayGroupMonsterInformations";
 
-export class GameRolePlayGroupMonsterWaveInformations extends GameRolePlayGroupMonsterInformations
+export class GameRolePlayGroupMonsterWaveInformations extends GameRolePlayGroupMonsterInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 6822;
@@ -19,6 +19,40 @@ export class GameRolePlayGroupMonsterWaveInformations extends GameRolePlayGroupM
     {
         super();
         this.alternatives = Array<GroupMonsterStaticInformations>();
+    }
+
+    public getTypeId()
+    {
+        return GameRolePlayGroupMonsterWaveInformations.protocolId;
+    }
+
+    public initGameRolePlayGroupMonsterWaveInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, staticInfos: GroupMonsterStaticInformations = null, lootShare: number = 0, alignmentSide: number = 0, hasHardcoreDrop: boolean = false, nbWaves: number = 0, alternatives: Array<GroupMonsterStaticInformations> = null): GameRolePlayGroupMonsterWaveInformations
+    {
+        super.initGameRolePlayGroupMonsterInformations(contextualId,disposition,look,staticInfos,lootShare,alignmentSide,hasHardcoreDrop);
+        this.nbWaves = nbWaves;
+        this.alternatives = alternatives;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayGroupMonsterWaveInformations(output);
+    }
+
+    public serializeAs_GameRolePlayGroupMonsterWaveInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameRolePlayGroupMonsterInformations(output);
+        if(this.nbWaves < 0)
+        {
+            throw new Error("Forbidden value (" + this.nbWaves + ") on element nbWaves.");
+        }
+        output.writeByte(this.nbWaves);
+        output.writeShort(this.alternatives.length);
+        for(var _i2: number = 0; _i2 < this.alternatives.length; _i2++)
+        {
+            output.writeShort((this.alternatives[_i2] as GroupMonsterStaticInformations).getTypeId());
+            (this.alternatives[_i2] as GroupMonsterStaticInformations).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

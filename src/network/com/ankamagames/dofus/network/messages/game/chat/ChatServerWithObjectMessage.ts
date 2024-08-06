@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { ChatServerMessage } from "./ChatServerMessage";
 
-export class ChatServerWithObjectMessage extends ChatServerMessage
+export class ChatServerWithObjectMessage extends ChatServerMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 399;
@@ -18,14 +18,43 @@ export class ChatServerWithObjectMessage extends ChatServerMessage
         this.objects = Array<ObjectItem>();
     }
 
+    public getMessageId()
+    {
+        return ChatServerWithObjectMessage.protocolId;
+    }
+
+    public initChatServerWithObjectMessage(channel: number = 0, content: string = "", timestamp: number = 0, fingerprint: string = "", senderId: number = 0, senderName: string = "", prefix: string = "", senderAccountId: number = 0, objects: Array<ObjectItem> = null): ChatServerWithObjectMessage
+    {
+        super.initChatServerMessage(channel,content,timestamp,fingerprint,senderId,senderName,prefix,senderAccountId);
+        this.objects = objects;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChatServerWithObjectMessage(output);
+    }
+
+    public serializeAs_ChatServerWithObjectMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ChatServerMessage(output);
+        output.writeShort(this.objects.length);
+        for(var _i1: number = 0; _i1 < this.objects.length; _i1++)
+        {
+            (this.objects[_i1] as ObjectItem).serializeAs_ObjectItem(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

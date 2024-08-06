@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { PresetUseResultMessage } from "./PresetUseResultMessage";
 
-export class PresetUseResultWithMissingIdsMessage extends PresetUseResultMessage
+export class PresetUseResultWithMissingIdsMessage extends PresetUseResultMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5059;
@@ -17,14 +17,47 @@ export class PresetUseResultWithMissingIdsMessage extends PresetUseResultMessage
         this.missingIds = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return PresetUseResultWithMissingIdsMessage.protocolId;
+    }
+
+    public initPresetUseResultWithMissingIdsMessage(presetId: number = 0, code: number = 3, missingIds: Array<number> = null): PresetUseResultWithMissingIdsMessage
+    {
+        super.initPresetUseResultMessage(presetId,code);
+        this.missingIds = missingIds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PresetUseResultWithMissingIdsMessage(output);
+    }
+
+    public serializeAs_PresetUseResultWithMissingIdsMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_PresetUseResultMessage(output);
+        output.writeShort(this.missingIds.length);
+        for(var _i1: number = 0; _i1 < this.missingIds.length; _i1++)
+        {
+            if(this.missingIds[_i1] < 0)
+            {
+                throw new Error("Forbidden value (" + this.missingIds[_i1] + ") on element 1 (starting at 1) of missingIds.");
+            }
+            output.writeVarShort(this.missingIds[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

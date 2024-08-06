@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TaxCollectorPresetSpellUpdatedMessage extends NetworkMessage
+export class TaxCollectorPresetSpellUpdatedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2628;
@@ -21,14 +21,43 @@ export class TaxCollectorPresetSpellUpdatedMessage extends NetworkMessage
         this.taxCollectorSpells = Array<TaxCollectorOrderedSpell>();
     }
 
+    public getMessageId()
+    {
+        return TaxCollectorPresetSpellUpdatedMessage.protocolId;
+    }
+
+    public initTaxCollectorPresetSpellUpdatedMessage(presetId: Uuid = null, taxCollectorSpells: Array<TaxCollectorOrderedSpell> = null): TaxCollectorPresetSpellUpdatedMessage
+    {
+        this.presetId = presetId;
+        this.taxCollectorSpells = taxCollectorSpells;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorPresetSpellUpdatedMessage(output);
+    }
+
+    public serializeAs_TaxCollectorPresetSpellUpdatedMessage(output: ICustomDataOutput)
+    {
+        this.presetId.serializeAs_Uuid(output);
+        output.writeShort(this.taxCollectorSpells.length);
+        for(var _i2: number = 0; _i2 < this.taxCollectorSpells.length; _i2++)
+        {
+            (this.taxCollectorSpells[_i2] as TaxCollectorOrderedSpell).serializeAs_TaxCollectorOrderedSpell(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

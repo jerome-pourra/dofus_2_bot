@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class HavenBagRoomUpdateMessage extends NetworkMessage
+export class HavenBagRoomUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5461;
@@ -19,14 +19,43 @@ export class HavenBagRoomUpdateMessage extends NetworkMessage
         this.roomsPreview = Array<HavenBagRoomPreviewInformation>();
     }
 
+    public getMessageId()
+    {
+        return HavenBagRoomUpdateMessage.protocolId;
+    }
+
+    public initHavenBagRoomUpdateMessage(action: number = 0, roomsPreview: Array<HavenBagRoomPreviewInformation> = null): HavenBagRoomUpdateMessage
+    {
+        this.action = action;
+        this.roomsPreview = roomsPreview;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HavenBagRoomUpdateMessage(output);
+    }
+
+    public serializeAs_HavenBagRoomUpdateMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.action);
+        output.writeShort(this.roomsPreview.length);
+        for(var _i2: number = 0; _i2 < this.roomsPreview.length; _i2++)
+        {
+            (this.roomsPreview[_i2] as HavenBagRoomPreviewInformation).serializeAs_HavenBagRoomPreviewInformation(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

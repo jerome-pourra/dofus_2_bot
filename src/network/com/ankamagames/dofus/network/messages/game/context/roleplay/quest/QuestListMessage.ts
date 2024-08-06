@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class QuestListMessage extends NetworkMessage
+export class QuestListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3323;
@@ -25,14 +25,72 @@ export class QuestListMessage extends NetworkMessage
         this.reinitDoneQuestsIds = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return QuestListMessage.protocolId;
+    }
+
+    public initQuestListMessage(finishedQuestsIds: Array<number> = null, finishedQuestsCounts: Array<number> = null, activeQuests: Array<QuestActiveInformations> = null, reinitDoneQuestsIds: Array<number> = null): QuestListMessage
+    {
+        this.finishedQuestsIds = finishedQuestsIds;
+        this.finishedQuestsCounts = finishedQuestsCounts;
+        this.activeQuests = activeQuests;
+        this.reinitDoneQuestsIds = reinitDoneQuestsIds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_QuestListMessage(output);
+    }
+
+    public serializeAs_QuestListMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.finishedQuestsIds.length);
+        for(var _i1: number = 0; _i1 < this.finishedQuestsIds.length; _i1++)
+        {
+            if(this.finishedQuestsIds[_i1] < 0)
+            {
+                throw new Error("Forbidden value (" + this.finishedQuestsIds[_i1] + ") on element 1 (starting at 1) of finishedQuestsIds.");
+            }
+            output.writeVarShort(this.finishedQuestsIds[_i1]);
+        }
+        output.writeShort(this.finishedQuestsCounts.length);
+        for(var _i2: number = 0; _i2 < this.finishedQuestsCounts.length; _i2++)
+        {
+            if(this.finishedQuestsCounts[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.finishedQuestsCounts[_i2] + ") on element 2 (starting at 1) of finishedQuestsCounts.");
+            }
+            output.writeVarShort(this.finishedQuestsCounts[_i2]);
+        }
+        output.writeShort(this.activeQuests.length);
+        for(var _i3: number = 0; _i3 < this.activeQuests.length; _i3++)
+        {
+            output.writeShort((this.activeQuests[_i3] as QuestActiveInformations).getTypeId());
+            (this.activeQuests[_i3] as QuestActiveInformations).serialize(output);
+        }
+        output.writeShort(this.reinitDoneQuestsIds.length);
+        for(var _i4: number = 0; _i4 < this.reinitDoneQuestsIds.length; _i4++)
+        {
+            if(this.reinitDoneQuestsIds[_i4] < 0)
+            {
+                throw new Error("Forbidden value (" + this.reinitDoneQuestsIds[_i4] + ") on element 4 (starting at 1) of reinitDoneQuestsIds.");
+            }
+            output.writeVarShort(this.reinitDoneQuestsIds[_i4]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

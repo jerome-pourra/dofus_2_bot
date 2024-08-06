@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceRanksMessage extends NetworkMessage
+export class AllianceRanksMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4427;
@@ -18,14 +18,41 @@ export class AllianceRanksMessage extends NetworkMessage
         this.ranks = Array<RankInformation>();
     }
 
+    public getMessageId()
+    {
+        return AllianceRanksMessage.protocolId;
+    }
+
+    public initAllianceRanksMessage(ranks: Array<RankInformation> = null): AllianceRanksMessage
+    {
+        this.ranks = ranks;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceRanksMessage(output);
+    }
+
+    public serializeAs_AllianceRanksMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.ranks.length);
+        for(var _i1: number = 0; _i1 < this.ranks.length; _i1++)
+        {
+            (this.ranks[_i1] as RankInformation).serializeAs_RankInformation(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

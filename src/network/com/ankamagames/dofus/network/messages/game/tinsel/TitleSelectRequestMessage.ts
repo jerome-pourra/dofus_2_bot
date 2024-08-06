@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class TitleSelectRequestMessage extends NetworkMessage
+export class TitleSelectRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5375;
@@ -16,14 +16,41 @@ export class TitleSelectRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TitleSelectRequestMessage.protocolId;
+    }
+
+    public initTitleSelectRequestMessage(titleId: number = 0): TitleSelectRequestMessage
+    {
+        this.titleId = titleId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TitleSelectRequestMessage(output);
+    }
+
+    public serializeAs_TitleSelectRequestMessage(output: ICustomDataOutput)
+    {
+        if(this.titleId < 0)
+        {
+            throw new Error("Forbidden value (" + this.titleId + ") on element titleId.");
+        }
+        output.writeVarShort(this.titleId);
     }
 
     public deserialize(input: ICustomDataInput)

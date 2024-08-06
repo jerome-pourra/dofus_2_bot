@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { GameFightJoinMessage } from "./GameFightJoinMessage";
 
-export class GameFightSpectatorJoinMessage extends GameFightJoinMessage
+export class GameFightSpectatorJoinMessage extends GameFightJoinMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 3924;
@@ -18,14 +18,43 @@ export class GameFightSpectatorJoinMessage extends GameFightJoinMessage
         this.namedPartyTeams = Array<NamedPartyTeam>();
     }
 
+    public getMessageId()
+    {
+        return GameFightSpectatorJoinMessage.protocolId;
+    }
+
+    public initGameFightSpectatorJoinMessage(isTeamPhase: boolean = false, canBeCancelled: boolean = false, canSayReady: boolean = false, isFightStarted: boolean = false, timeMaxBeforeFightStart: number = 0, fightType: number = 0, namedPartyTeams: Array<NamedPartyTeam> = null): GameFightSpectatorJoinMessage
+    {
+        super.initGameFightJoinMessage(isTeamPhase,canBeCancelled,canSayReady,isFightStarted,timeMaxBeforeFightStart,fightType);
+        this.namedPartyTeams = namedPartyTeams;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightSpectatorJoinMessage(output);
+    }
+
+    public serializeAs_GameFightSpectatorJoinMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameFightJoinMessage(output);
+        output.writeShort(this.namedPartyTeams.length);
+        for(var _i1: number = 0; _i1 < this.namedPartyTeams.length; _i1++)
+        {
+            (this.namedPartyTeams[_i1] as NamedPartyTeam).serializeAs_NamedPartyTeam(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

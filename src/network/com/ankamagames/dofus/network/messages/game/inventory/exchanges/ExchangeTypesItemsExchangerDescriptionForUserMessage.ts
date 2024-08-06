@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class ExchangeTypesItemsExchangerDescriptionForUserMessage extends NetworkMessage
+export class ExchangeTypesItemsExchangerDescriptionForUserMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2738;
@@ -20,14 +20,53 @@ export class ExchangeTypesItemsExchangerDescriptionForUserMessage extends Networ
         this.itemTypeDescriptions = Array<BidExchangerObjectInfo>();
     }
 
+    public getMessageId()
+    {
+        return ExchangeTypesItemsExchangerDescriptionForUserMessage.protocolId;
+    }
+
+    public initExchangeTypesItemsExchangerDescriptionForUserMessage(objectGID: number = 0, objectType: number = 0, itemTypeDescriptions: Array<BidExchangerObjectInfo> = null): ExchangeTypesItemsExchangerDescriptionForUserMessage
+    {
+        this.objectGID = objectGID;
+        this.objectType = objectType;
+        this.itemTypeDescriptions = itemTypeDescriptions;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ExchangeTypesItemsExchangerDescriptionForUserMessage(output);
+    }
+
+    public serializeAs_ExchangeTypesItemsExchangerDescriptionForUserMessage(output: ICustomDataOutput)
+    {
+        if(this.objectGID < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectGID + ") on element objectGID.");
+        }
+        output.writeVarInt(this.objectGID);
+        if(this.objectType < 0)
+        {
+            throw new Error("Forbidden value (" + this.objectType + ") on element objectType.");
+        }
+        output.writeInt(this.objectType);
+        output.writeShort(this.itemTypeDescriptions.length);
+        for(var _i3: number = 0; _i3 < this.itemTypeDescriptions.length; _i3++)
+        {
+            (this.itemTypeDescriptions[_i3] as BidExchangerObjectInfo).serializeAs_BidExchangerObjectInfo(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

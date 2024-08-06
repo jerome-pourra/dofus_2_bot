@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class MountReleasedMessage extends NetworkMessage
+export class MountReleasedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7843;
@@ -16,14 +16,37 @@ export class MountReleasedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return MountReleasedMessage.protocolId;
+    }
+
+    public initMountReleasedMessage(mountId: number = 0): MountReleasedMessage
+    {
+        this.mountId = mountId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_MountReleasedMessage(output);
+    }
+
+    public serializeAs_MountReleasedMessage(output: ICustomDataOutput)
+    {
+        output.writeVarInt(this.mountId);
     }
 
     public deserialize(input: ICustomDataInput)

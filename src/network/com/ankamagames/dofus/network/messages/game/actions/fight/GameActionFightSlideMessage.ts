@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 
-export class GameActionFightSlideMessage extends AbstractGameActionMessage
+export class GameActionFightSlideMessage extends AbstractGameActionMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7006;
@@ -18,14 +18,55 @@ export class GameActionFightSlideMessage extends AbstractGameActionMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameActionFightSlideMessage.protocolId;
+    }
+
+    public initGameActionFightSlideMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, startCellId: number = 0, endCellId: number = 0): GameActionFightSlideMessage
+    {
+        super.initAbstractGameActionMessage(actionId,sourceId);
+        this.targetId = targetId;
+        this.startCellId = startCellId;
+        this.endCellId = endCellId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionFightSlideMessage(output);
+    }
+
+    public serializeAs_GameActionFightSlideMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractGameActionMessage(output);
+        if(this.targetId < -9007199254740992 || this.targetId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.targetId + ") on element targetId.");
+        }
+        output.writeDouble(this.targetId);
+        if(this.startCellId < -1 || this.startCellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.startCellId + ") on element startCellId.");
+        }
+        output.writeShort(this.startCellId);
+        if(this.endCellId < -1 || this.endCellId > 559)
+        {
+            throw new Error("Forbidden value (" + this.endCellId + ") on element endCellId.");
+        }
+        output.writeShort(this.endCellId);
     }
 
     public deserialize(input: ICustomDataInput)

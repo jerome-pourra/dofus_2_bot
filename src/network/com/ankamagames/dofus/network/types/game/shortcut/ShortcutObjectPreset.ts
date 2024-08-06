@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { ShortcutObject } from "./ShortcutObject";
 
-export class ShortcutObjectPreset extends ShortcutObject
+export class ShortcutObjectPreset extends ShortcutObject implements INetworkType
 {
 
 	public static readonly protocolId: number = 1697;
@@ -13,6 +13,29 @@ export class ShortcutObjectPreset extends ShortcutObject
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ShortcutObjectPreset.protocolId;
+    }
+
+    public initShortcutObjectPreset(slot: number = 0, presetId: number = 0): ShortcutObjectPreset
+    {
+        super.initShortcutObject(slot);
+        this.presetId = presetId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ShortcutObjectPreset(output);
+    }
+
+    public serializeAs_ShortcutObjectPreset(output: ICustomDataOutput)
+    {
+        super.serializeAs_ShortcutObject(output);
+        output.writeShort(this.presetId);
     }
 
     public deserialize(input: ICustomDataInput)

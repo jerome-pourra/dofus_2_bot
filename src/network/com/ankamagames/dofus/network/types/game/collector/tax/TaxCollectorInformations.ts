@@ -10,7 +10,7 @@ import { AdditionalTaxCollectorInformation } from "./AdditionalTaxCollectorInfor
 import { TaxCollectorComplementaryInformations } from "./TaxCollectorComplementaryInformations";
 import { TaxCollectorOrderedSpell } from "./TaxCollectorOrderedSpell";
 
-export class TaxCollectorInformations
+export class TaxCollectorInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 4158;
@@ -39,6 +39,90 @@ export class TaxCollectorInformations
         this.characteristics = new CharacterCharacteristics();
         this.equipments = Array<ObjectItem>();
         this.spells = Array<TaxCollectorOrderedSpell>();
+    }
+
+    public getTypeId()
+    {
+        return TaxCollectorInformations.protocolId;
+    }
+
+    public initTaxCollectorInformations(uniqueId: number = 0, firstNameId: number = 0, lastNameId: number = 0, allianceIdentity: AllianceInformation = null, additionalInfos: AdditionalTaxCollectorInformation = null, worldX: number = 0, worldY: number = 0, subAreaId: number = 0, state: number = 0, look: EntityLook = null, complements: Array<TaxCollectorComplementaryInformations> = null, characteristics: CharacterCharacteristics = null, equipments: Array<ObjectItem> = null, spells: Array<TaxCollectorOrderedSpell> = null): TaxCollectorInformations
+    {
+        this.uniqueId = uniqueId;
+        this.firstNameId = firstNameId;
+        this.lastNameId = lastNameId;
+        this.allianceIdentity = allianceIdentity;
+        this.additionalInfos = additionalInfos;
+        this.worldX = worldX;
+        this.worldY = worldY;
+        this.subAreaId = subAreaId;
+        this.state = state;
+        this.look = look;
+        this.complements = complements;
+        this.characteristics = characteristics;
+        this.equipments = equipments;
+        this.spells = spells;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorInformations(output);
+    }
+
+    public serializeAs_TaxCollectorInformations(output: ICustomDataOutput)
+    {
+        if(this.uniqueId < 0 || this.uniqueId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.uniqueId + ") on element uniqueId.");
+        }
+        output.writeDouble(this.uniqueId);
+        if(this.firstNameId < 0)
+        {
+            throw new Error("Forbidden value (" + this.firstNameId + ") on element firstNameId.");
+        }
+        output.writeVarShort(this.firstNameId);
+        if(this.lastNameId < 0)
+        {
+            throw new Error("Forbidden value (" + this.lastNameId + ") on element lastNameId.");
+        }
+        output.writeVarShort(this.lastNameId);
+        this.allianceIdentity.serializeAs_AllianceInformation(output);
+        this.additionalInfos.serializeAs_AdditionalTaxCollectorInformation(output);
+        if(this.worldX < -255 || this.worldX > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldX + ") on element worldX.");
+        }
+        output.writeShort(this.worldX);
+        if(this.worldY < -255 || this.worldY > 255)
+        {
+            throw new Error("Forbidden value (" + this.worldY + ") on element worldY.");
+        }
+        output.writeShort(this.worldY);
+        if(this.subAreaId < 0)
+        {
+            throw new Error("Forbidden value (" + this.subAreaId + ") on element subAreaId.");
+        }
+        output.writeVarShort(this.subAreaId);
+        output.writeByte(this.state);
+        this.look.serializeAs_EntityLook(output);
+        output.writeShort(this.complements.length);
+        for(var _i11: number = 0; _i11 < this.complements.length; _i11++)
+        {
+            output.writeShort((this.complements[_i11] as TaxCollectorComplementaryInformations).getTypeId());
+            (this.complements[_i11] as TaxCollectorComplementaryInformations).serialize(output);
+        }
+        this.characteristics.serializeAs_CharacterCharacteristics(output);
+        output.writeShort(this.equipments.length);
+        for(var _i13: number = 0; _i13 < this.equipments.length; _i13++)
+        {
+            (this.equipments[_i13] as ObjectItem).serializeAs_ObjectItem(output);
+        }
+        output.writeShort(this.spells.length);
+        for(var _i14: number = 0; _i14 < this.spells.length; _i14++)
+        {
+            (this.spells[_i14] as TaxCollectorOrderedSpell).serializeAs_TaxCollectorOrderedSpell(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

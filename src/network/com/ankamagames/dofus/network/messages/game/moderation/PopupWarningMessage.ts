@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class PopupWarningMessage extends NetworkMessage
+export class PopupWarningMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1024;
@@ -18,14 +18,45 @@ export class PopupWarningMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PopupWarningMessage.protocolId;
+    }
+
+    public initPopupWarningMessage(lockDuration: number = 0, author: string = "", content: string = ""): PopupWarningMessage
+    {
+        this.lockDuration = lockDuration;
+        this.author = author;
+        this.content = content;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PopupWarningMessage(output);
+    }
+
+    public serializeAs_PopupWarningMessage(output: ICustomDataOutput)
+    {
+        if(this.lockDuration < 0 || this.lockDuration > 255)
+        {
+            throw new Error("Forbidden value (" + this.lockDuration + ") on element lockDuration.");
+        }
+        output.writeByte(this.lockDuration);
+        output.writeUTF(this.author);
+        output.writeUTF(this.content);
     }
 
     public deserialize(input: ICustomDataInput)

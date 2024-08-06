@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class NumericWhoIsMessage extends NetworkMessage
+export class NumericWhoIsMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2693;
@@ -17,14 +17,47 @@ export class NumericWhoIsMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return NumericWhoIsMessage.protocolId;
+    }
+
+    public initNumericWhoIsMessage(playerId: number = 0, accountId: number = 0): NumericWhoIsMessage
+    {
+        this.playerId = playerId;
+        this.accountId = accountId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_NumericWhoIsMessage(output);
+    }
+
+    public serializeAs_NumericWhoIsMessage(output: ICustomDataOutput)
+    {
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        if(this.accountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+        }
+        output.writeInt(this.accountId);
     }
 
     public deserialize(input: ICustomDataInput)

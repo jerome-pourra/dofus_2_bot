@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class NuggetsBeneficiary
+export class NuggetsBeneficiary implements INetworkType
 {
 
 	public static readonly protocolId: number = 7825;
@@ -13,6 +13,33 @@ export class NuggetsBeneficiary
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return NuggetsBeneficiary.protocolId;
+    }
+
+    public initNuggetsBeneficiary(beneficiaryPlayerId: number = 0, nuggetsQuantity: number = 0): NuggetsBeneficiary
+    {
+        this.beneficiaryPlayerId = beneficiaryPlayerId;
+        this.nuggetsQuantity = nuggetsQuantity;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_NuggetsBeneficiary(output);
+    }
+
+    public serializeAs_NuggetsBeneficiary(output: ICustomDataOutput)
+    {
+        if(this.beneficiaryPlayerId < 0 || this.beneficiaryPlayerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.beneficiaryPlayerId + ") on element beneficiaryPlayerId.");
+        }
+        output.writeVarLong(this.beneficiaryPlayerId);
+        output.writeInt(this.nuggetsQuantity);
     }
 
     public deserialize(input: ICustomDataInput)

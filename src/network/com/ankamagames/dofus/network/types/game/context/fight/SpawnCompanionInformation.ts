@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { SpawnInformation } from "./SpawnInformation";
 
-export class SpawnCompanionInformation extends SpawnInformation
+export class SpawnCompanionInformation extends SpawnInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 4847;
@@ -16,6 +16,50 @@ export class SpawnCompanionInformation extends SpawnInformation
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return SpawnCompanionInformation.protocolId;
+    }
+
+    public initSpawnCompanionInformation(modelId: number = 0, level: number = 0, summonerId: number = 0, ownerId: number = 0): SpawnCompanionInformation
+    {
+        this.modelId = modelId;
+        this.level = level;
+        this.summonerId = summonerId;
+        this.ownerId = ownerId;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SpawnCompanionInformation(output);
+    }
+
+    public serializeAs_SpawnCompanionInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_SpawnInformation(output);
+        if(this.modelId < 0)
+        {
+            throw new Error("Forbidden value (" + this.modelId + ") on element modelId.");
+        }
+        output.writeByte(this.modelId);
+        if(this.level < 1 || this.level > 200)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeVarShort(this.level);
+        if(this.summonerId < -9007199254740992 || this.summonerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.summonerId + ") on element summonerId.");
+        }
+        output.writeDouble(this.summonerId);
+        if(this.ownerId < -9007199254740992 || this.ownerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.ownerId + ") on element ownerId.");
+        }
+        output.writeDouble(this.ownerId);
     }
 
     public deserialize(input: ICustomDataInput)

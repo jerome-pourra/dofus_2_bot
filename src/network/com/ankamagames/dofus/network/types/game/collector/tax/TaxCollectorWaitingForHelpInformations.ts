@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { TaxCollectorComplementaryInformations } from "./TaxCollectorComplementaryInformations";
 
-export class TaxCollectorWaitingForHelpInformations extends TaxCollectorComplementaryInformations
+export class TaxCollectorWaitingForHelpInformations extends TaxCollectorComplementaryInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 5931;
@@ -15,6 +15,28 @@ export class TaxCollectorWaitingForHelpInformations extends TaxCollectorCompleme
     {
         super();
         this.waitingForHelpInfo = new ProtectedEntityWaitingForHelpInfo();
+    }
+
+    public getTypeId()
+    {
+        return TaxCollectorWaitingForHelpInformations.protocolId;
+    }
+
+    public initTaxCollectorWaitingForHelpInformations(waitingForHelpInfo: ProtectedEntityWaitingForHelpInfo = null): TaxCollectorWaitingForHelpInformations
+    {
+        this.waitingForHelpInfo = waitingForHelpInfo;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorWaitingForHelpInformations(output);
+    }
+
+    public serializeAs_TaxCollectorWaitingForHelpInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_TaxCollectorComplementaryInformations(output);
+        this.waitingForHelpInfo.serializeAs_ProtectedEntityWaitingForHelpInfo(output);
     }
 
     public deserialize(input: ICustomDataInput)

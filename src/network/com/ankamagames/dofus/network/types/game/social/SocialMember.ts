@@ -5,7 +5,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class SocialMember extends CharacterMinimalInformations
+export class SocialMember extends CharacterMinimalInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 9920;
@@ -23,6 +23,56 @@ export class SocialMember extends CharacterMinimalInformations
     {
         super();
         this.status = new PlayerStatus();
+    }
+
+    public getTypeId()
+    {
+        return SocialMember.protocolId;
+    }
+
+    public initSocialMember(id: number = 0, name: string = "", level: number = 0, breed: number = 0, sex: boolean = false, connected: number = 99, hoursSinceLastConnection: number = 0, accountId: number = 0, status: PlayerStatus = null, rankId: number = 0, enrollmentDate: number = 0): SocialMember
+    {
+        super.initCharacterMinimalInformations(id,name,level);
+        this.breed = breed;
+        this.sex = sex;
+        this.connected = connected;
+        this.hoursSinceLastConnection = hoursSinceLastConnection;
+        this.accountId = accountId;
+        this.status = status;
+        this.rankId = rankId;
+        this.enrollmentDate = enrollmentDate;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SocialMember(output);
+    }
+
+    public serializeAs_SocialMember(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterMinimalInformations(output);
+        output.writeByte(this.breed);
+        output.writeBoolean(this.sex);
+        output.writeByte(this.connected);
+        if(this.hoursSinceLastConnection < 0 || this.hoursSinceLastConnection > 65535)
+        {
+            throw new Error("Forbidden value (" + this.hoursSinceLastConnection + ") on element hoursSinceLastConnection.");
+        }
+        output.writeShort(this.hoursSinceLastConnection);
+        if(this.accountId < 0)
+        {
+            throw new Error("Forbidden value (" + this.accountId + ") on element accountId.");
+        }
+        output.writeInt(this.accountId);
+        output.writeShort(this.status.getTypeId());
+        this.status.serialize(output);
+        output.writeInt(this.rankId);
+        if(this.enrollmentDate < -9007199254740992 || this.enrollmentDate > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.enrollmentDate + ") on element enrollmentDate.");
+        }
+        output.writeDouble(this.enrollmentDate);
     }
 
     public deserialize(input: ICustomDataInput)

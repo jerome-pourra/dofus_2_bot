@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class HaapiConfirmationMessage extends NetworkMessage
+export class HaapiConfirmationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5031;
@@ -20,14 +20,57 @@ export class HaapiConfirmationMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return HaapiConfirmationMessage.protocolId;
+    }
+
+    public initHaapiConfirmationMessage(kamas: number = 0, amount: number = 0, rate: number = 0, action: number = 0, transaction: string = ""): HaapiConfirmationMessage
+    {
+        this.kamas = kamas;
+        this.amount = amount;
+        this.rate = rate;
+        this.action = action;
+        this.transaction = transaction;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HaapiConfirmationMessage(output);
+    }
+
+    public serializeAs_HaapiConfirmationMessage(output: ICustomDataOutput)
+    {
+        if(this.kamas < 0 || this.kamas > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.kamas + ") on element kamas.");
+        }
+        output.writeVarLong(this.kamas);
+        if(this.amount < 0 || this.amount > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.amount + ") on element amount.");
+        }
+        output.writeVarLong(this.amount);
+        if(this.rate < 0)
+        {
+            throw new Error("Forbidden value (" + this.rate + ") on element rate.");
+        }
+        output.writeVarShort(this.rate);
+        output.writeByte(this.action);
+        output.writeUTF(this.transaction);
     }
 
     public deserialize(input: ICustomDataInput)

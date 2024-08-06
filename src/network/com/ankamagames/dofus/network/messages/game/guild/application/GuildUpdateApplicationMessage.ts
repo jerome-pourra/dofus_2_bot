@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GuildUpdateApplicationMessage extends NetworkMessage
+export class GuildUpdateApplicationMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7570;
@@ -17,14 +17,43 @@ export class GuildUpdateApplicationMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GuildUpdateApplicationMessage.protocolId;
+    }
+
+    public initGuildUpdateApplicationMessage(applyText: string = "", guildId: number = 0): GuildUpdateApplicationMessage
+    {
+        this.applyText = applyText;
+        this.guildId = guildId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildUpdateApplicationMessage(output);
+    }
+
+    public serializeAs_GuildUpdateApplicationMessage(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.applyText);
+        if(this.guildId < 0)
+        {
+            throw new Error("Forbidden value (" + this.guildId + ") on element guildId.");
+        }
+        output.writeVarInt(this.guildId);
     }
 
     public deserialize(input: ICustomDataInput)

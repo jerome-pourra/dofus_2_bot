@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { HumanOption } from "./HumanOption";
 
-export class HumanOptionOrnament extends HumanOption
+export class HumanOptionOrnament extends HumanOption implements INetworkType
 {
 
 	public static readonly protocolId: number = 5782;
@@ -16,6 +16,42 @@ export class HumanOptionOrnament extends HumanOption
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return HumanOptionOrnament.protocolId;
+    }
+
+    public initHumanOptionOrnament(ornamentId: number = 0, level: number = 0, leagueId: number = 0, ladderPosition: number = 0): HumanOptionOrnament
+    {
+        this.ornamentId = ornamentId;
+        this.level = level;
+        this.leagueId = leagueId;
+        this.ladderPosition = ladderPosition;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_HumanOptionOrnament(output);
+    }
+
+    public serializeAs_HumanOptionOrnament(output: ICustomDataOutput)
+    {
+        super.serializeAs_HumanOption(output);
+        if(this.ornamentId < 0)
+        {
+            throw new Error("Forbidden value (" + this.ornamentId + ") on element ornamentId.");
+        }
+        output.writeVarShort(this.ornamentId);
+        if(this.level < 0)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeVarShort(this.level);
+        output.writeVarShort(this.leagueId);
+        output.writeInt(this.ladderPosition);
     }
 
     public deserialize(input: ICustomDataInput)

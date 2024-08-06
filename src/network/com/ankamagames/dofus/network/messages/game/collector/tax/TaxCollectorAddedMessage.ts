@@ -6,7 +6,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class TaxCollectorAddedMessage extends NetworkMessage
+export class TaxCollectorAddedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7370;
@@ -20,14 +20,44 @@ export class TaxCollectorAddedMessage extends NetworkMessage
         this.description = new TaxCollectorInformations();
     }
 
+    public getMessageId()
+    {
+        return TaxCollectorAddedMessage.protocolId;
+    }
+
+    public initTaxCollectorAddedMessage(callerId: number = 0, description: TaxCollectorInformations = null): TaxCollectorAddedMessage
+    {
+        this.callerId = callerId;
+        this.description = description;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TaxCollectorAddedMessage(output);
+    }
+
+    public serializeAs_TaxCollectorAddedMessage(output: ICustomDataOutput)
+    {
+        if(this.callerId < 0 || this.callerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.callerId + ") on element callerId.");
+        }
+        output.writeVarLong(this.callerId);
+        output.writeShort(this.description.getTypeId());
+        this.description.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

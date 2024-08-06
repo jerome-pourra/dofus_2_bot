@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class GuildListMessage extends NetworkMessage
+export class GuildListMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 669;
@@ -18,14 +18,41 @@ export class GuildListMessage extends NetworkMessage
         this.guilds = Array<GuildInformations>();
     }
 
+    public getMessageId()
+    {
+        return GuildListMessage.protocolId;
+    }
+
+    public initGuildListMessage(guilds: Array<GuildInformations> = null): GuildListMessage
+    {
+        this.guilds = guilds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GuildListMessage(output);
+    }
+
+    public serializeAs_GuildListMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.guilds.length);
+        for(var _i1: number = 0; _i1 < this.guilds.length; _i1++)
+        {
+            (this.guilds[_i1] as GuildInformations).serializeAs_GuildInformations(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

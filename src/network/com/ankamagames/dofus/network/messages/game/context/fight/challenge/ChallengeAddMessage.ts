@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class ChallengeAddMessage extends NetworkMessage
+export class ChallengeAddMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 8563;
@@ -18,14 +18,37 @@ export class ChallengeAddMessage extends NetworkMessage
         this.challengeInformation = new ChallengeInformation();
     }
 
+    public getMessageId()
+    {
+        return ChallengeAddMessage.protocolId;
+    }
+
+    public initChallengeAddMessage(challengeInformation: ChallengeInformation = null): ChallengeAddMessage
+    {
+        this.challengeInformation = challengeInformation;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChallengeAddMessage(output);
+    }
+
+    public serializeAs_ChallengeAddMessage(output: ICustomDataOutput)
+    {
+        this.challengeInformation.serializeAs_ChallengeInformation(output);
     }
 
     public deserialize(input: ICustomDataInput)

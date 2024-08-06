@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class NicknameRefusedMessage extends NetworkMessage
+export class NicknameRefusedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4482;
@@ -16,14 +16,37 @@ export class NicknameRefusedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return NicknameRefusedMessage.protocolId;
+    }
+
+    public initNicknameRefusedMessage(reason: number = 99): NicknameRefusedMessage
+    {
+        this.reason = reason;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_NicknameRefusedMessage(output);
+    }
+
+    public serializeAs_NicknameRefusedMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.reason);
     }
 
     public deserialize(input: ICustomDataInput)

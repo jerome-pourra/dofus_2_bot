@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class ObjectEffects
+export class ObjectEffects implements INetworkType
 {
 
 	public static readonly protocolId: number = 6602;
@@ -14,6 +14,32 @@ export class ObjectEffects
     public constructor()
     {
         this.effects = Array<ObjectEffect>();
+    }
+
+    public getTypeId()
+    {
+        return ObjectEffects.protocolId;
+    }
+
+    public initObjectEffects(effects: Array<ObjectEffect> = null): ObjectEffects
+    {
+        this.effects = effects;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectEffects(output);
+    }
+
+    public serializeAs_ObjectEffects(output: ICustomDataOutput)
+    {
+        output.writeShort(this.effects.length);
+        for(var _i1: number = 0; _i1 < this.effects.length; _i1++)
+        {
+            output.writeShort((this.effects[_i1] as ObjectEffect).getTypeId());
+            (this.effects[_i1] as ObjectEffect).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

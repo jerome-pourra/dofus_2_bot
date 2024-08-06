@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { EmotePlayAbstractMessage } from "./EmotePlayAbstractMessage";
 
-export class EmotePlayMassiveMessage extends EmotePlayAbstractMessage
+export class EmotePlayMassiveMessage extends EmotePlayAbstractMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1886;
@@ -17,14 +17,47 @@ export class EmotePlayMassiveMessage extends EmotePlayAbstractMessage
         this.actorIds = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return EmotePlayMassiveMessage.protocolId;
+    }
+
+    public initEmotePlayMassiveMessage(emoteId: number = 0, emoteStartTime: number = 0, actorIds: Array<number> = null): EmotePlayMassiveMessage
+    {
+        super.initEmotePlayAbstractMessage(emoteId,emoteStartTime);
+        this.actorIds = actorIds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_EmotePlayMassiveMessage(output);
+    }
+
+    public serializeAs_EmotePlayMassiveMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_EmotePlayAbstractMessage(output);
+        output.writeShort(this.actorIds.length);
+        for(var _i1: number = 0; _i1 < this.actorIds.length; _i1++)
+        {
+            if(this.actorIds[_i1] < -9007199254740992 || this.actorIds[_i1] > 9007199254740992)
+            {
+                throw new Error("Forbidden value (" + this.actorIds[_i1] + ") on element 1 (starting at 1) of actorIds.");
+            }
+            output.writeDouble(this.actorIds[_i1]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

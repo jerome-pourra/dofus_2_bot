@@ -5,8 +5,9 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { TaxCollectorStaticInformations } from "./TaxCollectorStaticInformations";
+import { EntityDispositionInformations } from "./EntityDispositionInformations";
 
-export class GameRolePlayTaxCollectorInformations extends GameRolePlayActorInformations
+export class GameRolePlayTaxCollectorInformations extends GameRolePlayActorInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 4101;
@@ -18,6 +19,32 @@ export class GameRolePlayTaxCollectorInformations extends GameRolePlayActorInfor
     {
         super();
         this.identification = new TaxCollectorStaticInformations();
+    }
+
+    public getTypeId()
+    {
+        return GameRolePlayTaxCollectorInformations.protocolId;
+    }
+
+    public initGameRolePlayTaxCollectorInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, identification: TaxCollectorStaticInformations = null, taxCollectorAttack: number = 0): GameRolePlayTaxCollectorInformations
+    {
+        super.initGameRolePlayActorInformations(contextualId,disposition,look);
+        this.identification = identification;
+        this.taxCollectorAttack = taxCollectorAttack;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayTaxCollectorInformations(output);
+    }
+
+    public serializeAs_GameRolePlayTaxCollectorInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameRolePlayActorInformations(output);
+        output.writeShort(this.identification.getTypeId());
+        this.identification.serialize(output);
+        output.writeInt(this.taxCollectorAttack);
     }
 
     public deserialize(input: ICustomDataInput)

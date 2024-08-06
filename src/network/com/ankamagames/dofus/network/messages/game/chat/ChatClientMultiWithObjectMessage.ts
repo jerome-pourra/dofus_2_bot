@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { ChatClientMultiMessage } from "./ChatClientMultiMessage";
 
-export class ChatClientMultiWithObjectMessage extends ChatClientMultiMessage
+export class ChatClientMultiWithObjectMessage extends ChatClientMultiMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5473;
@@ -18,14 +18,43 @@ export class ChatClientMultiWithObjectMessage extends ChatClientMultiMessage
         this.objects = Array<ObjectItem>();
     }
 
+    public getMessageId()
+    {
+        return ChatClientMultiWithObjectMessage.protocolId;
+    }
+
+    public initChatClientMultiWithObjectMessage(content: string = "", channel: number = 0, objects: Array<ObjectItem> = null): ChatClientMultiWithObjectMessage
+    {
+        super.initChatClientMultiMessage(content,channel);
+        this.objects = objects;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ChatClientMultiWithObjectMessage(output);
+    }
+
+    public serializeAs_ChatClientMultiWithObjectMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ChatClientMultiMessage(output);
+        output.writeShort(this.objects.length);
+        for(var _i1: number = 0; _i1 < this.objects.length; _i1++)
+        {
+            (this.objects[_i1] as ObjectItem).serializeAs_ObjectItem(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { CharacterCharacteristic } from "./CharacterCharacteristic";
 
-export class CharacterCharacteristics
+export class CharacterCharacteristics implements INetworkType
 {
 
 	public static readonly protocolId: number = 294;
@@ -14,6 +14,32 @@ export class CharacterCharacteristics
     public constructor()
     {
         this.characteristics = Array<CharacterCharacteristic>();
+    }
+
+    public getTypeId()
+    {
+        return CharacterCharacteristics.protocolId;
+    }
+
+    public initCharacterCharacteristics(characteristics: Array<CharacterCharacteristic> = null): CharacterCharacteristics
+    {
+        this.characteristics = characteristics;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterCharacteristics(output);
+    }
+
+    public serializeAs_CharacterCharacteristics(output: ICustomDataOutput)
+    {
+        output.writeShort(this.characteristics.length);
+        for(var _i1: number = 0; _i1 < this.characteristics.length; _i1++)
+        {
+            output.writeShort((this.characteristics[_i1] as CharacterCharacteristic).getTypeId());
+            (this.characteristics[_i1] as CharacterCharacteristic).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

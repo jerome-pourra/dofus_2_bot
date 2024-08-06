@@ -5,7 +5,7 @@ import { INetworkMessage } from "./../../../../../../../jerakine/network/INetwor
 import { BooleanByteWrapper } from "./../../../../../../../jerakine/network/utils/BooleanByteWrapper";
 import { AbstractPartyMessage } from "./AbstractPartyMessage";
 
-export class PartyFollowStatusUpdateMessage extends AbstractPartyMessage
+export class PartyFollowStatusUpdateMessage extends AbstractPartyMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4068;
@@ -19,14 +19,49 @@ export class PartyFollowStatusUpdateMessage extends AbstractPartyMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyFollowStatusUpdateMessage.protocolId;
+    }
+
+    public initPartyFollowStatusUpdateMessage(partyId: number = 0, success: boolean = false, isFollowed: boolean = false, followedId: number = 0): PartyFollowStatusUpdateMessage
+    {
+        super.initAbstractPartyMessage(partyId);
+        this.success = success;
+        this.isFollowed = isFollowed;
+        this.followedId = followedId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyFollowStatusUpdateMessage(output);
+    }
+
+    public serializeAs_PartyFollowStatusUpdateMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyMessage(output);
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.success);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.isFollowed);
+        output.writeByte(_box0);
+        if(this.followedId < 0 || this.followedId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.followedId + ") on element followedId.");
+        }
+        output.writeVarLong(this.followedId);
     }
 
     public deserialize(input: ICustomDataInput)

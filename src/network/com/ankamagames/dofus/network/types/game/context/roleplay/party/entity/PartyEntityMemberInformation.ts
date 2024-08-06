@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../../jerakine/network/IC
 import { INetworkType } from "./../../../../../../../../jerakine/network/INetworkType";
 import { PartyEntityBaseInformation } from "./PartyEntityBaseInformation";
 
-export class PartyEntityMemberInformation extends PartyEntityBaseInformation
+export class PartyEntityMemberInformation extends PartyEntityBaseInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 118;
@@ -18,6 +18,57 @@ export class PartyEntityMemberInformation extends PartyEntityBaseInformation
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return PartyEntityMemberInformation.protocolId;
+    }
+
+    public initPartyEntityMemberInformation(indexId: number = 0, entityModelId: number = 0, entityLook: EntityLook = null, initiative: number = 0, lifePoints: number = 0, maxLifePoints: number = 0, prospecting: number = 0, regenRate: number = 0): PartyEntityMemberInformation
+    {
+        super.initPartyEntityBaseInformation(indexId,entityModelId,entityLook);
+        this.initiative = initiative;
+        this.lifePoints = lifePoints;
+        this.maxLifePoints = maxLifePoints;
+        this.prospecting = prospecting;
+        this.regenRate = regenRate;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyEntityMemberInformation(output);
+    }
+
+    public serializeAs_PartyEntityMemberInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_PartyEntityBaseInformation(output);
+        if(this.initiative < 0)
+        {
+            throw new Error("Forbidden value (" + this.initiative + ") on element initiative.");
+        }
+        output.writeVarInt(this.initiative);
+        if(this.lifePoints < 0)
+        {
+            throw new Error("Forbidden value (" + this.lifePoints + ") on element lifePoints.");
+        }
+        output.writeVarInt(this.lifePoints);
+        if(this.maxLifePoints < 0)
+        {
+            throw new Error("Forbidden value (" + this.maxLifePoints + ") on element maxLifePoints.");
+        }
+        output.writeVarInt(this.maxLifePoints);
+        if(this.prospecting < 0)
+        {
+            throw new Error("Forbidden value (" + this.prospecting + ") on element prospecting.");
+        }
+        output.writeVarInt(this.prospecting);
+        if(this.regenRate < 0 || this.regenRate > 255)
+        {
+            throw new Error("Forbidden value (" + this.regenRate + ") on element regenRate.");
+        }
+        output.writeByte(this.regenRate);
     }
 
     public deserialize(input: ICustomDataInput)

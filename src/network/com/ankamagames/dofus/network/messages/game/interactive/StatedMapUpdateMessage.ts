@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class StatedMapUpdateMessage extends NetworkMessage
+export class StatedMapUpdateMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 2054;
@@ -18,14 +18,41 @@ export class StatedMapUpdateMessage extends NetworkMessage
         this.statedElements = Array<StatedElement>();
     }
 
+    public getMessageId()
+    {
+        return StatedMapUpdateMessage.protocolId;
+    }
+
+    public initStatedMapUpdateMessage(statedElements: Array<StatedElement> = null): StatedMapUpdateMessage
+    {
+        this.statedElements = statedElements;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_StatedMapUpdateMessage(output);
+    }
+
+    public serializeAs_StatedMapUpdateMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.statedElements.length);
+        for(var _i1: number = 0; _i1 < this.statedElements.length; _i1++)
+        {
+            (this.statedElements[_i1] as StatedElement).serializeAs_StatedElement(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

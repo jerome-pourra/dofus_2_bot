@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkMessage } from "./../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../jerakine/network/NetworkMessage";
 
-export class ShortcutBarSwapRequestMessage extends NetworkMessage
+export class ShortcutBarSwapRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 45;
@@ -18,14 +18,49 @@ export class ShortcutBarSwapRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ShortcutBarSwapRequestMessage.protocolId;
+    }
+
+    public initShortcutBarSwapRequestMessage(barType: number = 0, firstSlot: number = 0, secondSlot: number = 0): ShortcutBarSwapRequestMessage
+    {
+        this.barType = barType;
+        this.firstSlot = firstSlot;
+        this.secondSlot = secondSlot;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ShortcutBarSwapRequestMessage(output);
+    }
+
+    public serializeAs_ShortcutBarSwapRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.barType);
+        if(this.firstSlot < 0 || this.firstSlot > 99)
+        {
+            throw new Error("Forbidden value (" + this.firstSlot + ") on element firstSlot.");
+        }
+        output.writeByte(this.firstSlot);
+        if(this.secondSlot < 0 || this.secondSlot > 99)
+        {
+            throw new Error("Forbidden value (" + this.secondSlot + ") on element secondSlot.");
+        }
+        output.writeByte(this.secondSlot);
     }
 
     public deserialize(input: ICustomDataInput)

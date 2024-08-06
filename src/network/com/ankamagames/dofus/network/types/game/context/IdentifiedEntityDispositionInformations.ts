@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { EntityDispositionInformations } from "./EntityDispositionInformations";
 
-export class IdentifiedEntityDispositionInformations extends EntityDispositionInformations
+export class IdentifiedEntityDispositionInformations extends EntityDispositionInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 619;
@@ -13,6 +13,33 @@ export class IdentifiedEntityDispositionInformations extends EntityDispositionIn
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return IdentifiedEntityDispositionInformations.protocolId;
+    }
+
+    public initIdentifiedEntityDispositionInformations(cellId: number = 0, direction: number = 1, id: number = 0): IdentifiedEntityDispositionInformations
+    {
+        super.initEntityDispositionInformations(cellId,direction);
+        this.id = id;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_IdentifiedEntityDispositionInformations(output);
+    }
+
+    public serializeAs_IdentifiedEntityDispositionInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_EntityDispositionInformations(output);
+        if(this.id < -9007199254740992 || this.id > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeDouble(this.id);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -3,7 +3,7 @@ import { ICustomDataInput } from "./../../../../../../../jerakine/network/ICusto
 import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../../jerakine/network/INetworkType";
 
-export class DungeonPartyFinderPlayer
+export class DungeonPartyFinderPlayer implements INetworkType
 {
 
 	public static readonly protocolId: number = 1061;
@@ -17,6 +17,43 @@ export class DungeonPartyFinderPlayer
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return DungeonPartyFinderPlayer.protocolId;
+    }
+
+    public initDungeonPartyFinderPlayer(playerId: number = 0, playerName: string = "", breed: number = 0, sex: boolean = false, level: number = 0): DungeonPartyFinderPlayer
+    {
+        this.playerId = playerId;
+        this.playerName = playerName;
+        this.breed = breed;
+        this.sex = sex;
+        this.level = level;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_DungeonPartyFinderPlayer(output);
+    }
+
+    public serializeAs_DungeonPartyFinderPlayer(output: ICustomDataOutput)
+    {
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
+        output.writeUTF(this.playerName);
+        output.writeByte(this.breed);
+        output.writeBoolean(this.sex);
+        if(this.level < 0)
+        {
+            throw new Error("Forbidden value (" + this.level + ") on element level.");
+        }
+        output.writeVarShort(this.level);
     }
 
     public deserialize(input: ICustomDataInput)

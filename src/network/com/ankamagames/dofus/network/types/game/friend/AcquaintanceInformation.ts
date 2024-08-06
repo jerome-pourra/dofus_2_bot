@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { AbstractContactInformations } from "./AbstractContactInformations";
 
-export class AcquaintanceInformation extends AbstractContactInformations
+export class AcquaintanceInformation extends AbstractContactInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 1584;
@@ -14,6 +14,29 @@ export class AcquaintanceInformation extends AbstractContactInformations
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return AcquaintanceInformation.protocolId;
+    }
+
+    public initAcquaintanceInformation(accountId: number = 0, accountTag: AccountTagInformation = null, playerState: number = 99): AcquaintanceInformation
+    {
+        super.initAbstractContactInformations(accountId,accountTag);
+        this.playerState = playerState;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AcquaintanceInformation(output);
+    }
+
+    public serializeAs_AcquaintanceInformation(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractContactInformations(output);
+        output.writeByte(this.playerState);
     }
 
     public deserialize(input: ICustomDataInput)

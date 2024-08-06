@@ -4,7 +4,7 @@ import { ICustomDataInput } from "./../../../../../../jerakine/network/ICustomDa
 import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 
-export class AlterationInfo
+export class AlterationInfo implements INetworkType
 {
 
 	public static readonly protocolId: number = 2959;
@@ -18,6 +18,52 @@ export class AlterationInfo
     public constructor()
     {
         this.effects = Array<ObjectEffect>();
+    }
+
+    public getTypeId()
+    {
+        return AlterationInfo.protocolId;
+    }
+
+    public initAlterationInfo(alterationId: number = 0, creationTime: number = 0, expirationType: number = 1, expirationValue: number = 0, effects: Array<ObjectEffect> = null): AlterationInfo
+    {
+        this.alterationId = alterationId;
+        this.creationTime = creationTime;
+        this.expirationType = expirationType;
+        this.expirationValue = expirationValue;
+        this.effects = effects;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AlterationInfo(output);
+    }
+
+    public serializeAs_AlterationInfo(output: ICustomDataOutput)
+    {
+        if(this.alterationId < 0 || this.alterationId > 4294967295)
+        {
+            throw new Error("Forbidden value (" + this.alterationId + ") on element alterationId.");
+        }
+        output.writeUnsignedInt(this.alterationId);
+        if(this.creationTime < -9007199254740992 || this.creationTime > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.creationTime + ") on element creationTime.");
+        }
+        output.writeDouble(this.creationTime);
+        output.writeByte(this.expirationType);
+        if(this.expirationValue < -9007199254740992 || this.expirationValue > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.expirationValue + ") on element expirationValue.");
+        }
+        output.writeDouble(this.expirationValue);
+        output.writeShort(this.effects.length);
+        for(var _i5: number = 0; _i5 < this.effects.length; _i5++)
+        {
+            output.writeShort((this.effects[_i5] as ObjectEffect).getTypeId());
+            (this.effects[_i5] as ObjectEffect).serialize(output);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

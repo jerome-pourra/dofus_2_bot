@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { AbstractPartyEventMessage } from "./AbstractPartyEventMessage";
 
-export class PartyCancelInvitationNotificationMessage extends AbstractPartyEventMessage
+export class PartyCancelInvitationNotificationMessage extends AbstractPartyEventMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1327;
@@ -17,14 +17,49 @@ export class PartyCancelInvitationNotificationMessage extends AbstractPartyEvent
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyCancelInvitationNotificationMessage.protocolId;
+    }
+
+    public initPartyCancelInvitationNotificationMessage(partyId: number = 0, cancelerId: number = 0, guestId: number = 0): PartyCancelInvitationNotificationMessage
+    {
+        super.initAbstractPartyEventMessage(partyId);
+        this.cancelerId = cancelerId;
+        this.guestId = guestId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyCancelInvitationNotificationMessage(output);
+    }
+
+    public serializeAs_PartyCancelInvitationNotificationMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyEventMessage(output);
+        if(this.cancelerId < 0 || this.cancelerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.cancelerId + ") on element cancelerId.");
+        }
+        output.writeVarLong(this.cancelerId);
+        if(this.guestId < 0 || this.guestId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.guestId + ") on element guestId.");
+        }
+        output.writeVarLong(this.guestId);
     }
 
     public deserialize(input: ICustomDataInput)

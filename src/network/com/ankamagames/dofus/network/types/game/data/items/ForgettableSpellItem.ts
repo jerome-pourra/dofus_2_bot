@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { SpellItem } from "./SpellItem";
 
-export class ForgettableSpellItem extends SpellItem
+export class ForgettableSpellItem extends SpellItem implements INetworkType
 {
 
 	public static readonly protocolId: number = 2798;
@@ -13,6 +13,29 @@ export class ForgettableSpellItem extends SpellItem
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return ForgettableSpellItem.protocolId;
+    }
+
+    public initForgettableSpellItem(spellId: number = 0, spellLevel: number = 0, available: boolean = false): ForgettableSpellItem
+    {
+        super.initSpellItem(spellId,spellLevel);
+        this.available = available;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ForgettableSpellItem(output);
+    }
+
+    public serializeAs_ForgettableSpellItem(output: ICustomDataOutput)
+    {
+        super.serializeAs_SpellItem(output);
+        output.writeBoolean(this.available);
     }
 
     public deserialize(input: ICustomDataInput)

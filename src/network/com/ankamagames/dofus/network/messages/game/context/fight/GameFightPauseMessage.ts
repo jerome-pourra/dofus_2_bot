@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightPauseMessage extends NetworkMessage
+export class GameFightPauseMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1045;
@@ -16,14 +16,37 @@ export class GameFightPauseMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightPauseMessage.protocolId;
+    }
+
+    public initGameFightPauseMessage(isPaused: boolean = false): GameFightPauseMessage
+    {
+        this.isPaused = isPaused;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightPauseMessage(output);
+    }
+
+    public serializeAs_GameFightPauseMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.isPaused);
     }
 
     public deserialize(input: ICustomDataInput)

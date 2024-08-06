@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class StorageTabInformation
+export class StorageTabInformation implements INetworkType
 {
 
 	public static readonly protocolId: number = 8947;
@@ -18,6 +18,67 @@ export class StorageTabInformation
     public constructor()
     {
         this.dropTypeLimitation = Array<number>();
+    }
+
+    public getTypeId()
+    {
+        return StorageTabInformation.protocolId;
+    }
+
+    public initStorageTabInformation(name: string = "", tabNumber: number = 0, picto: number = 0, openRight: number = 0, dropRight: number = 0, takeRight: number = 0, dropTypeLimitation: Array<number> = null): StorageTabInformation
+    {
+        this.name = name;
+        this.tabNumber = tabNumber;
+        this.picto = picto;
+        this.openRight = openRight;
+        this.dropRight = dropRight;
+        this.takeRight = takeRight;
+        this.dropTypeLimitation = dropTypeLimitation;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_StorageTabInformation(output);
+    }
+
+    public serializeAs_StorageTabInformation(output: ICustomDataOutput)
+    {
+        output.writeUTF(this.name);
+        if(this.tabNumber < 0)
+        {
+            throw new Error("Forbidden value (" + this.tabNumber + ") on element tabNumber.");
+        }
+        output.writeVarInt(this.tabNumber);
+        if(this.picto < 0)
+        {
+            throw new Error("Forbidden value (" + this.picto + ") on element picto.");
+        }
+        output.writeVarInt(this.picto);
+        if(this.openRight < 0)
+        {
+            throw new Error("Forbidden value (" + this.openRight + ") on element openRight.");
+        }
+        output.writeVarInt(this.openRight);
+        if(this.dropRight < 0)
+        {
+            throw new Error("Forbidden value (" + this.dropRight + ") on element dropRight.");
+        }
+        output.writeVarInt(this.dropRight);
+        if(this.takeRight < 0)
+        {
+            throw new Error("Forbidden value (" + this.takeRight + ") on element takeRight.");
+        }
+        output.writeVarInt(this.takeRight);
+        output.writeShort(this.dropTypeLimitation.length);
+        for(var _i7: number = 0; _i7 < this.dropTypeLimitation.length; _i7++)
+        {
+            if(this.dropTypeLimitation[_i7] < 0)
+            {
+                throw new Error("Forbidden value (" + this.dropTypeLimitation[_i7] + ") on element 7 (starting at 1) of dropTypeLimitation.");
+            }
+            output.writeVarInt(this.dropTypeLimitation[_i7]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

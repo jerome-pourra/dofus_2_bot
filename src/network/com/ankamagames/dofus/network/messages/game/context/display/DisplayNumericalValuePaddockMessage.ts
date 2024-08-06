@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class DisplayNumericalValuePaddockMessage extends NetworkMessage
+export class DisplayNumericalValuePaddockMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4632;
@@ -18,14 +18,41 @@ export class DisplayNumericalValuePaddockMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return DisplayNumericalValuePaddockMessage.protocolId;
+    }
+
+    public initDisplayNumericalValuePaddockMessage(rideId: number = 0, value: number = 0, type: number = 0): DisplayNumericalValuePaddockMessage
+    {
+        this.rideId = rideId;
+        this.value = value;
+        this.type = type;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_DisplayNumericalValuePaddockMessage(output);
+    }
+
+    public serializeAs_DisplayNumericalValuePaddockMessage(output: ICustomDataOutput)
+    {
+        output.writeInt(this.rideId);
+        output.writeInt(this.value);
+        output.writeByte(this.type);
     }
 
     public deserialize(input: ICustomDataInput)

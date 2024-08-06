@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class BreachSavedMessage extends NetworkMessage
+export class BreachSavedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 21;
@@ -16,14 +16,37 @@ export class BreachSavedMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return BreachSavedMessage.protocolId;
+    }
+
+    public initBreachSavedMessage(saved: boolean = false): BreachSavedMessage
+    {
+        this.saved = saved;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_BreachSavedMessage(output);
+    }
+
+    public serializeAs_BreachSavedMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.saved);
     }
 
     public deserialize(input: ICustomDataInput)

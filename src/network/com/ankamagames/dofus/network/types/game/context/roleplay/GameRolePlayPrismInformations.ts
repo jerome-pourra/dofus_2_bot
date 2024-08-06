@@ -7,7 +7,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { GameRolePlayActorInformations } from "./GameRolePlayActorInformations";
 
-export class GameRolePlayPrismInformations extends GameRolePlayActorInformations
+export class GameRolePlayPrismInformations extends GameRolePlayActorInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 7369;
@@ -18,6 +18,30 @@ export class GameRolePlayPrismInformations extends GameRolePlayActorInformations
     {
         super();
         this.prism = new PrismInformation();
+    }
+
+    public getTypeId()
+    {
+        return GameRolePlayPrismInformations.protocolId;
+    }
+
+    public initGameRolePlayPrismInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, prism: PrismInformation = null): GameRolePlayPrismInformations
+    {
+        super.initGameRolePlayActorInformations(contextualId,disposition,look);
+        this.prism = prism;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameRolePlayPrismInformations(output);
+    }
+
+    public serializeAs_GameRolePlayPrismInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_GameRolePlayActorInformations(output);
+        output.writeShort(this.prism.getTypeId());
+        this.prism.serialize(output);
     }
 
     public deserialize(input: ICustomDataInput)

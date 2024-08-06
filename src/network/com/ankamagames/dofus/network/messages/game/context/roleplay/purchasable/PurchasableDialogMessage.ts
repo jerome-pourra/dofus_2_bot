@@ -5,7 +5,7 @@ import { INetworkMessage } from "./../../../../../../../jerakine/network/INetwor
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 import { BooleanByteWrapper } from "./../../../../../../../jerakine/network/utils/BooleanByteWrapper";
 
-export class PurchasableDialogMessage extends NetworkMessage
+export class PurchasableDialogMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 100;
@@ -21,14 +21,59 @@ export class PurchasableDialogMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PurchasableDialogMessage.protocolId;
+    }
+
+    public initPurchasableDialogMessage(buyOrSell: boolean = false, purchasableId: number = 0, purchasableInstanceId: number = 0, secondHand: boolean = false, price: number = 0): PurchasableDialogMessage
+    {
+        this.buyOrSell = buyOrSell;
+        this.purchasableId = purchasableId;
+        this.purchasableInstanceId = purchasableInstanceId;
+        this.secondHand = secondHand;
+        this.price = price;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PurchasableDialogMessage(output);
+    }
+
+    public serializeAs_PurchasableDialogMessage(output: ICustomDataOutput)
+    {
+        var _box0: number = 0;
+        _box0 = BooleanByteWrapper.setFlag(_box0,0,this.buyOrSell);
+        _box0 = BooleanByteWrapper.setFlag(_box0,1,this.secondHand);
+        output.writeByte(_box0);
+        if(this.purchasableId < 0 || this.purchasableId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.purchasableId + ") on element purchasableId.");
+        }
+        output.writeDouble(this.purchasableId);
+        if(this.purchasableInstanceId < 0)
+        {
+            throw new Error("Forbidden value (" + this.purchasableInstanceId + ") on element purchasableInstanceId.");
+        }
+        output.writeInt(this.purchasableInstanceId);
+        if(this.price < 0 || this.price > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.price + ") on element price.");
+        }
+        output.writeVarLong(this.price);
     }
 
     public deserialize(input: ICustomDataInput)

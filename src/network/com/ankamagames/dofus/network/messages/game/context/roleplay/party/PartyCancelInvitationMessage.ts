@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { AbstractPartyMessage } from "./AbstractPartyMessage";
 
-export class PartyCancelInvitationMessage extends AbstractPartyMessage
+export class PartyCancelInvitationMessage extends AbstractPartyMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 425;
@@ -16,14 +16,43 @@ export class PartyCancelInvitationMessage extends AbstractPartyMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PartyCancelInvitationMessage.protocolId;
+    }
+
+    public initPartyCancelInvitationMessage(partyId: number = 0, guestId: number = 0): PartyCancelInvitationMessage
+    {
+        super.initAbstractPartyMessage(partyId);
+        this.guestId = guestId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PartyCancelInvitationMessage(output);
+    }
+
+    public serializeAs_PartyCancelInvitationMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_AbstractPartyMessage(output);
+        if(this.guestId < 0 || this.guestId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.guestId + ") on element guestId.");
+        }
+        output.writeVarLong(this.guestId);
     }
 
     public deserialize(input: ICustomDataInput)

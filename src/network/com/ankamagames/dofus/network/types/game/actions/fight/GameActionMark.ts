@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { GameActionMarkedCell } from "./GameActionMarkedCell";
 
-export class GameActionMark
+export class GameActionMark implements INetworkType
 {
 
 	public static readonly protocolId: number = 8022;
@@ -21,6 +21,63 @@ export class GameActionMark
     public constructor()
     {
         this.cells = Array<GameActionMarkedCell>();
+    }
+
+    public getTypeId()
+    {
+        return GameActionMark.protocolId;
+    }
+
+    public initGameActionMark(markAuthorId: number = 0, markTeamId: number = 2, markSpellId: number = 0, markSpellLevel: number = 0, markId: number = 0, markType: number = 0, markimpactCell: number = 0, cells: Array<GameActionMarkedCell> = null, active: boolean = false): GameActionMark
+    {
+        this.markAuthorId = markAuthorId;
+        this.markTeamId = markTeamId;
+        this.markSpellId = markSpellId;
+        this.markSpellLevel = markSpellLevel;
+        this.markId = markId;
+        this.markType = markType;
+        this.markimpactCell = markimpactCell;
+        this.cells = cells;
+        this.active = active;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameActionMark(output);
+    }
+
+    public serializeAs_GameActionMark(output: ICustomDataOutput)
+    {
+        if(this.markAuthorId < -9007199254740992 || this.markAuthorId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.markAuthorId + ") on element markAuthorId.");
+        }
+        output.writeDouble(this.markAuthorId);
+        output.writeByte(this.markTeamId);
+        if(this.markSpellId < 0)
+        {
+            throw new Error("Forbidden value (" + this.markSpellId + ") on element markSpellId.");
+        }
+        output.writeInt(this.markSpellId);
+        if(this.markSpellLevel < 1 || this.markSpellLevel > 32767)
+        {
+            throw new Error("Forbidden value (" + this.markSpellLevel + ") on element markSpellLevel.");
+        }
+        output.writeShort(this.markSpellLevel);
+        output.writeShort(this.markId);
+        output.writeByte(this.markType);
+        if(this.markimpactCell < -1 || this.markimpactCell > 559)
+        {
+            throw new Error("Forbidden value (" + this.markimpactCell + ") on element markimpactCell.");
+        }
+        output.writeShort(this.markimpactCell);
+        output.writeShort(this.cells.length);
+        for(var _i8: number = 0; _i8 < this.cells.length; _i8++)
+        {
+            (this.cells[_i8] as GameActionMarkedCell).serializeAs_GameActionMarkedCell(output);
+        }
+        output.writeBoolean(this.active);
     }
 
     public deserialize(input: ICustomDataInput)

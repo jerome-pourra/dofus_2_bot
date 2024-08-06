@@ -3,7 +3,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkType } from "./../../../../../../jerakine/network/INetworkType";
 import { Item } from "./Item";
 
-export class SpellItem extends Item
+export class SpellItem extends Item implements INetworkType
 {
 
 	public static readonly protocolId: number = 8615;
@@ -14,6 +14,34 @@ export class SpellItem extends Item
     public constructor()
     {
         super();
+    }
+
+    public getTypeId()
+    {
+        return SpellItem.protocolId;
+    }
+
+    public initSpellItem(spellId: number = 0, spellLevel: number = 0): SpellItem
+    {
+        this.spellId = spellId;
+        this.spellLevel = spellLevel;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SpellItem(output);
+    }
+
+    public serializeAs_SpellItem(output: ICustomDataOutput)
+    {
+        super.serializeAs_Item(output);
+        output.writeInt(this.spellId);
+        if(this.spellLevel < 1 || this.spellLevel > 32767)
+        {
+            throw new Error("Forbidden value (" + this.spellLevel + ") on element spellLevel.");
+        }
+        output.writeShort(this.spellLevel);
     }
 
     public deserialize(input: ICustomDataInput)

@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class SocialFightTakePlaceRequestMessage extends NetworkMessage
+export class SocialFightTakePlaceRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7755;
@@ -19,14 +19,43 @@ export class SocialFightTakePlaceRequestMessage extends NetworkMessage
         this.socialFightInfo = new SocialFightInfo();
     }
 
+    public getMessageId()
+    {
+        return SocialFightTakePlaceRequestMessage.protocolId;
+    }
+
+    public initSocialFightTakePlaceRequestMessage(socialFightInfo: SocialFightInfo = null, replacedCharacterId: number = 0): SocialFightTakePlaceRequestMessage
+    {
+        this.socialFightInfo = socialFightInfo;
+        this.replacedCharacterId = replacedCharacterId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_SocialFightTakePlaceRequestMessage(output);
+    }
+
+    public serializeAs_SocialFightTakePlaceRequestMessage(output: ICustomDataOutput)
+    {
+        this.socialFightInfo.serializeAs_SocialFightInfo(output);
+        if(this.replacedCharacterId < 0 || this.replacedCharacterId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.replacedCharacterId + ") on element replacedCharacterId.");
+        }
+        output.writeVarLong(this.replacedCharacterId);
     }
 
     public deserialize(input: ICustomDataInput)

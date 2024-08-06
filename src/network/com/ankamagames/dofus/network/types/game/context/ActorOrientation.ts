@@ -2,7 +2,7 @@ import { ICustomDataInput } from "./../../../../../jerakine/network/ICustomDataI
 import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomDataOutput";
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 
-export class ActorOrientation
+export class ActorOrientation implements INetworkType
 {
 
 	public static readonly protocolId: number = 2066;
@@ -13,6 +13,33 @@ export class ActorOrientation
     public constructor()
     {
 
+    }
+
+    public getTypeId()
+    {
+        return ActorOrientation.protocolId;
+    }
+
+    public initActorOrientation(id: number = 0, direction: number = 1): ActorOrientation
+    {
+        this.id = id;
+        this.direction = direction;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ActorOrientation(output);
+    }
+
+    public serializeAs_ActorOrientation(output: ICustomDataOutput)
+    {
+        if(this.id < -9007199254740992 || this.id > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.id + ") on element id.");
+        }
+        output.writeDouble(this.id);
+        output.writeByte(this.direction);
     }
 
     public deserialize(input: ICustomDataInput)

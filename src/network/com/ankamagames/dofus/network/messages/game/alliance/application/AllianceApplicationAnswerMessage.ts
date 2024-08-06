@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class AllianceApplicationAnswerMessage extends NetworkMessage
+export class AllianceApplicationAnswerMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 9692;
@@ -17,14 +17,43 @@ export class AllianceApplicationAnswerMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return AllianceApplicationAnswerMessage.protocolId;
+    }
+
+    public initAllianceApplicationAnswerMessage(accepted: boolean = false, playerId: number = 0): AllianceApplicationAnswerMessage
+    {
+        this.accepted = accepted;
+        this.playerId = playerId;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_AllianceApplicationAnswerMessage(output);
+    }
+
+    public serializeAs_AllianceApplicationAnswerMessage(output: ICustomDataOutput)
+    {
+        output.writeBoolean(this.accepted);
+        if(this.playerId < 0 || this.playerId > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.playerId + ") on element playerId.");
+        }
+        output.writeVarLong(this.playerId);
     }
 
     public deserialize(input: ICustomDataInput)

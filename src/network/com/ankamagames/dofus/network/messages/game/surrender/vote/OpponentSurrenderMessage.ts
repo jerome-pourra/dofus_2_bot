@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class OpponentSurrenderMessage extends NetworkMessage
+export class OpponentSurrenderMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6059;
@@ -14,14 +14,36 @@ export class OpponentSurrenderMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return OpponentSurrenderMessage.protocolId;
+    }
+
+    public initOpponentSurrenderMessage(): OpponentSurrenderMessage
+    {
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_OpponentSurrenderMessage(output);
+    }
+
+    public serializeAs_OpponentSurrenderMessage(output: ICustomDataOutput)
+    {
+
     }
 
     public deserialize(input: ICustomDataInput)

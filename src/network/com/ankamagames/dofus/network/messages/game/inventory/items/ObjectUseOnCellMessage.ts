@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { ObjectUseMessage } from "./ObjectUseMessage";
 
-export class ObjectUseOnCellMessage extends ObjectUseMessage
+export class ObjectUseOnCellMessage extends ObjectUseMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 4046;
@@ -16,14 +16,43 @@ export class ObjectUseOnCellMessage extends ObjectUseMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return ObjectUseOnCellMessage.protocolId;
+    }
+
+    public initObjectUseOnCellMessage(objectUID: number = 0, cells: number = 0): ObjectUseOnCellMessage
+    {
+        super.initObjectUseMessage(objectUID);
+        this.cells = cells;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectUseOnCellMessage(output);
+    }
+
+    public serializeAs_ObjectUseOnCellMessage(output: ICustomDataOutput)
+    {
+        super.serializeAs_ObjectUseMessage(output);
+        if(this.cells < 0 || this.cells > 559)
+        {
+            throw new Error("Forbidden value (" + this.cells + ") on element cells.");
+        }
+        output.writeVarShort(this.cells);
     }
 
     public deserialize(input: ICustomDataInput)

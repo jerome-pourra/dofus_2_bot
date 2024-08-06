@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class TreasureHuntFlagRequestMessage extends NetworkMessage
+export class TreasureHuntFlagRequestMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 6775;
@@ -17,14 +17,43 @@ export class TreasureHuntFlagRequestMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return TreasureHuntFlagRequestMessage.protocolId;
+    }
+
+    public initTreasureHuntFlagRequestMessage(questType: number = 0, index: number = 0): TreasureHuntFlagRequestMessage
+    {
+        this.questType = questType;
+        this.index = index;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_TreasureHuntFlagRequestMessage(output);
+    }
+
+    public serializeAs_TreasureHuntFlagRequestMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.questType);
+        if(this.index < 0)
+        {
+            throw new Error("Forbidden value (" + this.index + ") on element index.");
+        }
+        output.writeByte(this.index);
     }
 
     public deserialize(input: ICustomDataInput)

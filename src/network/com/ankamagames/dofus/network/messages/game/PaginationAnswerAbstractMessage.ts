@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOut
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
 
-export class PaginationAnswerAbstractMessage extends NetworkMessage
+export class PaginationAnswerAbstractMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 1468;
@@ -18,14 +18,53 @@ export class PaginationAnswerAbstractMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return PaginationAnswerAbstractMessage.protocolId;
+    }
+
+    public initPaginationAnswerAbstractMessage(offset: number = 0, count: number = 0, total: number = 0): PaginationAnswerAbstractMessage
+    {
+        this.offset = offset;
+        this.count = count;
+        this.total = total;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_PaginationAnswerAbstractMessage(output);
+    }
+
+    public serializeAs_PaginationAnswerAbstractMessage(output: ICustomDataOutput)
+    {
+        if(this.offset < 0 || this.offset > 9007199254740992)
+        {
+            throw new Error("Forbidden value (" + this.offset + ") on element offset.");
+        }
+        output.writeDouble(this.offset);
+        if(this.count < 0 || this.count > 4294967295)
+        {
+            throw new Error("Forbidden value (" + this.count + ") on element count.");
+        }
+        output.writeUnsignedInt(this.count);
+        if(this.total < 0 || this.total > 4294967295)
+        {
+            throw new Error("Forbidden value (" + this.total + ") on element total.");
+        }
+        output.writeUnsignedInt(this.total);
     }
 
     public deserialize(input: ICustomDataInput)

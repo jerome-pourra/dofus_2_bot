@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../jerakine/network/ICustomD
 import { INetworkMessage } from "./../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../jerakine/network/NetworkMessage";
 
-export class GameFightOptionToggleMessage extends NetworkMessage
+export class GameFightOptionToggleMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 5955;
@@ -16,14 +16,37 @@ export class GameFightOptionToggleMessage extends NetworkMessage
         super();
     }
 
+    public getMessageId()
+    {
+        return GameFightOptionToggleMessage.protocolId;
+    }
+
+    public initGameFightOptionToggleMessage(option: number = 3): GameFightOptionToggleMessage
+    {
+        this.option = option;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_GameFightOptionToggleMessage(output);
+    }
+
+    public serializeAs_GameFightOptionToggleMessage(output: ICustomDataOutput)
+    {
+        output.writeByte(this.option);
     }
 
     public deserialize(input: ICustomDataInput)

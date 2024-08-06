@@ -4,7 +4,7 @@ import { ICustomDataOutput } from "./../../../../../../../jerakine/network/ICust
 import { INetworkMessage } from "./../../../../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../../../../jerakine/network/NetworkMessage";
 
-export class ObjectGroundListAddedMessage extends NetworkMessage
+export class ObjectGroundListAddedMessage extends NetworkMessage implements INetworkMessage
 {
 
 	public static readonly protocolId: number = 7785;
@@ -19,14 +19,55 @@ export class ObjectGroundListAddedMessage extends NetworkMessage
         this.referenceIds = Array<number>();
     }
 
+    public getMessageId()
+    {
+        return ObjectGroundListAddedMessage.protocolId;
+    }
+
+    public initObjectGroundListAddedMessage(cells: Array<number> = null, referenceIds: Array<number> = null): ObjectGroundListAddedMessage
+    {
+        this.cells = cells;
+        this.referenceIds = referenceIds;
+        return this;
+    }
+
     public override pack(output: ICustomDataOutput)
     {
-
+        let data: CustomDataWrapper = new CustomDataWrapper();
+        this.serialize(data);
+        this.writePacket(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
     {
         this.deserialize(input);
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_ObjectGroundListAddedMessage(output);
+    }
+
+    public serializeAs_ObjectGroundListAddedMessage(output: ICustomDataOutput)
+    {
+        output.writeShort(this.cells.length);
+        for(var _i1: number = 0; _i1 < this.cells.length; _i1++)
+        {
+            if(this.cells[_i1] < 0 || this.cells[_i1] > 559)
+            {
+                throw new Error("Forbidden value (" + this.cells[_i1] + ") on element 1 (starting at 1) of cells.");
+            }
+            output.writeVarShort(this.cells[_i1]);
+        }
+        output.writeShort(this.referenceIds.length);
+        for(var _i2: number = 0; _i2 < this.referenceIds.length; _i2++)
+        {
+            if(this.referenceIds[_i2] < 0)
+            {
+                throw new Error("Forbidden value (" + this.referenceIds[_i2] + ") on element 2 (starting at 1) of referenceIds.");
+            }
+            output.writeVarInt(this.referenceIds[_i2]);
+        }
     }
 
     public deserialize(input: ICustomDataInput)

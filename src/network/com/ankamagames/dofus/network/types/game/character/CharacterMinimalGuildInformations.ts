@@ -5,7 +5,7 @@ import { ICustomDataOutput } from "./../../../../../jerakine/network/ICustomData
 import { INetworkType } from "./../../../../../jerakine/network/INetworkType";
 import { CharacterMinimalPlusLookInformations } from "./CharacterMinimalPlusLookInformations";
 
-export class CharacterMinimalGuildInformations extends CharacterMinimalPlusLookInformations
+export class CharacterMinimalGuildInformations extends CharacterMinimalPlusLookInformations implements INetworkType
 {
 
 	public static readonly protocolId: number = 2143;
@@ -16,6 +16,29 @@ export class CharacterMinimalGuildInformations extends CharacterMinimalPlusLookI
     {
         super();
         this.guild = new BasicGuildInformations();
+    }
+
+    public getTypeId()
+    {
+        return CharacterMinimalGuildInformations.protocolId;
+    }
+
+    public initCharacterMinimalGuildInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0, guild: BasicGuildInformations = null): CharacterMinimalGuildInformations
+    {
+        super.initCharacterMinimalPlusLookInformations(id,name,level,entityLook,breed);
+        this.guild = guild;
+        return this;
+    }
+
+    public serialize(output: ICustomDataOutput)
+    {
+        this.serializeAs_CharacterMinimalGuildInformations(output);
+    }
+
+    public serializeAs_CharacterMinimalGuildInformations(output: ICustomDataOutput)
+    {
+        super.serializeAs_CharacterMinimalPlusLookInformations(output);
+        this.guild.serializeAs_BasicGuildInformations(output);
     }
 
     public deserialize(input: ICustomDataInput)
