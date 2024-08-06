@@ -15,6 +15,6 @@ export interface IDataOutput {
     writeUnsignedLong(param1: bigint): void;
     writeUTF(param1: string): void;
 
-    writeBytes(param1: CustomBuffer, param2: number, param3: number): void;
+    writeBytes(buffer: CustomBuffer, offset?: number, length?: number): void;
 
 }
