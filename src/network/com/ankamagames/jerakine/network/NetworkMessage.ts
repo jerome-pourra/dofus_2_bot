@@ -15,16 +15,8 @@ export abstract class NetworkMessage implements INetworkMessage {
         this._instance_id = NetworkMessage.GLOBAL_INSTANCE_ID++;
     }
 
-	public pack(param1: ICustomDataOutput): void {
-        throw new Error("Method not implemented.");
-    };
-
-	public unpack(param1: ICustomDataInput, param2: number): void {
-        throw new Error("Method not implemented.");
-    };
-
-	get isInitialized(): boolean { return true; };
-	get unpacked(): boolean { return true; };
-	set unpacked(param1: boolean) { };
+    public abstract getMessageId(): number;
+	public abstract pack(param1: ICustomDataOutput): void;
+	public abstract unpack(param1: ICustomDataInput, param2: number): void;
     
 }
