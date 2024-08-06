@@ -1,4 +1,4 @@
-import { IDataOutput } from "../../../../utils/IDataOutput";
+import { IDataOutput } from "../../../../network/utils/IDataOutput";
 
 export interface ICustomDataOutput extends IDataOutput {
 

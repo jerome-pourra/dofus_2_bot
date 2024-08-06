@@ -1,6 +1,6 @@
 import * as fs from 'fs';
-import { IDataInput } from '../../../../../../utils/IDataInput';
-import { CustomBuffer } from '../../../../../../utils/CustomBuffer';
+import { IDataInput } from '../../../../../../network/utils/IDataInput';
+import { CustomBuffer } from '../../../../../../network/utils/CustomBuffer';
 
 export type PakProtocol2Index = { v: number, n: string, i: number, o: number, l: number, stream: IDataInput };
 

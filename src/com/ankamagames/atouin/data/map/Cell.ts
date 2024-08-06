@@ -1,11 +1,11 @@
-import { Point } from '../../utils/Point';
-import { Layer } from './Layer';
-import { AtouinConstants } from '../../AtouinConstants';
-import { CellIdConverter } from '../../utils/CellIdConverter';
-import { BasicElement } from './elements/BasicElement';
-import { ElementTypesEnum } from '../../enums/ElementTypesEnum';
-import { GraphicalElement } from './elements/GraphicalElement';
-import { IDataInput } from '../../../../../utils/IDataInput';
+import { IDataInput } from "../../../../../network/utils/IDataInput";
+import { AtouinConstants } from "../../AtouinConstants";
+import { ElementTypesEnum } from "../../enums/ElementTypesEnum";
+import { CellIdConverter } from "../../utils/CellIdConverter";
+import { Point } from "../../utils/Point";
+import { BasicElement } from "./elements/BasicElement";
+import { GraphicalElement } from "./elements/GraphicalElement";
+import { Layer } from "./Layer";
 
 export class Cell {
 

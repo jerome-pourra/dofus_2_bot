@@ -1,4 +1,4 @@
-import { IDataInput } from "../../../../../../utils/IDataInput";
+import { IDataInput } from "../../../../../../network/utils/IDataInput";
 import { Cell } from "../Cell";
 
 export class BasicElement {
