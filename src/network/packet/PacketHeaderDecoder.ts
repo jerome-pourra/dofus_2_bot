@@ -1,3 +1,4 @@
+import { MessageReceiver } from "../../com/ankamagames/dofus/network/MessageReceiver";
 import { AnkSocketEndpoint } from "../AnkSocket";
 
 export type PacketHeaderDecoded = {
@@ -39,9 +40,9 @@ export class PacketHeaderDecoder {
         self.decodeContent();
 
         if (self._endpoint === AnkSocketEndpoint.SERVER) {
-            // console.log("[C >>> M] : id:" + self._id + " sos:" + self._sos + " seq:" + self._seq + " size:" + self._size + " content:" + self._content.toString("hex"));
+            console.log("[C " + "\x1b[31m" + ">>>" + "\x1b[0m" + " M] : id:" + "\x1b[34m" + MessageReceiver.getType(self._id) + "\x1b[0m" + ":" + self._id + " sos:" + self._sos + " seq:" + self._seq + " size:" + self._size + " content:" + self._content.toString("hex"));
         } else {
-            // console.log("[S >>> M] : id:" + self._id + " sos:" + self._sos + " size:" + self._size + " content:" + self._content.toString("hex"));
+            console.log("[S " + "\x1b[32m" + ">>>" + "\x1b[0m" + " M] : id:" + "\x1b[34m" + MessageReceiver.getType(self._id) + "\x1b[0m" + ":" + self._id + " sos:" + self._sos + " size:" + self._size + " content:" + self._content.toString("hex"));
         }
 
         return {
