@@ -1,7 +1,7 @@
 import { Map } from './Map';
-import { Cell } from './Cell';
-import { CustomBuffer } from '../../../../../CustomBuffer';
+import { Cell } from './Cell';;
 import { AtouinConstants } from '../../AtouinConstants';
+import { IDataInput } from '../../../../../utils/IDataInput';
 
 export class Layer {
 
@@ -24,7 +24,7 @@ export class Layer {
         return this._map;
     }
 
-    public fromRaw(raw: CustomBuffer, mapVersion: number): void {
+    public fromRaw(raw: IDataInput, mapVersion: number): void {
         let i: number;
         let c: Cell;
         let maxMapCellId: number;

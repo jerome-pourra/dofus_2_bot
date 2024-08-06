@@ -3,9 +3,9 @@ import { Layer } from './Layer';
 import { AtouinConstants } from '../../AtouinConstants';
 import { CellIdConverter } from '../../utils/CellIdConverter';
 import { BasicElement } from './elements/BasicElement';
-import { CustomBuffer } from '../../../../../CustomBuffer';
 import { ElementTypesEnum } from '../../enums/ElementTypesEnum';
 import { GraphicalElement } from './elements/GraphicalElement';
+import { IDataInput } from '../../../../../utils/IDataInput';
 
 export class Cell {
 
@@ -65,7 +65,7 @@ export class Cell {
         return Cell.cellPixelCoords(this.cellId);
     }
 
-    public fromRaw(raw: CustomBuffer, mapVersion: number): void {
+    public fromRaw(raw: IDataInput, mapVersion: number): void {
         let beType: number;
         let be: BasicElement;
         let i: number;

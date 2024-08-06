@@ -1,4 +1,4 @@
-import { CustomBuffer } from '../../../../../CustomBuffer';
+import { IDataInput } from '../../../../../utils/IDataInput';
 import { Map } from './Map';
 
 export class Fixture {
@@ -24,7 +24,7 @@ export class Fixture {
         return this._map;
     }
 
-    public fromRaw(raw: CustomBuffer): void {
+    public fromRaw(raw: IDataInput): void {
         try {
             this.fixtureId = raw.readInt();
             this.offset = { x: null, y: null };

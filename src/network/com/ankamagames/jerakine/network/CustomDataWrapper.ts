@@ -1,7 +1,6 @@
-import { CustomBuffer } from "../../../../CustomBuffer";
+import { CustomBuffer } from "../../../../utils/CustomBuffer";
 import { ICustomDataInput } from "./ICustomDataInput";
 import { ICustomDataOutput } from "./ICustomDataOutput";
-import { ByteArray } from "./utils/types/ByteArray";
 import { Int64 } from "./utils/types/Int64";
 import { UInt64 } from "./utils/types/UInt64";
 
@@ -74,60 +73,17 @@ export class CustomDataWrapper extends CustomBuffer implements ICustomDataInput,
         return this.readVarShort();
     }
 
-    public readBytes(buffer: Buffer, offset: number = 0, length: number = 0): void {
-        if (length === 0) {
-            length = buffer.length - offset;
-        }
-        this._buffer = buffer.subarray(offset, offset + length);
-    }
-
     public readVarLong(): number {
-        return Number(this.readInt64(this));
+        return this.readInt64().toNumber();
     }
 
     public readVarUhLong(): number {
-        return Number(this.readUInt64(this));
-    }
-
-    public readMultiByte(length: number): string {
-        const result = this._buffer.toString("utf-8", this._readOffset, this._readOffset + length);
-        this._readOffset += length;
-        return result;
-    }
-
-    public readUTFBytes(length: number): string {
-        const result = this._buffer.toString("utf-8", this._readOffset, this._readOffset + length);
-        this._readOffset += length;
-        return result;
+        return this.readUInt64().toNumber();
     }
 
     public writeVarInt(value: number): void { }
     public writeVarShort(value: number): void { }
     public writeVarLong(value: number): void { }
-
-    // public get bytesAvailable(): number {
-    // 	return this._data.byteLength;
-    // }
-
-    // public readObject(): * {
-    // 	return this._data.readObject();
-    // }
-
-    // public get objectEncoding(): number {
-    // 	return this._data.objectEncoding;
-    // }
-
-    // public set objectEncoding(version: number): void {
-    // 	this._data.objectEncoding = version;
-    // }
-
-    // public get endian(): String {
-    // 	return this._data.endian;
-    // }
-
-    // public set endian(type: String): void {
-    // 	this._data.endian = type;
-    // }
 
     // public writeVarInt(value: number): void {
     // 	var b: * = 0;
@@ -199,23 +155,12 @@ export class CustomDataWrapper extends CustomBuffer implements ICustomDataInput,
     // 	}
     // }
 
-    public writeMultiByte(value: string, charset?: BufferEncoding): void {
-        const buffer = Buffer.from(value, charset ?? "utf-8");
-        this._buffer = Buffer.concat([this._buffer, buffer]);
-    }
-
-    public writeObject(object: any): void {
-        const json = JSON.stringify(object);
-        const buffer = Buffer.from(json, "utf-8");
-        this._buffer = Buffer.concat([this._buffer, buffer]);
-    }
-
-    private readInt64(input: CustomDataWrapper): Int64 {
+    private readInt64(): Int64 {
         var b: number = 0;
         var result: Int64 = new Int64();
         var i: number = 0;
         while (true) {
-            b = input.readUnsignedByte();
+            b = this.readUnsignedByte();
             if (i == 28) {
                 break;
             }
@@ -232,7 +177,7 @@ export class CustomDataWrapper extends CustomBuffer implements ICustomDataInput,
             result.high = b >>> 4;
             i = 3;
             while (true) {
-                b = input.readUnsignedByte();
+                b = this.readUnsignedByte();
                 if (i < 32) {
                     if (b < 128) {
                         break;
@@ -249,12 +194,12 @@ export class CustomDataWrapper extends CustomBuffer implements ICustomDataInput,
         return result;
     }
 
-    private readUInt64(input: CustomDataWrapper): UInt64 {
+    private readUInt64(): UInt64 {
         var b: number = 0;
         var result: UInt64 = new UInt64();
         var i: number = 0;
         while (true) {
-            b = input.readUnsignedByte();
+            b = this.readUnsignedByte();
             if (i == 28) {
                 break;
             }
@@ -271,7 +216,7 @@ export class CustomDataWrapper extends CustomBuffer implements ICustomDataInput,
             result.high = b >>> 4;
             i = 3;
             while (true) {
-                b = input.readUnsignedByte();
+                b = this.readUnsignedByte();
                 if (i < 32) {
                     if (b < 128) {
                         break;

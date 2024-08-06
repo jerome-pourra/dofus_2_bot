@@ -1,4 +1,4 @@
-import { CustomBuffer } from '../../../../../CustomBuffer';
+import { IDataInput } from '../../../../../utils/IDataInput';
 import { Map } from './Map';
 
 export class CellData {
@@ -104,7 +104,7 @@ export class CellData {
         return this._linkedZone & 15;
     }
 
-    public fromRaw(raw: CustomBuffer): void {
+    public fromRaw(raw: IDataInput): void {
         let tmpbytesv9: number = 0;
         let topArrow: boolean = false;
         let bottomArrow: boolean = false;

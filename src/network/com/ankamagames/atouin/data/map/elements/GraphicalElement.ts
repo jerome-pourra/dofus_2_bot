@@ -1,4 +1,4 @@
-import { CustomBuffer } from "../../../../../../CustomBuffer";
+import { IDataInput } from "../../../../../../utils/IDataInput";
 import { AtouinConstants } from "../../../AtouinConstants";
 import { ElementTypesEnum } from "../../../enums/ElementTypesEnum";
 import { Point } from "../../../utils/Point";
@@ -32,12 +32,12 @@ export class GraphicalElement extends BasicElement {
         // this.finalTeint = new ColorMultiplicator(r, g, b, true);
     }
 
-    public fromRaw(raw: CustomBuffer, mapVersion: number): void {
+    public fromRaw(raw: IDataInput, mapVersion: number): void {
         this.subFromRaw(raw, mapVersion);
         this.identifier = raw.readUnsignedInt();
     }
 
-    public subFromRaw(raw: CustomBuffer, mapVersion: number): void {
+    public subFromRaw(raw: IDataInput, mapVersion: number): void {
         this.elementId = raw.readUnsignedInt();
         this.calculateFinalTeint(raw.readByte(), raw.readByte(), raw.readByte(), raw.readByte(), raw.readByte(), raw.readByte());
         this.pixelOffset = new Point();

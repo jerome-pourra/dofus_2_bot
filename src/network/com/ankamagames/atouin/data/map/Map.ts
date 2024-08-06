@@ -1,7 +1,7 @@
-import { CustomBuffer } from "../../../../../CustomBuffer";
 import { Fixture } from './Fixture';
 import { Layer } from './Layer';
 import { CellData } from './CellData';
+import { IDataInput } from "../../../../../utils/IDataInput";
 
 export class Map {
 
@@ -64,7 +64,7 @@ export class Map {
         return this._failed;
     }
 
-    public fromRaw(raw: CustomBuffer): void {
+    public fromRaw(raw: IDataInput): void {
 
         let i: number = 0;
         let header: number = 0;
