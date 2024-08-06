@@ -1,4 +1,4 @@
-import { IDataInput } from "../../../../utils/IDataInput";
+import { IDataInput } from "../../../../network/utils/IDataInput";
 
 export interface ICustomDataInput extends IDataInput {
 

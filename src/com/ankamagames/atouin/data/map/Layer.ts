@@ -1,7 +1,7 @@
-import { Map } from './Map';
-import { Cell } from './Cell';;
-import { AtouinConstants } from '../../AtouinConstants';
-import { IDataInput } from '../../../../../utils/IDataInput';
+import { IDataInput } from "../../../../../network/utils/IDataInput";
+import { AtouinConstants } from "../../AtouinConstants";
+import { Cell } from "./Cell";
+import { Map } from "./Map";
 
 export class Layer {
 

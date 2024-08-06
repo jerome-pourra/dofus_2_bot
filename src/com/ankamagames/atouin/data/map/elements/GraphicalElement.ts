@@ -1,4 +1,4 @@
-import { IDataInput } from "../../../../../../utils/IDataInput";
+import { IDataInput } from "../../../../../../network/utils/IDataInput";
 import { AtouinConstants } from "../../../AtouinConstants";
 import { ElementTypesEnum } from "../../../enums/ElementTypesEnum";
 import { Point } from "../../../utils/Point";

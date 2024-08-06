@@ -1,7 +1,7 @@
 import { Fixture } from './Fixture';
 import { Layer } from './Layer';
 import { CellData } from './CellData';
-import { IDataInput } from "../../../../../utils/IDataInput";
+import { IDataInput } from '../../../../../network/utils/IDataInput';
 
 export class Map {
 

@@ -1,4 +1,4 @@
-import { IDataInput } from '../../../../../utils/IDataInput';
+import { IDataInput } from '../../../../../network/utils/IDataInput';
 import { Map } from './Map';
 
 export class CellData {

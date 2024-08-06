@@ -1,5 +1,2 @@
 dist/
 node_modules/
-
-# Fichier de couverture de code généré par Jest
-coverage/

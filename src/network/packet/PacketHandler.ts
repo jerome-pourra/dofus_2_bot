@@ -1,10 +1,10 @@
 import * as util from "util";
 import { AnkSocketEndpoint } from "../AnkSocket";
-import { MessageReceiver } from "../com/ankamagames/dofus/network/MessageReceiver";
-import { CustomDataWrapper } from "../com/ankamagames/jerakine/network/CustomDataWrapper";
 import { PacketHeaderDecoded, PacketHeaderDecoder } from "./PacketHeaderDecoder";
 import { PacketHeaderEncoder } from "./PacketHeaderEncoder";
 import { NetworkHandler } from "../../bot/network/NetworkHandler";
+import { CustomDataWrapper } from "../../com/ankamagames/jerakine/network/CustomDataWrapper";
+import { MessageReceiver } from "../../com/ankamagames/dofus/network/MessageReceiver";
 
 
 export class PacketHandler {
