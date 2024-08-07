@@ -1,4 +1,5 @@
 import { MessageReceiver } from "../../com/ankamagames/dofus/network/MessageReceiver";
+import { Logger } from "../../tools/Logger";
 import { AnkSocketEndpoint } from "../AnkSocket";
 
 export type PacketHeaderDecoded = {
@@ -39,12 +40,6 @@ export class PacketHeaderDecoder {
         self.decodeSize();
         self.decodeContent();
 
-        if (self._endpoint === AnkSocketEndpoint.SERVER) {
-            console.log("[C " + "\x1b[31m" + ">>>" + "\x1b[0m" + " M] : id:" + "\x1b[34m" + MessageReceiver.getType(self._id) + "\x1b[0m" + ":" + self._id + " sos:" + self._sos + " seq:" + self._seq + " size:" + self._size + " content:" + self._content.toString("hex"));
-        } else {
-            console.log("[S " + "\x1b[32m" + ">>>" + "\x1b[0m" + " M] : id:" + "\x1b[34m" + MessageReceiver.getType(self._id) + "\x1b[0m" + ":" + self._id + " sos:" + self._sos + " size:" + self._size + " content:" + self._content.toString("hex"));
-        }
-
         return {
             id: self._id,
             seq: self._seq,
@@ -55,26 +50,6 @@ export class PacketHeaderDecoder {
         };
 
     }
-
-    public get id(): number {
-        return this._id;
-    }
-
-    public get seq(): number {
-        return this._seq;
-    }
-
-    public get sos(): number {
-        return this._sos;
-    }
-
-    public get size(): number {
-        return this._size;
-    }
-
-    // public get content(): Buffer {
-    //     return this._content;
-    // }
 
     public get readOffset(): number {
         return this._readOffset;
