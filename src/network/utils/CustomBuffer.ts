@@ -37,14 +37,18 @@ export class CustomBuffer implements IDataInput, IDataOutput {
         this._readOffset = offset;
     }
 
+    public canRead(size: number): boolean {
+        return this._buffer.length - this._readOffset >= size;
+    }
+
+    public subarray(start?: number, end?: number): IDataInput {
+        return new CustomBuffer(this._buffer.subarray(start, end));
+    }
+    
     private allocate(size: number): void {
         const buffer = Buffer.alloc(this._buffer.length + size);
         this._buffer.copy(buffer);
         this._buffer = buffer;
-    }
-
-    public subarray(start: number, end: number): IDataInput {
-        return new CustomBuffer(this._buffer.subarray(start, end));
     }
 
     // READ METHODS

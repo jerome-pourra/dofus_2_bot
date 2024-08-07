@@ -2,6 +2,13 @@ import { CustomBuffer } from "./CustomBuffer";
 
 export interface IDataOutput {
 
+    get buffer(): Buffer;  
+    get length(): number;
+    get readOffset(): number;
+    set readOffset(offset: number);
+    get writeOffset(): number;
+    set writeOffset(offset: number);
+
     writeBoolean(param1: boolean): void;
     writeByte(param1: number): void;
     writeUnsignedByte(param1: number): void;

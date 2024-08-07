@@ -5,9 +5,12 @@ import { PacketHeaderEncoder } from "./PacketHeaderEncoder";
 import { NetworkHandler } from "../../bot/network/NetworkHandler";
 import { CustomDataWrapper } from "../../com/ankamagames/jerakine/network/CustomDataWrapper";
 import { MessageReceiver } from "../../com/ankamagames/dofus/network/MessageReceiver";
-
+import { Logger } from "../../tools/Logger";
 
 export class PacketHandler {
+
+    private static LOG_NETWORK = true;
+    private static LOG_UNPACK = false;
 
     private static SEQUENCE_ID: number = 0;
 
@@ -17,7 +20,7 @@ export class PacketHandler {
         this._buffer = Buffer.alloc(0);
     }
 
-    public acquisition(data: Buffer, enpoint: AnkSocketEndpoint) {
+    public acquisition(data: Buffer, enpoint: AnkSocketEndpoint, increaseSeq: boolean = true): Buffer[] {
 
         // Append new data to buffer
         this._buffer = Buffer.concat([this._buffer, data]);
@@ -31,49 +34,71 @@ export class PacketHandler {
 
             do {
 
-                let decoded = PacketHeaderDecoder.decode(buffer, enpoint);
+                let input = new CustomDataWrapper(buffer);
+                let decoded = PacketHeaderDecoder.decode(input, enpoint);
+
+                if (PacketHandler.LOG_NETWORK) {
+                    switch (enpoint) {
+                        case AnkSocketEndpoint.SERVER:
+                            Logger.log("[C " + "<green>" + ">>>" + "</green>" + " M] : id:" + decoded.id + " name:" + "<blue>" + MessageReceiver.getType(decoded.id) + "</blue>" + " sos:" + decoded.sos + " seq:" + decoded.seq + " size:" + decoded.size + " content:" + this.truncateContent(decoded.content.buffer.toString("hex")));
+                            break;
+                        case AnkSocketEndpoint.CLIENT:
+                            Logger.log("[S " + "<red>" + ">>>" + "</red>" + " M] : id:" + decoded.id + " name:" + "<blue>" + MessageReceiver.getType(decoded.id) + "</blue>" + " sos:" + decoded.sos + " size:" + decoded.size + " content:" + this.truncateContent(decoded.content.buffer.toString("hex")));
+                            break;
+                        default:
+                            throw new Error("PacketHandler.acquisition() -> Invalid endpoint");
+                    }
+                }
+
                 decodedQueue.push(decoded);
                 buffer = buffer.subarray(decoded.nextOffset);
 
-            } while (buffer.byteLength > 0);
+            } while (buffer.length > 0);
 
             for (const decoded of decodedQueue) {
                 this.process(decoded);
-                let sequence = ++PacketHandler.SEQUENCE_ID;
-                let encoded: Buffer = PacketHeaderEncoder.encode(decoded.id, sequence, decoded.content, enpoint);
+                let sequence = PacketHandler.SEQUENCE_ID;
+                if (increaseSeq) {
+                    sequence = ++PacketHandler.SEQUENCE_ID;
+                }
+                let encoded: Buffer = PacketHeaderEncoder.encode(decoded.id, sequence, decoded.content.buffer, enpoint);
                 encodedQueue.push(encoded);
             }
 
             this._buffer = buffer;
-
-            // console.log(">>> PacketHandler.acquisition() -> received " + packetCount + " packets");
-            // console.log("Encoded: " + packetQueue.map((packet) => packet.toString("hex")).join(" | "));
             return encodedQueue;
 
-        } catch (error) {
-            console.error(error.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error(error.message);
+            } else {
+                console.error("PacketHandler.acquisition() -> unknown error", error);
+            }
         }
 
         return null;
 
     }
 
+    private truncateContent(str: string, maxLength: number = 32): string {
+        return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
+    }
+
     private process(decoded: PacketHeaderDecoded): void {
 
-        let data = new CustomDataWrapper(decoded.content);
-        let message = MessageReceiver.parse(data, decoded.id, decoded.size);
+        let input = decoded.content;
+        let message = MessageReceiver.parse(input, decoded.id, decoded.size);
 
-        if (data.length !== data.readOffset) {
+        if (input.length !== input.readOffset) {
             console.error("PacketHandler.process() -> data length and read offset mismatch");
         }
 
-        // console.log(util.inspect(message, { depth: null, colors: true }));
-        NetworkHandler.process(message);
+        if (PacketHandler.LOG_UNPACK) {
+            console.log(JSON.stringify(message));
+            // console.log(util.inspect(message, { depth: null, colors: true }));
+        }
 
-        // if (message.constructor.name === "MapComplementaryInformationsDataMessage") {
-        //     console.log(util.inspect(message, { depth: null, colors: true }));
-        //     // console.log("Hello World!");
-        // }
+        NetworkHandler.process(message);
 
     }
 
