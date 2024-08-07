@@ -1,8 +1,15 @@
+import { AnkSocketEndpoint } from "../../../../../../network/AnkSocket";
+import { PacketHandler } from "../../../../../../network/packet/PacketHandler";
+import { PacketHeaderDecoder } from "../../../../../../network/packet/PacketHeaderDecoder";
+import { CustomBuffer } from "../../../../../../network/utils/CustomBuffer";
 import { CustomDataWrapper } from "./../../../../jerakine/network/CustomDataWrapper";
 import { ICustomDataInput } from "./../../../../jerakine/network/ICustomDataInput";
 import { ICustomDataOutput } from "./../../../../jerakine/network/ICustomDataOutput";
 import { INetworkMessage } from "./../../../../jerakine/network/INetworkMessage";
 import { NetworkMessage } from "./../../../../jerakine/network/NetworkMessage";
+
+import * as fs from 'fs';
+import * as zlib from "zlib";
 
 export class NetworkDataContainerMessage extends NetworkMessage implements INetworkMessage
 {
@@ -14,6 +21,8 @@ export class NetworkDataContainerMessage extends NetworkMessage implements INetw
     public constructor()
     {
         super();
+        console.log("NetworkDataContainerMessage constructor");
+        
     }
 
     public getMessageId()
@@ -53,13 +62,26 @@ export class NetworkDataContainerMessage extends NetworkMessage implements INetw
         this.deserializeAs_NetworkDataContainerMessage(input);
     }
 
+    private readVarInt(input: Buffer): number {
+        let num = 0;
+        let shift = 0;
+        let byte = 0;
+    
+        do {
+            byte = input.readUInt8();
+            num |= (byte & 0x7F) << shift;
+            shift += 7;
+        } while (byte & 0x80);
+    
+        return num;
+    }
+
     private deserializeAs_NetworkDataContainerMessage(input: ICustomDataInput)
     {
-        // let _contentLen: number = input.readVarInt();
-        // let tmpBuffer: Buffer = new ByteArray();
-        // input.readBytes(tmpBuffer,0,_contentLen);
-        // tmpBuffer.uncompress();
-        // this.content = tmpBuffer;
+        const contentLen: number = input.readVarInt();
+        const buffer: Buffer = input.buffer.subarray(input.readOffset, input.readOffset + contentLen);
+        const uncompressedBuffer: Buffer = zlib.inflateSync(buffer);
+        new PacketHandler().acquisition(uncompressedBuffer, AnkSocketEndpoint.CLIENT, false);
     }
 
 }
