@@ -10,7 +10,7 @@ import { Logger } from "../../tools/Logger";
 export class PacketHandler {
 
     private static LOG_NETWORK = true;
-    private static LOG_UNPACK = true;
+    private static LOG_UNPACK = false;
     private static SEQUENCE_ID: number = 0;
 
     private _buffer: Buffer;
@@ -19,7 +19,7 @@ export class PacketHandler {
         this._buffer = Buffer.alloc(0);
     }
 
-    public acquisition(data: Buffer, enpoint: AnkSocketEndpoint): Buffer[] {
+    public acquisition(data: Buffer, enpoint: AnkSocketEndpoint, increaseSeq: boolean = true): Buffer[] {
 
         // Append new data to buffer
         this._buffer = Buffer.concat([this._buffer, data]);
@@ -38,10 +38,10 @@ export class PacketHandler {
                 if (PacketHandler.LOG_NETWORK) {
                     switch (enpoint) {
                         case AnkSocketEndpoint.SERVER:
-                            Logger.log("[C <green>" + ">>>" + "</green> M] : id:" + "<blue>" + MessageReceiver.getType(decoded.id) + "</blue>" + "@" + decoded.id + " sos:" + decoded.sos + " seq:" + decoded.seq + " size:" + decoded.size + " content:" + decoded.content.toString("hex"));
+                            Logger.log("[C <green>" + ">>>" + "</green> M] : id:" + "<blue>" + MessageReceiver.getType(decoded.id) + "</blue>" + "@" + decoded.id + " sos:" + decoded.sos + " seq:" + decoded.seq + " size:" + decoded.size + " content:" + decoded.content.toString("hex").substring(0, 32));
                             break;
                         case AnkSocketEndpoint.CLIENT:
-                            Logger.log("[S <red>" + ">>>" + "</red> M] : id:" + "<blue>" + MessageReceiver.getType(decoded.id) + "</blue>" + "@" + decoded.id + " sos:" + decoded.sos + " size:" + decoded.size + " content:" + decoded.content.toString("hex"));
+                            Logger.log("[S <red>" + ">>>" + "</red> M] : id:" + "<blue>" + MessageReceiver.getType(decoded.id) + "</blue>" + "@" + decoded.id + " sos:" + decoded.sos + " size:" + decoded.size + " content:" + decoded.content.toString("hex").substring(0, 32));
                             break;
                         default:
                             throw new Error("PacketHandler.acquisition() -> Invalid endpoint");
@@ -55,7 +55,10 @@ export class PacketHandler {
 
             for (const decoded of decodedQueue) {
                 this.process(decoded);
-                let sequence = ++PacketHandler.SEQUENCE_ID;
+                let sequence = PacketHandler.SEQUENCE_ID;
+                if (increaseSeq) {
+                    sequence = ++PacketHandler.SEQUENCE_ID;
+                }
                 let encoded: Buffer = PacketHeaderEncoder.encode(decoded.id, sequence, decoded.content, enpoint);
                 encodedQueue.push(encoded);
             }
@@ -81,12 +84,11 @@ export class PacketHandler {
         }
 
         if (PacketHandler.LOG_UNPACK) {
-            console.log(util.inspect(message, { depth: null, colors: true }));
+            console.log(JSON.stringify(message));
+            // console.log(util.inspect(message, { depth: null, colors: true }));
         }
 
         NetworkHandler.process(message);
-
-        // On tentera de rebuild la data ici afin de l'envoyé au destinataire
 
     }
 
