@@ -7,6 +7,9 @@ export interface IDataInput {
     get writeOffset(): number;
     set writeOffset(offset: number);
 
+    canRead(size: number): boolean;
+    subarray(start: number, end: number): IDataInput;
+
     readBoolean(): boolean;
     readByte(): number;
     readUnsignedByte(): number;

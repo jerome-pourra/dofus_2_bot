@@ -11,6 +11,7 @@ export class PacketHandler {
 
     private static LOG_NETWORK = true;
     private static LOG_UNPACK = false;
+
     private static SEQUENCE_ID: number = 0;
 
     private _buffer: Buffer;
@@ -33,15 +34,16 @@ export class PacketHandler {
 
             do {
 
-                let decoded = PacketHeaderDecoder.decode(buffer, enpoint);
+                let input = new CustomDataWrapper(buffer);
+                let decoded = PacketHeaderDecoder.decode(input, enpoint);
 
                 if (PacketHandler.LOG_NETWORK) {
                     switch (enpoint) {
                         case AnkSocketEndpoint.SERVER:
-                            Logger.log("[C <green>" + ">>>" + "</green> M] : id:" + "<blue>" + MessageReceiver.getType(decoded.id) + "</blue>" + "@" + decoded.id + " sos:" + decoded.sos + " seq:" + decoded.seq + " size:" + decoded.size + " content:" + decoded.content.toString("hex").substring(0, 32));
+                            Logger.log("[C " + "<green>" + ">>>" + "</green>" + " M] : id:" + decoded.id + " name:" + "<blue>" + MessageReceiver.getType(decoded.id) + "</blue>" + " sos:" + decoded.sos + " seq:" + decoded.seq + " size:" + decoded.size + " content:" + this.truncateContent(decoded.content.buffer.toString("hex")));
                             break;
                         case AnkSocketEndpoint.CLIENT:
-                            Logger.log("[S <red>" + ">>>" + "</red> M] : id:" + "<blue>" + MessageReceiver.getType(decoded.id) + "</blue>" + "@" + decoded.id + " sos:" + decoded.sos + " size:" + decoded.size + " content:" + decoded.content.toString("hex").substring(0, 32));
+                            Logger.log("[S " + "<red>" + ">>>" + "</red>" + " M] : id:" + decoded.id + " name:" + "<blue>" + MessageReceiver.getType(decoded.id) + "</blue>" + " sos:" + decoded.sos + " size:" + decoded.size + " content:" + this.truncateContent(decoded.content.buffer.toString("hex")));
                             break;
                         default:
                             throw new Error("PacketHandler.acquisition() -> Invalid endpoint");
@@ -59,27 +61,35 @@ export class PacketHandler {
                 if (increaseSeq) {
                     sequence = ++PacketHandler.SEQUENCE_ID;
                 }
-                let encoded: Buffer = PacketHeaderEncoder.encode(decoded.id, sequence, decoded.content, enpoint);
+                let encoded: Buffer = PacketHeaderEncoder.encode(decoded.id, sequence, decoded.content.buffer, enpoint);
                 encodedQueue.push(encoded);
             }
 
             this._buffer = buffer;
             return encodedQueue;
 
-        } catch (error) {
-            console.error(error.message);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error(error.message);
+            } else {
+                console.error("PacketHandler.acquisition() -> unknown error", error);
+            }
         }
 
         return null;
 
     }
 
+    private truncateContent(str: string, maxLength: number = 32): string {
+        return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
+    }
+
     private process(decoded: PacketHeaderDecoded): void {
 
-        let data = new CustomDataWrapper(decoded.content);
-        let message = MessageReceiver.parse(data, decoded.id, decoded.size);
+        let input = decoded.content;
+        let message = MessageReceiver.parse(input, decoded.id, decoded.size);
 
-        if (data.length !== data.readOffset) {
+        if (input.length !== input.readOffset) {
             console.error("PacketHandler.process() -> data length and read offset mismatch");
         }
 

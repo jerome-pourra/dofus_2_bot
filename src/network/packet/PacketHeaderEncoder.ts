@@ -1,33 +1,31 @@
+import { CustomDataWrapper } from "../../com/ankamagames/jerakine/network/CustomDataWrapper";
+import { ICustomDataOutput } from "../../com/ankamagames/jerakine/network/ICustomDataOutput";
 import { AnkSocketEndpoint } from "../AnkSocket";
 
 export class PacketHeaderEncoder {
 
     private static readonly BIT_RIGHT_SHIFT_LEN_PACKET_ID: number = 2;
-    private static readonly ENCODING_HEAD_LENGTH: number = 2;
-    private static readonly ENCODING_SEQ_LENGTH: number = 4;
+
+    private _rawOutput: ICustomDataOutput;
+    private _endpoint: AnkSocketEndpoint;
 
     public constructor() { }
 
     public static encode(id: number, seq: number, content: Buffer, endpoint: AnkSocketEndpoint): Buffer {
 
         let self = new PacketHeaderEncoder();
-        let size = content.byteLength;
+        self._rawOutput = new CustomDataWrapper();
+        self._endpoint = endpoint;
+
+        let size = content.length;
         let sos = self.computeSos(size);
         let head = self.computeHead(id, sos);
 
-        let headBuffer = self.encodeHead(head);
-        let seqBuffer = self.encodeSeq(seq, endpoint);
-        let sizeBuffer = self.encodeSize(size, sos);
-        let contentBuffer = content;
+        self.encodeHead(head);
+        self.encodeSeq(seq);
+        self.encodeSize(size, sos);
 
-        // if (endpoint === AnkSocketEndpoint.SERVER) {
-        //     console.log("[S <<< M] : head:" + headBuffer.toString("hex") + " seq:" + seqBuffer.toString("hex") + " size:" + sizeBuffer.toString("hex") + " content:" + content.toString("hex"));
-        // } else {
-        //     console.log("[S <<< M] : head:" + headBuffer.toString("hex") + " size:" + sizeBuffer.toString("hex") + " content:" + content.toString("hex"));
-        // }
-
-        // console.log("Sequence:", seq);
-        return Buffer.concat([headBuffer, seqBuffer, sizeBuffer, contentBuffer]);
+        return Buffer.concat([self._rawOutput.buffer, content]);
 
     }
 
@@ -48,40 +46,35 @@ export class PacketHeaderEncoder {
         return 0;
     }
 
-    private encodeHead(head: number): Buffer {
-        let buffer = Buffer.alloc(PacketHeaderEncoder.ENCODING_HEAD_LENGTH);
-        buffer.writeUInt16BE(head);
-        return buffer;
+    private encodeHead(head: number): void {
+        this._rawOutput.writeUnsignedShort(head);
     }
 
-    private encodeSeq(seq: number, endpoint: AnkSocketEndpoint): Buffer {
-        if (endpoint === AnkSocketEndpoint.SERVER) {
-            let buffer = Buffer.alloc(PacketHeaderEncoder.ENCODING_SEQ_LENGTH);
-            buffer.writeUInt32BE(seq);
-            return buffer;
-        } else {
-            return Buffer.alloc(0);
+    private encodeSeq(seq: number): void {
+        if (this._endpoint === AnkSocketEndpoint.SERVER) {
+            this._rawOutput.writeUnsignedInt(seq);
         }
     }
 
-    private encodeSize(len: number, sos: number): Buffer {
-        let buffer = Buffer.alloc(sos);
+    private encodeSize(len: number, sos: number): void {
         switch (sos) {
             case 0:
                 break;
             case 1:
-                buffer.writeUInt8(len);
+                this._rawOutput.writeUnsignedByte(len);
                 break;
             case 2:
-                buffer.writeUInt16BE(len);
+                this._rawOutput.writeUnsignedShort(len);
                 break;
             case 3:
-                buffer.writeUIntBE(len, 0, 3);
+                let high = len >> 16 & 255;
+                let low = len & 65535;
+                this._rawOutput.writeUnsignedByte(high);
+                this._rawOutput.writeUnsignedShort(low);
                 break;
             default:
                 throw new Error("PacketHeaderDecoder.encodeSize() -> invalid size of size " + sos + " bytes");
         }
-        return buffer;
     }
 
 }

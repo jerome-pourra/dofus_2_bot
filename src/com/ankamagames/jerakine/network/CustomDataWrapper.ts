@@ -18,6 +18,10 @@ export class CustomDataWrapper extends CustomBuffer implements ICustomDataInput,
         super(data);
     }
 
+    public override subarray(start?: number, end?: number): ICustomDataInput {
+        return new CustomDataWrapper(this._buffer.subarray(start, end));
+    }
+
     public readVarInt(): number {
         var b: number = 0;
         var value: number = 0;
