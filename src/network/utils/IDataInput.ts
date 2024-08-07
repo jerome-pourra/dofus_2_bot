@@ -1,5 +1,12 @@
 export interface IDataInput {
 
+    get buffer(): Buffer;  
+    get length(): number;
+    get readOffset(): number;
+    set readOffset(offset: number);
+    get writeOffset(): number;
+    set writeOffset(offset: number);
+
     readBoolean(): boolean;
     readByte(): number;
     readUnsignedByte(): number;
