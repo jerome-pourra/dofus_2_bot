@@ -25,6 +25,10 @@ export abstract class NetworkMessage implements INetworkMessage {
         throw new Error("Abstract method call");
     }
 
+    public getInstanceId(): number {
+        return this._instance_id;
+    }
+
     public writePacketClient(output: ICustomDataOutput, id: number, data: CustomDataWrapper): void {
         this.writePacket(output, id, data, AnkSocketEndpoint.CLIENT);
     }
