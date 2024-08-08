@@ -9,6 +9,9 @@ export class PartyModifiableStatusMessage extends AbstractPartyMessage implement
 
 	public static readonly protocolId: number = 2363;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public enabled: boolean = false;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyModifiableStatusMessage extends AbstractPartyMessage implement
     public getMessageId()
     {
         return PartyModifiableStatusMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyModifiableStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyModifiableStatusMessage.endpointServer;
     }
 
     public initPartyModifiableStatusMessage(partyId: number = 0, enabled: boolean = false): PartyModifiableStatusMessage
@@ -32,7 +45,7 @@ export class PartyModifiableStatusMessage extends AbstractPartyMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

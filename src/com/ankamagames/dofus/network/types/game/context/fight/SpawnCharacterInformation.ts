@@ -8,6 +8,9 @@ export class SpawnCharacterInformation extends SpawnInformation implements INetw
 
 	public static readonly protocolId: number = 3409;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public name: string = "";
 	public level: number = 0;
 
@@ -19,6 +22,16 @@ export class SpawnCharacterInformation extends SpawnInformation implements INetw
     public getTypeId()
     {
         return SpawnCharacterInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SpawnCharacterInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpawnCharacterInformation.endpointServer;
     }
 
     public initSpawnCharacterInformation(name: string = "", level: number = 0): SpawnCharacterInformation

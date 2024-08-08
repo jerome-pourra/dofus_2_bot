@@ -9,6 +9,9 @@ export class MimicryObjectEraseRequestMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 7124;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public hostUID: number = 0;
 	public hostPos: number = 0;
 
@@ -22,6 +25,16 @@ export class MimicryObjectEraseRequestMessage extends NetworkMessage implements 
         return MimicryObjectEraseRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MimicryObjectEraseRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MimicryObjectEraseRequestMessage.endpointServer;
+    }
+
     public initMimicryObjectEraseRequestMessage(hostUID: number = 0, hostPos: number = 0): MimicryObjectEraseRequestMessage
     {
         this.hostUID = hostUID;
@@ -33,7 +46,7 @@ export class MimicryObjectEraseRequestMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

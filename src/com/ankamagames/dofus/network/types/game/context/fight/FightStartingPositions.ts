@@ -7,6 +7,9 @@ export class FightStartingPositions implements INetworkType
 
 	public static readonly protocolId: number = 5557;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public positionsForChallengers: Array<number>;
 	public positionsForDefenders: Array<number>;
 
@@ -19,6 +22,16 @@ export class FightStartingPositions implements INetworkType
     public getTypeId()
     {
         return FightStartingPositions.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightStartingPositions.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightStartingPositions.endpointServer;
     }
 
     public initFightStartingPositions(positionsForChallengers: Array<number> = null, positionsForDefenders: Array<number> = null): FightStartingPositions

@@ -9,6 +9,9 @@ export class ExchangeObjectUseInWorkshopMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 8008;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectUID: number = 0;
 	public quantity: number = 0;
 
@@ -22,6 +25,16 @@ export class ExchangeObjectUseInWorkshopMessage extends NetworkMessage implement
         return ExchangeObjectUseInWorkshopMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeObjectUseInWorkshopMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeObjectUseInWorkshopMessage.endpointServer;
+    }
+
     public initExchangeObjectUseInWorkshopMessage(objectUID: number = 0, quantity: number = 0): ExchangeObjectUseInWorkshopMessage
     {
         this.objectUID = objectUID;
@@ -33,7 +46,7 @@ export class ExchangeObjectUseInWorkshopMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

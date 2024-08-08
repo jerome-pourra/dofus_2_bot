@@ -10,6 +10,9 @@ export class AlterationRemovedMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 9284;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public alteration: AlterationInfo;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AlterationRemovedMessage extends NetworkMessage implements INetwork
         return AlterationRemovedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AlterationRemovedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AlterationRemovedMessage.endpointServer;
+    }
+
     public initAlterationRemovedMessage(alteration: AlterationInfo = null): AlterationRemovedMessage
     {
         this.alteration = alteration;
@@ -33,7 +46,7 @@ export class AlterationRemovedMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

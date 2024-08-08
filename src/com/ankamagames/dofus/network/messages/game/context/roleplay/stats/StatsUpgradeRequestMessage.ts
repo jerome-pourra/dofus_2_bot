@@ -9,6 +9,9 @@ export class StatsUpgradeRequestMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 5002;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public useAdditionnal: boolean = false;
 	public statId: number = 11;
 	public boostPoint: number = 0;
@@ -23,6 +26,16 @@ export class StatsUpgradeRequestMessage extends NetworkMessage implements INetwo
         return StatsUpgradeRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return StatsUpgradeRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StatsUpgradeRequestMessage.endpointServer;
+    }
+
     public initStatsUpgradeRequestMessage(useAdditionnal: boolean = false, statId: number = 11, boostPoint: number = 0): StatsUpgradeRequestMessage
     {
         this.useAdditionnal = useAdditionnal;
@@ -35,7 +48,7 @@ export class StatsUpgradeRequestMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

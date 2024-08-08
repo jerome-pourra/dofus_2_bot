@@ -10,6 +10,9 @@ export class ExchangeStartOkNpcShopMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 6130;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public npcSellerId: number = 0;
 	public tokenId: number = 0;
 	public objectsInfos: Array<ObjectItemToSellInNpcShop>;
@@ -25,6 +28,16 @@ export class ExchangeStartOkNpcShopMessage extends NetworkMessage implements INe
         return ExchangeStartOkNpcShopMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeStartOkNpcShopMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartOkNpcShopMessage.endpointServer;
+    }
+
     public initExchangeStartOkNpcShopMessage(npcSellerId: number = 0, tokenId: number = 0, objectsInfos: Array<ObjectItemToSellInNpcShop> = null): ExchangeStartOkNpcShopMessage
     {
         this.npcSellerId = npcSellerId;
@@ -37,7 +50,7 @@ export class ExchangeStartOkNpcShopMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class EnterHavenBagRequestMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 4036;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public havenBagOwner: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class EnterHavenBagRequestMessage extends NetworkMessage implements INetw
         return EnterHavenBagRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return EnterHavenBagRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EnterHavenBagRequestMessage.endpointServer;
+    }
+
     public initEnterHavenBagRequestMessage(havenBagOwner: number = 0): EnterHavenBagRequestMessage
     {
         this.havenBagOwner = havenBagOwner;
@@ -31,7 +44,7 @@ export class EnterHavenBagRequestMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

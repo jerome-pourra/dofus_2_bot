@@ -14,6 +14,9 @@ export class GameFightResumeWithSlavesMessage extends GameFightResumeMessage imp
 
 	public static readonly protocolId: number = 5652;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public slavesInfo: Array<GameFightResumeSlaveInfo>;
 
     public constructor()
@@ -27,6 +30,16 @@ export class GameFightResumeWithSlavesMessage extends GameFightResumeMessage imp
         return GameFightResumeWithSlavesMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightResumeWithSlavesMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightResumeWithSlavesMessage.endpointServer;
+    }
+
     public initGameFightResumeWithSlavesMessage(effects: Array<FightDispellableEffectExtendedInformations> = null, marks: Array<GameActionMark> = null, gameTurn: number = 0, fightStart: number = 0, fxTriggerCounts: Array<GameFightEffectTriggerCount> = null, spellCooldowns: Array<GameFightSpellCooldown> = null, summonCount: number = 0, bombCount: number = 0, slavesInfo: Array<GameFightResumeSlaveInfo> = null): GameFightResumeWithSlavesMessage
     {
         super.initGameFightResumeMessage(effects,marks,gameTurn,fightStart,fxTriggerCounts,spellCooldowns,summonCount,bombCount);
@@ -38,7 +51,7 @@ export class GameFightResumeWithSlavesMessage extends GameFightResumeMessage imp
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

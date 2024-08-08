@@ -11,6 +11,9 @@ export class ExchangeTaxCollectorGetMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 3970;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public collectorName: string = "";
 	public worldX: number = 0;
 	public worldY: number = 0;
@@ -35,6 +38,16 @@ export class ExchangeTaxCollectorGetMessage extends NetworkMessage implements IN
         return ExchangeTaxCollectorGetMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeTaxCollectorGetMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeTaxCollectorGetMessage.endpointServer;
+    }
+
     public initExchangeTaxCollectorGetMessage(collectorName: string = "", worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, userName: string = "", callerId: number = 0, callerName: string = "", pods: number = 0, objectsInfos: Array<ObjectItemGenericQuantity> = null, look: EntityLook = null): ExchangeTaxCollectorGetMessage
     {
         this.collectorName = collectorName;
@@ -55,7 +68,7 @@ export class ExchangeTaxCollectorGetMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

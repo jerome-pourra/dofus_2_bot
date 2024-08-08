@@ -9,6 +9,9 @@ export class LeaveDialogMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 6689;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dialogType: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class LeaveDialogMessage extends NetworkMessage implements INetworkMessag
         return LeaveDialogMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return LeaveDialogMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return LeaveDialogMessage.endpointServer;
+    }
+
     public initLeaveDialogMessage(dialogType: number = 0): LeaveDialogMessage
     {
         this.dialogType = dialogType;
@@ -31,7 +44,7 @@ export class LeaveDialogMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

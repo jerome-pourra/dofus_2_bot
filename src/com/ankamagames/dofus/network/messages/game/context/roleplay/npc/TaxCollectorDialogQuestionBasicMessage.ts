@@ -10,6 +10,9 @@ export class TaxCollectorDialogQuestionBasicMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 3500;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceInfo: BasicAllianceInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class TaxCollectorDialogQuestionBasicMessage extends NetworkMessage imple
         return TaxCollectorDialogQuestionBasicMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TaxCollectorDialogQuestionBasicMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorDialogQuestionBasicMessage.endpointServer;
+    }
+
     public initTaxCollectorDialogQuestionBasicMessage(allianceInfo: BasicAllianceInformations = null): TaxCollectorDialogQuestionBasicMessage
     {
         this.allianceInfo = allianceInfo;
@@ -33,7 +46,7 @@ export class TaxCollectorDialogQuestionBasicMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

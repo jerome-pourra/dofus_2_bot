@@ -10,6 +10,9 @@ export class PartyInvitationDungeonRequestMessage extends PartyInvitationRequest
 
 	public static readonly protocolId: number = 5145;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public dungeonId: number = 0;
 
     public constructor()
@@ -20,6 +23,16 @@ export class PartyInvitationDungeonRequestMessage extends PartyInvitationRequest
     public getMessageId()
     {
         return PartyInvitationDungeonRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyInvitationDungeonRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyInvitationDungeonRequestMessage.endpointServer;
     }
 
     public initPartyInvitationDungeonRequestMessage(target: AbstractPlayerSearchInformation = null, dungeonId: number = 0): PartyInvitationDungeonRequestMessage
@@ -33,7 +46,7 @@ export class PartyInvitationDungeonRequestMessage extends PartyInvitationRequest
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

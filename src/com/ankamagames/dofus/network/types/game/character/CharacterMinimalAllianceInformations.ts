@@ -10,6 +10,9 @@ export class CharacterMinimalAllianceInformations extends CharacterMinimalPlusLo
 
 	public static readonly protocolId: number = 4814;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public alliance: BasicNamedAllianceInformations;
 
     public constructor()
@@ -21,6 +24,16 @@ export class CharacterMinimalAllianceInformations extends CharacterMinimalPlusLo
     public getTypeId()
     {
         return CharacterMinimalAllianceInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterMinimalAllianceInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterMinimalAllianceInformations.endpointServer;
     }
 
     public initCharacterMinimalAllianceInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0, alliance: BasicNamedAllianceInformations = null): CharacterMinimalAllianceInformations

@@ -8,6 +8,9 @@ export class StatisticDataShort extends StatisticData implements INetworkType
 
 	public static readonly protocolId: number = 1762;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public value: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class StatisticDataShort extends StatisticData implements INetworkType
     public getTypeId()
     {
         return StatisticDataShort.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return StatisticDataShort.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StatisticDataShort.endpointServer;
     }
 
     public initStatisticDataShort(value: number = 0): StatisticDataShort

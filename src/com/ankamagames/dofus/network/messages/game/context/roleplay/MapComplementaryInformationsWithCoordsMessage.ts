@@ -16,6 +16,9 @@ export class MapComplementaryInformationsWithCoordsMessage extends MapComplement
 
 	public static readonly protocolId: number = 5198;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public worldX: number = 0;
 	public worldY: number = 0;
 
@@ -27,6 +30,16 @@ export class MapComplementaryInformationsWithCoordsMessage extends MapComplement
     public getMessageId()
     {
         return MapComplementaryInformationsWithCoordsMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MapComplementaryInformationsWithCoordsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapComplementaryInformationsWithCoordsMessage.endpointServer;
     }
 
     public initMapComplementaryInformationsWithCoordsMessage(subAreaId: number = 0, mapId: number = 0, houses: Array<HouseInformations> = null, actors: Array<GameRolePlayActorInformations> = null, interactiveElements: Array<InteractiveElement> = null, statedElements: Array<StatedElement> = null, obstacles: Array<MapObstacle> = null, fights: Array<FightCommonInformations> = null, hasAggressiveMonsters: boolean = false, fightStartPositions: FightStartingPositions = null, worldX: number = 0, worldY: number = 0): MapComplementaryInformationsWithCoordsMessage
@@ -41,7 +54,7 @@ export class MapComplementaryInformationsWithCoordsMessage extends MapComplement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

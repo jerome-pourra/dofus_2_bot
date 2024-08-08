@@ -11,6 +11,9 @@ export class GuildLogbookInformationMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 7376;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public globalActivities: Array<GuildLogbookEntryBasicInformation>;
 	public chestActivities: Array<GuildLogbookEntryBasicInformation>;
 
@@ -26,6 +29,16 @@ export class GuildLogbookInformationMessage extends NetworkMessage implements IN
         return GuildLogbookInformationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildLogbookInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildLogbookInformationMessage.endpointServer;
+    }
+
     public initGuildLogbookInformationMessage(globalActivities: Array<GuildLogbookEntryBasicInformation> = null, chestActivities: Array<GuildLogbookEntryBasicInformation> = null): GuildLogbookInformationMessage
     {
         this.globalActivities = globalActivities;
@@ -37,7 +50,7 @@ export class GuildLogbookInformationMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

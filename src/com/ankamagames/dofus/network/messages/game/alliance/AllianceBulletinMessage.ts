@@ -9,6 +9,9 @@ export class AllianceBulletinMessage extends BulletinMessage implements INetwork
 
 	public static readonly protocolId: number = 8751;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class AllianceBulletinMessage extends BulletinMessage implements INetwork
     public getMessageId()
     {
         return AllianceBulletinMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceBulletinMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceBulletinMessage.endpointServer;
     }
 
     public initAllianceBulletinMessage(content: string = "", timestamp: number = 0, memberId: number = 0, memberName: string = ""): AllianceBulletinMessage
@@ -29,7 +42,7 @@ export class AllianceBulletinMessage extends BulletinMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class StorageTabInformation implements INetworkType
 
 	public static readonly protocolId: number = 8947;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public name: string = "";
 	public tabNumber: number = 0;
 	public picto: number = 0;
@@ -23,6 +26,16 @@ export class StorageTabInformation implements INetworkType
     public getTypeId()
     {
         return StorageTabInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return StorageTabInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StorageTabInformation.endpointServer;
     }
 
     public initStorageTabInformation(name: string = "", tabNumber: number = 0, picto: number = 0, openRight: number = 0, dropRight: number = 0, takeRight: number = 0, dropTypeLimitation: Array<number> = null): StorageTabInformation

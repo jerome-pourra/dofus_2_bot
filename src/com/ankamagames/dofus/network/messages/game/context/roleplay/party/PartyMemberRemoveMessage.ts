@@ -9,6 +9,9 @@ export class PartyMemberRemoveMessage extends AbstractPartyEventMessage implemen
 
 	public static readonly protocolId: number = 7328;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public leavingPlayerId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyMemberRemoveMessage extends AbstractPartyEventMessage implemen
     public getMessageId()
     {
         return PartyMemberRemoveMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyMemberRemoveMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyMemberRemoveMessage.endpointServer;
     }
 
     public initPartyMemberRemoveMessage(partyId: number = 0, leavingPlayerId: number = 0): PartyMemberRemoveMessage
@@ -32,7 +45,7 @@ export class PartyMemberRemoveMessage extends AbstractPartyEventMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

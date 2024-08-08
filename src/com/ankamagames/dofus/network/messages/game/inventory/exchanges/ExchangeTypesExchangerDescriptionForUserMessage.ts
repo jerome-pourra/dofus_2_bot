@@ -9,6 +9,9 @@ export class ExchangeTypesExchangerDescriptionForUserMessage extends NetworkMess
 
 	public static readonly protocolId: number = 6572;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objectType: number = 0;
 	public typeDescription: Array<number>;
 
@@ -23,6 +26,16 @@ export class ExchangeTypesExchangerDescriptionForUserMessage extends NetworkMess
         return ExchangeTypesExchangerDescriptionForUserMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeTypesExchangerDescriptionForUserMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeTypesExchangerDescriptionForUserMessage.endpointServer;
+    }
+
     public initExchangeTypesExchangerDescriptionForUserMessage(objectType: number = 0, typeDescription: Array<number> = null): ExchangeTypesExchangerDescriptionForUserMessage
     {
         this.objectType = objectType;
@@ -34,7 +47,7 @@ export class ExchangeTypesExchangerDescriptionForUserMessage extends NetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

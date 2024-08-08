@@ -9,6 +9,9 @@ export class IgnoredInformations extends AbstractContactInformations implements 
 
 	public static readonly protocolId: number = 2099;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class IgnoredInformations extends AbstractContactInformations implements 
     public getTypeId()
     {
         return IgnoredInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return IgnoredInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IgnoredInformations.endpointServer;
     }
 
     public initIgnoredInformations(accountId: number = 0, accountTag: AccountTagInformation = null): IgnoredInformations

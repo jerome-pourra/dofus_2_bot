@@ -10,6 +10,9 @@ export class CharacterSelectionWithRemodelMessage extends CharacterSelectionMess
 
 	public static readonly protocolId: number = 3540;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public remodel: RemodelingInformation;
 
     public constructor()
@@ -23,6 +26,16 @@ export class CharacterSelectionWithRemodelMessage extends CharacterSelectionMess
         return CharacterSelectionWithRemodelMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterSelectionWithRemodelMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterSelectionWithRemodelMessage.endpointServer;
+    }
+
     public initCharacterSelectionWithRemodelMessage(id: number = 0, remodel: RemodelingInformation = null): CharacterSelectionWithRemodelMessage
     {
         super.initCharacterSelectionMessage(id);
@@ -34,7 +47,7 @@ export class CharacterSelectionWithRemodelMessage extends CharacterSelectionMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

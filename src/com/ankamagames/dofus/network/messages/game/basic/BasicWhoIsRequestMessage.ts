@@ -11,6 +11,9 @@ export class BasicWhoIsRequestMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 6759;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public verbose: boolean = false;
 	public target: AbstractPlayerSearchInformation;
 
@@ -25,6 +28,16 @@ export class BasicWhoIsRequestMessage extends NetworkMessage implements INetwork
         return BasicWhoIsRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BasicWhoIsRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicWhoIsRequestMessage.endpointServer;
+    }
+
     public initBasicWhoIsRequestMessage(verbose: boolean = false, target: AbstractPlayerSearchInformation = null): BasicWhoIsRequestMessage
     {
         this.verbose = verbose;
@@ -36,7 +49,7 @@ export class BasicWhoIsRequestMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

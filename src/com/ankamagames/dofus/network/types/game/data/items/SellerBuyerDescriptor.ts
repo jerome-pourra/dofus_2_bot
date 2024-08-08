@@ -7,6 +7,9 @@ export class SellerBuyerDescriptor implements INetworkType
 
 	public static readonly protocolId: number = 780;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public quantities: Array<number>;
 	public types: Array<number>;
 	public taxPercentage: number = 0;
@@ -25,6 +28,16 @@ export class SellerBuyerDescriptor implements INetworkType
     public getTypeId()
     {
         return SellerBuyerDescriptor.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SellerBuyerDescriptor.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SellerBuyerDescriptor.endpointServer;
     }
 
     public initSellerBuyerDescriptor(quantities: Array<number> = null, types: Array<number> = null, taxPercentage: number = 0, taxModificationPercentage: number = 0, maxItemLevel: number = 0, maxItemPerAccount: number = 0, npcContextualId: number = 0, unsoldDelay: number = 0): SellerBuyerDescriptor

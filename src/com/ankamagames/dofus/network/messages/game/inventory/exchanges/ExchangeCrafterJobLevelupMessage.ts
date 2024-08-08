@@ -9,6 +9,9 @@ export class ExchangeCrafterJobLevelupMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 2584;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public crafterJobLevel: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ExchangeCrafterJobLevelupMessage extends NetworkMessage implements 
         return ExchangeCrafterJobLevelupMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeCrafterJobLevelupMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeCrafterJobLevelupMessage.endpointServer;
+    }
+
     public initExchangeCrafterJobLevelupMessage(crafterJobLevel: number = 0): ExchangeCrafterJobLevelupMessage
     {
         this.crafterJobLevel = crafterJobLevel;
@@ -31,7 +44,7 @@ export class ExchangeCrafterJobLevelupMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

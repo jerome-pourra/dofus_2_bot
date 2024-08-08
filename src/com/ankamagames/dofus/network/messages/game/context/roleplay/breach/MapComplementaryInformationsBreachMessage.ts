@@ -18,6 +18,9 @@ export class MapComplementaryInformationsBreachMessage extends MapComplementaryI
 
 	public static readonly protocolId: number = 4428;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public floor: number = 0;
 	public room: number = 0;
 	public infinityMode: number = 0;
@@ -34,6 +37,16 @@ export class MapComplementaryInformationsBreachMessage extends MapComplementaryI
         return MapComplementaryInformationsBreachMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MapComplementaryInformationsBreachMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapComplementaryInformationsBreachMessage.endpointServer;
+    }
+
     public initMapComplementaryInformationsBreachMessage(subAreaId: number = 0, mapId: number = 0, houses: Array<HouseInformations> = null, actors: Array<GameRolePlayActorInformations> = null, interactiveElements: Array<InteractiveElement> = null, statedElements: Array<StatedElement> = null, obstacles: Array<MapObstacle> = null, fights: Array<FightCommonInformations> = null, hasAggressiveMonsters: boolean = false, fightStartPositions: FightStartingPositions = null, floor: number = 0, room: number = 0, infinityMode: number = 0, branches: Array<BreachBranch> = null): MapComplementaryInformationsBreachMessage
     {
         super.initMapComplementaryInformationsDataMessage(subAreaId,mapId,houses,actors,interactiveElements,statedElements,obstacles,fights,hasAggressiveMonsters,fightStartPositions);
@@ -48,7 +61,7 @@ export class MapComplementaryInformationsBreachMessage extends MapComplementaryI
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

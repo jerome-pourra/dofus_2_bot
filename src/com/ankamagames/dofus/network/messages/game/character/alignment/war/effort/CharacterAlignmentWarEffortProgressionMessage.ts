@@ -9,6 +9,9 @@ export class CharacterAlignmentWarEffortProgressionMessage extends NetworkMessag
 
 	public static readonly protocolId: number = 2916;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public alignmentWarEffortDailyLimit: number = 0;
 	public alignmentWarEffortDailyDonation: number = 0;
 	public alignmentWarEffortPersonalDonation: number = 0;
@@ -23,6 +26,16 @@ export class CharacterAlignmentWarEffortProgressionMessage extends NetworkMessag
         return CharacterAlignmentWarEffortProgressionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterAlignmentWarEffortProgressionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterAlignmentWarEffortProgressionMessage.endpointServer;
+    }
+
     public initCharacterAlignmentWarEffortProgressionMessage(alignmentWarEffortDailyLimit: number = 0, alignmentWarEffortDailyDonation: number = 0, alignmentWarEffortPersonalDonation: number = 0): CharacterAlignmentWarEffortProgressionMessage
     {
         this.alignmentWarEffortDailyLimit = alignmentWarEffortDailyLimit;
@@ -35,7 +48,7 @@ export class CharacterAlignmentWarEffortProgressionMessage extends NetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class AllianceListMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 9553;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public alliances: Array<AllianceFactSheetInformation>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AllianceListMessage extends NetworkMessage implements INetworkMessa
         return AllianceListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceListMessage.endpointServer;
+    }
+
     public initAllianceListMessage(alliances: Array<AllianceFactSheetInformation> = null): AllianceListMessage
     {
         this.alliances = alliances;
@@ -33,7 +46,7 @@ export class AllianceListMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

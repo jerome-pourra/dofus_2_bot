@@ -9,6 +9,9 @@ export class GuestModeMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 5810;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public active: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuestModeMessage extends NetworkMessage implements INetworkMessage
         return GuestModeMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuestModeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuestModeMessage.endpointServer;
+    }
+
     public initGuestModeMessage(active: boolean = false): GuestModeMessage
     {
         this.active = active;
@@ -31,7 +44,7 @@ export class GuestModeMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -11,6 +11,9 @@ export class BreachGameFightEndMessage extends GameFightEndMessage implements IN
 
 	public static readonly protocolId: number = 9314;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public budget: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class BreachGameFightEndMessage extends GameFightEndMessage implements IN
     public getMessageId()
     {
         return BreachGameFightEndMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return BreachGameFightEndMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachGameFightEndMessage.endpointServer;
     }
 
     public initBreachGameFightEndMessage(duration: number = 0, rewardRate: number = 0, lootShareLimitMalus: number = 0, results: Array<FightResultListEntry> = null, namedPartyTeamsOutcomes: Array<NamedPartyTeamWithOutcome> = null, budget: number = 0): BreachGameFightEndMessage
@@ -34,7 +47,7 @@ export class BreachGameFightEndMessage extends GameFightEndMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

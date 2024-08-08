@@ -12,6 +12,9 @@ export class GameFightAIInformations extends GameFightFighterInformations implem
 
 	public static readonly protocolId: number = 8061;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -20,6 +23,16 @@ export class GameFightAIInformations extends GameFightFighterInformations implem
     public getTypeId()
     {
         return GameFightAIInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightAIInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightAIInformations.endpointServer;
     }
 
     public initGameFightAIInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, spawnInfo: GameContextBasicSpawnInformation = null, wave: number = 0, stats: GameFightCharacteristics = null, previousPositions: Array<number> = null): GameFightAIInformations

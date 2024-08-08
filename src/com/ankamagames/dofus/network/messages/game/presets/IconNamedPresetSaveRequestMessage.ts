@@ -9,6 +9,9 @@ export class IconNamedPresetSaveRequestMessage extends IconPresetSaveRequestMess
 
 	public static readonly protocolId: number = 6922;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public name: string = "";
 	public type: number = 0;
 
@@ -20,6 +23,16 @@ export class IconNamedPresetSaveRequestMessage extends IconPresetSaveRequestMess
     public getMessageId()
     {
         return IconNamedPresetSaveRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return IconNamedPresetSaveRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IconNamedPresetSaveRequestMessage.endpointServer;
     }
 
     public initIconNamedPresetSaveRequestMessage(presetId: number = 0, symbolId: number = 0, updateData: boolean = false, name: string = "", type: number = 0): IconNamedPresetSaveRequestMessage
@@ -34,7 +47,7 @@ export class IconNamedPresetSaveRequestMessage extends IconPresetSaveRequestMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

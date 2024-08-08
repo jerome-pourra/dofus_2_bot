@@ -7,6 +7,9 @@ export class HumanOption implements INetworkType
 
 	public static readonly protocolId: number = 7701;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
 
@@ -15,6 +18,16 @@ export class HumanOption implements INetworkType
     public getTypeId()
     {
         return HumanOption.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HumanOption.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HumanOption.endpointServer;
     }
 
     public initHumanOption(): HumanOption

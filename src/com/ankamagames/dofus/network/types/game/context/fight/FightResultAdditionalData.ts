@@ -7,6 +7,9 @@ export class FightResultAdditionalData implements INetworkType
 
 	public static readonly protocolId: number = 8078;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
 
@@ -15,6 +18,16 @@ export class FightResultAdditionalData implements INetworkType
     public getTypeId()
     {
         return FightResultAdditionalData.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightResultAdditionalData.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightResultAdditionalData.endpointServer;
     }
 
     public initFightResultAdditionalData(): FightResultAdditionalData

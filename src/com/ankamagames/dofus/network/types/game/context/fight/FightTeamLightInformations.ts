@@ -9,6 +9,9 @@ export class FightTeamLightInformations extends AbstractFightTeamInformations im
 
 	public static readonly protocolId: number = 6964;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public teamMembersCount: number = 0;
 	public meanLevel: number = 0;
 	public hasFriend: boolean = false;
@@ -25,6 +28,16 @@ export class FightTeamLightInformations extends AbstractFightTeamInformations im
     public getTypeId()
     {
         return FightTeamLightInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightTeamLightInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightTeamLightInformations.endpointServer;
     }
 
     public initFightTeamLightInformations(teamId: number = 2, leaderId: number = 0, teamSide: number = 0, teamTypeId: number = 0, nbWaves: number = 0, teamMembersCount: number = 0, meanLevel: number = 0, hasFriend: boolean = false, hasGuildMember: boolean = false, hasAllianceMember: boolean = false, hasGroupMember: boolean = false, hasMyTaxCollector: boolean = false): FightTeamLightInformations

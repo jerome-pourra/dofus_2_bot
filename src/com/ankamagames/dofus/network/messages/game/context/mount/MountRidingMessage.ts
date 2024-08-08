@@ -10,6 +10,9 @@ export class MountRidingMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 3880;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public isRiding: boolean = false;
 	public isAutopilot: boolean = false;
 
@@ -23,6 +26,16 @@ export class MountRidingMessage extends NetworkMessage implements INetworkMessag
         return MountRidingMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MountRidingMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountRidingMessage.endpointServer;
+    }
+
     public initMountRidingMessage(isRiding: boolean = false, isAutopilot: boolean = false): MountRidingMessage
     {
         this.isRiding = isRiding;
@@ -34,7 +47,7 @@ export class MountRidingMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

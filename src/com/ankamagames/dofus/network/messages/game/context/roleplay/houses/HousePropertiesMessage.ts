@@ -11,6 +11,9 @@ export class HousePropertiesMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 3385;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public houseId: number = 0;
 	public doorsOnMap: Array<number>;
 	public properties: HouseInstanceInformations;
@@ -27,6 +30,16 @@ export class HousePropertiesMessage extends NetworkMessage implements INetworkMe
         return HousePropertiesMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HousePropertiesMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HousePropertiesMessage.endpointServer;
+    }
+
     public initHousePropertiesMessage(houseId: number = 0, doorsOnMap: Array<number> = null, properties: HouseInstanceInformations = null): HousePropertiesMessage
     {
         this.houseId = houseId;
@@ -39,7 +52,7 @@ export class HousePropertiesMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

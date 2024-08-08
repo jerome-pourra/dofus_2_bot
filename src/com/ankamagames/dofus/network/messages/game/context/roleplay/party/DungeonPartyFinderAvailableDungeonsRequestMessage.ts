@@ -9,6 +9,9 @@ export class DungeonPartyFinderAvailableDungeonsRequestMessage extends NetworkMe
 
 	public static readonly protocolId: number = 9426;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class DungeonPartyFinderAvailableDungeonsRequestMessage extends NetworkMe
     public getMessageId()
     {
         return DungeonPartyFinderAvailableDungeonsRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return DungeonPartyFinderAvailableDungeonsRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DungeonPartyFinderAvailableDungeonsRequestMessage.endpointServer;
     }
 
     public initDungeonPartyFinderAvailableDungeonsRequestMessage(): DungeonPartyFinderAvailableDungeonsRequestMessage
@@ -28,7 +41,7 @@ export class DungeonPartyFinderAvailableDungeonsRequestMessage extends NetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

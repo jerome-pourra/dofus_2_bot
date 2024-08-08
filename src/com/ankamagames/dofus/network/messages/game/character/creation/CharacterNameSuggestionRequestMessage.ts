@@ -9,6 +9,9 @@ export class CharacterNameSuggestionRequestMessage extends NetworkMessage implem
 
 	public static readonly protocolId: number = 2000;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class CharacterNameSuggestionRequestMessage extends NetworkMessage implem
     public getMessageId()
     {
         return CharacterNameSuggestionRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterNameSuggestionRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterNameSuggestionRequestMessage.endpointServer;
     }
 
     public initCharacterNameSuggestionRequestMessage(): CharacterNameSuggestionRequestMessage
@@ -28,7 +41,7 @@ export class CharacterNameSuggestionRequestMessage extends NetworkMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

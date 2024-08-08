@@ -7,6 +7,9 @@ export class GameActionMarkedCell implements INetworkType
 
 	public static readonly protocolId: number = 5710;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public cellId: number = 0;
 	public zoneSize: number = 0;
 	public cellColor: number = 0;
@@ -20,6 +23,16 @@ export class GameActionMarkedCell implements INetworkType
     public getTypeId()
     {
         return GameActionMarkedCell.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionMarkedCell.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionMarkedCell.endpointServer;
     }
 
     public initGameActionMarkedCell(cellId: number = 0, zoneSize: number = 0, cellColor: number = 0, cellsType: number = 0): GameActionMarkedCell

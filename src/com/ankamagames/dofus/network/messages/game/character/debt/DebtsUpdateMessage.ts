@@ -11,6 +11,9 @@ export class DebtsUpdateMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 8856;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public action: number = 0;
 	public debts: Array<DebtInformation>;
 
@@ -25,6 +28,16 @@ export class DebtsUpdateMessage extends NetworkMessage implements INetworkMessag
         return DebtsUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DebtsUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DebtsUpdateMessage.endpointServer;
+    }
+
     public initDebtsUpdateMessage(action: number = 0, debts: Array<DebtInformation> = null): DebtsUpdateMessage
     {
         this.action = action;
@@ -36,7 +49,7 @@ export class DebtsUpdateMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

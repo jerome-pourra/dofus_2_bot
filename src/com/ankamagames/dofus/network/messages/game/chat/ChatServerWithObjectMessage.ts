@@ -10,6 +10,9 @@ export class ChatServerWithObjectMessage extends ChatServerMessage implements IN
 
 	public static readonly protocolId: number = 399;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objects: Array<ObjectItem>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ChatServerWithObjectMessage extends ChatServerMessage implements IN
         return ChatServerWithObjectMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChatServerWithObjectMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChatServerWithObjectMessage.endpointServer;
+    }
+
     public initChatServerWithObjectMessage(channel: number = 0, content: string = "", timestamp: number = 0, fingerprint: string = "", senderId: number = 0, senderName: string = "", prefix: string = "", senderAccountId: number = 0, objects: Array<ObjectItem> = null): ChatServerWithObjectMessage
     {
         super.initChatServerMessage(channel,content,timestamp,fingerprint,senderId,senderName,prefix,senderAccountId);
@@ -34,7 +47,7 @@ export class ChatServerWithObjectMessage extends ChatServerMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

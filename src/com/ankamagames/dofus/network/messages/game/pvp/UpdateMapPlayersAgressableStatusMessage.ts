@@ -10,6 +10,9 @@ export class UpdateMapPlayersAgressableStatusMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 1751;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerAvAMessages: Array<AgressableStatusMessage>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class UpdateMapPlayersAgressableStatusMessage extends NetworkMessage impl
         return UpdateMapPlayersAgressableStatusMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return UpdateMapPlayersAgressableStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return UpdateMapPlayersAgressableStatusMessage.endpointServer;
+    }
+
     public initUpdateMapPlayersAgressableStatusMessage(playerAvAMessages: Array<AgressableStatusMessage> = null): UpdateMapPlayersAgressableStatusMessage
     {
         this.playerAvAMessages = playerAvAMessages;
@@ -33,7 +46,7 @@ export class UpdateMapPlayersAgressableStatusMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

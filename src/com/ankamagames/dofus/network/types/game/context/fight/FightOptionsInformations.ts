@@ -8,6 +8,9 @@ export class FightOptionsInformations implements INetworkType
 
 	public static readonly protocolId: number = 1574;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public isSecret: boolean = false;
 	public isRestrictedToPartyOnly: boolean = false;
 	public isClosed: boolean = false;
@@ -21,6 +24,16 @@ export class FightOptionsInformations implements INetworkType
     public getTypeId()
     {
         return FightOptionsInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightOptionsInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightOptionsInformations.endpointServer;
     }
 
     public initFightOptionsInformations(isSecret: boolean = false, isRestrictedToPartyOnly: boolean = false, isClosed: boolean = false, isAskingForHelp: boolean = false): FightOptionsInformations

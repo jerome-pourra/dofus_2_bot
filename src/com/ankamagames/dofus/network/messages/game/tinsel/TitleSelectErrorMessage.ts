@@ -9,6 +9,9 @@ export class TitleSelectErrorMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 3338;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class TitleSelectErrorMessage extends NetworkMessage implements INetworkM
         return TitleSelectErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TitleSelectErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TitleSelectErrorMessage.endpointServer;
+    }
+
     public initTitleSelectErrorMessage(reason: number = 0): TitleSelectErrorMessage
     {
         this.reason = reason;
@@ -31,7 +44,7 @@ export class TitleSelectErrorMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

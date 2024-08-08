@@ -9,6 +9,9 @@ export class NicknameChoiceRequestMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 4608;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public nickname: string = "";
 
     public constructor()
@@ -21,6 +24,16 @@ export class NicknameChoiceRequestMessage extends NetworkMessage implements INet
         return NicknameChoiceRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return NicknameChoiceRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return NicknameChoiceRequestMessage.endpointServer;
+    }
+
     public initNicknameChoiceRequestMessage(nickname: string = ""): NicknameChoiceRequestMessage
     {
         this.nickname = nickname;
@@ -31,7 +44,7 @@ export class NicknameChoiceRequestMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

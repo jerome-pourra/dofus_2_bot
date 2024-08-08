@@ -9,6 +9,9 @@ export class ExchangeErrorMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 9232;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public errorType: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ExchangeErrorMessage extends NetworkMessage implements INetworkMess
         return ExchangeErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeErrorMessage.endpointServer;
+    }
+
     public initExchangeErrorMessage(errorType: number = 0): ExchangeErrorMessage
     {
         this.errorType = errorType;
@@ -31,7 +44,7 @@ export class ExchangeErrorMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

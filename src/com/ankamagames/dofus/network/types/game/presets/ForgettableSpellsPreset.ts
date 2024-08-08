@@ -10,6 +10,9 @@ export class ForgettableSpellsPreset extends Preset implements INetworkType
 
 	public static readonly protocolId: number = 6253;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public baseSpellsPreset: SpellsPreset;
 	public forgettableSpells: Array<SpellForPreset>;
 
@@ -23,6 +26,16 @@ export class ForgettableSpellsPreset extends Preset implements INetworkType
     public getTypeId()
     {
         return ForgettableSpellsPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ForgettableSpellsPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ForgettableSpellsPreset.endpointServer;
     }
 
     public initForgettableSpellsPreset(id: number = 0, baseSpellsPreset: SpellsPreset = null, forgettableSpells: Array<SpellForPreset> = null): ForgettableSpellsPreset

@@ -10,6 +10,9 @@ export class ServerSettingsMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 154;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public lang: string = "";
 	public community: number = 0;
 	public gameType: number;
@@ -28,6 +31,16 @@ export class ServerSettingsMessage extends NetworkMessage implements INetworkMes
         return ServerSettingsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ServerSettingsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ServerSettingsMessage.endpointServer;
+    }
+
     public initServerSettingsMessage(lang: string = "", community: number = 0, gameType: number = -1, isMonoAccount: boolean = false, arenaLeaveBanTime: number = 0, itemMaxLevel: number = 0, hasFreeAutopilot: boolean = false): ServerSettingsMessage
     {
         this.lang = lang;
@@ -44,7 +57,7 @@ export class ServerSettingsMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

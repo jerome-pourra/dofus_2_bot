@@ -9,6 +9,9 @@ export class GuildMotdMessage extends SocialNoticeMessage implements INetworkMes
 
 	public static readonly protocolId: number = 4318;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class GuildMotdMessage extends SocialNoticeMessage implements INetworkMes
     public getMessageId()
     {
         return GuildMotdMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildMotdMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildMotdMessage.endpointServer;
     }
 
     public initGuildMotdMessage(content: string = "", timestamp: number = 0, memberId: number = 0, memberName: string = ""): GuildMotdMessage
@@ -29,7 +42,7 @@ export class GuildMotdMessage extends SocialNoticeMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

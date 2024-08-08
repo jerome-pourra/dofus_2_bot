@@ -7,6 +7,9 @@ export class BreachReward implements INetworkType
 
 	public static readonly protocolId: number = 3273;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public buyLocks: Array<number>;
 	public buyCriterion: string = "";
@@ -21,6 +24,16 @@ export class BreachReward implements INetworkType
     public getTypeId()
     {
         return BreachReward.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return BreachReward.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachReward.endpointServer;
     }
 
     public initBreachReward(id: number = 0, buyLocks: Array<number> = null, buyCriterion: string = "", remainingQty: number = 0, price: number = 0): BreachReward

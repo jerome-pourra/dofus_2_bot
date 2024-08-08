@@ -9,6 +9,9 @@ export class GameRolePlayArenaPlayerBehavioursMessage extends NetworkMessage imp
 
 	public static readonly protocolId: number = 1302;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public flags: Array<string>;
 	public sanctions: Array<string>;
 	public banDuration: number = 0;
@@ -25,6 +28,16 @@ export class GameRolePlayArenaPlayerBehavioursMessage extends NetworkMessage imp
         return GameRolePlayArenaPlayerBehavioursMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayArenaPlayerBehavioursMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayArenaPlayerBehavioursMessage.endpointServer;
+    }
+
     public initGameRolePlayArenaPlayerBehavioursMessage(flags: Array<string> = null, sanctions: Array<string> = null, banDuration: number = 0): GameRolePlayArenaPlayerBehavioursMessage
     {
         this.flags = flags;
@@ -37,7 +50,7 @@ export class GameRolePlayArenaPlayerBehavioursMessage extends NetworkMessage imp
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

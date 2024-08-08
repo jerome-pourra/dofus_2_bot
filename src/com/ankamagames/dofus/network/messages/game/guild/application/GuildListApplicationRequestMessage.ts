@@ -9,6 +9,9 @@ export class GuildListApplicationRequestMessage extends PaginationRequestAbstrac
 
 	public static readonly protocolId: number = 695;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class GuildListApplicationRequestMessage extends PaginationRequestAbstrac
     public getMessageId()
     {
         return GuildListApplicationRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildListApplicationRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildListApplicationRequestMessage.endpointServer;
     }
 
     public initGuildListApplicationRequestMessage(offset: number = 0, count: number = 0): GuildListApplicationRequestMessage
@@ -29,7 +42,7 @@ export class GuildListApplicationRequestMessage extends PaginationRequestAbstrac
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

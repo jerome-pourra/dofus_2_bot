@@ -9,6 +9,9 @@ export class GameFightTurnReadyRequestMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 379;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameFightTurnReadyRequestMessage extends NetworkMessage implements 
         return GameFightTurnReadyRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightTurnReadyRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightTurnReadyRequestMessage.endpointServer;
+    }
+
     public initGameFightTurnReadyRequestMessage(id: number = 0): GameFightTurnReadyRequestMessage
     {
         this.id = id;
@@ -31,7 +44,7 @@ export class GameFightTurnReadyRequestMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

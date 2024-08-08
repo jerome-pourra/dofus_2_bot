@@ -9,6 +9,9 @@ export class SubscriptionZoneMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 8183;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public active: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class SubscriptionZoneMessage extends NetworkMessage implements INetworkM
         return SubscriptionZoneMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SubscriptionZoneMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SubscriptionZoneMessage.endpointServer;
+    }
+
     public initSubscriptionZoneMessage(active: boolean = false): SubscriptionZoneMessage
     {
         this.active = active;
@@ -31,7 +44,7 @@ export class SubscriptionZoneMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

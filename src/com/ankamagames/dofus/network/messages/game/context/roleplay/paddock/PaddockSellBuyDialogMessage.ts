@@ -9,6 +9,9 @@ export class PaddockSellBuyDialogMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 4196;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public bsell: boolean = false;
 	public ownerId: number = 0;
 	public price: number = 0;
@@ -23,6 +26,16 @@ export class PaddockSellBuyDialogMessage extends NetworkMessage implements INetw
         return PaddockSellBuyDialogMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PaddockSellBuyDialogMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaddockSellBuyDialogMessage.endpointServer;
+    }
+
     public initPaddockSellBuyDialogMessage(bsell: boolean = false, ownerId: number = 0, price: number = 0): PaddockSellBuyDialogMessage
     {
         this.bsell = bsell;
@@ -35,7 +48,7 @@ export class PaddockSellBuyDialogMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

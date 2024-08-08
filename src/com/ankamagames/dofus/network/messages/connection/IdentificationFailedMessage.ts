@@ -9,6 +9,9 @@ export class IdentificationFailedMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 4567;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 99;
 
     public constructor()
@@ -21,6 +24,16 @@ export class IdentificationFailedMessage extends NetworkMessage implements INetw
         return IdentificationFailedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return IdentificationFailedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IdentificationFailedMessage.endpointServer;
+    }
+
     public initIdentificationFailedMessage(reason: number = 99): IdentificationFailedMessage
     {
         this.reason = reason;
@@ -31,7 +44,7 @@ export class IdentificationFailedMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

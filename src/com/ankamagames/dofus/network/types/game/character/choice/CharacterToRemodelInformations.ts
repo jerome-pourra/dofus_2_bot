@@ -8,6 +8,9 @@ export class CharacterToRemodelInformations extends CharacterRemodelingInformati
 
 	public static readonly protocolId: number = 3313;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public possibleChangeMask: number = 0;
 	public mandatoryChangeMask: number = 0;
 
@@ -19,6 +22,16 @@ export class CharacterToRemodelInformations extends CharacterRemodelingInformati
     public getTypeId()
     {
         return CharacterToRemodelInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterToRemodelInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterToRemodelInformations.endpointServer;
     }
 
     public initCharacterToRemodelInformations(id: number = 0, name: string = "", breed: number = 0, sex: boolean = false, cosmeticId: number = 0, colors: Array<number> = null, possibleChangeMask: number = 0, mandatoryChangeMask: number = 0): CharacterToRemodelInformations

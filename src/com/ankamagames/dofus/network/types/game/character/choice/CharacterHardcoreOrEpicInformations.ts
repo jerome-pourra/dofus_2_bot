@@ -9,6 +9,9 @@ export class CharacterHardcoreOrEpicInformations extends CharacterBaseInformatio
 
 	public static readonly protocolId: number = 3983;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public deathState: number = 0;
 	public deathCount: number = 0;
 	public deathMaxLevel: number = 0;
@@ -21,6 +24,16 @@ export class CharacterHardcoreOrEpicInformations extends CharacterBaseInformatio
     public getTypeId()
     {
         return CharacterHardcoreOrEpicInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterHardcoreOrEpicInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterHardcoreOrEpicInformations.endpointServer;
     }
 
     public initCharacterHardcoreOrEpicInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0, sex: boolean = false, deathState: number = 0, deathCount: number = 0, deathMaxLevel: number = 0): CharacterHardcoreOrEpicInformations

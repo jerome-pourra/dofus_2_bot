@@ -10,6 +10,9 @@ export class GameContextMoveMultipleElementsMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 7368;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public movements: Array<EntityMovementInformations>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameContextMoveMultipleElementsMessage extends NetworkMessage imple
         return GameContextMoveMultipleElementsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameContextMoveMultipleElementsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameContextMoveMultipleElementsMessage.endpointServer;
+    }
+
     public initGameContextMoveMultipleElementsMessage(movements: Array<EntityMovementInformations> = null): GameContextMoveMultipleElementsMessage
     {
         this.movements = movements;
@@ -33,7 +46,7 @@ export class GameContextMoveMultipleElementsMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

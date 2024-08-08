@@ -11,6 +11,9 @@ export class SpouseInformationsMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 7779;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spouse: FriendSpouseInformations;
 
     public constructor()
@@ -24,6 +27,16 @@ export class SpouseInformationsMessage extends NetworkMessage implements INetwor
         return SpouseInformationsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SpouseInformationsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpouseInformationsMessage.endpointServer;
+    }
+
     public initSpouseInformationsMessage(spouse: FriendSpouseInformations = null): SpouseInformationsMessage
     {
         this.spouse = spouse;
@@ -34,7 +47,7 @@ export class SpouseInformationsMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

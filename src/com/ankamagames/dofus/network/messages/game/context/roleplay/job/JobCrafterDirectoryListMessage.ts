@@ -10,6 +10,9 @@ export class JobCrafterDirectoryListMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 8710;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public listEntries: Array<JobCrafterDirectoryListEntry>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class JobCrafterDirectoryListMessage extends NetworkMessage implements IN
         return JobCrafterDirectoryListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return JobCrafterDirectoryListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobCrafterDirectoryListMessage.endpointServer;
+    }
+
     public initJobCrafterDirectoryListMessage(listEntries: Array<JobCrafterDirectoryListEntry> = null): JobCrafterDirectoryListMessage
     {
         this.listEntries = listEntries;
@@ -33,7 +46,7 @@ export class JobCrafterDirectoryListMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

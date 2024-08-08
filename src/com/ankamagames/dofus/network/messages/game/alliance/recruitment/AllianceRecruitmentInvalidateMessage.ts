@@ -9,6 +9,9 @@ export class AllianceRecruitmentInvalidateMessage extends NetworkMessage impleme
 
 	public static readonly protocolId: number = 523;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class AllianceRecruitmentInvalidateMessage extends NetworkMessage impleme
     public getMessageId()
     {
         return AllianceRecruitmentInvalidateMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceRecruitmentInvalidateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceRecruitmentInvalidateMessage.endpointServer;
     }
 
     public initAllianceRecruitmentInvalidateMessage(): AllianceRecruitmentInvalidateMessage
@@ -28,7 +41,7 @@ export class AllianceRecruitmentInvalidateMessage extends NetworkMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

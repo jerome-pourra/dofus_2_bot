@@ -9,6 +9,9 @@ export class InteractiveUsedMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 3900;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public entityId: number = 0;
 	public elemId: number = 0;
 	public skillId: number = 0;
@@ -25,6 +28,16 @@ export class InteractiveUsedMessage extends NetworkMessage implements INetworkMe
         return InteractiveUsedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return InteractiveUsedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InteractiveUsedMessage.endpointServer;
+    }
+
     public initInteractiveUsedMessage(entityId: number = 0, elemId: number = 0, skillId: number = 0, duration: number = 0, canMove: boolean = false): InteractiveUsedMessage
     {
         this.entityId = entityId;
@@ -39,7 +52,7 @@ export class InteractiveUsedMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

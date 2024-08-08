@@ -10,6 +10,9 @@ export class ForgettableSpellListUpdateMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 6155;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public action: number = 0;
 	public spells: Array<ForgettableSpellItem>;
 
@@ -24,6 +27,16 @@ export class ForgettableSpellListUpdateMessage extends NetworkMessage implements
         return ForgettableSpellListUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ForgettableSpellListUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ForgettableSpellListUpdateMessage.endpointServer;
+    }
+
     public initForgettableSpellListUpdateMessage(action: number = 0, spells: Array<ForgettableSpellItem> = null): ForgettableSpellListUpdateMessage
     {
         this.action = action;
@@ -35,7 +48,7 @@ export class ForgettableSpellListUpdateMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

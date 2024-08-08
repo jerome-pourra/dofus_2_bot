@@ -9,6 +9,9 @@ export class ExchangeMountsPaddockRemoveMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 9608;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mountsId: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class ExchangeMountsPaddockRemoveMessage extends NetworkMessage implement
         return ExchangeMountsPaddockRemoveMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeMountsPaddockRemoveMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeMountsPaddockRemoveMessage.endpointServer;
+    }
+
     public initExchangeMountsPaddockRemoveMessage(mountsId: Array<number> = null): ExchangeMountsPaddockRemoveMessage
     {
         this.mountsId = mountsId;
@@ -32,7 +45,7 @@ export class ExchangeMountsPaddockRemoveMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

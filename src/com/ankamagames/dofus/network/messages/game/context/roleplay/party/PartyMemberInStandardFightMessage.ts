@@ -10,6 +10,9 @@ export class PartyMemberInStandardFightMessage extends AbstractPartyMemberInFigh
 
 	public static readonly protocolId: number = 8285;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public fightMap: MapCoordinatesExtended;
 
     public constructor()
@@ -23,6 +26,16 @@ export class PartyMemberInStandardFightMessage extends AbstractPartyMemberInFigh
         return PartyMemberInStandardFightMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PartyMemberInStandardFightMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyMemberInStandardFightMessage.endpointServer;
+    }
+
     public initPartyMemberInStandardFightMessage(partyId: number = 0, reason: number = 0, memberId: number = 0, memberAccountId: number = 0, memberName: string = "", fightId: number = 0, timeBeforeFightStart: number = 0, fightMap: MapCoordinatesExtended = null): PartyMemberInStandardFightMessage
     {
         super.initAbstractPartyMemberInFightMessage(partyId,reason,memberId,memberAccountId,memberName,fightId,timeBeforeFightStart);
@@ -34,7 +47,7 @@ export class PartyMemberInStandardFightMessage extends AbstractPartyMemberInFigh
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

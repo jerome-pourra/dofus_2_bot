@@ -7,6 +7,9 @@ export class TrustCertificate implements INetworkType
 
 	public static readonly protocolId: number = 3311;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public hash: string = "";
 
@@ -18,6 +21,16 @@ export class TrustCertificate implements INetworkType
     public getTypeId()
     {
         return TrustCertificate.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TrustCertificate.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TrustCertificate.endpointServer;
     }
 
     public initTrustCertificate(id: number = 0, hash: string = ""): TrustCertificate

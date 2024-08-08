@@ -7,6 +7,9 @@ export class KothWinner implements INetworkType
 
 	public static readonly protocolId: number = 4121;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
 
@@ -15,6 +18,16 @@ export class KothWinner implements INetworkType
     public getTypeId()
     {
         return KothWinner.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return KothWinner.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return KothWinner.endpointServer;
     }
 
     public initKothWinner(): KothWinner

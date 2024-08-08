@@ -9,6 +9,9 @@ export class TreasureHuntGiveUpRequestMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 143;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public questType: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class TreasureHuntGiveUpRequestMessage extends NetworkMessage implements 
         return TreasureHuntGiveUpRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TreasureHuntGiveUpRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntGiveUpRequestMessage.endpointServer;
+    }
+
     public initTreasureHuntGiveUpRequestMessage(questType: number = 0): TreasureHuntGiveUpRequestMessage
     {
         this.questType = questType;
@@ -31,7 +44,7 @@ export class TreasureHuntGiveUpRequestMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

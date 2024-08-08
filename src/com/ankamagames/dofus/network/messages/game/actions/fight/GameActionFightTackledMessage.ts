@@ -9,6 +9,9 @@ export class GameActionFightTackledMessage extends AbstractGameActionMessage imp
 
 	public static readonly protocolId: number = 3805;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public tacklersIds: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class GameActionFightTackledMessage extends AbstractGameActionMessage imp
         return GameActionFightTackledMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameActionFightTackledMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightTackledMessage.endpointServer;
+    }
+
     public initGameActionFightTackledMessage(actionId: number = 0, sourceId: number = 0, tacklersIds: Array<number> = null): GameActionFightTackledMessage
     {
         super.initAbstractGameActionMessage(actionId,sourceId);
@@ -33,7 +46,7 @@ export class GameActionFightTackledMessage extends AbstractGameActionMessage imp
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

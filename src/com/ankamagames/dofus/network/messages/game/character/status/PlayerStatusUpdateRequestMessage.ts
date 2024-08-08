@@ -11,6 +11,9 @@ export class PlayerStatusUpdateRequestMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 4213;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public status: PlayerStatus;
 
     public constructor()
@@ -24,6 +27,16 @@ export class PlayerStatusUpdateRequestMessage extends NetworkMessage implements 
         return PlayerStatusUpdateRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PlayerStatusUpdateRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PlayerStatusUpdateRequestMessage.endpointServer;
+    }
+
     public initPlayerStatusUpdateRequestMessage(status: PlayerStatus = null): PlayerStatusUpdateRequestMessage
     {
         this.status = status;
@@ -34,7 +47,7 @@ export class PlayerStatusUpdateRequestMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

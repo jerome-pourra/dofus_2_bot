@@ -9,6 +9,9 @@ export class ProtocolRequired extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 1939;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public version: string = "";
 
     public constructor()
@@ -21,6 +24,16 @@ export class ProtocolRequired extends NetworkMessage implements INetworkMessage
         return ProtocolRequired.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ProtocolRequired.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ProtocolRequired.endpointServer;
+    }
+
     public initProtocolRequired(version: string = ""): ProtocolRequired
     {
         this.version = version;
@@ -31,7 +44,7 @@ export class ProtocolRequired extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class TitleGainedMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 455;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public titleId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class TitleGainedMessage extends NetworkMessage implements INetworkMessag
         return TitleGainedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TitleGainedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TitleGainedMessage.endpointServer;
+    }
+
     public initTitleGainedMessage(titleId: number = 0): TitleGainedMessage
     {
         this.titleId = titleId;
@@ -31,7 +44,7 @@ export class TitleGainedMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

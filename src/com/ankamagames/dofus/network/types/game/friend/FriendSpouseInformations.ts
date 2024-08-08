@@ -9,6 +9,9 @@ export class FriendSpouseInformations implements INetworkType
 
 	public static readonly protocolId: number = 8260;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spouseAccountId: number = 0;
 	public spouseId: number = 0;
 	public spouseName: string = "";
@@ -28,6 +31,16 @@ export class FriendSpouseInformations implements INetworkType
     public getTypeId()
     {
         return FriendSpouseInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FriendSpouseInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendSpouseInformations.endpointServer;
     }
 
     public initFriendSpouseInformations(spouseAccountId: number = 0, spouseId: number = 0, spouseName: string = "", spouseLevel: number = 0, breed: number = 0, sex: number = 0, spouseEntityLook: EntityLook = null, guildInfo: GuildInformations = null, alignmentSide: number = 0): FriendSpouseInformations

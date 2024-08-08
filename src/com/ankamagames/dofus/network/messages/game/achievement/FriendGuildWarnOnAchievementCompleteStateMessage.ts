@@ -9,6 +9,9 @@ export class FriendGuildWarnOnAchievementCompleteStateMessage extends NetworkMes
 
 	public static readonly protocolId: number = 1328;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public enable: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class FriendGuildWarnOnAchievementCompleteStateMessage extends NetworkMes
         return FriendGuildWarnOnAchievementCompleteStateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FriendGuildWarnOnAchievementCompleteStateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendGuildWarnOnAchievementCompleteStateMessage.endpointServer;
+    }
+
     public initFriendGuildWarnOnAchievementCompleteStateMessage(enable: boolean = false): FriendGuildWarnOnAchievementCompleteStateMessage
     {
         this.enable = enable;
@@ -31,7 +44,7 @@ export class FriendGuildWarnOnAchievementCompleteStateMessage extends NetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

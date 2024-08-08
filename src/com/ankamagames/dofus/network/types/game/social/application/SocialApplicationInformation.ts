@@ -8,6 +8,9 @@ export class SocialApplicationInformation implements INetworkType
 
 	public static readonly protocolId: number = 4014;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerInfo: ApplicationPlayerInformation;
 	public applyText: string = "";
 	public creationDate: number = 0;
@@ -20,6 +23,16 @@ export class SocialApplicationInformation implements INetworkType
     public getTypeId()
     {
         return SocialApplicationInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SocialApplicationInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SocialApplicationInformation.endpointServer;
     }
 
     public initSocialApplicationInformation(playerInfo: ApplicationPlayerInformation = null, applyText: string = "", creationDate: number = 0): SocialApplicationInformation

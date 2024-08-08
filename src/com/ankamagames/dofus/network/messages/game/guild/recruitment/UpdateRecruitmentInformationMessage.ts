@@ -10,6 +10,9 @@ export class UpdateRecruitmentInformationMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 691;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public recruitmentData: GuildRecruitmentInformation;
 
     public constructor()
@@ -23,6 +26,16 @@ export class UpdateRecruitmentInformationMessage extends NetworkMessage implemen
         return UpdateRecruitmentInformationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return UpdateRecruitmentInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return UpdateRecruitmentInformationMessage.endpointServer;
+    }
+
     public initUpdateRecruitmentInformationMessage(recruitmentData: GuildRecruitmentInformation = null): UpdateRecruitmentInformationMessage
     {
         this.recruitmentData = recruitmentData;
@@ -33,7 +46,7 @@ export class UpdateRecruitmentInformationMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

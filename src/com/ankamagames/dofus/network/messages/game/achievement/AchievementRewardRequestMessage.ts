@@ -9,6 +9,9 @@ export class AchievementRewardRequestMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 1789;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public achievementId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AchievementRewardRequestMessage extends NetworkMessage implements I
         return AchievementRewardRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AchievementRewardRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementRewardRequestMessage.endpointServer;
+    }
+
     public initAchievementRewardRequestMessage(achievementId: number = 0): AchievementRewardRequestMessage
     {
         this.achievementId = achievementId;
@@ -31,7 +44,7 @@ export class AchievementRewardRequestMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class AbstractContactInformations implements INetworkType
 
 	public static readonly protocolId: number = 8841;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public accountId: number = 0;
 	public accountTag: AccountTagInformation;
 
@@ -19,6 +22,16 @@ export class AbstractContactInformations implements INetworkType
     public getTypeId()
     {
         return AbstractContactInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AbstractContactInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AbstractContactInformations.endpointServer;
     }
 
     public initAbstractContactInformations(accountId: number = 0, accountTag: AccountTagInformation = null): AbstractContactInformations

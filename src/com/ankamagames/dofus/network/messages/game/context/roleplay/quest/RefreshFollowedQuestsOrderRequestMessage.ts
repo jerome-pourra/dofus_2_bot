@@ -9,6 +9,9 @@ export class RefreshFollowedQuestsOrderRequestMessage extends NetworkMessage imp
 
 	public static readonly protocolId: number = 3965;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public quests: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class RefreshFollowedQuestsOrderRequestMessage extends NetworkMessage imp
         return RefreshFollowedQuestsOrderRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return RefreshFollowedQuestsOrderRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return RefreshFollowedQuestsOrderRequestMessage.endpointServer;
+    }
+
     public initRefreshFollowedQuestsOrderRequestMessage(quests: Array<number> = null): RefreshFollowedQuestsOrderRequestMessage
     {
         this.quests = quests;
@@ -32,7 +45,7 @@ export class RefreshFollowedQuestsOrderRequestMessage extends NetworkMessage imp
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

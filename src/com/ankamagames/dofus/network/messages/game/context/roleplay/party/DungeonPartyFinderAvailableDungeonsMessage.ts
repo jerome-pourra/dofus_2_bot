@@ -9,6 +9,9 @@ export class DungeonPartyFinderAvailableDungeonsMessage extends NetworkMessage i
 
 	public static readonly protocolId: number = 8056;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dungeonIds: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class DungeonPartyFinderAvailableDungeonsMessage extends NetworkMessage i
         return DungeonPartyFinderAvailableDungeonsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DungeonPartyFinderAvailableDungeonsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DungeonPartyFinderAvailableDungeonsMessage.endpointServer;
+    }
+
     public initDungeonPartyFinderAvailableDungeonsMessage(dungeonIds: Array<number> = null): DungeonPartyFinderAvailableDungeonsMessage
     {
         this.dungeonIds = dungeonIds;
@@ -32,7 +45,7 @@ export class DungeonPartyFinderAvailableDungeonsMessage extends NetworkMessage i
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

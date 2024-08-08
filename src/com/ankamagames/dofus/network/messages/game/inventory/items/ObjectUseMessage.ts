@@ -9,6 +9,9 @@ export class ObjectUseMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 1372;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectUID: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ObjectUseMessage extends NetworkMessage implements INetworkMessage
         return ObjectUseMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectUseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectUseMessage.endpointServer;
+    }
+
     public initObjectUseMessage(objectUID: number = 0): ObjectUseMessage
     {
         this.objectUID = objectUID;
@@ -31,7 +44,7 @@ export class ObjectUseMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

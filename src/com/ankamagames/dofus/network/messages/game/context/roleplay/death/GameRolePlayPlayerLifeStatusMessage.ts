@@ -9,6 +9,9 @@ export class GameRolePlayPlayerLifeStatusMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 8693;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public state: number = 0;
 	public phenixMapId: number = 0;
 
@@ -22,6 +25,16 @@ export class GameRolePlayPlayerLifeStatusMessage extends NetworkMessage implemen
         return GameRolePlayPlayerLifeStatusMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayPlayerLifeStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayPlayerLifeStatusMessage.endpointServer;
+    }
+
     public initGameRolePlayPlayerLifeStatusMessage(state: number = 0, phenixMapId: number = 0): GameRolePlayPlayerLifeStatusMessage
     {
         this.state = state;
@@ -33,7 +46,7 @@ export class GameRolePlayPlayerLifeStatusMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

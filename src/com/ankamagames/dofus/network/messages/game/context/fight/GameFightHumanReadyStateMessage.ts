@@ -9,6 +9,9 @@ export class GameFightHumanReadyStateMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 109;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public characterId: number = 0;
 	public isReady: boolean = false;
 
@@ -22,6 +25,16 @@ export class GameFightHumanReadyStateMessage extends NetworkMessage implements I
         return GameFightHumanReadyStateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightHumanReadyStateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightHumanReadyStateMessage.endpointServer;
+    }
+
     public initGameFightHumanReadyStateMessage(characterId: number = 0, isReady: boolean = false): GameFightHumanReadyStateMessage
     {
         this.characterId = characterId;
@@ -33,7 +46,7 @@ export class GameFightHumanReadyStateMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

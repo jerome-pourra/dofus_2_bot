@@ -8,6 +8,9 @@ export class ShortcutEntitiesPreset extends Shortcut implements INetworkType
 
 	public static readonly protocolId: number = 3288;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public presetId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class ShortcutEntitiesPreset extends Shortcut implements INetworkType
     public getTypeId()
     {
         return ShortcutEntitiesPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ShortcutEntitiesPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShortcutEntitiesPreset.endpointServer;
     }
 
     public initShortcutEntitiesPreset(slot: number = 0, presetId: number = 0): ShortcutEntitiesPreset

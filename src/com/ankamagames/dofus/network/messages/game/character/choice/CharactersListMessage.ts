@@ -11,6 +11,9 @@ export class CharactersListMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 8016;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public characters: Array<CharacterBaseInformations>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class CharactersListMessage extends NetworkMessage implements INetworkMes
         return CharactersListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharactersListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharactersListMessage.endpointServer;
+    }
+
     public initCharactersListMessage(characters: Array<CharacterBaseInformations> = null): CharactersListMessage
     {
         this.characters = characters;
@@ -34,7 +47,7 @@ export class CharactersListMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

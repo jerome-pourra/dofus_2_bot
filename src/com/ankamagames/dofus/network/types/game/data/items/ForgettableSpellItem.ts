@@ -8,6 +8,9 @@ export class ForgettableSpellItem extends SpellItem implements INetworkType
 
 	public static readonly protocolId: number = 2798;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public available: boolean = false;
 
     public constructor()
@@ -18,6 +21,16 @@ export class ForgettableSpellItem extends SpellItem implements INetworkType
     public getTypeId()
     {
         return ForgettableSpellItem.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ForgettableSpellItem.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ForgettableSpellItem.endpointServer;
     }
 
     public initForgettableSpellItem(spellId: number = 0, spellLevel: number = 0, available: boolean = false): ForgettableSpellItem

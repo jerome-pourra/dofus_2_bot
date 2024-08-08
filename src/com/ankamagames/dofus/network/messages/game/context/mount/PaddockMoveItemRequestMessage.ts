@@ -9,6 +9,9 @@ export class PaddockMoveItemRequestMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 6071;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public oldCellId: number = 0;
 	public newCellId: number = 0;
 
@@ -22,6 +25,16 @@ export class PaddockMoveItemRequestMessage extends NetworkMessage implements INe
         return PaddockMoveItemRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PaddockMoveItemRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaddockMoveItemRequestMessage.endpointServer;
+    }
+
     public initPaddockMoveItemRequestMessage(oldCellId: number = 0, newCellId: number = 0): PaddockMoveItemRequestMessage
     {
         this.oldCellId = oldCellId;
@@ -33,7 +46,7 @@ export class PaddockMoveItemRequestMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

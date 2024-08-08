@@ -10,6 +10,9 @@ export class EntitiesInformationMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 266;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public entities: Array<EntityInformation>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class EntitiesInformationMessage extends NetworkMessage implements INetwo
         return EntitiesInformationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return EntitiesInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EntitiesInformationMessage.endpointServer;
+    }
+
     public initEntitiesInformationMessage(entities: Array<EntityInformation> = null): EntitiesInformationMessage
     {
         this.entities = entities;
@@ -33,7 +46,7 @@ export class EntitiesInformationMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

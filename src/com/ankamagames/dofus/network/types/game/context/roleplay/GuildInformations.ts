@@ -9,6 +9,9 @@ export class GuildInformations extends BasicGuildInformations implements INetwor
 
 	public static readonly protocolId: number = 7929;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guildEmblem: SocialEmblem;
 
     public constructor()
@@ -20,6 +23,16 @@ export class GuildInformations extends BasicGuildInformations implements INetwor
     public getTypeId()
     {
         return GuildInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildInformations.endpointServer;
     }
 
     public initGuildInformations(guildId: number = 0, guildName: string = "", guildLevel: number = 0, guildEmblem: SocialEmblem = null): GuildInformations

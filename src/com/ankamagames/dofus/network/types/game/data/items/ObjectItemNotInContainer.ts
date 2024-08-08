@@ -10,6 +10,9 @@ export class ObjectItemNotInContainer extends Item implements INetworkType
 
 	public static readonly protocolId: number = 7571;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectGID: number = 0;
 	public effects: Array<ObjectEffect>;
 	public objectUID: number = 0;
@@ -24,6 +27,16 @@ export class ObjectItemNotInContainer extends Item implements INetworkType
     public getTypeId()
     {
         return ObjectItemNotInContainer.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectItemNotInContainer.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectItemNotInContainer.endpointServer;
     }
 
     public initObjectItemNotInContainer(objectGID: number = 0, effects: Array<ObjectEffect> = null, objectUID: number = 0, quantity: number = 0): ObjectItemNotInContainer

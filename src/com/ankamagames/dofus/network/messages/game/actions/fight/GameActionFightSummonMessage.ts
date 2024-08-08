@@ -11,6 +11,9 @@ export class GameActionFightSummonMessage extends AbstractGameActionMessage impl
 
 	public static readonly protocolId: number = 7363;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public summons: Array<GameFightFighterInformations>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class GameActionFightSummonMessage extends AbstractGameActionMessage impl
         return GameActionFightSummonMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameActionFightSummonMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightSummonMessage.endpointServer;
+    }
+
     public initGameActionFightSummonMessage(actionId: number = 0, sourceId: number = 0, summons: Array<GameFightFighterInformations> = null): GameActionFightSummonMessage
     {
         super.initAbstractGameActionMessage(actionId,sourceId);
@@ -35,7 +48,7 @@ export class GameActionFightSummonMessage extends AbstractGameActionMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -13,6 +13,9 @@ export class GameFightResumeMessage extends GameFightSpectateMessage implements 
 
 	public static readonly protocolId: number = 2675;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spellCooldowns: Array<GameFightSpellCooldown>;
 	public summonCount: number = 0;
 	public bombCount: number = 0;
@@ -28,6 +31,16 @@ export class GameFightResumeMessage extends GameFightSpectateMessage implements 
         return GameFightResumeMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightResumeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightResumeMessage.endpointServer;
+    }
+
     public initGameFightResumeMessage(effects: Array<FightDispellableEffectExtendedInformations> = null, marks: Array<GameActionMark> = null, gameTurn: number = 0, fightStart: number = 0, fxTriggerCounts: Array<GameFightEffectTriggerCount> = null, spellCooldowns: Array<GameFightSpellCooldown> = null, summonCount: number = 0, bombCount: number = 0): GameFightResumeMessage
     {
         super.initGameFightSpectateMessage(effects,marks,gameTurn,fightStart,fxTriggerCounts);
@@ -41,7 +54,7 @@ export class GameFightResumeMessage extends GameFightSpectateMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

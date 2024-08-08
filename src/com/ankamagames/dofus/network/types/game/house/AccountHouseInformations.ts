@@ -10,6 +10,9 @@ export class AccountHouseInformations extends HouseInformations implements INetw
 
 	public static readonly protocolId: number = 8406;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public houseInfos: HouseInstanceInformations;
 	public worldX: number = 0;
 	public worldY: number = 0;
@@ -25,6 +28,16 @@ export class AccountHouseInformations extends HouseInformations implements INetw
     public getTypeId()
     {
         return AccountHouseInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AccountHouseInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AccountHouseInformations.endpointServer;
     }
 
     public initAccountHouseInformations(houseId: number = 0, modelId: number = 0, houseInfos: HouseInstanceInformations = null, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0): AccountHouseInformations

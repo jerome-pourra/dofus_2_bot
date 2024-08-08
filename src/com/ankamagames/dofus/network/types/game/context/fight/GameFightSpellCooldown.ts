@@ -7,6 +7,9 @@ export class GameFightSpellCooldown implements INetworkType
 
 	public static readonly protocolId: number = 9361;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public spellId: number = 0;
 	public cooldown: number = 0;
 
@@ -18,6 +21,16 @@ export class GameFightSpellCooldown implements INetworkType
     public getTypeId()
     {
         return GameFightSpellCooldown.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightSpellCooldown.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightSpellCooldown.endpointServer;
     }
 
     public initGameFightSpellCooldown(spellId: number = 0, cooldown: number = 0): GameFightSpellCooldown

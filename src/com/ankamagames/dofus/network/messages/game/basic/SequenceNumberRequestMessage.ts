@@ -9,6 +9,9 @@ export class SequenceNumberRequestMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 594;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class SequenceNumberRequestMessage extends NetworkMessage implements INet
     public getMessageId()
     {
         return SequenceNumberRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SequenceNumberRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SequenceNumberRequestMessage.endpointServer;
     }
 
     public initSequenceNumberRequestMessage(): SequenceNumberRequestMessage
@@ -28,7 +41,7 @@ export class SequenceNumberRequestMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class PaginationRequestAbstractMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 6633;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public offset: number = 0;
 	public count: number = 0;
 
@@ -22,6 +25,16 @@ export class PaginationRequestAbstractMessage extends NetworkMessage implements 
         return PaginationRequestAbstractMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PaginationRequestAbstractMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaginationRequestAbstractMessage.endpointServer;
+    }
+
     public initPaginationRequestAbstractMessage(offset: number = 0, count: number = 0): PaginationRequestAbstractMessage
     {
         this.offset = offset;
@@ -33,7 +46,7 @@ export class PaginationRequestAbstractMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

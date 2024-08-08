@@ -9,6 +9,9 @@ export class HaapiCancelBidRequestMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 6447;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public type: number = 0;
 
@@ -22,6 +25,16 @@ export class HaapiCancelBidRequestMessage extends NetworkMessage implements INet
         return HaapiCancelBidRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HaapiCancelBidRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HaapiCancelBidRequestMessage.endpointServer;
+    }
+
     public initHaapiCancelBidRequestMessage(id: number = 0, type: number = 0): HaapiCancelBidRequestMessage
     {
         this.id = id;
@@ -33,7 +46,7 @@ export class HaapiCancelBidRequestMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class ExchangeMoneyMovementInformationMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 6145;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public limit: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ExchangeMoneyMovementInformationMessage extends NetworkMessage impl
         return ExchangeMoneyMovementInformationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeMoneyMovementInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeMoneyMovementInformationMessage.endpointServer;
+    }
+
     public initExchangeMoneyMovementInformationMessage(limit: number = 0): ExchangeMoneyMovementInformationMessage
     {
         this.limit = limit;
@@ -31,7 +44,7 @@ export class ExchangeMoneyMovementInformationMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

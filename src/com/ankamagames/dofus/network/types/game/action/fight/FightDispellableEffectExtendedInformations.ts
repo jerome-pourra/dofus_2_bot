@@ -9,6 +9,9 @@ export class FightDispellableEffectExtendedInformations implements INetworkType
 
 	public static readonly protocolId: number = 8836;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public actionId: number = 0;
 	public sourceId: number = 0;
 	public effect: AbstractFightDispellableEffect;
@@ -21,6 +24,16 @@ export class FightDispellableEffectExtendedInformations implements INetworkType
     public getTypeId()
     {
         return FightDispellableEffectExtendedInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightDispellableEffectExtendedInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightDispellableEffectExtendedInformations.endpointServer;
     }
 
     public initFightDispellableEffectExtendedInformations(actionId: number = 0, sourceId: number = 0, effect: AbstractFightDispellableEffect = null): FightDispellableEffectExtendedInformations

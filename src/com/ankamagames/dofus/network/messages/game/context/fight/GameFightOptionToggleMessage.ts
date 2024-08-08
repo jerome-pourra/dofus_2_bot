@@ -9,6 +9,9 @@ export class GameFightOptionToggleMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 5955;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public option: number = 3;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameFightOptionToggleMessage extends NetworkMessage implements INet
         return GameFightOptionToggleMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightOptionToggleMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightOptionToggleMessage.endpointServer;
+    }
+
     public initGameFightOptionToggleMessage(option: number = 3): GameFightOptionToggleMessage
     {
         this.option = option;
@@ -31,7 +44,7 @@ export class GameFightOptionToggleMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class KamaDebtInformation extends DebtInformation implements INetworkType
 
 	public static readonly protocolId: number = 2104;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public kamas: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class KamaDebtInformation extends DebtInformation implements INetworkType
     public getTypeId()
     {
         return KamaDebtInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return KamaDebtInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return KamaDebtInformation.endpointServer;
     }
 
     public initKamaDebtInformation(id: number = 0, timestamp: number = 0, kamas: number = 0): KamaDebtInformation

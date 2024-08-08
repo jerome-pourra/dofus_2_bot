@@ -9,6 +9,9 @@ export class GroupMonsterStaticInformations implements INetworkType
 
 	public static readonly protocolId: number = 5953;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mainCreatureLightInfos: MonsterInGroupLightInformations;
 	public underlings: Array<MonsterInGroupInformations>;
 
@@ -21,6 +24,16 @@ export class GroupMonsterStaticInformations implements INetworkType
     public getTypeId()
     {
         return GroupMonsterStaticInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GroupMonsterStaticInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GroupMonsterStaticInformations.endpointServer;
     }
 
     public initGroupMonsterStaticInformations(mainCreatureLightInfos: MonsterInGroupLightInformations = null, underlings: Array<MonsterInGroupInformations> = null): GroupMonsterStaticInformations

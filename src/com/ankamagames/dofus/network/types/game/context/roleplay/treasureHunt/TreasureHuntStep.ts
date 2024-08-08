@@ -7,6 +7,9 @@ export class TreasureHuntStep implements INetworkType
 
 	public static readonly protocolId: number = 8185;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
 
@@ -15,6 +18,16 @@ export class TreasureHuntStep implements INetworkType
     public getTypeId()
     {
         return TreasureHuntStep.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TreasureHuntStep.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntStep.endpointServer;
     }
 
     public initTreasureHuntStep(): TreasureHuntStep

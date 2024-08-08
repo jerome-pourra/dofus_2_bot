@@ -8,6 +8,9 @@ export class ObjectItemGenericQuantity extends Item implements INetworkType
 
 	public static readonly protocolId: number = 7294;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectGID: number = 0;
 	public quantity: number = 0;
 
@@ -19,6 +22,16 @@ export class ObjectItemGenericQuantity extends Item implements INetworkType
     public getTypeId()
     {
         return ObjectItemGenericQuantity.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectItemGenericQuantity.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectItemGenericQuantity.endpointServer;
     }
 
     public initObjectItemGenericQuantity(objectGID: number = 0, quantity: number = 0): ObjectItemGenericQuantity

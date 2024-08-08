@@ -8,6 +8,9 @@ export class FightTemporaryBoostStateEffect extends FightTemporaryBoostEffect im
 
 	public static readonly protocolId: number = 4574;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public stateId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class FightTemporaryBoostStateEffect extends FightTemporaryBoostEffect im
     public getTypeId()
     {
         return FightTemporaryBoostStateEffect.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightTemporaryBoostStateEffect.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightTemporaryBoostStateEffect.endpointServer;
     }
 
     public initFightTemporaryBoostStateEffect(uid: number = 0, targetId: number = 0, turnDuration: number = 0, dispelable: number = 1, spellId: number = 0, effectId: number = 0, parentBoostUid: number = 0, delta: number = 0, stateId: number = 0): FightTemporaryBoostStateEffect

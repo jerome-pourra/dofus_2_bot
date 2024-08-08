@@ -11,6 +11,9 @@ export class PartyMemberArenaInformations extends PartyMemberInformations implem
 
 	public static readonly protocolId: number = 2056;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public rank: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class PartyMemberArenaInformations extends PartyMemberInformations implem
     public getTypeId()
     {
         return PartyMemberArenaInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyMemberArenaInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyMemberArenaInformations.endpointServer;
     }
 
     public initPartyMemberArenaInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0, sex: boolean = false, lifePoints: number = 0, maxLifePoints: number = 0, prospecting: number = 0, regenRate: number = 0, initiative: number = 0, alignmentSide: number = 0, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, status: PlayerStatus = null, entities: Array<PartyEntityBaseInformation> = null, rank: number = 0): PartyMemberArenaInformations

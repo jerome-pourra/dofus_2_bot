@@ -11,6 +11,9 @@ export class GameRolePlayNpcWithQuestInformations extends GameRolePlayNpcInforma
 
 	public static readonly protocolId: number = 7588;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public questFlag: GameRolePlayNpcQuestFlag;
 
     public constructor()
@@ -22,6 +25,16 @@ export class GameRolePlayNpcWithQuestInformations extends GameRolePlayNpcInforma
     public getTypeId()
     {
         return GameRolePlayNpcWithQuestInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayNpcWithQuestInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayNpcWithQuestInformations.endpointServer;
     }
 
     public initGameRolePlayNpcWithQuestInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, npcId: number = 0, sex: boolean = false, specialArtworkId: number = 0, questFlag: GameRolePlayNpcQuestFlag = null): GameRolePlayNpcWithQuestInformations

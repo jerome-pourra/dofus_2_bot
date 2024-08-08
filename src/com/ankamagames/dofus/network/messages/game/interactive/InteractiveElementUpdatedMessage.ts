@@ -10,6 +10,9 @@ export class InteractiveElementUpdatedMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 8912;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public interactiveElement: InteractiveElement;
 
     public constructor()
@@ -23,6 +26,16 @@ export class InteractiveElementUpdatedMessage extends NetworkMessage implements 
         return InteractiveElementUpdatedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return InteractiveElementUpdatedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InteractiveElementUpdatedMessage.endpointServer;
+    }
+
     public initInteractiveElementUpdatedMessage(interactiveElement: InteractiveElement = null): InteractiveElementUpdatedMessage
     {
         this.interactiveElement = interactiveElement;
@@ -33,7 +46,7 @@ export class InteractiveElementUpdatedMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class AllianceInsiderPrismInformation extends PrismInformation implements
 
 	public static readonly protocolId: number = 7229;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public moduleObject: ObjectItem;
 	public moduleType: number;
 	public cristalObject: ObjectItem;
@@ -25,6 +28,16 @@ export class AllianceInsiderPrismInformation extends PrismInformation implements
     public getTypeId()
     {
         return AllianceInsiderPrismInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceInsiderPrismInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceInsiderPrismInformation.endpointServer;
     }
 
     public initAllianceInsiderPrismInformation(state: number = 1, placementDate: number = 0, nuggetsCount: number = 0, durability: number = 0, nextEvolutionDate: number = 0, moduleObject: ObjectItem = null, moduleType: number = -1, cristalObject: ObjectItem = null, cristalType: number = -1, cristalNumberLeft: number = 0): AllianceInsiderPrismInformation

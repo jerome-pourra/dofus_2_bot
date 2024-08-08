@@ -8,6 +8,9 @@ export class GuildPlayerFlowActivity extends GuildLogbookEntryBasicInformation i
 
 	public static readonly protocolId: number = 2970;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerId: number = 0;
 	public playerName: string = "";
 	public playerFlowEventType: number = 0;
@@ -20,6 +23,16 @@ export class GuildPlayerFlowActivity extends GuildLogbookEntryBasicInformation i
     public getTypeId()
     {
         return GuildPlayerFlowActivity.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildPlayerFlowActivity.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildPlayerFlowActivity.endpointServer;
     }
 
     public initGuildPlayerFlowActivity(id: number = 0, date: number = 0, playerId: number = 0, playerName: string = "", playerFlowEventType: number = 0): GuildPlayerFlowActivity

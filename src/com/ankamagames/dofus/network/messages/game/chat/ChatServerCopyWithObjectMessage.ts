@@ -10,6 +10,9 @@ export class ChatServerCopyWithObjectMessage extends ChatServerCopyMessage imple
 
 	public static readonly protocolId: number = 8059;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objects: Array<ObjectItem>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ChatServerCopyWithObjectMessage extends ChatServerCopyMessage imple
         return ChatServerCopyWithObjectMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChatServerCopyWithObjectMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChatServerCopyWithObjectMessage.endpointServer;
+    }
+
     public initChatServerCopyWithObjectMessage(channel: number = 0, content: string = "", timestamp: number = 0, fingerprint: string = "", receiverId: number = 0, receiverName: string = "", objects: Array<ObjectItem> = null): ChatServerCopyWithObjectMessage
     {
         super.initChatServerCopyMessage(channel,content,timestamp,fingerprint,receiverId,receiverName);
@@ -34,7 +47,7 @@ export class ChatServerCopyWithObjectMessage extends ChatServerCopyMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

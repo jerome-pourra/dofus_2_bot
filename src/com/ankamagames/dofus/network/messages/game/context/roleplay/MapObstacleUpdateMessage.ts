@@ -10,6 +10,9 @@ export class MapObstacleUpdateMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 75;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public obstacles: Array<MapObstacle>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class MapObstacleUpdateMessage extends NetworkMessage implements INetwork
         return MapObstacleUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MapObstacleUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapObstacleUpdateMessage.endpointServer;
+    }
+
     public initMapObstacleUpdateMessage(obstacles: Array<MapObstacle> = null): MapObstacleUpdateMessage
     {
         this.obstacles = obstacles;
@@ -33,7 +46,7 @@ export class MapObstacleUpdateMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class PartyLoyaltyStatusMessage extends AbstractPartyMessage implements I
 
 	public static readonly protocolId: number = 5384;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public loyal: boolean = false;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyLoyaltyStatusMessage extends AbstractPartyMessage implements I
     public getMessageId()
     {
         return PartyLoyaltyStatusMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyLoyaltyStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyLoyaltyStatusMessage.endpointServer;
     }
 
     public initPartyLoyaltyStatusMessage(partyId: number = 0, loyal: boolean = false): PartyLoyaltyStatusMessage
@@ -32,7 +45,7 @@ export class PartyLoyaltyStatusMessage extends AbstractPartyMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

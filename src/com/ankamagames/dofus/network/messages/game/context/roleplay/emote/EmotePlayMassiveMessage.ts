@@ -9,6 +9,9 @@ export class EmotePlayMassiveMessage extends EmotePlayAbstractMessage implements
 
 	public static readonly protocolId: number = 1886;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public actorIds: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class EmotePlayMassiveMessage extends EmotePlayAbstractMessage implements
         return EmotePlayMassiveMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return EmotePlayMassiveMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EmotePlayMassiveMessage.endpointServer;
+    }
+
     public initEmotePlayMassiveMessage(emoteId: number = 0, emoteStartTime: number = 0, actorIds: Array<number> = null): EmotePlayMassiveMessage
     {
         super.initEmotePlayAbstractMessage(emoteId,emoteStartTime);
@@ -33,7 +46,7 @@ export class EmotePlayMassiveMessage extends EmotePlayAbstractMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

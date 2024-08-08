@@ -10,6 +10,9 @@ export class ExchangeMountsStableAddMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 9743;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mountDescription: Array<MountClientData>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ExchangeMountsStableAddMessage extends NetworkMessage implements IN
         return ExchangeMountsStableAddMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeMountsStableAddMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeMountsStableAddMessage.endpointServer;
+    }
+
     public initExchangeMountsStableAddMessage(mountDescription: Array<MountClientData> = null): ExchangeMountsStableAddMessage
     {
         this.mountDescription = mountDescription;
@@ -33,7 +46,7 @@ export class ExchangeMountsStableAddMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

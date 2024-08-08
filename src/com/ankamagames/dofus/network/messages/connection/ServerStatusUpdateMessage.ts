@@ -10,6 +10,9 @@ export class ServerStatusUpdateMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 4424;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public server: GameServerInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ServerStatusUpdateMessage extends NetworkMessage implements INetwor
         return ServerStatusUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ServerStatusUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ServerStatusUpdateMessage.endpointServer;
+    }
+
     public initServerStatusUpdateMessage(server: GameServerInformations = null): ServerStatusUpdateMessage
     {
         this.server = server;
@@ -33,7 +46,7 @@ export class ServerStatusUpdateMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

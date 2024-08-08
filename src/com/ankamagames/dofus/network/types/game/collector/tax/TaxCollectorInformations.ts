@@ -15,6 +15,9 @@ export class TaxCollectorInformations implements INetworkType
 
 	public static readonly protocolId: number = 4158;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public uniqueId: number = 0;
 	public firstNameId: number = 0;
 	public lastNameId: number = 0;
@@ -44,6 +47,16 @@ export class TaxCollectorInformations implements INetworkType
     public getTypeId()
     {
         return TaxCollectorInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TaxCollectorInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorInformations.endpointServer;
     }
 
     public initTaxCollectorInformations(uniqueId: number = 0, firstNameId: number = 0, lastNameId: number = 0, allianceIdentity: AllianceInformation = null, additionalInfos: AdditionalTaxCollectorInformation = null, worldX: number = 0, worldY: number = 0, subAreaId: number = 0, state: number = 0, look: EntityLook = null, complements: Array<TaxCollectorComplementaryInformations> = null, characteristics: CharacterCharacteristics = null, equipments: Array<ObjectItem> = null, spells: Array<TaxCollectorOrderedSpell> = null): TaxCollectorInformations

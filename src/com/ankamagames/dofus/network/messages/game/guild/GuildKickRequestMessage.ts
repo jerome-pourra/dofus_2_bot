@@ -9,6 +9,9 @@ export class GuildKickRequestMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 9738;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public kickedId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuildKickRequestMessage extends NetworkMessage implements INetworkM
         return GuildKickRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildKickRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildKickRequestMessage.endpointServer;
+    }
+
     public initGuildKickRequestMessage(kickedId: number = 0): GuildKickRequestMessage
     {
         this.kickedId = kickedId;
@@ -31,7 +44,7 @@ export class GuildKickRequestMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

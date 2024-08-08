@@ -10,6 +10,9 @@ export class GuildInsiderFactSheetInformations extends GuildFactSheetInformation
 
 	public static readonly protocolId: number = 9836;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public leaderName: string = "";
 
     public constructor()
@@ -20,6 +23,16 @@ export class GuildInsiderFactSheetInformations extends GuildFactSheetInformation
     public getTypeId()
     {
         return GuildInsiderFactSheetInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildInsiderFactSheetInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildInsiderFactSheetInformations.endpointServer;
     }
 
     public initGuildInsiderFactSheetInformations(guildId: number = 0, guildName: string = "", guildLevel: number = 0, guildEmblem: SocialEmblem = null, leaderId: number = 0, nbMembers: number = 0, lastActivityDay: number = 0, recruitment: GuildRecruitmentInformation = null, nbPendingApply: number = 0, leaderName: string = ""): GuildInsiderFactSheetInformations

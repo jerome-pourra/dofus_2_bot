@@ -7,6 +7,9 @@ export class Version implements INetworkType
 
 	public static readonly protocolId: number = 580;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public major: number = 0;
 	public minor: number = 0;
 	public code: number = 0;
@@ -21,6 +24,16 @@ export class Version implements INetworkType
     public getTypeId()
     {
         return Version.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return Version.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return Version.endpointServer;
     }
 
     public initVersion(major: number = 0, minor: number = 0, code: number = 0, build: number = 0, buildType: number = 0): Version

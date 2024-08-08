@@ -10,6 +10,9 @@ export class StatedElementUpdatedMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 7859;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public statedElement: StatedElement;
 
     public constructor()
@@ -23,6 +26,16 @@ export class StatedElementUpdatedMessage extends NetworkMessage implements INetw
         return StatedElementUpdatedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return StatedElementUpdatedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StatedElementUpdatedMessage.endpointServer;
+    }
+
     public initStatedElementUpdatedMessage(statedElement: StatedElement = null): StatedElementUpdatedMessage
     {
         this.statedElement = statedElement;
@@ -33,7 +46,7 @@ export class StatedElementUpdatedMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

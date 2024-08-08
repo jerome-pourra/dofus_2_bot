@@ -10,6 +10,9 @@ export class JobExperienceOtherPlayerUpdateMessage extends JobExperienceUpdateMe
 
 	public static readonly protocolId: number = 1331;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerId: number = 0;
 
     public constructor()
@@ -20,6 +23,16 @@ export class JobExperienceOtherPlayerUpdateMessage extends JobExperienceUpdateMe
     public getMessageId()
     {
         return JobExperienceOtherPlayerUpdateMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return JobExperienceOtherPlayerUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobExperienceOtherPlayerUpdateMessage.endpointServer;
     }
 
     public initJobExperienceOtherPlayerUpdateMessage(experiencesUpdate: JobExperience = null, playerId: number = 0): JobExperienceOtherPlayerUpdateMessage
@@ -33,7 +46,7 @@ export class JobExperienceOtherPlayerUpdateMessage extends JobExperienceUpdateMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

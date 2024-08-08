@@ -9,6 +9,9 @@ export class TaxCollectorErrorMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 2186;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class TaxCollectorErrorMessage extends NetworkMessage implements INetwork
         return TaxCollectorErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TaxCollectorErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorErrorMessage.endpointServer;
+    }
+
     public initTaxCollectorErrorMessage(reason: number = 0): TaxCollectorErrorMessage
     {
         this.reason = reason;
@@ -31,7 +44,7 @@ export class TaxCollectorErrorMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

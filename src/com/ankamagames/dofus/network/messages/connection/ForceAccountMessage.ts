@@ -9,6 +9,9 @@ export class ForceAccountMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 5654;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public accountId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ForceAccountMessage extends NetworkMessage implements INetworkMessa
         return ForceAccountMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ForceAccountMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ForceAccountMessage.endpointServer;
+    }
+
     public initForceAccountMessage(accountId: number = 0): ForceAccountMessage
     {
         this.accountId = accountId;
@@ -31,7 +44,7 @@ export class ForceAccountMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

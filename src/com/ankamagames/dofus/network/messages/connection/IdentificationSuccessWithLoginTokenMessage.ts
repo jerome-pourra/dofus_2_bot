@@ -10,6 +10,9 @@ export class IdentificationSuccessWithLoginTokenMessage extends IdentificationSu
 
 	public static readonly protocolId: number = 3224;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public loginToken: string = "";
 
     public constructor()
@@ -20,6 +23,16 @@ export class IdentificationSuccessWithLoginTokenMessage extends IdentificationSu
     public getMessageId()
     {
         return IdentificationSuccessWithLoginTokenMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return IdentificationSuccessWithLoginTokenMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IdentificationSuccessWithLoginTokenMessage.endpointServer;
     }
 
     public initIdentificationSuccessWithLoginTokenMessage(login: string = "", accountTag: AccountTagInformation = null, accountId: number = 0, communityId: number = 0, hasRights: boolean = false, hasReportRight: boolean = false, hasForceRight: boolean = false, accountCreation: number = 0, subscriptionEndDate: number = 0, wasAlreadyConnected: boolean = false, havenbagAvailableRoom: number = 0, loginToken: string = ""): IdentificationSuccessWithLoginTokenMessage
@@ -33,7 +46,7 @@ export class IdentificationSuccessWithLoginTokenMessage extends IdentificationSu
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class TreasureHuntShowLegendaryUIMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 8368;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public availableLegendaryIds: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class TreasureHuntShowLegendaryUIMessage extends NetworkMessage implement
         return TreasureHuntShowLegendaryUIMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TreasureHuntShowLegendaryUIMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntShowLegendaryUIMessage.endpointServer;
+    }
+
     public initTreasureHuntShowLegendaryUIMessage(availableLegendaryIds: Array<number> = null): TreasureHuntShowLegendaryUIMessage
     {
         this.availableLegendaryIds = availableLegendaryIds;
@@ -32,7 +45,7 @@ export class TreasureHuntShowLegendaryUIMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

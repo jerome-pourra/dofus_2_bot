@@ -10,6 +10,9 @@ export class GuildSummaryRequestMessage extends PaginationRequestAbstractMessage
 
 	public static readonly protocolId: number = 1163;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public nameFilter: string = "";
 	public hideFullFilter: boolean = false;
 	public followingGuildCriteria: boolean = false;
@@ -38,6 +41,16 @@ export class GuildSummaryRequestMessage extends PaginationRequestAbstractMessage
         return GuildSummaryRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildSummaryRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildSummaryRequestMessage.endpointServer;
+    }
+
     public initGuildSummaryRequestMessage(offset: number = 0, count: number = 0, nameFilter: string = "", hideFullFilter: boolean = false, followingGuildCriteria: boolean = false, criterionFilter: Array<number> = null, languagesFilter: Array<number> = null, recruitmentTypeFilter: Array<number> = null, minLevelFilter: number = 0, maxLevelFilter: number = 0, minPlayerLevelFilter: number = 0, maxPlayerLevelFilter: number = 0, minSuccessFilter: number = 0, maxSuccessFilter: number = 0, sortType: number = 0, sortDescending: boolean = false): GuildSummaryRequestMessage
     {
         super.initPaginationRequestAbstractMessage(offset,count);
@@ -62,7 +75,7 @@ export class GuildSummaryRequestMessage extends PaginationRequestAbstractMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

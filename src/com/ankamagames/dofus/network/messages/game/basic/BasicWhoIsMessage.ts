@@ -13,6 +13,9 @@ export class BasicWhoIsMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 8673;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public self: boolean = false;
 	public position: number;
 	public accountTag: AccountTagInformation;
@@ -38,6 +41,16 @@ export class BasicWhoIsMessage extends NetworkMessage implements INetworkMessage
         return BasicWhoIsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BasicWhoIsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicWhoIsMessage.endpointServer;
+    }
+
     public initBasicWhoIsMessage(self: boolean = false, position: number = -1, accountTag: AccountTagInformation = null, accountId: number = 0, playerName: string = "", playerId: number = 0, areaId: number = 0, serverId: number = 0, originServerId: number = 0, socialGroups: Array<AbstractSocialGroupInfos> = null, verbose: boolean = false, playerState: number = 99): BasicWhoIsMessage
     {
         this.self = self;
@@ -59,7 +72,7 @@ export class BasicWhoIsMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

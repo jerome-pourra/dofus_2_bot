@@ -9,6 +9,9 @@ export class ClientKeyMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 7975;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public key: string = "";
 
     public constructor()
@@ -21,6 +24,16 @@ export class ClientKeyMessage extends NetworkMessage implements INetworkMessage
         return ClientKeyMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ClientKeyMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ClientKeyMessage.endpointServer;
+    }
+
     public initClientKeyMessage(key: string = ""): ClientKeyMessage
     {
         this.key = key;
@@ -31,7 +44,7 @@ export class ClientKeyMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class PresetDeleteResultMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 6319;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public presetId: number = 0;
 	public code: number = 2;
 
@@ -22,6 +25,16 @@ export class PresetDeleteResultMessage extends NetworkMessage implements INetwor
         return PresetDeleteResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PresetDeleteResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PresetDeleteResultMessage.endpointServer;
+    }
+
     public initPresetDeleteResultMessage(presetId: number = 0, code: number = 2): PresetDeleteResultMessage
     {
         this.presetId = presetId;
@@ -33,7 +46,7 @@ export class PresetDeleteResultMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

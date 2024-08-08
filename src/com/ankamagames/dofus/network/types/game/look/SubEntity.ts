@@ -8,6 +8,9 @@ export class SubEntity implements INetworkType
 
 	public static readonly protocolId: number = 9491;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public bindingPointCategory: number = 0;
 	public bindingPointIndex: number = 0;
 	public subEntityLook: EntityLook;
@@ -20,6 +23,16 @@ export class SubEntity implements INetworkType
     public getTypeId()
     {
         return SubEntity.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SubEntity.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SubEntity.endpointServer;
     }
 
     public initSubEntity(bindingPointCategory: number = 0, bindingPointIndex: number = 0, subEntityLook: EntityLook = null): SubEntity

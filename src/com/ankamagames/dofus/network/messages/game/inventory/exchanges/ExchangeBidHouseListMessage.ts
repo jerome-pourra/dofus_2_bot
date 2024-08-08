@@ -9,6 +9,9 @@ export class ExchangeBidHouseListMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 6171;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectGID: number = 0;
 	public follow: boolean = false;
 
@@ -22,6 +25,16 @@ export class ExchangeBidHouseListMessage extends NetworkMessage implements INetw
         return ExchangeBidHouseListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeBidHouseListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeBidHouseListMessage.endpointServer;
+    }
+
     public initExchangeBidHouseListMessage(objectGID: number = 0, follow: boolean = false): ExchangeBidHouseListMessage
     {
         this.objectGID = objectGID;
@@ -33,7 +46,7 @@ export class ExchangeBidHouseListMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class TreasureHuntLegendaryRequestMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 7183;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public legendaryId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class TreasureHuntLegendaryRequestMessage extends NetworkMessage implemen
         return TreasureHuntLegendaryRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TreasureHuntLegendaryRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntLegendaryRequestMessage.endpointServer;
+    }
+
     public initTreasureHuntLegendaryRequestMessage(legendaryId: number = 0): TreasureHuntLegendaryRequestMessage
     {
         this.legendaryId = legendaryId;
@@ -31,7 +44,7 @@ export class TreasureHuntLegendaryRequestMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class MoveTaxCollectorPresetSpellMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 6548;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public presetId: Uuid;
 	public movedFrom: number = 0;
 	public movedTo: number = 0;
@@ -25,6 +28,16 @@ export class MoveTaxCollectorPresetSpellMessage extends NetworkMessage implement
         return MoveTaxCollectorPresetSpellMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MoveTaxCollectorPresetSpellMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MoveTaxCollectorPresetSpellMessage.endpointServer;
+    }
+
     public initMoveTaxCollectorPresetSpellMessage(presetId: Uuid = null, movedFrom: number = 0, movedTo: number = 0): MoveTaxCollectorPresetSpellMessage
     {
         this.presetId = presetId;
@@ -37,7 +50,7 @@ export class MoveTaxCollectorPresetSpellMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class BasicGuildInformations extends AbstractSocialGroupInfos implements 
 
 	public static readonly protocolId: number = 4606;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guildId: number = 0;
 	public guildName: string = "";
 	public guildLevel: number = 0;
@@ -20,6 +23,16 @@ export class BasicGuildInformations extends AbstractSocialGroupInfos implements 
     public getTypeId()
     {
         return BasicGuildInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return BasicGuildInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicGuildInformations.endpointServer;
     }
 
     public initBasicGuildInformations(guildId: number = 0, guildName: string = "", guildLevel: number = 0): BasicGuildInformations

@@ -9,6 +9,9 @@ export class GameFightPlacementSwapPositionsRequestMessage extends GameFightPlac
 
 	public static readonly protocolId: number = 501;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public requestedId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class GameFightPlacementSwapPositionsRequestMessage extends GameFightPlac
     public getMessageId()
     {
         return GameFightPlacementSwapPositionsRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightPlacementSwapPositionsRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightPlacementSwapPositionsRequestMessage.endpointServer;
     }
 
     public initGameFightPlacementSwapPositionsRequestMessage(cellId: number = 0, requestedId: number = 0): GameFightPlacementSwapPositionsRequestMessage
@@ -32,7 +45,7 @@ export class GameFightPlacementSwapPositionsRequestMessage extends GameFightPlac
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

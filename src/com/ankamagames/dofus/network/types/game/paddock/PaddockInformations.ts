@@ -7,6 +7,9 @@ export class PaddockInformations implements INetworkType
 
 	public static readonly protocolId: number = 208;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public maxOutdoorMount: number = 0;
 	public maxItems: number = 0;
 
@@ -18,6 +21,16 @@ export class PaddockInformations implements INetworkType
     public getTypeId()
     {
         return PaddockInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PaddockInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaddockInformations.endpointServer;
     }
 
     public initPaddockInformations(maxOutdoorMount: number = 0, maxItems: number = 0): PaddockInformations

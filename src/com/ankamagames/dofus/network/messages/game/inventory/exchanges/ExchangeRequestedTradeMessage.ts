@@ -9,6 +9,9 @@ export class ExchangeRequestedTradeMessage extends ExchangeRequestedMessage impl
 
 	public static readonly protocolId: number = 5103;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public source: number = 0;
 	public target: number = 0;
 
@@ -20,6 +23,16 @@ export class ExchangeRequestedTradeMessage extends ExchangeRequestedMessage impl
     public getMessageId()
     {
         return ExchangeRequestedTradeMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeRequestedTradeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeRequestedTradeMessage.endpointServer;
     }
 
     public initExchangeRequestedTradeMessage(exchangeType: number = 0, source: number = 0, target: number = 0): ExchangeRequestedTradeMessage
@@ -34,7 +47,7 @@ export class ExchangeRequestedTradeMessage extends ExchangeRequestedMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

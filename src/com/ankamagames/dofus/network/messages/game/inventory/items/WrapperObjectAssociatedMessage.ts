@@ -9,6 +9,9 @@ export class WrapperObjectAssociatedMessage extends SymbioticObjectAssociatedMes
 
 	public static readonly protocolId: number = 3871;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class WrapperObjectAssociatedMessage extends SymbioticObjectAssociatedMes
     public getMessageId()
     {
         return WrapperObjectAssociatedMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return WrapperObjectAssociatedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return WrapperObjectAssociatedMessage.endpointServer;
     }
 
     public initWrapperObjectAssociatedMessage(hostUID: number = 0): WrapperObjectAssociatedMessage
@@ -29,7 +42,7 @@ export class WrapperObjectAssociatedMessage extends SymbioticObjectAssociatedMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

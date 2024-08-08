@@ -9,6 +9,9 @@ export class UpdateLifePointsMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 1395;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public lifePoints: number = 0;
 	public maxLifePoints: number = 0;
 
@@ -22,6 +25,16 @@ export class UpdateLifePointsMessage extends NetworkMessage implements INetworkM
         return UpdateLifePointsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return UpdateLifePointsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return UpdateLifePointsMessage.endpointServer;
+    }
+
     public initUpdateLifePointsMessage(lifePoints: number = 0, maxLifePoints: number = 0): UpdateLifePointsMessage
     {
         this.lifePoints = lifePoints;
@@ -33,7 +46,7 @@ export class UpdateLifePointsMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

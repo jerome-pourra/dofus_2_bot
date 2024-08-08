@@ -8,6 +8,9 @@ export class ObjectEffectLadder extends ObjectEffectCreature implements INetwork
 
 	public static readonly protocolId: number = 5489;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public monsterCount: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class ObjectEffectLadder extends ObjectEffectCreature implements INetwork
     public getTypeId()
     {
         return ObjectEffectLadder.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectEffectLadder.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectEffectLadder.endpointServer;
     }
 
     public initObjectEffectLadder(actionId: number = 0, monsterFamilyId: number = 0, monsterCount: number = 0): ObjectEffectLadder

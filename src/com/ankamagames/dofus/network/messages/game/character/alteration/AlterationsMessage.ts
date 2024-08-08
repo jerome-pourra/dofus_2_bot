@@ -10,6 +10,9 @@ export class AlterationsMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 7721;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public alterations: Array<AlterationInfo>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AlterationsMessage extends NetworkMessage implements INetworkMessag
         return AlterationsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AlterationsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AlterationsMessage.endpointServer;
+    }
+
     public initAlterationsMessage(alterations: Array<AlterationInfo> = null): AlterationsMessage
     {
         this.alterations = alterations;
@@ -33,7 +46,7 @@ export class AlterationsMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

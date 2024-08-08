@@ -10,6 +10,9 @@ export class ExchangeStartedMountStockMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 6115;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objectsInfos: Array<ObjectItem>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ExchangeStartedMountStockMessage extends NetworkMessage implements 
         return ExchangeStartedMountStockMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeStartedMountStockMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartedMountStockMessage.endpointServer;
+    }
+
     public initExchangeStartedMountStockMessage(objectsInfos: Array<ObjectItem> = null): ExchangeStartedMountStockMessage
     {
         this.objectsInfos = objectsInfos;
@@ -33,7 +46,7 @@ export class ExchangeStartedMountStockMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class SkillActionDescriptionTimed extends SkillActionDescription implemen
 
 	public static readonly protocolId: number = 1078;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public time: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class SkillActionDescriptionTimed extends SkillActionDescription implemen
     public getTypeId()
     {
         return SkillActionDescriptionTimed.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SkillActionDescriptionTimed.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SkillActionDescriptionTimed.endpointServer;
     }
 
     public initSkillActionDescriptionTimed(skillId: number = 0, time: number = 0): SkillActionDescriptionTimed

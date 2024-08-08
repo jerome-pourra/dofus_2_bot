@@ -9,6 +9,9 @@ export class BulletinMessage extends SocialNoticeMessage implements INetworkMess
 
 	public static readonly protocolId: number = 4597;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class BulletinMessage extends SocialNoticeMessage implements INetworkMess
     public getMessageId()
     {
         return BulletinMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return BulletinMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BulletinMessage.endpointServer;
     }
 
     public initBulletinMessage(content: string = "", timestamp: number = 0, memberId: number = 0, memberName: string = ""): BulletinMessage
@@ -29,7 +42,7 @@ export class BulletinMessage extends SocialNoticeMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

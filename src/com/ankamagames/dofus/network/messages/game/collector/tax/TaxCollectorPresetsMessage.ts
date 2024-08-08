@@ -10,6 +10,9 @@ export class TaxCollectorPresetsMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 9900;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public presets: Array<TaxCollectorPreset>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class TaxCollectorPresetsMessage extends NetworkMessage implements INetwo
         return TaxCollectorPresetsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TaxCollectorPresetsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorPresetsMessage.endpointServer;
+    }
+
     public initTaxCollectorPresetsMessage(presets: Array<TaxCollectorPreset> = null): TaxCollectorPresetsMessage
     {
         this.presets = presets;
@@ -33,7 +46,7 @@ export class TaxCollectorPresetsMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

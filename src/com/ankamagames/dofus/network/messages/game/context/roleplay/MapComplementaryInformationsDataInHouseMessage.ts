@@ -17,6 +17,9 @@ export class MapComplementaryInformationsDataInHouseMessage extends MapComplemen
 
 	public static readonly protocolId: number = 1071;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public currentHouse: HouseInformationsInside;
 
     public constructor()
@@ -30,6 +33,16 @@ export class MapComplementaryInformationsDataInHouseMessage extends MapComplemen
         return MapComplementaryInformationsDataInHouseMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MapComplementaryInformationsDataInHouseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapComplementaryInformationsDataInHouseMessage.endpointServer;
+    }
+
     public initMapComplementaryInformationsDataInHouseMessage(subAreaId: number = 0, mapId: number = 0, houses: Array<HouseInformations> = null, actors: Array<GameRolePlayActorInformations> = null, interactiveElements: Array<InteractiveElement> = null, statedElements: Array<StatedElement> = null, obstacles: Array<MapObstacle> = null, fights: Array<FightCommonInformations> = null, hasAggressiveMonsters: boolean = false, fightStartPositions: FightStartingPositions = null, currentHouse: HouseInformationsInside = null): MapComplementaryInformationsDataInHouseMessage
     {
         super.initMapComplementaryInformationsDataMessage(subAreaId,mapId,houses,actors,interactiveElements,statedElements,obstacles,fights,hasAggressiveMonsters,fightStartPositions);
@@ -41,7 +54,7 @@ export class MapComplementaryInformationsDataInHouseMessage extends MapComplemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class HavenBagRoomPreviewInformation implements INetworkType
 
 	public static readonly protocolId: number = 8049;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public roomId: number = 0;
 	public themeId: number = 0;
 
@@ -18,6 +21,16 @@ export class HavenBagRoomPreviewInformation implements INetworkType
     public getTypeId()
     {
         return HavenBagRoomPreviewInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HavenBagRoomPreviewInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HavenBagRoomPreviewInformation.endpointServer;
     }
 
     public initHavenBagRoomPreviewInformation(roomId: number = 0, themeId: number = 0): HavenBagRoomPreviewInformation

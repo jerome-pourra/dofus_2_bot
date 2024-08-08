@@ -10,6 +10,9 @@ export class GameActionItemConsumedMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 5525;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public success: boolean = false;
 	public actionId: number = 0;
 	public automaticAction: boolean = false;
@@ -24,6 +27,16 @@ export class GameActionItemConsumedMessage extends NetworkMessage implements INe
         return GameActionItemConsumedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameActionItemConsumedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionItemConsumedMessage.endpointServer;
+    }
+
     public initGameActionItemConsumedMessage(success: boolean = false, actionId: number = 0, automaticAction: boolean = false): GameActionItemConsumedMessage
     {
         this.success = success;
@@ -36,7 +49,7 @@ export class GameActionItemConsumedMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

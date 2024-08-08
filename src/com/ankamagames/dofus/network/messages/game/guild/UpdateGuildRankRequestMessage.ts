@@ -10,6 +10,9 @@ export class UpdateGuildRankRequestMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 9846;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public rank: RankInformation;
 
     public constructor()
@@ -23,6 +26,16 @@ export class UpdateGuildRankRequestMessage extends NetworkMessage implements INe
         return UpdateGuildRankRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return UpdateGuildRankRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return UpdateGuildRankRequestMessage.endpointServer;
+    }
+
     public initUpdateGuildRankRequestMessage(rank: RankInformation = null): UpdateGuildRankRequestMessage
     {
         this.rank = rank;
@@ -33,7 +46,7 @@ export class UpdateGuildRankRequestMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

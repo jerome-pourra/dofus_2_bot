@@ -9,6 +9,9 @@ export class GuildSubmitApplicationMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 2378;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public applyText: string = "";
 	public guildId: number = 0;
 	public timeSpent: number = 0;
@@ -33,6 +36,16 @@ export class GuildSubmitApplicationMessage extends NetworkMessage implements INe
         return GuildSubmitApplicationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildSubmitApplicationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildSubmitApplicationMessage.endpointServer;
+    }
+
     public initGuildSubmitApplicationMessage(applyText: string = "", guildId: number = 0, timeSpent: number = 0, filterLanguage: string = "", filterAmbiance: string = "", filterPlaytime: string = "", filterInterest: string = "", filterMinMaxGuildLevel: string = "", filterRecruitmentType: string = "", filterMinMaxCharacterLevel: string = "", filterMinMaxAchievement: string = "", filterSearchName: string = "", filterLastSort: string = ""): GuildSubmitApplicationMessage
     {
         this.applyText = applyText;
@@ -55,7 +68,7 @@ export class GuildSubmitApplicationMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

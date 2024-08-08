@@ -9,6 +9,9 @@ export class CharacterDeletionRequestMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 1489;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public characterId: number = 0;
 	public secretAnswerHash: string = "";
 
@@ -22,6 +25,16 @@ export class CharacterDeletionRequestMessage extends NetworkMessage implements I
         return CharacterDeletionRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterDeletionRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterDeletionRequestMessage.endpointServer;
+    }
+
     public initCharacterDeletionRequestMessage(characterId: number = 0, secretAnswerHash: string = ""): CharacterDeletionRequestMessage
     {
         this.characterId = characterId;
@@ -33,7 +46,7 @@ export class CharacterDeletionRequestMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

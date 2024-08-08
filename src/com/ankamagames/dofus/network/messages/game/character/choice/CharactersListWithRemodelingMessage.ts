@@ -11,6 +11,9 @@ export class CharactersListWithRemodelingMessage extends CharactersListMessage i
 
 	public static readonly protocolId: number = 9633;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public charactersToRemodel: Array<CharacterToRemodelInformations>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class CharactersListWithRemodelingMessage extends CharactersListMessage i
         return CharactersListWithRemodelingMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharactersListWithRemodelingMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharactersListWithRemodelingMessage.endpointServer;
+    }
+
     public initCharactersListWithRemodelingMessage(characters: Array<CharacterBaseInformations> = null, charactersToRemodel: Array<CharacterToRemodelInformations> = null): CharactersListWithRemodelingMessage
     {
         super.initCharactersListMessage(characters);
@@ -35,7 +48,7 @@ export class CharactersListWithRemodelingMessage extends CharactersListMessage i
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

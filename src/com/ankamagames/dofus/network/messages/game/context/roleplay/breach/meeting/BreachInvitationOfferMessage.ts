@@ -10,6 +10,9 @@ export class BreachInvitationOfferMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 5842;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public host: CharacterMinimalInformations;
 	public timeLeftBeforeCancel: number = 0;
 
@@ -24,6 +27,16 @@ export class BreachInvitationOfferMessage extends NetworkMessage implements INet
         return BreachInvitationOfferMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachInvitationOfferMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachInvitationOfferMessage.endpointServer;
+    }
+
     public initBreachInvitationOfferMessage(host: CharacterMinimalInformations = null, timeLeftBeforeCancel: number = 0): BreachInvitationOfferMessage
     {
         this.host = host;
@@ -35,7 +48,7 @@ export class BreachInvitationOfferMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

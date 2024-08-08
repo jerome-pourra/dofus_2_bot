@@ -9,6 +9,9 @@ export class GameActionFightUnmarkCellsMessage extends AbstractGameActionMessage
 
 	public static readonly protocolId: number = 9827;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public markId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class GameActionFightUnmarkCellsMessage extends AbstractGameActionMessage
     public getMessageId()
     {
         return GameActionFightUnmarkCellsMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionFightUnmarkCellsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightUnmarkCellsMessage.endpointServer;
     }
 
     public initGameActionFightUnmarkCellsMessage(actionId: number = 0, sourceId: number = 0, markId: number = 0): GameActionFightUnmarkCellsMessage
@@ -32,7 +45,7 @@ export class GameActionFightUnmarkCellsMessage extends AbstractGameActionMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

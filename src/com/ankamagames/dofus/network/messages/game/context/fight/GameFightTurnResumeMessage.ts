@@ -9,6 +9,9 @@ export class GameFightTurnResumeMessage extends GameFightTurnStartMessage implem
 
 	public static readonly protocolId: number = 7389;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public remainingTime: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class GameFightTurnResumeMessage extends GameFightTurnStartMessage implem
     public getMessageId()
     {
         return GameFightTurnResumeMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightTurnResumeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightTurnResumeMessage.endpointServer;
     }
 
     public initGameFightTurnResumeMessage(id: number = 0, waitTime: number = 0, remainingTime: number = 0): GameFightTurnResumeMessage
@@ -32,7 +45,7 @@ export class GameFightTurnResumeMessage extends GameFightTurnStartMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

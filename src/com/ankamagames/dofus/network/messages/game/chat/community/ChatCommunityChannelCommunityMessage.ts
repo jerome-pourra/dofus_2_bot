@@ -9,6 +9,9 @@ export class ChatCommunityChannelCommunityMessage extends NetworkMessage impleme
 
 	public static readonly protocolId: number = 5839;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public communityId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ChatCommunityChannelCommunityMessage extends NetworkMessage impleme
         return ChatCommunityChannelCommunityMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChatCommunityChannelCommunityMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChatCommunityChannelCommunityMessage.endpointServer;
+    }
+
     public initChatCommunityChannelCommunityMessage(communityId: number = 0): ChatCommunityChannelCommunityMessage
     {
         this.communityId = communityId;
@@ -31,7 +44,7 @@ export class ChatCommunityChannelCommunityMessage extends NetworkMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

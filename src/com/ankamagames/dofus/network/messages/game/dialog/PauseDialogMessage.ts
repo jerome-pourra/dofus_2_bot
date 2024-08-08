@@ -9,6 +9,9 @@ export class PauseDialogMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 3238;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dialogType: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class PauseDialogMessage extends NetworkMessage implements INetworkMessag
         return PauseDialogMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PauseDialogMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PauseDialogMessage.endpointServer;
+    }
+
     public initPauseDialogMessage(dialogType: number = 0): PauseDialogMessage
     {
         this.dialogType = dialogType;
@@ -31,7 +44,7 @@ export class PauseDialogMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

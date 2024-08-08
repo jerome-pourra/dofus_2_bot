@@ -9,6 +9,9 @@ export class ChallengeBonusChoiceMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 2271;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public challengeBonus: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ChallengeBonusChoiceMessage extends NetworkMessage implements INetw
         return ChallengeBonusChoiceMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChallengeBonusChoiceMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChallengeBonusChoiceMessage.endpointServer;
+    }
+
     public initChallengeBonusChoiceMessage(challengeBonus: number = 0): ChallengeBonusChoiceMessage
     {
         this.challengeBonus = challengeBonus;
@@ -31,7 +44,7 @@ export class ChallengeBonusChoiceMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

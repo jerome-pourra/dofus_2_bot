@@ -10,6 +10,9 @@ export class GuildMemberInfo extends SocialMember implements INetworkType
 
 	public static readonly protocolId: number = 4949;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public givenExperience: number = 0;
 	public experienceGivenPercent: number = 0;
 	public alignmentSide: number = 0;
@@ -27,6 +30,16 @@ export class GuildMemberInfo extends SocialMember implements INetworkType
     public getTypeId()
     {
         return GuildMemberInfo.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildMemberInfo.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildMemberInfo.endpointServer;
     }
 
     public initGuildMemberInfo(id: number = 0, name: string = "", level: number = 0, breed: number = 0, sex: boolean = false, connected: number = 99, hoursSinceLastConnection: number = 0, accountId: number = 0, status: PlayerStatus = null, rankId: number = 0, enrollmentDate: number = 0, givenExperience: number = 0, experienceGivenPercent: number = 0, alignmentSide: number = 0, moodSmileyId: number = 0, achievementPoints: number = 0, havenBagShared: boolean = false, note: PlayerNote = null): GuildMemberInfo

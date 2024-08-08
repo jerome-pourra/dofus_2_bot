@@ -10,6 +10,9 @@ export class EvolutiveObjectRecycleResultMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 5637;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public recycledItems: Array<RecycledItem>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class EvolutiveObjectRecycleResultMessage extends NetworkMessage implemen
         return EvolutiveObjectRecycleResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return EvolutiveObjectRecycleResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EvolutiveObjectRecycleResultMessage.endpointServer;
+    }
+
     public initEvolutiveObjectRecycleResultMessage(recycledItems: Array<RecycledItem> = null): EvolutiveObjectRecycleResultMessage
     {
         this.recycledItems = recycledItems;
@@ -33,7 +46,7 @@ export class EvolutiveObjectRecycleResultMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

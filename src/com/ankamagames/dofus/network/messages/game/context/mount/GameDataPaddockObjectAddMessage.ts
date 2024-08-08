@@ -10,6 +10,9 @@ export class GameDataPaddockObjectAddMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 652;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public paddockItemDescription: PaddockItem;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameDataPaddockObjectAddMessage extends NetworkMessage implements I
         return GameDataPaddockObjectAddMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameDataPaddockObjectAddMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameDataPaddockObjectAddMessage.endpointServer;
+    }
+
     public initGameDataPaddockObjectAddMessage(paddockItemDescription: PaddockItem = null): GameDataPaddockObjectAddMessage
     {
         this.paddockItemDescription = paddockItemDescription;
@@ -33,7 +46,7 @@ export class GameDataPaddockObjectAddMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

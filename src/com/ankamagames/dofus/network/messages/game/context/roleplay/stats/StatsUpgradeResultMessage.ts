@@ -9,6 +9,9 @@ export class StatsUpgradeResultMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 3065;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public result: number = 0;
 	public nbCharacBoost: number = 0;
 
@@ -22,6 +25,16 @@ export class StatsUpgradeResultMessage extends NetworkMessage implements INetwor
         return StatsUpgradeResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return StatsUpgradeResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StatsUpgradeResultMessage.endpointServer;
+    }
+
     public initStatsUpgradeResultMessage(result: number = 0, nbCharacBoost: number = 0): StatsUpgradeResultMessage
     {
         this.result = result;
@@ -33,7 +46,7 @@ export class StatsUpgradeResultMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

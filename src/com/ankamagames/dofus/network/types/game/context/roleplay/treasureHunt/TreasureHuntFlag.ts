@@ -7,6 +7,9 @@ export class TreasureHuntFlag implements INetworkType
 
 	public static readonly protocolId: number = 8258;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public mapId: number = 0;
 	public state: number = 0;
 
@@ -18,6 +21,16 @@ export class TreasureHuntFlag implements INetworkType
     public getTypeId()
     {
         return TreasureHuntFlag.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TreasureHuntFlag.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntFlag.endpointServer;
     }
 
     public initTreasureHuntFlag(mapId: number = 0, state: number = 0): TreasureHuntFlag

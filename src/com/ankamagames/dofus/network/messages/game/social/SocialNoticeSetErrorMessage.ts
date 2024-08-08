@@ -9,6 +9,9 @@ export class SocialNoticeSetErrorMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 3100;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class SocialNoticeSetErrorMessage extends NetworkMessage implements INetw
         return SocialNoticeSetErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SocialNoticeSetErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SocialNoticeSetErrorMessage.endpointServer;
+    }
+
     public initSocialNoticeSetErrorMessage(reason: number = 0): SocialNoticeSetErrorMessage
     {
         this.reason = reason;
@@ -31,7 +44,7 @@ export class SocialNoticeSetErrorMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class NamedPartyTeamWithOutcome implements INetworkType
 
 	public static readonly protocolId: number = 2171;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public team: NamedPartyTeam;
 	public outcome: number = 0;
 
@@ -19,6 +22,16 @@ export class NamedPartyTeamWithOutcome implements INetworkType
     public getTypeId()
     {
         return NamedPartyTeamWithOutcome.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return NamedPartyTeamWithOutcome.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return NamedPartyTeamWithOutcome.endpointServer;
     }
 
     public initNamedPartyTeamWithOutcome(team: NamedPartyTeam = null, outcome: number = 0): NamedPartyTeamWithOutcome

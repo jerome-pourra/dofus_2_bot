@@ -10,6 +10,9 @@ export class TaxCollectorPreset implements INetworkType
 
 	public static readonly protocolId: number = 1854;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public presetId: Uuid;
 	public spells: Array<TaxCollectorOrderedSpell>;
 	public characteristics: CharacterCharacteristics;
@@ -24,6 +27,16 @@ export class TaxCollectorPreset implements INetworkType
     public getTypeId()
     {
         return TaxCollectorPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TaxCollectorPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorPreset.endpointServer;
     }
 
     public initTaxCollectorPreset(presetId: Uuid = null, spells: Array<TaxCollectorOrderedSpell> = null, characteristics: CharacterCharacteristics = null): TaxCollectorPreset

@@ -9,6 +9,9 @@ export class PartyEntityMemberInformation extends PartyEntityBaseInformation imp
 
 	public static readonly protocolId: number = 118;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public initiative: number = 0;
 	public lifePoints: number = 0;
 	public maxLifePoints: number = 0;
@@ -23,6 +26,16 @@ export class PartyEntityMemberInformation extends PartyEntityBaseInformation imp
     public getTypeId()
     {
         return PartyEntityMemberInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyEntityMemberInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyEntityMemberInformation.endpointServer;
     }
 
     public initPartyEntityMemberInformation(indexId: number = 0, entityModelId: number = 0, entityLook: EntityLook = null, initiative: number = 0, lifePoints: number = 0, maxLifePoints: number = 0, prospecting: number = 0, regenRate: number = 0): PartyEntityMemberInformation

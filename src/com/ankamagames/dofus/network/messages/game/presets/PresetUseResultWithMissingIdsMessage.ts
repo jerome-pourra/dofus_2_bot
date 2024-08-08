@@ -9,6 +9,9 @@ export class PresetUseResultWithMissingIdsMessage extends PresetUseResultMessage
 
 	public static readonly protocolId: number = 5059;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public missingIds: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class PresetUseResultWithMissingIdsMessage extends PresetUseResultMessage
         return PresetUseResultWithMissingIdsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PresetUseResultWithMissingIdsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PresetUseResultWithMissingIdsMessage.endpointServer;
+    }
+
     public initPresetUseResultWithMissingIdsMessage(presetId: number = 0, code: number = 3, missingIds: Array<number> = null): PresetUseResultWithMissingIdsMessage
     {
         super.initPresetUseResultMessage(presetId,code);
@@ -33,7 +46,7 @@ export class PresetUseResultWithMissingIdsMessage extends PresetUseResultMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

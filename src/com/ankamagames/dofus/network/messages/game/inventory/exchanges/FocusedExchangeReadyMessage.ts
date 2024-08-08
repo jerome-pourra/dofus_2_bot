@@ -9,6 +9,9 @@ export class FocusedExchangeReadyMessage extends ExchangeReadyMessage implements
 
 	public static readonly protocolId: number = 885;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public focusActionId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class FocusedExchangeReadyMessage extends ExchangeReadyMessage implements
     public getMessageId()
     {
         return FocusedExchangeReadyMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FocusedExchangeReadyMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FocusedExchangeReadyMessage.endpointServer;
     }
 
     public initFocusedExchangeReadyMessage(ready: boolean = false, step: number = 0, focusActionId: number = 0): FocusedExchangeReadyMessage
@@ -32,7 +45,7 @@ export class FocusedExchangeReadyMessage extends ExchangeReadyMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

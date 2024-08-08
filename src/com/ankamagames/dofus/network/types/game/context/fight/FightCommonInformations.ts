@@ -10,6 +10,9 @@ export class FightCommonInformations implements INetworkType
 
 	public static readonly protocolId: number = 9113;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public fightId: number = 0;
 	public fightType: number = 0;
 	public fightTeams: Array<FightTeamInformations>;
@@ -26,6 +29,16 @@ export class FightCommonInformations implements INetworkType
     public getTypeId()
     {
         return FightCommonInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightCommonInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightCommonInformations.endpointServer;
     }
 
     public initFightCommonInformations(fightId: number = 0, fightType: number = 0, fightTeams: Array<FightTeamInformations> = null, fightTeamsPositions: Array<number> = null, fightTeamsOptions: Array<FightOptionsInformations> = null): FightCommonInformations

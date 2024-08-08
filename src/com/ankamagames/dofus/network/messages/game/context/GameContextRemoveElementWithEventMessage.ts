@@ -9,6 +9,9 @@ export class GameContextRemoveElementWithEventMessage extends GameContextRemoveE
 
 	public static readonly protocolId: number = 7775;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public elementEventId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class GameContextRemoveElementWithEventMessage extends GameContextRemoveE
     public getMessageId()
     {
         return GameContextRemoveElementWithEventMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameContextRemoveElementWithEventMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameContextRemoveElementWithEventMessage.endpointServer;
     }
 
     public initGameContextRemoveElementWithEventMessage(id: number = 0, elementEventId: number = 0): GameContextRemoveElementWithEventMessage
@@ -32,7 +45,7 @@ export class GameContextRemoveElementWithEventMessage extends GameContextRemoveE
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

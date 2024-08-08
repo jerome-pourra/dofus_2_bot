@@ -9,6 +9,9 @@ export class AllianceListApplicationRequestMessage extends PaginationRequestAbst
 
 	public static readonly protocolId: number = 7241;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class AllianceListApplicationRequestMessage extends PaginationRequestAbst
     public getMessageId()
     {
         return AllianceListApplicationRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceListApplicationRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceListApplicationRequestMessage.endpointServer;
     }
 
     public initAllianceListApplicationRequestMessage(offset: number = 0, count: number = 0): AllianceListApplicationRequestMessage
@@ -29,7 +42,7 @@ export class AllianceListApplicationRequestMessage extends PaginationRequestAbst
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

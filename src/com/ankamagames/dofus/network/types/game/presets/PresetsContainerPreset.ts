@@ -9,6 +9,9 @@ export class PresetsContainerPreset extends Preset implements INetworkType
 
 	public static readonly protocolId: number = 5695;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public presets: Array<Preset>;
 
     public constructor()
@@ -20,6 +23,16 @@ export class PresetsContainerPreset extends Preset implements INetworkType
     public getTypeId()
     {
         return PresetsContainerPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PresetsContainerPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PresetsContainerPreset.endpointServer;
     }
 
     public initPresetsContainerPreset(id: number = 0, presets: Array<Preset> = null): PresetsContainerPreset

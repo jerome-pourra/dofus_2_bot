@@ -10,6 +10,9 @@ export class AllianceModificationStartedMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 2149;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public canChangeName: boolean = false;
 	public canChangeTag: boolean = false;
 	public canChangeEmblem: boolean = false;
@@ -24,6 +27,16 @@ export class AllianceModificationStartedMessage extends NetworkMessage implement
         return AllianceModificationStartedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceModificationStartedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceModificationStartedMessage.endpointServer;
+    }
+
     public initAllianceModificationStartedMessage(canChangeName: boolean = false, canChangeTag: boolean = false, canChangeEmblem: boolean = false): AllianceModificationStartedMessage
     {
         this.canChangeName = canChangeName;
@@ -36,7 +49,7 @@ export class AllianceModificationStartedMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

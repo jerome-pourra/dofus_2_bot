@@ -9,6 +9,9 @@ export class HaapiConfirmationMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 5031;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public kamas: number = 0;
 	public amount: number = 0;
 	public rate: number = 0;
@@ -25,6 +28,16 @@ export class HaapiConfirmationMessage extends NetworkMessage implements INetwork
         return HaapiConfirmationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HaapiConfirmationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HaapiConfirmationMessage.endpointServer;
+    }
+
     public initHaapiConfirmationMessage(kamas: number = 0, amount: number = 0, rate: number = 0, action: number = 0, transaction: string = ""): HaapiConfirmationMessage
     {
         this.kamas = kamas;
@@ -39,7 +52,7 @@ export class HaapiConfirmationMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

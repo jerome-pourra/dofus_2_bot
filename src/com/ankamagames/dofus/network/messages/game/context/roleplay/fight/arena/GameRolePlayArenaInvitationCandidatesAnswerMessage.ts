@@ -10,6 +10,9 @@ export class GameRolePlayArenaInvitationCandidatesAnswerMessage extends NetworkM
 
 	public static readonly protocolId: number = 953;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public candidates: Array<LeagueFriendInformations>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameRolePlayArenaInvitationCandidatesAnswerMessage extends NetworkM
         return GameRolePlayArenaInvitationCandidatesAnswerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayArenaInvitationCandidatesAnswerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayArenaInvitationCandidatesAnswerMessage.endpointServer;
+    }
+
     public initGameRolePlayArenaInvitationCandidatesAnswerMessage(candidates: Array<LeagueFriendInformations> = null): GameRolePlayArenaInvitationCandidatesAnswerMessage
     {
         this.candidates = candidates;
@@ -33,7 +46,7 @@ export class GameRolePlayArenaInvitationCandidatesAnswerMessage extends NetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

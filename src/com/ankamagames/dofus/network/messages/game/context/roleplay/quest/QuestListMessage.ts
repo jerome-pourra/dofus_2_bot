@@ -11,6 +11,9 @@ export class QuestListMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 3323;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public finishedQuestsIds: Array<number>;
 	public finishedQuestsCounts: Array<number>;
 	public activeQuests: Array<QuestActiveInformations>;
@@ -30,6 +33,16 @@ export class QuestListMessage extends NetworkMessage implements INetworkMessage
         return QuestListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return QuestListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return QuestListMessage.endpointServer;
+    }
+
     public initQuestListMessage(finishedQuestsIds: Array<number> = null, finishedQuestsCounts: Array<number> = null, activeQuests: Array<QuestActiveInformations> = null, reinitDoneQuestsIds: Array<number> = null): QuestListMessage
     {
         this.finishedQuestsIds = finishedQuestsIds;
@@ -43,7 +56,7 @@ export class QuestListMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class PlayerNote implements INetworkType
 
 	public static readonly protocolId: number = 3703;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public content: string = "";
 	public lastEditDate: number = 0;
 
@@ -18,6 +21,16 @@ export class PlayerNote implements INetworkType
     public getTypeId()
     {
         return PlayerNote.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PlayerNote.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PlayerNote.endpointServer;
     }
 
     public initPlayerNote(content: string = "", lastEditDate: number = 0): PlayerNote

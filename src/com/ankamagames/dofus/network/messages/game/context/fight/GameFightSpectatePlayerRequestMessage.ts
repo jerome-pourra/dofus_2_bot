@@ -9,6 +9,9 @@ export class GameFightSpectatePlayerRequestMessage extends NetworkMessage implem
 
 	public static readonly protocolId: number = 8994;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameFightSpectatePlayerRequestMessage extends NetworkMessage implem
         return GameFightSpectatePlayerRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightSpectatePlayerRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightSpectatePlayerRequestMessage.endpointServer;
+    }
+
     public initGameFightSpectatePlayerRequestMessage(playerId: number = 0): GameFightSpectatePlayerRequestMessage
     {
         this.playerId = playerId;
@@ -31,7 +44,7 @@ export class GameFightSpectatePlayerRequestMessage extends NetworkMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

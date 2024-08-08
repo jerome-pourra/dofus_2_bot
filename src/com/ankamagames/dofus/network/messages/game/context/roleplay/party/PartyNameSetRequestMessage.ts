@@ -9,6 +9,9 @@ export class PartyNameSetRequestMessage extends AbstractPartyMessage implements 
 
 	public static readonly protocolId: number = 9125;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public partyName: string = "";
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyNameSetRequestMessage extends AbstractPartyMessage implements 
     public getMessageId()
     {
         return PartyNameSetRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyNameSetRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyNameSetRequestMessage.endpointServer;
     }
 
     public initPartyNameSetRequestMessage(partyId: number = 0, partyName: string = ""): PartyNameSetRequestMessage
@@ -32,7 +45,7 @@ export class PartyNameSetRequestMessage extends AbstractPartyMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

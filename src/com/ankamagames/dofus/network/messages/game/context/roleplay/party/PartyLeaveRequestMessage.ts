@@ -9,6 +9,9 @@ export class PartyLeaveRequestMessage extends AbstractPartyMessage implements IN
 
 	public static readonly protocolId: number = 6779;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class PartyLeaveRequestMessage extends AbstractPartyMessage implements IN
     public getMessageId()
     {
         return PartyLeaveRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyLeaveRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyLeaveRequestMessage.endpointServer;
     }
 
     public initPartyLeaveRequestMessage(partyId: number = 0): PartyLeaveRequestMessage
@@ -29,7 +42,7 @@ export class PartyLeaveRequestMessage extends AbstractPartyMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

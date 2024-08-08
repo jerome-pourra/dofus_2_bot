@@ -9,6 +9,9 @@ export class ChangeMapMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 5242;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public mapId: number = 0;
 	public autopilot: boolean = false;
 
@@ -22,6 +25,16 @@ export class ChangeMapMessage extends NetworkMessage implements INetworkMessage
         return ChangeMapMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChangeMapMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChangeMapMessage.endpointServer;
+    }
+
     public initChangeMapMessage(mapId: number = 0, autopilot: boolean = false): ChangeMapMessage
     {
         this.mapId = mapId;
@@ -33,7 +46,7 @@ export class ChangeMapMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class ChatClientMultiWithObjectMessage extends ChatClientMultiMessage imp
 
 	public static readonly protocolId: number = 5473;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objects: Array<ObjectItem>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ChatClientMultiWithObjectMessage extends ChatClientMultiMessage imp
         return ChatClientMultiWithObjectMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChatClientMultiWithObjectMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChatClientMultiWithObjectMessage.endpointServer;
+    }
+
     public initChatClientMultiWithObjectMessage(content: string = "", channel: number = 0, objects: Array<ObjectItem> = null): ChatClientMultiWithObjectMessage
     {
         super.initChatClientMultiMessage(content,channel);
@@ -34,7 +47,7 @@ export class ChatClientMultiWithObjectMessage extends ChatClientMultiMessage imp
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

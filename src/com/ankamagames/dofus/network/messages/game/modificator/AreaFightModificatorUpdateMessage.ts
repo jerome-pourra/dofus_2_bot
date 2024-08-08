@@ -9,6 +9,9 @@ export class AreaFightModificatorUpdateMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 9461;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spellPairId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AreaFightModificatorUpdateMessage extends NetworkMessage implements
         return AreaFightModificatorUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AreaFightModificatorUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AreaFightModificatorUpdateMessage.endpointServer;
+    }
+
     public initAreaFightModificatorUpdateMessage(spellPairId: number = 0): AreaFightModificatorUpdateMessage
     {
         this.spellPairId = spellPairId;
@@ -31,7 +44,7 @@ export class AreaFightModificatorUpdateMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

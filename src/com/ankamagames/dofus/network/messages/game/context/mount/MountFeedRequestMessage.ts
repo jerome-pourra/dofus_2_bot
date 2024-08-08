@@ -9,6 +9,9 @@ export class MountFeedRequestMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 3038;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public mountUid: number = 0;
 	public mountLocation: number = 0;
 	public mountFoodUid: number = 0;
@@ -24,6 +27,16 @@ export class MountFeedRequestMessage extends NetworkMessage implements INetworkM
         return MountFeedRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MountFeedRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountFeedRequestMessage.endpointServer;
+    }
+
     public initMountFeedRequestMessage(mountUid: number = 0, mountLocation: number = 0, mountFoodUid: number = 0, quantity: number = 0): MountFeedRequestMessage
     {
         this.mountUid = mountUid;
@@ -37,7 +50,7 @@ export class MountFeedRequestMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

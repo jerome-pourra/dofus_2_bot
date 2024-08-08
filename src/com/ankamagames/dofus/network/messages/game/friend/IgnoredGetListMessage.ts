@@ -9,6 +9,9 @@ export class IgnoredGetListMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 8068;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class IgnoredGetListMessage extends NetworkMessage implements INetworkMes
     public getMessageId()
     {
         return IgnoredGetListMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return IgnoredGetListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IgnoredGetListMessage.endpointServer;
     }
 
     public initIgnoredGetListMessage(): IgnoredGetListMessage
@@ -28,7 +41,7 @@ export class IgnoredGetListMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

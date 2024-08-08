@@ -10,6 +10,9 @@ export class PrismAttackResultMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 8541;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public prism: PrismGeolocalizedInformation;
 	public result: number = 0;
 
@@ -24,6 +27,16 @@ export class PrismAttackResultMessage extends NetworkMessage implements INetwork
         return PrismAttackResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PrismAttackResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PrismAttackResultMessage.endpointServer;
+    }
+
     public initPrismAttackResultMessage(prism: PrismGeolocalizedInformation = null, result: number = 0): PrismAttackResultMessage
     {
         this.prism = prism;
@@ -35,7 +48,7 @@ export class PrismAttackResultMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

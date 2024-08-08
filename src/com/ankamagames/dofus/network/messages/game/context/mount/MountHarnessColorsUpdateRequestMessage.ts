@@ -9,6 +9,9 @@ export class MountHarnessColorsUpdateRequestMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 4391;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public useHarnessColors: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class MountHarnessColorsUpdateRequestMessage extends NetworkMessage imple
         return MountHarnessColorsUpdateRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MountHarnessColorsUpdateRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountHarnessColorsUpdateRequestMessage.endpointServer;
+    }
+
     public initMountHarnessColorsUpdateRequestMessage(useHarnessColors: boolean = false): MountHarnessColorsUpdateRequestMessage
     {
         this.useHarnessColors = useHarnessColors;
@@ -31,7 +44,7 @@ export class MountHarnessColorsUpdateRequestMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

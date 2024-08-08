@@ -10,6 +10,9 @@ export class ExchangeBidHouseInListUpdatedMessage extends ExchangeBidHouseInList
 
 	public static readonly protocolId: number = 9240;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -18,6 +21,16 @@ export class ExchangeBidHouseInListUpdatedMessage extends ExchangeBidHouseInList
     public getMessageId()
     {
         return ExchangeBidHouseInListUpdatedMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeBidHouseInListUpdatedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeBidHouseInListUpdatedMessage.endpointServer;
     }
 
     public initExchangeBidHouseInListUpdatedMessage(itemUID: number = 0, objectGID: number = 0, objectType: number = 0, effects: Array<ObjectEffect> = null, prices: Array<number> = null): ExchangeBidHouseInListUpdatedMessage
@@ -30,7 +43,7 @@ export class ExchangeBidHouseInListUpdatedMessage extends ExchangeBidHouseInList
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

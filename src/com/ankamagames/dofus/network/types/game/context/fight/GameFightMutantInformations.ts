@@ -13,6 +13,9 @@ export class GameFightMutantInformations extends GameFightFighterNamedInformatio
 
 	public static readonly protocolId: number = 419;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public powerLevel: number = 0;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameFightMutantInformations extends GameFightFighterNamedInformatio
     public getTypeId()
     {
         return GameFightMutantInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightMutantInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightMutantInformations.endpointServer;
     }
 
     public initGameFightMutantInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, spawnInfo: GameContextBasicSpawnInformation = null, wave: number = 0, stats: GameFightCharacteristics = null, previousPositions: Array<number> = null, name: string = "", status: PlayerStatus = null, leagueId: number = 0, ladderPosition: number = 0, hiddenInPrefight: boolean = false, powerLevel: number = 0): GameFightMutantInformations

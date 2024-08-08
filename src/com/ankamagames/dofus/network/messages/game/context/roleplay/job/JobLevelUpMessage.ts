@@ -10,6 +10,9 @@ export class JobLevelUpMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 386;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public newLevel: number = 0;
 	public jobsDescription: JobDescription;
 
@@ -24,6 +27,16 @@ export class JobLevelUpMessage extends NetworkMessage implements INetworkMessage
         return JobLevelUpMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return JobLevelUpMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobLevelUpMessage.endpointServer;
+    }
+
     public initJobLevelUpMessage(newLevel: number = 0, jobsDescription: JobDescription = null): JobLevelUpMessage
     {
         this.newLevel = newLevel;
@@ -35,7 +48,7 @@ export class JobLevelUpMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

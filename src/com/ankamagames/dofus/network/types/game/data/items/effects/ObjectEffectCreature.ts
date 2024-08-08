@@ -8,6 +8,9 @@ export class ObjectEffectCreature extends ObjectEffect implements INetworkType
 
 	public static readonly protocolId: number = 3987;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public monsterFamilyId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class ObjectEffectCreature extends ObjectEffect implements INetworkType
     public getTypeId()
     {
         return ObjectEffectCreature.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectEffectCreature.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectEffectCreature.endpointServer;
     }
 
     public initObjectEffectCreature(actionId: number = 0, monsterFamilyId: number = 0): ObjectEffectCreature

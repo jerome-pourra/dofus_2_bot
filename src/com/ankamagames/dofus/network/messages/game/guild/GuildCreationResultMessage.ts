@@ -9,6 +9,9 @@ export class GuildCreationResultMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 4018;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public result: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuildCreationResultMessage extends NetworkMessage implements INetwo
         return GuildCreationResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildCreationResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildCreationResultMessage.endpointServer;
+    }
+
     public initGuildCreationResultMessage(result: number = 0): GuildCreationResultMessage
     {
         this.result = result;
@@ -31,7 +44,7 @@ export class GuildCreationResultMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

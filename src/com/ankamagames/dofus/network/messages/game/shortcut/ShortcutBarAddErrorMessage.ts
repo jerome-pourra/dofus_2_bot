@@ -9,6 +9,9 @@ export class ShortcutBarAddErrorMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 1627;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public error: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ShortcutBarAddErrorMessage extends NetworkMessage implements INetwo
         return ShortcutBarAddErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ShortcutBarAddErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShortcutBarAddErrorMessage.endpointServer;
+    }
+
     public initShortcutBarAddErrorMessage(error: number = 0): ShortcutBarAddErrorMessage
     {
         this.error = error;
@@ -31,7 +44,7 @@ export class ShortcutBarAddErrorMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

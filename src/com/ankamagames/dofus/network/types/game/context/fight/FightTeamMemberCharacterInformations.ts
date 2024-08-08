@@ -8,6 +8,9 @@ export class FightTeamMemberCharacterInformations extends FightTeamMemberInforma
 
 	public static readonly protocolId: number = 4535;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public name: string = "";
 	public level: number = 0;
 
@@ -19,6 +22,16 @@ export class FightTeamMemberCharacterInformations extends FightTeamMemberInforma
     public getTypeId()
     {
         return FightTeamMemberCharacterInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightTeamMemberCharacterInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightTeamMemberCharacterInformations.endpointServer;
     }
 
     public initFightTeamMemberCharacterInformations(id: number = 0, name: string = "", level: number = 0): FightTeamMemberCharacterInformations

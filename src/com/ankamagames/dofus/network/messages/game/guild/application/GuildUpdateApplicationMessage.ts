@@ -9,6 +9,9 @@ export class GuildUpdateApplicationMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 7570;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public applyText: string = "";
 	public guildId: number = 0;
 
@@ -22,6 +25,16 @@ export class GuildUpdateApplicationMessage extends NetworkMessage implements INe
         return GuildUpdateApplicationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildUpdateApplicationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildUpdateApplicationMessage.endpointServer;
+    }
+
     public initGuildUpdateApplicationMessage(applyText: string = "", guildId: number = 0): GuildUpdateApplicationMessage
     {
         this.applyText = applyText;
@@ -33,7 +46,7 @@ export class GuildUpdateApplicationMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

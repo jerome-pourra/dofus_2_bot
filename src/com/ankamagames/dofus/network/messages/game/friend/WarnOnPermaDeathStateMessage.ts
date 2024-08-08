@@ -9,6 +9,9 @@ export class WarnOnPermaDeathStateMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 5243;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public enable: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class WarnOnPermaDeathStateMessage extends NetworkMessage implements INet
         return WarnOnPermaDeathStateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return WarnOnPermaDeathStateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return WarnOnPermaDeathStateMessage.endpointServer;
+    }
+
     public initWarnOnPermaDeathStateMessage(enable: boolean = false): WarnOnPermaDeathStateMessage
     {
         this.enable = enable;
@@ -31,7 +44,7 @@ export class WarnOnPermaDeathStateMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

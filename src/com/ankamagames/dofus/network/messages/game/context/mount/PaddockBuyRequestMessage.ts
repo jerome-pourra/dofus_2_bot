@@ -9,6 +9,9 @@ export class PaddockBuyRequestMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 1669;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public proposedPrice: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class PaddockBuyRequestMessage extends NetworkMessage implements INetwork
         return PaddockBuyRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PaddockBuyRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaddockBuyRequestMessage.endpointServer;
+    }
+
     public initPaddockBuyRequestMessage(proposedPrice: number = 0): PaddockBuyRequestMessage
     {
         this.proposedPrice = proposedPrice;
@@ -31,7 +44,7 @@ export class PaddockBuyRequestMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

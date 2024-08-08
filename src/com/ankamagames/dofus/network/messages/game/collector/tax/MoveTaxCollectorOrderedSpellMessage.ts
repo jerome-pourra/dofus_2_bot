@@ -9,6 +9,9 @@ export class MoveTaxCollectorOrderedSpellMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 8918;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public taxCollectorId: number = 0;
 	public movedFrom: number = 0;
 	public movedTo: number = 0;
@@ -23,6 +26,16 @@ export class MoveTaxCollectorOrderedSpellMessage extends NetworkMessage implemen
         return MoveTaxCollectorOrderedSpellMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MoveTaxCollectorOrderedSpellMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MoveTaxCollectorOrderedSpellMessage.endpointServer;
+    }
+
     public initMoveTaxCollectorOrderedSpellMessage(taxCollectorId: number = 0, movedFrom: number = 0, movedTo: number = 0): MoveTaxCollectorOrderedSpellMessage
     {
         this.taxCollectorId = taxCollectorId;
@@ -35,7 +48,7 @@ export class MoveTaxCollectorOrderedSpellMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

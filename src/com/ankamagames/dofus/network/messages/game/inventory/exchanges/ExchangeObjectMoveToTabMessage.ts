@@ -9,6 +9,9 @@ export class ExchangeObjectMoveToTabMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 1002;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectUID: number = 0;
 	public quantity: number = 0;
 	public tabNumber: number = 0;
@@ -23,6 +26,16 @@ export class ExchangeObjectMoveToTabMessage extends NetworkMessage implements IN
         return ExchangeObjectMoveToTabMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeObjectMoveToTabMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeObjectMoveToTabMessage.endpointServer;
+    }
+
     public initExchangeObjectMoveToTabMessage(objectUID: number = 0, quantity: number = 0, tabNumber: number = 0): ExchangeObjectMoveToTabMessage
     {
         this.objectUID = objectUID;
@@ -35,7 +48,7 @@ export class ExchangeObjectMoveToTabMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

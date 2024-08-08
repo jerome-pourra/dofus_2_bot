@@ -10,6 +10,9 @@ export class ChallengeProposalMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 8830;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public challengeProposals: Array<ChallengeInformation>;
 	public timer: number = 0;
 
@@ -24,6 +27,16 @@ export class ChallengeProposalMessage extends NetworkMessage implements INetwork
         return ChallengeProposalMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChallengeProposalMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChallengeProposalMessage.endpointServer;
+    }
+
     public initChallengeProposalMessage(challengeProposals: Array<ChallengeInformation> = null, timer: number = 0): ChallengeProposalMessage
     {
         this.challengeProposals = challengeProposals;
@@ -35,7 +48,7 @@ export class ChallengeProposalMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

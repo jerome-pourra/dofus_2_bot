@@ -12,6 +12,9 @@ export class PartyInvitationDetailsMessage extends AbstractPartyMessage implemen
 
 	public static readonly protocolId: number = 8607;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public partyType: number = 0;
 	public partyName: string = "";
 	public fromId: number = 0;
@@ -32,6 +35,16 @@ export class PartyInvitationDetailsMessage extends AbstractPartyMessage implemen
         return PartyInvitationDetailsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PartyInvitationDetailsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyInvitationDetailsMessage.endpointServer;
+    }
+
     public initPartyInvitationDetailsMessage(partyId: number = 0, partyType: number = 0, partyName: string = "", fromId: number = 0, fromName: string = "", leaderId: number = 0, members: Array<PartyInvitationMemberInformations> = null, guests: Array<PartyGuestInformations> = null): PartyInvitationDetailsMessage
     {
         super.initAbstractPartyMessage(partyId);
@@ -49,7 +62,7 @@ export class PartyInvitationDetailsMessage extends AbstractPartyMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

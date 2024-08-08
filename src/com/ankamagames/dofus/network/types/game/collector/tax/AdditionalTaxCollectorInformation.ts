@@ -7,6 +7,9 @@ export class AdditionalTaxCollectorInformation implements INetworkType
 
 	public static readonly protocolId: number = 1456;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public collectorCallerId: number = 0;
 	public collectorCallerName: string = "";
 	public date: number = 0;
@@ -19,6 +22,16 @@ export class AdditionalTaxCollectorInformation implements INetworkType
     public getTypeId()
     {
         return AdditionalTaxCollectorInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AdditionalTaxCollectorInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AdditionalTaxCollectorInformation.endpointServer;
     }
 
     public initAdditionalTaxCollectorInformation(collectorCallerId: number = 0, collectorCallerName: string = "", date: number = 0): AdditionalTaxCollectorInformation

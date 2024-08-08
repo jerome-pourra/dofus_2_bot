@@ -9,6 +9,9 @@ export class FightTeamMemberWithAllianceCharacterInformations extends FightTeamM
 
 	public static readonly protocolId: number = 793;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceInfos: BasicAllianceInformations;
 
     public constructor()
@@ -20,6 +23,16 @@ export class FightTeamMemberWithAllianceCharacterInformations extends FightTeamM
     public getTypeId()
     {
         return FightTeamMemberWithAllianceCharacterInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightTeamMemberWithAllianceCharacterInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightTeamMemberWithAllianceCharacterInformations.endpointServer;
     }
 
     public initFightTeamMemberWithAllianceCharacterInformations(id: number = 0, name: string = "", level: number = 0, allianceInfos: BasicAllianceInformations = null): FightTeamMemberWithAllianceCharacterInformations

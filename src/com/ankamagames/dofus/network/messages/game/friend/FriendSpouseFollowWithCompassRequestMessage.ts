@@ -9,6 +9,9 @@ export class FriendSpouseFollowWithCompassRequestMessage extends NetworkMessage 
 
 	public static readonly protocolId: number = 3784;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public enable: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class FriendSpouseFollowWithCompassRequestMessage extends NetworkMessage 
         return FriendSpouseFollowWithCompassRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FriendSpouseFollowWithCompassRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendSpouseFollowWithCompassRequestMessage.endpointServer;
+    }
+
     public initFriendSpouseFollowWithCompassRequestMessage(enable: boolean = false): FriendSpouseFollowWithCompassRequestMessage
     {
         this.enable = enable;
@@ -31,7 +44,7 @@ export class FriendSpouseFollowWithCompassRequestMessage extends NetworkMessage 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

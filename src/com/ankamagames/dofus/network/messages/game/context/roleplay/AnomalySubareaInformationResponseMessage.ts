@@ -10,6 +10,9 @@ export class AnomalySubareaInformationResponseMessage extends NetworkMessage imp
 
 	public static readonly protocolId: number = 9235;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public subareas: Array<AnomalySubareaInformation>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AnomalySubareaInformationResponseMessage extends NetworkMessage imp
         return AnomalySubareaInformationResponseMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AnomalySubareaInformationResponseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AnomalySubareaInformationResponseMessage.endpointServer;
+    }
+
     public initAnomalySubareaInformationResponseMessage(subareas: Array<AnomalySubareaInformation> = null): AnomalySubareaInformationResponseMessage
     {
         this.subareas = subareas;
@@ -33,7 +46,7 @@ export class AnomalySubareaInformationResponseMessage extends NetworkMessage imp
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

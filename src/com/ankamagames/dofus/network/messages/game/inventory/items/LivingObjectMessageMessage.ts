@@ -9,6 +9,9 @@ export class LivingObjectMessageMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 6015;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public msgId: number = 0;
 	public timeStamp: number = 0;
 	public owner: string = "";
@@ -24,6 +27,16 @@ export class LivingObjectMessageMessage extends NetworkMessage implements INetwo
         return LivingObjectMessageMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return LivingObjectMessageMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return LivingObjectMessageMessage.endpointServer;
+    }
+
     public initLivingObjectMessageMessage(msgId: number = 0, timeStamp: number = 0, owner: string = "", objectGenericId: number = 0): LivingObjectMessageMessage
     {
         this.msgId = msgId;
@@ -37,7 +50,7 @@ export class LivingObjectMessageMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

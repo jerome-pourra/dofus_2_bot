@@ -10,6 +10,9 @@ export class ListMapNpcsQuestStatusUpdateMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 5023;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mapInfo: Array<MapNpcQuestInfo>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ListMapNpcsQuestStatusUpdateMessage extends NetworkMessage implemen
         return ListMapNpcsQuestStatusUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ListMapNpcsQuestStatusUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ListMapNpcsQuestStatusUpdateMessage.endpointServer;
+    }
+
     public initListMapNpcsQuestStatusUpdateMessage(mapInfo: Array<MapNpcQuestInfo> = null): ListMapNpcsQuestStatusUpdateMessage
     {
         this.mapInfo = mapInfo;
@@ -33,7 +46,7 @@ export class ListMapNpcsQuestStatusUpdateMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

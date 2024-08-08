@@ -10,6 +10,9 @@ export class AllianceSummaryRequestMessage extends PaginationRequestAbstractMess
 
 	public static readonly protocolId: number = 4007;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public filterType: number = 0;
 	public textFilter: string = "";
 	public hideFullFilter: boolean = false;
@@ -35,6 +38,16 @@ export class AllianceSummaryRequestMessage extends PaginationRequestAbstractMess
         return AllianceSummaryRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceSummaryRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceSummaryRequestMessage.endpointServer;
+    }
+
     public initAllianceSummaryRequestMessage(offset: number = 0, count: number = 0, filterType: number = 0, textFilter: string = "", hideFullFilter: boolean = false, followingAllianceCriteria: boolean = false, criterionFilter: Array<number> = null, sortType: number = 0, sortDescending: boolean = false, languagesFilter: Array<number> = null, recruitmentTypeFilter: Array<number> = null, minPlayerLevelFilter: number = 0, maxPlayerLevelFilter: number = 0): AllianceSummaryRequestMessage
     {
         super.initPaginationRequestAbstractMessage(offset,count);
@@ -56,7 +69,7 @@ export class AllianceSummaryRequestMessage extends PaginationRequestAbstractMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

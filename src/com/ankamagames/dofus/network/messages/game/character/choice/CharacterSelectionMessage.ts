@@ -9,6 +9,9 @@ export class CharacterSelectionMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 6792;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class CharacterSelectionMessage extends NetworkMessage implements INetwor
         return CharacterSelectionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterSelectionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterSelectionMessage.endpointServer;
+    }
+
     public initCharacterSelectionMessage(id: number = 0): CharacterSelectionMessage
     {
         this.id = id;
@@ -31,7 +44,7 @@ export class CharacterSelectionMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

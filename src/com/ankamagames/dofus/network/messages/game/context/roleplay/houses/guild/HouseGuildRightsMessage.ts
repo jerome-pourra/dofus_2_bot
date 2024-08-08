@@ -10,6 +10,9 @@ export class HouseGuildRightsMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 8722;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public houseId: number = 0;
 	public instanceId: number = 0;
 	public secondHand: boolean = false;
@@ -27,6 +30,16 @@ export class HouseGuildRightsMessage extends NetworkMessage implements INetworkM
         return HouseGuildRightsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HouseGuildRightsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseGuildRightsMessage.endpointServer;
+    }
+
     public initHouseGuildRightsMessage(houseId: number = 0, instanceId: number = 0, secondHand: boolean = false, guildInfo: GuildInformations = null, rights: number = 0): HouseGuildRightsMessage
     {
         this.houseId = houseId;
@@ -41,7 +54,7 @@ export class HouseGuildRightsMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class ExchangeBuyOkMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 9839;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class ExchangeBuyOkMessage extends NetworkMessage implements INetworkMess
     public getMessageId()
     {
         return ExchangeBuyOkMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeBuyOkMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeBuyOkMessage.endpointServer;
     }
 
     public initExchangeBuyOkMessage(): ExchangeBuyOkMessage
@@ -28,7 +41,7 @@ export class ExchangeBuyOkMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

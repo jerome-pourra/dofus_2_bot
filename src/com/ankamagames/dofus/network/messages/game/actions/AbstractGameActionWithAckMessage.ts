@@ -9,6 +9,9 @@ export class AbstractGameActionWithAckMessage extends AbstractGameActionMessage 
 
 	public static readonly protocolId: number = 1587;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public waitAckId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class AbstractGameActionWithAckMessage extends AbstractGameActionMessage 
     public getMessageId()
     {
         return AbstractGameActionWithAckMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AbstractGameActionWithAckMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AbstractGameActionWithAckMessage.endpointServer;
     }
 
     public initAbstractGameActionWithAckMessage(actionId: number = 0, sourceId: number = 0, waitAckId: number = 0): AbstractGameActionWithAckMessage
@@ -32,7 +45,7 @@ export class AbstractGameActionWithAckMessage extends AbstractGameActionMessage 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

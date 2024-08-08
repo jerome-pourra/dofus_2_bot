@@ -9,6 +9,9 @@ export class ItemNoMoreAvailableMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 2498;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class ItemNoMoreAvailableMessage extends NetworkMessage implements INetwo
     public getMessageId()
     {
         return ItemNoMoreAvailableMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ItemNoMoreAvailableMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ItemNoMoreAvailableMessage.endpointServer;
     }
 
     public initItemNoMoreAvailableMessage(): ItemNoMoreAvailableMessage
@@ -28,7 +41,7 @@ export class ItemNoMoreAvailableMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

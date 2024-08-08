@@ -9,6 +9,9 @@ export class CloseHavenBagFurnitureSequenceRequestMessage extends NetworkMessage
 
 	public static readonly protocolId: number = 6165;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class CloseHavenBagFurnitureSequenceRequestMessage extends NetworkMessage
     public getMessageId()
     {
         return CloseHavenBagFurnitureSequenceRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CloseHavenBagFurnitureSequenceRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CloseHavenBagFurnitureSequenceRequestMessage.endpointServer;
     }
 
     public initCloseHavenBagFurnitureSequenceRequestMessage(): CloseHavenBagFurnitureSequenceRequestMessage
@@ -28,7 +41,7 @@ export class CloseHavenBagFurnitureSequenceRequestMessage extends NetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

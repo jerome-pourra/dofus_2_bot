@@ -9,6 +9,9 @@ export class ExchangeMountsStableRemoveMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 6129;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mountsId: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class ExchangeMountsStableRemoveMessage extends NetworkMessage implements
         return ExchangeMountsStableRemoveMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeMountsStableRemoveMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeMountsStableRemoveMessage.endpointServer;
+    }
+
     public initExchangeMountsStableRemoveMessage(mountsId: Array<number> = null): ExchangeMountsStableRemoveMessage
     {
         this.mountsId = mountsId;
@@ -32,7 +45,7 @@ export class ExchangeMountsStableRemoveMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class BasicDateMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 7499;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public day: number = 0;
 	public month: number = 0;
 	public year: number = 0;
@@ -23,6 +26,16 @@ export class BasicDateMessage extends NetworkMessage implements INetworkMessage
         return BasicDateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BasicDateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicDateMessage.endpointServer;
+    }
+
     public initBasicDateMessage(day: number = 0, month: number = 0, year: number = 0): BasicDateMessage
     {
         this.day = day;
@@ -35,7 +48,7 @@ export class BasicDateMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

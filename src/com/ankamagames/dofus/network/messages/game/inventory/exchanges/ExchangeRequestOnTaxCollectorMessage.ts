@@ -9,6 +9,9 @@ export class ExchangeRequestOnTaxCollectorMessage extends NetworkMessage impleme
 
 	public static readonly protocolId: number = 1216;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class ExchangeRequestOnTaxCollectorMessage extends NetworkMessage impleme
     public getMessageId()
     {
         return ExchangeRequestOnTaxCollectorMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeRequestOnTaxCollectorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeRequestOnTaxCollectorMessage.endpointServer;
     }
 
     public initExchangeRequestOnTaxCollectorMessage(): ExchangeRequestOnTaxCollectorMessage
@@ -28,7 +41,7 @@ export class ExchangeRequestOnTaxCollectorMessage extends NetworkMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

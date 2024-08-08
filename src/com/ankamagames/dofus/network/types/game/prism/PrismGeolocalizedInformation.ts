@@ -9,6 +9,9 @@ export class PrismGeolocalizedInformation implements INetworkType
 
 	public static readonly protocolId: number = 9281;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public subAreaId: number = 0;
 	public allianceId: number = 0;
 	public worldX: number = 0;
@@ -24,6 +27,16 @@ export class PrismGeolocalizedInformation implements INetworkType
     public getTypeId()
     {
         return PrismGeolocalizedInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PrismGeolocalizedInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PrismGeolocalizedInformation.endpointServer;
     }
 
     public initPrismGeolocalizedInformation(subAreaId: number = 0, allianceId: number = 0, worldX: number = 0, worldY: number = 0, mapId: number = 0, prism: PrismInformation = null): PrismGeolocalizedInformation

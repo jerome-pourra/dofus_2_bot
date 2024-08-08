@@ -9,6 +9,9 @@ export class BreachExitResponseMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 6746;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public exited: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class BreachExitResponseMessage extends NetworkMessage implements INetwor
         return BreachExitResponseMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachExitResponseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachExitResponseMessage.endpointServer;
+    }
+
     public initBreachExitResponseMessage(exited: boolean = false): BreachExitResponseMessage
     {
         this.exited = exited;
@@ -31,7 +44,7 @@ export class BreachExitResponseMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

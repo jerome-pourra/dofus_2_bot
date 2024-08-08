@@ -9,6 +9,9 @@ export class ObjectJobAddedMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 5441;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public jobId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ObjectJobAddedMessage extends NetworkMessage implements INetworkMes
         return ObjectJobAddedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectJobAddedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectJobAddedMessage.endpointServer;
+    }
+
     public initObjectJobAddedMessage(jobId: number = 0): ObjectJobAddedMessage
     {
         this.jobId = jobId;
@@ -31,7 +44,7 @@ export class ObjectJobAddedMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

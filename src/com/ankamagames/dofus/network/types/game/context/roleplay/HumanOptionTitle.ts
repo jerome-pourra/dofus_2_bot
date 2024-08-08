@@ -8,6 +8,9 @@ export class HumanOptionTitle extends HumanOption implements INetworkType
 
 	public static readonly protocolId: number = 2189;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public titleId: number = 0;
 	public titleParam: string = "";
 
@@ -19,6 +22,16 @@ export class HumanOptionTitle extends HumanOption implements INetworkType
     public getTypeId()
     {
         return HumanOptionTitle.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HumanOptionTitle.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HumanOptionTitle.endpointServer;
     }
 
     public initHumanOptionTitle(titleId: number = 0, titleParam: string = ""): HumanOptionTitle

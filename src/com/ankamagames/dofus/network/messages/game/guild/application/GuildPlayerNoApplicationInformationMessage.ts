@@ -9,6 +9,9 @@ export class GuildPlayerNoApplicationInformationMessage extends GuildPlayerAppli
 
 	public static readonly protocolId: number = 6961;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class GuildPlayerNoApplicationInformationMessage extends GuildPlayerAppli
     public getMessageId()
     {
         return GuildPlayerNoApplicationInformationMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildPlayerNoApplicationInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildPlayerNoApplicationInformationMessage.endpointServer;
     }
 
     public initGuildPlayerNoApplicationInformationMessage(): GuildPlayerNoApplicationInformationMessage
@@ -28,7 +41,7 @@ export class GuildPlayerNoApplicationInformationMessage extends GuildPlayerAppli
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

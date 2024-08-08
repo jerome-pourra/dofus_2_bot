@@ -10,6 +10,9 @@ export class PartyFollowStatusUpdateMessage extends AbstractPartyMessage impleme
 
 	public static readonly protocolId: number = 4068;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public success: boolean = false;
 	public isFollowed: boolean = false;
 	public followedId: number = 0;
@@ -22,6 +25,16 @@ export class PartyFollowStatusUpdateMessage extends AbstractPartyMessage impleme
     public getMessageId()
     {
         return PartyFollowStatusUpdateMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyFollowStatusUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyFollowStatusUpdateMessage.endpointServer;
     }
 
     public initPartyFollowStatusUpdateMessage(partyId: number = 0, success: boolean = false, isFollowed: boolean = false, followedId: number = 0): PartyFollowStatusUpdateMessage
@@ -37,7 +50,7 @@ export class PartyFollowStatusUpdateMessage extends AbstractPartyMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

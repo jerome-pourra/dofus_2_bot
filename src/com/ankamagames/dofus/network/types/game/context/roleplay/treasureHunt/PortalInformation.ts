@@ -7,6 +7,9 @@ export class PortalInformation implements INetworkType
 
 	public static readonly protocolId: number = 2396;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public portalId: number = 0;
 	public areaId: number = 0;
 
@@ -18,6 +21,16 @@ export class PortalInformation implements INetworkType
     public getTypeId()
     {
         return PortalInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PortalInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PortalInformation.endpointServer;
     }
 
     public initPortalInformation(portalId: number = 0, areaId: number = 0): PortalInformation

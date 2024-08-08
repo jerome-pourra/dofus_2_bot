@@ -12,6 +12,9 @@ export class GameRolePlayPrismInformations extends GameRolePlayActorInformations
 
 	public static readonly protocolId: number = 7369;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public prism: PrismInformation;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameRolePlayPrismInformations extends GameRolePlayActorInformations
     public getTypeId()
     {
         return GameRolePlayPrismInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayPrismInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayPrismInformations.endpointServer;
     }
 
     public initGameRolePlayPrismInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, prism: PrismInformation = null): GameRolePlayPrismInformations

@@ -9,6 +9,9 @@ export class SurrenderVoteCastMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 4209;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public vote: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class SurrenderVoteCastMessage extends NetworkMessage implements INetwork
         return SurrenderVoteCastMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SurrenderVoteCastMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SurrenderVoteCastMessage.endpointServer;
+    }
+
     public initSurrenderVoteCastMessage(vote: boolean = false): SurrenderVoteCastMessage
     {
         this.vote = vote;
@@ -31,7 +44,7 @@ export class SurrenderVoteCastMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

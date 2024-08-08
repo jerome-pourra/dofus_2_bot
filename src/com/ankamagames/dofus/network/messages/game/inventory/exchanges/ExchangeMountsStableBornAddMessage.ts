@@ -10,6 +10,9 @@ export class ExchangeMountsStableBornAddMessage extends ExchangeMountsStableAddM
 
 	public static readonly protocolId: number = 2861;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -18,6 +21,16 @@ export class ExchangeMountsStableBornAddMessage extends ExchangeMountsStableAddM
     public getMessageId()
     {
         return ExchangeMountsStableBornAddMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeMountsStableBornAddMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeMountsStableBornAddMessage.endpointServer;
     }
 
     public initExchangeMountsStableBornAddMessage(mountDescription: Array<MountClientData> = null): ExchangeMountsStableBornAddMessage
@@ -30,7 +43,7 @@ export class ExchangeMountsStableBornAddMessage extends ExchangeMountsStableAddM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

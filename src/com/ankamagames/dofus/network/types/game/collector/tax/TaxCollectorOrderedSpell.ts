@@ -7,6 +7,9 @@ export class TaxCollectorOrderedSpell implements INetworkType
 
 	public static readonly protocolId: number = 3173;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public spellId: number = 0;
 	public slot: number = 0;
 
@@ -18,6 +21,16 @@ export class TaxCollectorOrderedSpell implements INetworkType
     public getTypeId()
     {
         return TaxCollectorOrderedSpell.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TaxCollectorOrderedSpell.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorOrderedSpell.endpointServer;
     }
 
     public initTaxCollectorOrderedSpell(spellId: number = 0, slot: number = 0): TaxCollectorOrderedSpell

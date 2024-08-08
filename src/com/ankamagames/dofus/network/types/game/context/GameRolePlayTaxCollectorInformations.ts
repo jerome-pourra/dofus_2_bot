@@ -12,6 +12,9 @@ export class GameRolePlayTaxCollectorInformations extends GameRolePlayActorInfor
 
 	public static readonly protocolId: number = 4101;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public identification: TaxCollectorStaticInformations;
 	public taxCollectorAttack: number = 0;
 
@@ -24,6 +27,16 @@ export class GameRolePlayTaxCollectorInformations extends GameRolePlayActorInfor
     public getTypeId()
     {
         return GameRolePlayTaxCollectorInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayTaxCollectorInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayTaxCollectorInformations.endpointServer;
     }
 
     public initGameRolePlayTaxCollectorInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, identification: TaxCollectorStaticInformations = null, taxCollectorAttack: number = 0): GameRolePlayTaxCollectorInformations

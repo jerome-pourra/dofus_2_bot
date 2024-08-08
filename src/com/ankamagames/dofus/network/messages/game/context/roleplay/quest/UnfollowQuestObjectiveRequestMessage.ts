@@ -9,6 +9,9 @@ export class UnfollowQuestObjectiveRequestMessage extends NetworkMessage impleme
 
 	public static readonly protocolId: number = 2136;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public questId: number = 0;
 	public objectiveId: number = 0;
 
@@ -22,6 +25,16 @@ export class UnfollowQuestObjectiveRequestMessage extends NetworkMessage impleme
         return UnfollowQuestObjectiveRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return UnfollowQuestObjectiveRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return UnfollowQuestObjectiveRequestMessage.endpointServer;
+    }
+
     public initUnfollowQuestObjectiveRequestMessage(questId: number = 0, objectiveId: number = 0): UnfollowQuestObjectiveRequestMessage
     {
         this.questId = questId;
@@ -33,7 +46,7 @@ export class UnfollowQuestObjectiveRequestMessage extends NetworkMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

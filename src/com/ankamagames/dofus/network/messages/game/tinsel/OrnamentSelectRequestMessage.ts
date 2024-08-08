@@ -9,6 +9,9 @@ export class OrnamentSelectRequestMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 732;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public ornamentId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class OrnamentSelectRequestMessage extends NetworkMessage implements INet
         return OrnamentSelectRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return OrnamentSelectRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return OrnamentSelectRequestMessage.endpointServer;
+    }
+
     public initOrnamentSelectRequestMessage(ornamentId: number = 0): OrnamentSelectRequestMessage
     {
         this.ornamentId = ornamentId;
@@ -31,7 +44,7 @@ export class OrnamentSelectRequestMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

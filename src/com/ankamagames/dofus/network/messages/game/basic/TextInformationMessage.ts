@@ -9,6 +9,9 @@ export class TextInformationMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 3766;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public msgType: number = 0;
 	public msgId: number = 0;
 	public parameters: Array<string>;
@@ -24,6 +27,16 @@ export class TextInformationMessage extends NetworkMessage implements INetworkMe
         return TextInformationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TextInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TextInformationMessage.endpointServer;
+    }
+
     public initTextInformationMessage(msgType: number = 0, msgId: number = 0, parameters: Array<string> = null): TextInformationMessage
     {
         this.msgType = msgType;
@@ -36,7 +49,7 @@ export class TextInformationMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

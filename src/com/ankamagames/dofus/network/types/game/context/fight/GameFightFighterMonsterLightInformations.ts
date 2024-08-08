@@ -8,6 +8,9 @@ export class GameFightFighterMonsterLightInformations extends GameFightFighterLi
 
 	public static readonly protocolId: number = 3925;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public creatureGenericId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class GameFightFighterMonsterLightInformations extends GameFightFighterLi
     public getTypeId()
     {
         return GameFightFighterMonsterLightInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightFighterMonsterLightInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightFighterMonsterLightInformations.endpointServer;
     }
 
     public initGameFightFighterMonsterLightInformations(id: number = 0, wave: number = 0, level: number = 0, breed: number = 0, sex: boolean = false, alive: boolean = false, creatureGenericId: number = 0): GameFightFighterMonsterLightInformations

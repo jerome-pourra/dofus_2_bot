@@ -9,6 +9,9 @@ export class GameRolePlayRemoveChallengeMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 3370;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public fightId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameRolePlayRemoveChallengeMessage extends NetworkMessage implement
         return GameRolePlayRemoveChallengeMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayRemoveChallengeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayRemoveChallengeMessage.endpointServer;
+    }
+
     public initGameRolePlayRemoveChallengeMessage(fightId: number = 0): GameRolePlayRemoveChallengeMessage
     {
         this.fightId = fightId;
@@ -31,7 +44,7 @@ export class GameRolePlayRemoveChallengeMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

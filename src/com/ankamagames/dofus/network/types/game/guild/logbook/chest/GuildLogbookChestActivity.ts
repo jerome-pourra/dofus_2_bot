@@ -9,6 +9,9 @@ export class GuildLogbookChestActivity extends GuildLogbookEntryBasicInformation
 
 	public static readonly protocolId: number = 9067;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerId: number = 0;
 	public playerName: string = "";
 	public eventType: number = 0;
@@ -26,6 +29,16 @@ export class GuildLogbookChestActivity extends GuildLogbookEntryBasicInformation
     public getTypeId()
     {
         return GuildLogbookChestActivity.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildLogbookChestActivity.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildLogbookChestActivity.endpointServer;
     }
 
     public initGuildLogbookChestActivity(id: number = 0, date: number = 0, playerId: number = 0, playerName: string = "", eventType: number = 0, quantity: number = 0, object: ObjectItemNotInContainer = null, sourceTabId: number = 0, destinationTabId: number = 0): GuildLogbookChestActivity

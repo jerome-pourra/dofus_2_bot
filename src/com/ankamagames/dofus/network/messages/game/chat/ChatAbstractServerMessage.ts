@@ -9,6 +9,9 @@ export class ChatAbstractServerMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 1770;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public channel: number = 0;
 	public content: string = "";
 	public timestamp: number = 0;
@@ -24,6 +27,16 @@ export class ChatAbstractServerMessage extends NetworkMessage implements INetwor
         return ChatAbstractServerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChatAbstractServerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChatAbstractServerMessage.endpointServer;
+    }
+
     public initChatAbstractServerMessage(channel: number = 0, content: string = "", timestamp: number = 0, fingerprint: string = ""): ChatAbstractServerMessage
     {
         this.channel = channel;
@@ -37,7 +50,7 @@ export class ChatAbstractServerMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

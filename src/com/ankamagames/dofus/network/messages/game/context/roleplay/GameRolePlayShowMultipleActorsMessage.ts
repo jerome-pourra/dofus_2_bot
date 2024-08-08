@@ -11,6 +11,9 @@ export class GameRolePlayShowMultipleActorsMessage extends NetworkMessage implem
 
 	public static readonly protocolId: number = 323;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public informationsList: Array<GameRolePlayActorInformations>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class GameRolePlayShowMultipleActorsMessage extends NetworkMessage implem
         return GameRolePlayShowMultipleActorsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayShowMultipleActorsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayShowMultipleActorsMessage.endpointServer;
+    }
+
     public initGameRolePlayShowMultipleActorsMessage(informationsList: Array<GameRolePlayActorInformations> = null): GameRolePlayShowMultipleActorsMessage
     {
         this.informationsList = informationsList;
@@ -34,7 +47,7 @@ export class GameRolePlayShowMultipleActorsMessage extends NetworkMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

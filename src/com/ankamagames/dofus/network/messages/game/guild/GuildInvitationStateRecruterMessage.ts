@@ -9,6 +9,9 @@ export class GuildInvitationStateRecruterMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 2343;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public recrutedName: string = "";
 	public invitationState: number = 0;
 
@@ -22,6 +25,16 @@ export class GuildInvitationStateRecruterMessage extends NetworkMessage implemen
         return GuildInvitationStateRecruterMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildInvitationStateRecruterMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildInvitationStateRecruterMessage.endpointServer;
+    }
+
     public initGuildInvitationStateRecruterMessage(recrutedName: string = "", invitationState: number = 0): GuildInvitationStateRecruterMessage
     {
         this.recrutedName = recrutedName;
@@ -33,7 +46,7 @@ export class GuildInvitationStateRecruterMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

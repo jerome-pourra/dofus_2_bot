@@ -10,6 +10,9 @@ export class HavenBagRoomUpdateMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 5461;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public action: number = 0;
 	public roomsPreview: Array<HavenBagRoomPreviewInformation>;
 
@@ -24,6 +27,16 @@ export class HavenBagRoomUpdateMessage extends NetworkMessage implements INetwor
         return HavenBagRoomUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HavenBagRoomUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HavenBagRoomUpdateMessage.endpointServer;
+    }
+
     public initHavenBagRoomUpdateMessage(action: number = 0, roomsPreview: Array<HavenBagRoomPreviewInformation> = null): HavenBagRoomUpdateMessage
     {
         this.action = action;
@@ -35,7 +48,7 @@ export class HavenBagRoomUpdateMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

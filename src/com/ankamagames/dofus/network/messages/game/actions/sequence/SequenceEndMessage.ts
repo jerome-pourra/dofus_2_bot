@@ -9,6 +9,9 @@ export class SequenceEndMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 1586;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public actionId: number = 0;
 	public authorId: number = 0;
 	public sequenceType: number = 0;
@@ -23,6 +26,16 @@ export class SequenceEndMessage extends NetworkMessage implements INetworkMessag
         return SequenceEndMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SequenceEndMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SequenceEndMessage.endpointServer;
+    }
+
     public initSequenceEndMessage(actionId: number = 0, authorId: number = 0, sequenceType: number = 0): SequenceEndMessage
     {
         this.actionId = actionId;
@@ -35,7 +48,7 @@ export class SequenceEndMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

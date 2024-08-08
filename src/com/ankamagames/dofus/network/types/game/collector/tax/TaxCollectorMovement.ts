@@ -8,6 +8,9 @@ export class TaxCollectorMovement implements INetworkType
 
 	public static readonly protocolId: number = 7487;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public movementType: number = 0;
 	public basicInfos: TaxCollectorBasicInformations;
 	public playerId: number = 0;
@@ -21,6 +24,16 @@ export class TaxCollectorMovement implements INetworkType
     public getTypeId()
     {
         return TaxCollectorMovement.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TaxCollectorMovement.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorMovement.endpointServer;
     }
 
     public initTaxCollectorMovement(movementType: number = 0, basicInfos: TaxCollectorBasicInformations = null, playerId: number = 0, playerName: string = ""): TaxCollectorMovement

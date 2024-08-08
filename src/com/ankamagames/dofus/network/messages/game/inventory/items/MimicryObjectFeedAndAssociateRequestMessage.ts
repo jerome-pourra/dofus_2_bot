@@ -9,6 +9,9 @@ export class MimicryObjectFeedAndAssociateRequestMessage extends SymbioticObject
 
 	public static readonly protocolId: number = 3754;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public foodUID: number = 0;
 	public foodPos: number = 0;
 	public preview: boolean = false;
@@ -21,6 +24,16 @@ export class MimicryObjectFeedAndAssociateRequestMessage extends SymbioticObject
     public getMessageId()
     {
         return MimicryObjectFeedAndAssociateRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MimicryObjectFeedAndAssociateRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MimicryObjectFeedAndAssociateRequestMessage.endpointServer;
     }
 
     public initMimicryObjectFeedAndAssociateRequestMessage(symbioteUID: number = 0, symbiotePos: number = 0, hostUID: number = 0, hostPos: number = 0, foodUID: number = 0, foodPos: number = 0, preview: boolean = false): MimicryObjectFeedAndAssociateRequestMessage
@@ -36,7 +49,7 @@ export class MimicryObjectFeedAndAssociateRequestMessage extends SymbioticObject
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

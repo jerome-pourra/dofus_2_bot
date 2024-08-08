@@ -9,6 +9,9 @@ export class HouseOnMapInformations extends HouseInformations implements INetwor
 
 	public static readonly protocolId: number = 5255;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public doorsOnMap: Array<number>;
 	public houseInstances: Array<HouseInstanceInformations>;
 
@@ -22,6 +25,16 @@ export class HouseOnMapInformations extends HouseInformations implements INetwor
     public getTypeId()
     {
         return HouseOnMapInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HouseOnMapInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseOnMapInformations.endpointServer;
     }
 
     public initHouseOnMapInformations(houseId: number = 0, modelId: number = 0, doorsOnMap: Array<number> = null, houseInstances: Array<HouseInstanceInformations> = null): HouseOnMapInformations

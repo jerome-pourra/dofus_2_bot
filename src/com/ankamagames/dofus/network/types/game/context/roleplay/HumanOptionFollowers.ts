@@ -9,6 +9,9 @@ export class HumanOptionFollowers extends HumanOption implements INetworkType
 
 	public static readonly protocolId: number = 8287;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public followingCharactersLook: Array<IndexedEntityLook>;
 
     public constructor()
@@ -20,6 +23,16 @@ export class HumanOptionFollowers extends HumanOption implements INetworkType
     public getTypeId()
     {
         return HumanOptionFollowers.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HumanOptionFollowers.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HumanOptionFollowers.endpointServer;
     }
 
     public initHumanOptionFollowers(followingCharactersLook: Array<IndexedEntityLook> = null): HumanOptionFollowers

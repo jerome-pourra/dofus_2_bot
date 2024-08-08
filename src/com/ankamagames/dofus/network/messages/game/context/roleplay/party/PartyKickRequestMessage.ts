@@ -9,6 +9,9 @@ export class PartyKickRequestMessage extends AbstractPartyMessage implements INe
 
 	public static readonly protocolId: number = 7926;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyKickRequestMessage extends AbstractPartyMessage implements INe
     public getMessageId()
     {
         return PartyKickRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyKickRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyKickRequestMessage.endpointServer;
     }
 
     public initPartyKickRequestMessage(partyId: number = 0, playerId: number = 0): PartyKickRequestMessage
@@ -32,7 +45,7 @@ export class PartyKickRequestMessage extends AbstractPartyMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

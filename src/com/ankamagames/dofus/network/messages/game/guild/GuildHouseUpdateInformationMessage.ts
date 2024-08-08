@@ -10,6 +10,9 @@ export class GuildHouseUpdateInformationMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 1590;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public housesInformations: HouseInformationsForGuild;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GuildHouseUpdateInformationMessage extends NetworkMessage implement
         return GuildHouseUpdateInformationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildHouseUpdateInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildHouseUpdateInformationMessage.endpointServer;
+    }
+
     public initGuildHouseUpdateInformationMessage(housesInformations: HouseInformationsForGuild = null): GuildHouseUpdateInformationMessage
     {
         this.housesInformations = housesInformations;
@@ -33,7 +46,7 @@ export class GuildHouseUpdateInformationMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

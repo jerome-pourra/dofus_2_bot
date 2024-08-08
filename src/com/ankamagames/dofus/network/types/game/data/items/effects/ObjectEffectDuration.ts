@@ -8,6 +8,9 @@ export class ObjectEffectDuration extends ObjectEffect implements INetworkType
 
 	public static readonly protocolId: number = 7031;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public days: number = 0;
 	public hours: number = 0;
 	public minutes: number = 0;
@@ -20,6 +23,16 @@ export class ObjectEffectDuration extends ObjectEffect implements INetworkType
     public getTypeId()
     {
         return ObjectEffectDuration.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectEffectDuration.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectEffectDuration.endpointServer;
     }
 
     public initObjectEffectDuration(actionId: number = 0, days: number = 0, hours: number = 0, minutes: number = 0): ObjectEffectDuration

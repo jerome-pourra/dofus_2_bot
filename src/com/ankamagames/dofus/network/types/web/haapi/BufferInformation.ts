@@ -7,6 +7,9 @@ export class BufferInformation implements INetworkType
 
 	public static readonly protocolId: number = 7749;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public amount: number = 0;
 
@@ -18,6 +21,16 @@ export class BufferInformation implements INetworkType
     public getTypeId()
     {
         return BufferInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return BufferInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BufferInformation.endpointServer;
     }
 
     public initBufferInformation(id: number = 0, amount: number = 0): BufferInformation

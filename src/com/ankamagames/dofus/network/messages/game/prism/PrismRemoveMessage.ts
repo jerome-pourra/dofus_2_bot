@@ -10,6 +10,9 @@ export class PrismRemoveMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 4672;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public prism: PrismGeolocalizedInformation;
 
     public constructor()
@@ -23,6 +26,16 @@ export class PrismRemoveMessage extends NetworkMessage implements INetworkMessag
         return PrismRemoveMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PrismRemoveMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PrismRemoveMessage.endpointServer;
+    }
+
     public initPrismRemoveMessage(prism: PrismGeolocalizedInformation = null): PrismRemoveMessage
     {
         this.prism = prism;
@@ -33,7 +46,7 @@ export class PrismRemoveMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

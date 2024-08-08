@@ -9,6 +9,9 @@ export class ExchangeSellMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 4616;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectToSellId: number = 0;
 	public quantity: number = 0;
 
@@ -22,6 +25,16 @@ export class ExchangeSellMessage extends NetworkMessage implements INetworkMessa
         return ExchangeSellMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeSellMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeSellMessage.endpointServer;
+    }
+
     public initExchangeSellMessage(objectToSellId: number = 0, quantity: number = 0): ExchangeSellMessage
     {
         this.objectToSellId = objectToSellId;
@@ -33,7 +46,7 @@ export class ExchangeSellMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

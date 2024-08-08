@@ -9,6 +9,9 @@ export class AllianceDeleteApplicationRequestMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 6027;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class AllianceDeleteApplicationRequestMessage extends NetworkMessage impl
     public getMessageId()
     {
         return AllianceDeleteApplicationRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceDeleteApplicationRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceDeleteApplicationRequestMessage.endpointServer;
     }
 
     public initAllianceDeleteApplicationRequestMessage(): AllianceDeleteApplicationRequestMessage
@@ -28,7 +41,7 @@ export class AllianceDeleteApplicationRequestMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

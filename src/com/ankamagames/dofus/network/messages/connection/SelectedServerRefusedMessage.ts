@@ -9,6 +9,9 @@ export class SelectedServerRefusedMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 277;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public serverId: number = 0;
 	public error: number = 1;
 	public serverStatus: number = 1;
@@ -23,6 +26,16 @@ export class SelectedServerRefusedMessage extends NetworkMessage implements INet
         return SelectedServerRefusedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SelectedServerRefusedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SelectedServerRefusedMessage.endpointServer;
+    }
+
     public initSelectedServerRefusedMessage(serverId: number = 0, error: number = 1, serverStatus: number = 1): SelectedServerRefusedMessage
     {
         this.serverId = serverId;
@@ -35,7 +48,7 @@ export class SelectedServerRefusedMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class AlignmentWarEffortInformation implements INetworkType
 
 	public static readonly protocolId: number = 6941;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public alignmentSide: number = 0;
 	public alignmentWarEffort: number = 0;
 
@@ -18,6 +21,16 @@ export class AlignmentWarEffortInformation implements INetworkType
     public getTypeId()
     {
         return AlignmentWarEffortInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AlignmentWarEffortInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AlignmentWarEffortInformation.endpointServer;
     }
 
     public initAlignmentWarEffortInformation(alignmentSide: number = 0, alignmentWarEffort: number = 0): AlignmentWarEffortInformation

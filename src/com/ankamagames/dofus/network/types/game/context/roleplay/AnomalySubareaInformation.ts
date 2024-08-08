@@ -7,6 +7,9 @@ export class AnomalySubareaInformation implements INetworkType
 
 	public static readonly protocolId: number = 4038;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public subAreaId: number = 0;
 	public rewardRate: number = 0;
 	public hasAnomaly: boolean = false;
@@ -20,6 +23,16 @@ export class AnomalySubareaInformation implements INetworkType
     public getTypeId()
     {
         return AnomalySubareaInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AnomalySubareaInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AnomalySubareaInformation.endpointServer;
     }
 
     public initAnomalySubareaInformation(subAreaId: number = 0, rewardRate: number = 0, hasAnomaly: boolean = false, anomalyClosingTime: number = 0): AnomalySubareaInformation

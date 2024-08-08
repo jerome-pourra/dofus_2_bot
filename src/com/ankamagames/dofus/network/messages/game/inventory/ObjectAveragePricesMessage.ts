@@ -9,6 +9,9 @@ export class ObjectAveragePricesMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 2729;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public ids: Array<number>;
 	public avgPrices: Array<number>;
 
@@ -24,6 +27,16 @@ export class ObjectAveragePricesMessage extends NetworkMessage implements INetwo
         return ObjectAveragePricesMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectAveragePricesMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectAveragePricesMessage.endpointServer;
+    }
+
     public initObjectAveragePricesMessage(ids: Array<number> = null, avgPrices: Array<number> = null): ObjectAveragePricesMessage
     {
         this.ids = ids;
@@ -35,7 +48,7 @@ export class ObjectAveragePricesMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

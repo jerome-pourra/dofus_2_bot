@@ -8,6 +8,9 @@ export class TreasureHuntStepFollowDirection extends TreasureHuntStep implements
 
 	public static readonly protocolId: number = 9008;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public direction: number = 1;
 	public mapCount: number = 0;
 
@@ -19,6 +22,16 @@ export class TreasureHuntStepFollowDirection extends TreasureHuntStep implements
     public getTypeId()
     {
         return TreasureHuntStepFollowDirection.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TreasureHuntStepFollowDirection.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntStepFollowDirection.endpointServer;
     }
 
     public initTreasureHuntStepFollowDirection(direction: number = 1, mapCount: number = 0): TreasureHuntStepFollowDirection

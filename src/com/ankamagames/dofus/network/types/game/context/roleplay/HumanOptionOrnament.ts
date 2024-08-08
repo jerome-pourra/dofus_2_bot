@@ -8,6 +8,9 @@ export class HumanOptionOrnament extends HumanOption implements INetworkType
 
 	public static readonly protocolId: number = 5782;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public ornamentId: number = 0;
 	public level: number = 0;
 	public leagueId: number = 0;
@@ -21,6 +24,16 @@ export class HumanOptionOrnament extends HumanOption implements INetworkType
     public getTypeId()
     {
         return HumanOptionOrnament.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HumanOptionOrnament.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HumanOptionOrnament.endpointServer;
     }
 
     public initHumanOptionOrnament(ornamentId: number = 0, level: number = 0, leagueId: number = 0, ladderPosition: number = 0): HumanOptionOrnament

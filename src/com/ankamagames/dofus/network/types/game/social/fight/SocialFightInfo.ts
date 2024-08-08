@@ -7,6 +7,9 @@ export class SocialFightInfo implements INetworkType
 
 	public static readonly protocolId: number = 2355;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public fightId: number = 0;
 	public fightType: number = 0;
 	public mapId: number = 0;
@@ -19,6 +22,16 @@ export class SocialFightInfo implements INetworkType
     public getTypeId()
     {
         return SocialFightInfo.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SocialFightInfo.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SocialFightInfo.endpointServer;
     }
 
     public initSocialFightInfo(fightId: number = 0, fightType: number = 0, mapId: number = 0): SocialFightInfo

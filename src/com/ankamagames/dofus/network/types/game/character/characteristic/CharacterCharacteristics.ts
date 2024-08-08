@@ -9,6 +9,9 @@ export class CharacterCharacteristics implements INetworkType
 
 	public static readonly protocolId: number = 294;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public characteristics: Array<CharacterCharacteristic>;
 
     public constructor()
@@ -19,6 +22,16 @@ export class CharacterCharacteristics implements INetworkType
     public getTypeId()
     {
         return CharacterCharacteristics.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterCharacteristics.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterCharacteristics.endpointServer;
     }
 
     public initCharacterCharacteristics(characteristics: Array<CharacterCharacteristic> = null): CharacterCharacteristics

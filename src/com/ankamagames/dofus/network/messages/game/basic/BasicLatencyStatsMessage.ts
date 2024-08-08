@@ -9,6 +9,9 @@ export class BasicLatencyStatsMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 7194;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public latency: number = 0;
 	public sampleCount: number = 0;
 	public max: number = 0;
@@ -23,6 +26,16 @@ export class BasicLatencyStatsMessage extends NetworkMessage implements INetwork
         return BasicLatencyStatsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BasicLatencyStatsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicLatencyStatsMessage.endpointServer;
+    }
+
     public initBasicLatencyStatsMessage(latency: number = 0, sampleCount: number = 0, max: number = 0): BasicLatencyStatsMessage
     {
         this.latency = latency;
@@ -35,7 +48,7 @@ export class BasicLatencyStatsMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

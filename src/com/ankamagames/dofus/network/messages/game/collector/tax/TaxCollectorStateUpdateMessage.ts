@@ -9,6 +9,9 @@ export class TaxCollectorStateUpdateMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 5744;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public uniqueId: number = 0;
 	public state: number = 0;
 
@@ -22,6 +25,16 @@ export class TaxCollectorStateUpdateMessage extends NetworkMessage implements IN
         return TaxCollectorStateUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TaxCollectorStateUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorStateUpdateMessage.endpointServer;
+    }
+
     public initTaxCollectorStateUpdateMessage(uniqueId: number = 0, state: number = 0): TaxCollectorStateUpdateMessage
     {
         this.uniqueId = uniqueId;
@@ -33,7 +46,7 @@ export class TaxCollectorStateUpdateMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class SocialMember extends CharacterMinimalInformations implements INetwo
 
 	public static readonly protocolId: number = 9920;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public breed: number = 0;
 	public sex: boolean = false;
 	public connected: number = 99;
@@ -28,6 +31,16 @@ export class SocialMember extends CharacterMinimalInformations implements INetwo
     public getTypeId()
     {
         return SocialMember.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SocialMember.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SocialMember.endpointServer;
     }
 
     public initSocialMember(id: number = 0, name: string = "", level: number = 0, breed: number = 0, sex: boolean = false, connected: number = 99, hoursSinceLastConnection: number = 0, accountId: number = 0, status: PlayerStatus = null, rankId: number = 0, enrollmentDate: number = 0): SocialMember

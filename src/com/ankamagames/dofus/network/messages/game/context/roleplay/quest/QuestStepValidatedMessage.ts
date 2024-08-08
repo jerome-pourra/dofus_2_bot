@@ -9,6 +9,9 @@ export class QuestStepValidatedMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 4373;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public questId: number = 0;
 	public stepId: number = 0;
 
@@ -22,6 +25,16 @@ export class QuestStepValidatedMessage extends NetworkMessage implements INetwor
         return QuestStepValidatedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return QuestStepValidatedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return QuestStepValidatedMessage.endpointServer;
+    }
+
     public initQuestStepValidatedMessage(questId: number = 0, stepId: number = 0): QuestStepValidatedMessage
     {
         this.questId = questId;
@@ -33,7 +46,7 @@ export class QuestStepValidatedMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class AllianceJoinAutomaticallyRequestMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 468;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public allianceId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AllianceJoinAutomaticallyRequestMessage extends NetworkMessage impl
         return AllianceJoinAutomaticallyRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceJoinAutomaticallyRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceJoinAutomaticallyRequestMessage.endpointServer;
+    }
+
     public initAllianceJoinAutomaticallyRequestMessage(allianceId: number = 0): AllianceJoinAutomaticallyRequestMessage
     {
         this.allianceId = allianceId;
@@ -31,7 +44,7 @@ export class AllianceJoinAutomaticallyRequestMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

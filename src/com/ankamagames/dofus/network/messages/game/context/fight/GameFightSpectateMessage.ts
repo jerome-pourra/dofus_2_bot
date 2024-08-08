@@ -12,6 +12,9 @@ export class GameFightSpectateMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 6318;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public effects: Array<FightDispellableEffectExtendedInformations>;
 	public marks: Array<GameActionMark>;
 	public gameTurn: number = 0;
@@ -31,6 +34,16 @@ export class GameFightSpectateMessage extends NetworkMessage implements INetwork
         return GameFightSpectateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightSpectateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightSpectateMessage.endpointServer;
+    }
+
     public initGameFightSpectateMessage(effects: Array<FightDispellableEffectExtendedInformations> = null, marks: Array<GameActionMark> = null, gameTurn: number = 0, fightStart: number = 0, fxTriggerCounts: Array<GameFightEffectTriggerCount> = null): GameFightSpectateMessage
     {
         this.effects = effects;
@@ -45,7 +58,7 @@ export class GameFightSpectateMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

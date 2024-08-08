@@ -10,6 +10,9 @@ export class AllianceJoinedMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 5220;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceInfo: AllianceInformation;
 	public rankId: number = 0;
 
@@ -24,6 +27,16 @@ export class AllianceJoinedMessage extends NetworkMessage implements INetworkMes
         return AllianceJoinedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceJoinedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceJoinedMessage.endpointServer;
+    }
+
     public initAllianceJoinedMessage(allianceInfo: AllianceInformation = null, rankId: number = 0): AllianceJoinedMessage
     {
         this.allianceInfo = allianceInfo;
@@ -35,7 +48,7 @@ export class AllianceJoinedMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

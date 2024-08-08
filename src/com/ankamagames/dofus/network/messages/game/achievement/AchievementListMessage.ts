@@ -11,6 +11,9 @@ export class AchievementListMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 9652;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public finishedAchievements: Array<AchievementAchieved>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class AchievementListMessage extends NetworkMessage implements INetworkMe
         return AchievementListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AchievementListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementListMessage.endpointServer;
+    }
+
     public initAchievementListMessage(finishedAchievements: Array<AchievementAchieved> = null): AchievementListMessage
     {
         this.finishedAchievements = finishedAchievements;
@@ -34,7 +47,7 @@ export class AchievementListMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

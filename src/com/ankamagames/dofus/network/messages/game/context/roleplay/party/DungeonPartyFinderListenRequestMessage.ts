@@ -9,6 +9,9 @@ export class DungeonPartyFinderListenRequestMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 9359;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public dungeonId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class DungeonPartyFinderListenRequestMessage extends NetworkMessage imple
         return DungeonPartyFinderListenRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DungeonPartyFinderListenRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DungeonPartyFinderListenRequestMessage.endpointServer;
+    }
+
     public initDungeonPartyFinderListenRequestMessage(dungeonId: number = 0): DungeonPartyFinderListenRequestMessage
     {
         this.dungeonId = dungeonId;
@@ -31,7 +44,7 @@ export class DungeonPartyFinderListenRequestMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

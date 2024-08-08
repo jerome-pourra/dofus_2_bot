@@ -9,6 +9,9 @@ export class ExchangeObjectRemovedMessage extends ExchangeObjectMessage implemen
 
 	public static readonly protocolId: number = 8090;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objectUID: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class ExchangeObjectRemovedMessage extends ExchangeObjectMessage implemen
     public getMessageId()
     {
         return ExchangeObjectRemovedMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeObjectRemovedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeObjectRemovedMessage.endpointServer;
     }
 
     public initExchangeObjectRemovedMessage(remote: boolean = false, objectUID: number = 0): ExchangeObjectRemovedMessage
@@ -32,7 +45,7 @@ export class ExchangeObjectRemovedMessage extends ExchangeObjectMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

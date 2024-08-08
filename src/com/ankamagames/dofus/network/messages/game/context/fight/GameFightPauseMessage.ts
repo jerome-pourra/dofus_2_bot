@@ -9,6 +9,9 @@ export class GameFightPauseMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 1045;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public isPaused: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameFightPauseMessage extends NetworkMessage implements INetworkMes
         return GameFightPauseMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightPauseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightPauseMessage.endpointServer;
+    }
+
     public initGameFightPauseMessage(isPaused: boolean = false): GameFightPauseMessage
     {
         this.isPaused = isPaused;
@@ -31,7 +44,7 @@ export class GameFightPauseMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

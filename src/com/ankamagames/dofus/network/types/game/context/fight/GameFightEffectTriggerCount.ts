@@ -7,6 +7,9 @@ export class GameFightEffectTriggerCount implements INetworkType
 
 	public static readonly protocolId: number = 7405;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public effectId: number = 0;
 	public targetId: number = 0;
 	public count: number = 0;
@@ -19,6 +22,16 @@ export class GameFightEffectTriggerCount implements INetworkType
     public getTypeId()
     {
         return GameFightEffectTriggerCount.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightEffectTriggerCount.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightEffectTriggerCount.endpointServer;
     }
 
     public initGameFightEffectTriggerCount(effectId: number = 0, targetId: number = 0, count: number = 0): GameFightEffectTriggerCount

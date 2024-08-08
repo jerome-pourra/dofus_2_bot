@@ -9,6 +9,9 @@ export class GuildMotdSetRequestMessage extends SocialNoticeSetRequestMessage im
 
 	public static readonly protocolId: number = 3388;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public content: string = "";
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuildMotdSetRequestMessage extends SocialNoticeSetRequestMessage im
         return GuildMotdSetRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildMotdSetRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildMotdSetRequestMessage.endpointServer;
+    }
+
     public initGuildMotdSetRequestMessage(content: string = ""): GuildMotdSetRequestMessage
     {
         this.content = content;
@@ -31,7 +44,7 @@ export class GuildMotdSetRequestMessage extends SocialNoticeSetRequestMessage im
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

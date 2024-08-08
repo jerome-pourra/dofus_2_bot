@@ -8,6 +8,9 @@ export class SurrenderVoteRefusedBeforeTurn extends SurrenderVoteRefused impleme
 
 	public static readonly protocolId: number = 9709;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public minTurnForSurrenderVote: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class SurrenderVoteRefusedBeforeTurn extends SurrenderVoteRefused impleme
     public getTypeId()
     {
         return SurrenderVoteRefusedBeforeTurn.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SurrenderVoteRefusedBeforeTurn.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SurrenderVoteRefusedBeforeTurn.endpointServer;
     }
 
     public initSurrenderVoteRefusedBeforeTurn(minTurnForSurrenderVote: number = 0): SurrenderVoteRefusedBeforeTurn

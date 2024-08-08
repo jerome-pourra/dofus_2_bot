@@ -9,6 +9,9 @@ export class ObjectItemInformationWithQuantity extends ObjectItemMinimalInformat
 
 	public static readonly protocolId: number = 8098;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public quantity: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class ObjectItemInformationWithQuantity extends ObjectItemMinimalInformat
     public getTypeId()
     {
         return ObjectItemInformationWithQuantity.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectItemInformationWithQuantity.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectItemInformationWithQuantity.endpointServer;
     }
 
     public initObjectItemInformationWithQuantity(objectGID: number = 0, effects: Array<ObjectEffect> = null, quantity: number = 0): ObjectItemInformationWithQuantity

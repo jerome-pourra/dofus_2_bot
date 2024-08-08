@@ -9,6 +9,9 @@ export class ContactLookErrorMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 6346;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public requestId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ContactLookErrorMessage extends NetworkMessage implements INetworkM
         return ContactLookErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ContactLookErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ContactLookErrorMessage.endpointServer;
+    }
+
     public initContactLookErrorMessage(requestId: number = 0): ContactLookErrorMessage
     {
         this.requestId = requestId;
@@ -31,7 +44,7 @@ export class ContactLookErrorMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

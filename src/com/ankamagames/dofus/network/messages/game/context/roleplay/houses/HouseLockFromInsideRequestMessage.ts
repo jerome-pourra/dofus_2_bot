@@ -9,6 +9,9 @@ export class HouseLockFromInsideRequestMessage extends LockableChangeCodeMessage
 
 	public static readonly protocolId: number = 9529;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class HouseLockFromInsideRequestMessage extends LockableChangeCodeMessage
     public getMessageId()
     {
         return HouseLockFromInsideRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HouseLockFromInsideRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseLockFromInsideRequestMessage.endpointServer;
     }
 
     public initHouseLockFromInsideRequestMessage(code: string = ""): HouseLockFromInsideRequestMessage
@@ -29,7 +42,7 @@ export class HouseLockFromInsideRequestMessage extends LockableChangeCodeMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class GuildPlayerRankUpdateActivity extends GuildLogbookEntryBasicInforma
 
 	public static readonly protocolId: number = 8680;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guildRankMinimalInfos: RankMinimalInformation;
 	public sourcePlayerId: number = 0;
 	public targetPlayerId: number = 0;
@@ -24,6 +27,16 @@ export class GuildPlayerRankUpdateActivity extends GuildLogbookEntryBasicInforma
     public getTypeId()
     {
         return GuildPlayerRankUpdateActivity.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildPlayerRankUpdateActivity.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildPlayerRankUpdateActivity.endpointServer;
     }
 
     public initGuildPlayerRankUpdateActivity(id: number = 0, date: number = 0, guildRankMinimalInfos: RankMinimalInformation = null, sourcePlayerId: number = 0, targetPlayerId: number = 0, sourcePlayerName: string = "", targetPlayerName: string = ""): GuildPlayerRankUpdateActivity

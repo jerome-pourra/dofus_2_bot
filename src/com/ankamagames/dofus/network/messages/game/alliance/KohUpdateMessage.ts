@@ -10,6 +10,9 @@ export class KohUpdateMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 1036;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public kohAllianceInfo: Array<KohAllianceInfo>;
 	public startingAvaTimestamp: number = 0;
 	public nextTickTime: number = 0;
@@ -25,6 +28,16 @@ export class KohUpdateMessage extends NetworkMessage implements INetworkMessage
         return KohUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return KohUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return KohUpdateMessage.endpointServer;
+    }
+
     public initKohUpdateMessage(kohAllianceInfo: Array<KohAllianceInfo> = null, startingAvaTimestamp: number = 0, nextTickTime: number = 0): KohUpdateMessage
     {
         this.kohAllianceInfo = kohAllianceInfo;
@@ -37,7 +50,7 @@ export class KohUpdateMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

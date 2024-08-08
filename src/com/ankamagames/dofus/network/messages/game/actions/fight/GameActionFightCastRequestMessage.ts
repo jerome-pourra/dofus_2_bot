@@ -9,6 +9,9 @@ export class GameActionFightCastRequestMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 6438;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public spellId: number = 0;
 	public cellId: number = 0;
 
@@ -22,6 +25,16 @@ export class GameActionFightCastRequestMessage extends NetworkMessage implements
         return GameActionFightCastRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameActionFightCastRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightCastRequestMessage.endpointServer;
+    }
+
     public initGameActionFightCastRequestMessage(spellId: number = 0, cellId: number = 0): GameActionFightCastRequestMessage
     {
         this.spellId = spellId;
@@ -33,7 +46,7 @@ export class GameActionFightCastRequestMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class AbstractCharacterInformation implements INetworkType
 
 	public static readonly protocolId: number = 5789;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 
     public constructor()
@@ -17,6 +20,16 @@ export class AbstractCharacterInformation implements INetworkType
     public getTypeId()
     {
         return AbstractCharacterInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AbstractCharacterInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AbstractCharacterInformation.endpointServer;
     }
 
     public initAbstractCharacterInformation(id: number = 0): AbstractCharacterInformation

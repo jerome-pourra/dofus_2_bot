@@ -9,6 +9,9 @@ export class ExchangeRequestMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 2919;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public exchangeType: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ExchangeRequestMessage extends NetworkMessage implements INetworkMe
         return ExchangeRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeRequestMessage.endpointServer;
+    }
+
     public initExchangeRequestMessage(exchangeType: number = 0): ExchangeRequestMessage
     {
         this.exchangeType = exchangeType;
@@ -31,7 +44,7 @@ export class ExchangeRequestMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

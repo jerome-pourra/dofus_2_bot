@@ -9,6 +9,9 @@ export class MountReleasedMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 7843;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mountId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class MountReleasedMessage extends NetworkMessage implements INetworkMess
         return MountReleasedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MountReleasedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountReleasedMessage.endpointServer;
+    }
+
     public initMountReleasedMessage(mountId: number = 0): MountReleasedMessage
     {
         this.mountId = mountId;
@@ -31,7 +44,7 @@ export class MountReleasedMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

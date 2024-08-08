@@ -9,6 +9,9 @@ export class AllianceBulletinSetRequestMessage extends SocialNoticeSetRequestMes
 
 	public static readonly protocolId: number = 5995;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public content: string = "";
 
     public constructor()
@@ -21,6 +24,16 @@ export class AllianceBulletinSetRequestMessage extends SocialNoticeSetRequestMes
         return AllianceBulletinSetRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceBulletinSetRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceBulletinSetRequestMessage.endpointServer;
+    }
+
     public initAllianceBulletinSetRequestMessage(content: string = ""): AllianceBulletinSetRequestMessage
     {
         this.content = content;
@@ -31,7 +44,7 @@ export class AllianceBulletinSetRequestMessage extends SocialNoticeSetRequestMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

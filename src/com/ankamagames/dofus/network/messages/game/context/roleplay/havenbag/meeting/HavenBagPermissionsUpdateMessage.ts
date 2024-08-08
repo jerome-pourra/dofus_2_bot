@@ -9,6 +9,9 @@ export class HavenBagPermissionsUpdateMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 7957;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public permissions: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class HavenBagPermissionsUpdateMessage extends NetworkMessage implements 
         return HavenBagPermissionsUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HavenBagPermissionsUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HavenBagPermissionsUpdateMessage.endpointServer;
+    }
+
     public initHavenBagPermissionsUpdateMessage(permissions: number = 0): HavenBagPermissionsUpdateMessage
     {
         this.permissions = permissions;
@@ -31,7 +44,7 @@ export class HavenBagPermissionsUpdateMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class PlayerStatusExtended extends PlayerStatus implements INetworkType
 
 	public static readonly protocolId: number = 8257;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public message: string = "";
 
     public constructor()
@@ -18,6 +21,16 @@ export class PlayerStatusExtended extends PlayerStatus implements INetworkType
     public getTypeId()
     {
         return PlayerStatusExtended.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PlayerStatusExtended.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PlayerStatusExtended.endpointServer;
     }
 
     public initPlayerStatusExtended(statusId: number = 1, message: string = ""): PlayerStatusExtended

@@ -8,6 +8,9 @@ export class SurrenderVoteRefusedWaitBetweenVotes extends SurrenderVoteRefused i
 
 	public static readonly protocolId: number = 5188;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public nextVoteTimestamp: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class SurrenderVoteRefusedWaitBetweenVotes extends SurrenderVoteRefused i
     public getTypeId()
     {
         return SurrenderVoteRefusedWaitBetweenVotes.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SurrenderVoteRefusedWaitBetweenVotes.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SurrenderVoteRefusedWaitBetweenVotes.endpointServer;
     }
 
     public initSurrenderVoteRefusedWaitBetweenVotes(nextVoteTimestamp: number = 0): SurrenderVoteRefusedWaitBetweenVotes

@@ -9,6 +9,9 @@ export class ShortcutBarSwapErrorMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 6501;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public error: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ShortcutBarSwapErrorMessage extends NetworkMessage implements INetw
         return ShortcutBarSwapErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ShortcutBarSwapErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShortcutBarSwapErrorMessage.endpointServer;
+    }
+
     public initShortcutBarSwapErrorMessage(error: number = 0): ShortcutBarSwapErrorMessage
     {
         this.error = error;
@@ -31,7 +44,7 @@ export class ShortcutBarSwapErrorMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

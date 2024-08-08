@@ -10,6 +10,9 @@ export class SurrenderStateMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 6944;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public canSurrender: boolean = false;
 	public permitVote: boolean = false;
 
@@ -23,6 +26,16 @@ export class SurrenderStateMessage extends NetworkMessage implements INetworkMes
         return SurrenderStateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SurrenderStateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SurrenderStateMessage.endpointServer;
+    }
+
     public initSurrenderStateMessage(canSurrender: boolean = false, permitVote: boolean = false): SurrenderStateMessage
     {
         this.canSurrender = canSurrender;
@@ -34,7 +47,7 @@ export class SurrenderStateMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

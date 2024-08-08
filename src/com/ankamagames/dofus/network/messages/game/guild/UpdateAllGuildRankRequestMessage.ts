@@ -10,6 +10,9 @@ export class UpdateAllGuildRankRequestMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 1965;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public ranks: Array<RankInformation>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class UpdateAllGuildRankRequestMessage extends NetworkMessage implements 
         return UpdateAllGuildRankRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return UpdateAllGuildRankRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return UpdateAllGuildRankRequestMessage.endpointServer;
+    }
+
     public initUpdateAllGuildRankRequestMessage(ranks: Array<RankInformation> = null): UpdateAllGuildRankRequestMessage
     {
         this.ranks = ranks;
@@ -33,7 +46,7 @@ export class UpdateAllGuildRankRequestMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

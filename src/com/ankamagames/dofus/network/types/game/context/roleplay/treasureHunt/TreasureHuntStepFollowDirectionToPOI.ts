@@ -8,6 +8,9 @@ export class TreasureHuntStepFollowDirectionToPOI extends TreasureHuntStep imple
 
 	public static readonly protocolId: number = 9275;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public direction: number = 1;
 	public poiLabelId: number = 0;
 
@@ -19,6 +22,16 @@ export class TreasureHuntStepFollowDirectionToPOI extends TreasureHuntStep imple
     public getTypeId()
     {
         return TreasureHuntStepFollowDirectionToPOI.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TreasureHuntStepFollowDirectionToPOI.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntStepFollowDirectionToPOI.endpointServer;
     }
 
     public initTreasureHuntStepFollowDirectionToPOI(direction: number = 1, poiLabelId: number = 0): TreasureHuntStepFollowDirectionToPOI

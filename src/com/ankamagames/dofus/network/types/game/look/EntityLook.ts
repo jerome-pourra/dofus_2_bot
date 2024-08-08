@@ -8,6 +8,9 @@ export class EntityLook implements INetworkType
 
 	public static readonly protocolId: number = 6640;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public bonesId: number = 0;
 	public skins: Array<number>;
 	public indexedColors: Array<number>;
@@ -25,6 +28,16 @@ export class EntityLook implements INetworkType
     public getTypeId()
     {
         return EntityLook.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return EntityLook.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EntityLook.endpointServer;
     }
 
     public initEntityLook(bonesId: number = 0, skins: Array<number> = null, indexedColors: Array<number> = null, scales: Array<number> = null, subentities: Array<SubEntity> = null): EntityLook

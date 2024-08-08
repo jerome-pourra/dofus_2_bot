@@ -11,6 +11,9 @@ export class TopTaxCollectorListMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 3893;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dungeonTaxCollectorsInformation: Array<TaxCollectorInformations>;
 	public worldTaxCollectorsInformation: Array<TaxCollectorInformations>;
 
@@ -26,6 +29,16 @@ export class TopTaxCollectorListMessage extends NetworkMessage implements INetwo
         return TopTaxCollectorListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TopTaxCollectorListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TopTaxCollectorListMessage.endpointServer;
+    }
+
     public initTopTaxCollectorListMessage(dungeonTaxCollectorsInformation: Array<TaxCollectorInformations> = null, worldTaxCollectorsInformation: Array<TaxCollectorInformations> = null): TopTaxCollectorListMessage
     {
         this.dungeonTaxCollectorsInformation = dungeonTaxCollectorsInformation;
@@ -37,7 +50,7 @@ export class TopTaxCollectorListMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class DiceRollRequestMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 8901;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public dice: number = 0;
 	public faces: number = 0;
 	public channel: number = 0;
@@ -23,6 +26,16 @@ export class DiceRollRequestMessage extends NetworkMessage implements INetworkMe
         return DiceRollRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DiceRollRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DiceRollRequestMessage.endpointServer;
+    }
+
     public initDiceRollRequestMessage(dice: number = 0, faces: number = 0, channel: number = 0): DiceRollRequestMessage
     {
         this.dice = dice;
@@ -35,7 +48,7 @@ export class DiceRollRequestMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

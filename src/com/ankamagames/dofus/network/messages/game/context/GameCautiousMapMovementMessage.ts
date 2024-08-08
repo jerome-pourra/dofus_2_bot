@@ -9,6 +9,9 @@ export class GameCautiousMapMovementMessage extends GameMapMovementMessage imple
 
 	public static readonly protocolId: number = 779;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class GameCautiousMapMovementMessage extends GameMapMovementMessage imple
     public getMessageId()
     {
         return GameCautiousMapMovementMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameCautiousMapMovementMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameCautiousMapMovementMessage.endpointServer;
     }
 
     public initGameCautiousMapMovementMessage(keyMovements: Array<number> = null, forcedDirection: number = 0, actorId: number = 0): GameCautiousMapMovementMessage
@@ -29,7 +42,7 @@ export class GameCautiousMapMovementMessage extends GameMapMovementMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class DungeonPartyFinderRegisterSuccessMessage extends NetworkMessage imp
 
 	public static readonly protocolId: number = 9509;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dungeonIds: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class DungeonPartyFinderRegisterSuccessMessage extends NetworkMessage imp
         return DungeonPartyFinderRegisterSuccessMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DungeonPartyFinderRegisterSuccessMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DungeonPartyFinderRegisterSuccessMessage.endpointServer;
+    }
+
     public initDungeonPartyFinderRegisterSuccessMessage(dungeonIds: Array<number> = null): DungeonPartyFinderRegisterSuccessMessage
     {
         this.dungeonIds = dungeonIds;
@@ -32,7 +45,7 @@ export class DungeonPartyFinderRegisterSuccessMessage extends NetworkMessage imp
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -12,6 +12,9 @@ export class GameFightTaxCollectorInformations extends GameFightAIInformations i
 
 	public static readonly protocolId: number = 7175;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public firstNameId: number = 0;
 	public lastNameId: number = 0;
 
@@ -23,6 +26,16 @@ export class GameFightTaxCollectorInformations extends GameFightAIInformations i
     public getTypeId()
     {
         return GameFightTaxCollectorInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightTaxCollectorInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightTaxCollectorInformations.endpointServer;
     }
 
     public initGameFightTaxCollectorInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, spawnInfo: GameContextBasicSpawnInformation = null, wave: number = 0, stats: GameFightCharacteristics = null, previousPositions: Array<number> = null, firstNameId: number = 0, lastNameId: number = 0): GameFightTaxCollectorInformations

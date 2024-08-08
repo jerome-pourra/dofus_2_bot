@@ -9,6 +9,9 @@ export class JobCrafterDirectoryRemoveMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 3245;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public jobId: number = 0;
 	public playerId: number = 0;
 
@@ -22,6 +25,16 @@ export class JobCrafterDirectoryRemoveMessage extends NetworkMessage implements 
         return JobCrafterDirectoryRemoveMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return JobCrafterDirectoryRemoveMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobCrafterDirectoryRemoveMessage.endpointServer;
+    }
+
     public initJobCrafterDirectoryRemoveMessage(jobId: number = 0, playerId: number = 0): JobCrafterDirectoryRemoveMessage
     {
         this.jobId = jobId;
@@ -33,7 +46,7 @@ export class JobCrafterDirectoryRemoveMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

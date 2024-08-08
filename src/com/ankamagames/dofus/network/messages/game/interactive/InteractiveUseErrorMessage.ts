@@ -9,6 +9,9 @@ export class InteractiveUseErrorMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 2991;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public elemId: number = 0;
 	public skillInstanceUid: number = 0;
 
@@ -22,6 +25,16 @@ export class InteractiveUseErrorMessage extends NetworkMessage implements INetwo
         return InteractiveUseErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return InteractiveUseErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InteractiveUseErrorMessage.endpointServer;
+    }
+
     public initInteractiveUseErrorMessage(elemId: number = 0, skillInstanceUid: number = 0): InteractiveUseErrorMessage
     {
         this.elemId = elemId;
@@ -33,7 +46,7 @@ export class InteractiveUseErrorMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

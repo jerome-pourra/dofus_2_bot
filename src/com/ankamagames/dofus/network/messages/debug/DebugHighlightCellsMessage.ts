@@ -9,6 +9,9 @@ export class DebugHighlightCellsMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 9357;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public color: number = 0;
 	public cells: Array<number>;
 
@@ -23,6 +26,16 @@ export class DebugHighlightCellsMessage extends NetworkMessage implements INetwo
         return DebugHighlightCellsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DebugHighlightCellsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DebugHighlightCellsMessage.endpointServer;
+    }
+
     public initDebugHighlightCellsMessage(color: number = 0, cells: Array<number> = null): DebugHighlightCellsMessage
     {
         this.color = color;
@@ -34,7 +47,7 @@ export class DebugHighlightCellsMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

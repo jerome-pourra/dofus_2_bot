@@ -9,6 +9,9 @@ export class OpponentSurrenderMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 6059;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class OpponentSurrenderMessage extends NetworkMessage implements INetwork
     public getMessageId()
     {
         return OpponentSurrenderMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return OpponentSurrenderMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return OpponentSurrenderMessage.endpointServer;
     }
 
     public initOpponentSurrenderMessage(): OpponentSurrenderMessage
@@ -28,7 +41,7 @@ export class OpponentSurrenderMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

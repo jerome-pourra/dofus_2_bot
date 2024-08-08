@@ -10,6 +10,9 @@ export class AdminCommandMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 9773;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public messageUuid: Uuid;
 	public content: string = "";
 
@@ -24,6 +27,16 @@ export class AdminCommandMessage extends NetworkMessage implements INetworkMessa
         return AdminCommandMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AdminCommandMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AdminCommandMessage.endpointServer;
+    }
+
     public initAdminCommandMessage(messageUuid: Uuid = null, content: string = ""): AdminCommandMessage
     {
         this.messageUuid = messageUuid;
@@ -35,7 +48,7 @@ export class AdminCommandMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

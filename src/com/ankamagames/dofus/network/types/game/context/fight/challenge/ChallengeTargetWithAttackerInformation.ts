@@ -8,6 +8,9 @@ export class ChallengeTargetWithAttackerInformation extends ChallengeTargetInfor
 
 	public static readonly protocolId: number = 540;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public attackersIds: Array<number>;
 
     public constructor()
@@ -19,6 +22,16 @@ export class ChallengeTargetWithAttackerInformation extends ChallengeTargetInfor
     public getTypeId()
     {
         return ChallengeTargetWithAttackerInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ChallengeTargetWithAttackerInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChallengeTargetWithAttackerInformation.endpointServer;
     }
 
     public initChallengeTargetWithAttackerInformation(targetId: number = 0, targetCell: number = 0, attackersIds: Array<number> = null): ChallengeTargetWithAttackerInformation

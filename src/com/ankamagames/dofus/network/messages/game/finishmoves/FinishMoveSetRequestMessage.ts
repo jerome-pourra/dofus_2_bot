@@ -9,6 +9,9 @@ export class FinishMoveSetRequestMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 6930;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public finishMoveId: number = 0;
 	public finishMoveState: boolean = false;
 
@@ -22,6 +25,16 @@ export class FinishMoveSetRequestMessage extends NetworkMessage implements INetw
         return FinishMoveSetRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FinishMoveSetRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FinishMoveSetRequestMessage.endpointServer;
+    }
+
     public initFinishMoveSetRequestMessage(finishMoveId: number = 0, finishMoveState: boolean = false): FinishMoveSetRequestMessage
     {
         this.finishMoveId = finishMoveId;
@@ -33,7 +46,7 @@ export class FinishMoveSetRequestMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

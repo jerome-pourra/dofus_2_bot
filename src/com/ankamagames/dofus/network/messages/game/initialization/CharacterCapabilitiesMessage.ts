@@ -9,6 +9,9 @@ export class CharacterCapabilitiesMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 3451;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guildEmblemSymbolCategories: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class CharacterCapabilitiesMessage extends NetworkMessage implements INet
         return CharacterCapabilitiesMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterCapabilitiesMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterCapabilitiesMessage.endpointServer;
+    }
+
     public initCharacterCapabilitiesMessage(guildEmblemSymbolCategories: number = 0): CharacterCapabilitiesMessage
     {
         this.guildEmblemSymbolCategories = guildEmblemSymbolCategories;
@@ -31,7 +44,7 @@ export class CharacterCapabilitiesMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

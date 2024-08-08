@@ -10,6 +10,9 @@ export class GameRolePlayShowActorWithEventMessage extends GameRolePlayShowActor
 
 	public static readonly protocolId: number = 5;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public actorEventId: number = 0;
 
     public constructor()
@@ -20,6 +23,16 @@ export class GameRolePlayShowActorWithEventMessage extends GameRolePlayShowActor
     public getMessageId()
     {
         return GameRolePlayShowActorWithEventMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayShowActorWithEventMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayShowActorWithEventMessage.endpointServer;
     }
 
     public initGameRolePlayShowActorWithEventMessage(informations: GameRolePlayActorInformations = null, actorEventId: number = 0): GameRolePlayShowActorWithEventMessage
@@ -33,7 +46,7 @@ export class GameRolePlayShowActorWithEventMessage extends GameRolePlayShowActor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

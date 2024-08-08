@@ -9,6 +9,9 @@ export class AllianceApplicationDeletedMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 8801;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public deleted: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AllianceApplicationDeletedMessage extends NetworkMessage implements
         return AllianceApplicationDeletedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceApplicationDeletedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceApplicationDeletedMessage.endpointServer;
+    }
+
     public initAllianceApplicationDeletedMessage(deleted: boolean = false): AllianceApplicationDeletedMessage
     {
         this.deleted = deleted;
@@ -31,7 +44,7 @@ export class AllianceApplicationDeletedMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

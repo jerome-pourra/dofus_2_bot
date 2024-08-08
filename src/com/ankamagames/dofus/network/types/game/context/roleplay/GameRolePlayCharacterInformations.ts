@@ -12,6 +12,9 @@ export class GameRolePlayCharacterInformations extends GameRolePlayHumanoidInfor
 
 	public static readonly protocolId: number = 9304;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public alignmentInfos: ActorAlignmentInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameRolePlayCharacterInformations extends GameRolePlayHumanoidInfor
     public getTypeId()
     {
         return GameRolePlayCharacterInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayCharacterInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayCharacterInformations.endpointServer;
     }
 
     public initGameRolePlayCharacterInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, name: string = "", humanoidInfo: HumanInformations = null, accountId: number = 0, alignmentInfos: ActorAlignmentInformations = null): GameRolePlayCharacterInformations

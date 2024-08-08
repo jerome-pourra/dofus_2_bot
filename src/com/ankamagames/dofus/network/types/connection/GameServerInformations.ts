@@ -8,6 +8,9 @@ export class GameServerInformations implements INetworkType
 
 	public static readonly protocolId: number = 4792;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public type: number;
 	public isMonoAccount: boolean = false;
@@ -26,6 +29,16 @@ export class GameServerInformations implements INetworkType
     public getTypeId()
     {
         return GameServerInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameServerInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameServerInformations.endpointServer;
     }
 
     public initGameServerInformations(id: number = 0, type: number = -1, isMonoAccount: boolean = false, status: number = 1, completion: number = 0, isSelectable: boolean = false, charactersCount: number = 0, charactersSlots: number = 0, date: number = 0): GameServerInformations

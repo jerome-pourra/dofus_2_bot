@@ -10,6 +10,9 @@ export class PaddockToSellListMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 7795;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public pageIndex: number = 0;
 	public totalPage: number = 0;
 	public paddockList: Array<PaddockInformationsForSell>;
@@ -25,6 +28,16 @@ export class PaddockToSellListMessage extends NetworkMessage implements INetwork
         return PaddockToSellListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PaddockToSellListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaddockToSellListMessage.endpointServer;
+    }
+
     public initPaddockToSellListMessage(pageIndex: number = 0, totalPage: number = 0, paddockList: Array<PaddockInformationsForSell> = null): PaddockToSellListMessage
     {
         this.pageIndex = pageIndex;
@@ -37,7 +50,7 @@ export class PaddockToSellListMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class AcquaintancesGetListMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 4481;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class AcquaintancesGetListMessage extends NetworkMessage implements INetw
     public getMessageId()
     {
         return AcquaintancesGetListMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AcquaintancesGetListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AcquaintancesGetListMessage.endpointServer;
     }
 
     public initAcquaintancesGetListMessage(): AcquaintancesGetListMessage
@@ -28,7 +41,7 @@ export class AcquaintancesGetListMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

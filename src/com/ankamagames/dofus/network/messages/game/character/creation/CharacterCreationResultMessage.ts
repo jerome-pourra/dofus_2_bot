@@ -9,6 +9,9 @@ export class CharacterCreationResultMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 5979;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public result: number = 1;
 	public reason: number = 1;
 
@@ -22,6 +25,16 @@ export class CharacterCreationResultMessage extends NetworkMessage implements IN
         return CharacterCreationResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterCreationResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterCreationResultMessage.endpointServer;
+    }
+
     public initCharacterCreationResultMessage(result: number = 1, reason: number = 1): CharacterCreationResultMessage
     {
         this.result = result;
@@ -33,7 +46,7 @@ export class CharacterCreationResultMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

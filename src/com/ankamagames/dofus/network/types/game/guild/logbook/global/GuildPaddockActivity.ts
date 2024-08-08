@@ -9,6 +9,9 @@ export class GuildPaddockActivity extends GuildLogbookEntryBasicInformation impl
 
 	public static readonly protocolId: number = 3935;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerId: number = 0;
 	public playerName: string = "";
 	public paddockCoordinates: MapCoordinatesExtended;
@@ -24,6 +27,16 @@ export class GuildPaddockActivity extends GuildLogbookEntryBasicInformation impl
     public getTypeId()
     {
         return GuildPaddockActivity.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildPaddockActivity.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildPaddockActivity.endpointServer;
     }
 
     public initGuildPaddockActivity(id: number = 0, date: number = 0, playerId: number = 0, playerName: string = "", paddockCoordinates: MapCoordinatesExtended = null, farmId: number = 0, paddockEventType: number = 0): GuildPaddockActivity

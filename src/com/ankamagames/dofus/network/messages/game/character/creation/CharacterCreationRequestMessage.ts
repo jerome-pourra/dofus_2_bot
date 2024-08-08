@@ -10,6 +10,9 @@ export class CharacterCreationRequestMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 491;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public name: string = "";
 	public breed: number = 0;
 	public sex: boolean = false;
@@ -27,6 +30,16 @@ export class CharacterCreationRequestMessage extends NetworkMessage implements I
         return CharacterCreationRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterCreationRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterCreationRequestMessage.endpointServer;
+    }
+
     public initCharacterCreationRequestMessage(name: string = "", breed: number = 0, sex: boolean = false, colors: Array<number> = null, cosmeticId: number = 0): CharacterCreationRequestMessage
     {
         this.name = name;
@@ -41,7 +54,7 @@ export class CharacterCreationRequestMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

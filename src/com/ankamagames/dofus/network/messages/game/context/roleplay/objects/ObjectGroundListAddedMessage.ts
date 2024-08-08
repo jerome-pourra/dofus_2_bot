@@ -9,6 +9,9 @@ export class ObjectGroundListAddedMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 7785;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public cells: Array<number>;
 	public referenceIds: Array<number>;
 
@@ -24,6 +27,16 @@ export class ObjectGroundListAddedMessage extends NetworkMessage implements INet
         return ObjectGroundListAddedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectGroundListAddedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectGroundListAddedMessage.endpointServer;
+    }
+
     public initObjectGroundListAddedMessage(cells: Array<number> = null, referenceIds: Array<number> = null): ObjectGroundListAddedMessage
     {
         this.cells = cells;
@@ -35,7 +48,7 @@ export class ObjectGroundListAddedMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class GameFightResumeSlaveInfo implements INetworkType
 
 	public static readonly protocolId: number = 6502;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public slaveId: number = 0;
 	public spellCooldowns: Array<GameFightSpellCooldown>;
 	public summonCount: number = 0;
@@ -21,6 +24,16 @@ export class GameFightResumeSlaveInfo implements INetworkType
     public getTypeId()
     {
         return GameFightResumeSlaveInfo.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightResumeSlaveInfo.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightResumeSlaveInfo.endpointServer;
     }
 
     public initGameFightResumeSlaveInfo(slaveId: number = 0, spellCooldowns: Array<GameFightSpellCooldown> = null, summonCount: number = 0, bombCount: number = 0): GameFightResumeSlaveInfo

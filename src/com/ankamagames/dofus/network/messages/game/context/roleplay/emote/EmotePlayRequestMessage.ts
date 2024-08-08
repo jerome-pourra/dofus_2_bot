@@ -9,6 +9,9 @@ export class EmotePlayRequestMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 7754;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public emoteId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class EmotePlayRequestMessage extends NetworkMessage implements INetworkM
         return EmotePlayRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return EmotePlayRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EmotePlayRequestMessage.endpointServer;
+    }
+
     public initEmotePlayRequestMessage(emoteId: number = 0): EmotePlayRequestMessage
     {
         this.emoteId = emoteId;
@@ -31,7 +44,7 @@ export class EmotePlayRequestMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

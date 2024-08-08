@@ -9,6 +9,9 @@ export class AllianceInformation extends BasicNamedAllianceInformations implemen
 
 	public static readonly protocolId: number = 1197;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceEmblem: SocialEmblem;
 
     public constructor()
@@ -20,6 +23,16 @@ export class AllianceInformation extends BasicNamedAllianceInformations implemen
     public getTypeId()
     {
         return AllianceInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceInformation.endpointServer;
     }
 
     public initAllianceInformation(allianceId: number = 0, allianceTag: string = "", allianceName: string = "", allianceEmblem: SocialEmblem = null): AllianceInformation

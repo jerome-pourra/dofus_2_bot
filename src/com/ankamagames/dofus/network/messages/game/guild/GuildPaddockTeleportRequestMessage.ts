@@ -9,6 +9,9 @@ export class GuildPaddockTeleportRequestMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 8533;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public paddockId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuildPaddockTeleportRequestMessage extends NetworkMessage implement
         return GuildPaddockTeleportRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildPaddockTeleportRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildPaddockTeleportRequestMessage.endpointServer;
+    }
+
     public initGuildPaddockTeleportRequestMessage(paddockId: number = 0): GuildPaddockTeleportRequestMessage
     {
         this.paddockId = paddockId;
@@ -31,7 +44,7 @@ export class GuildPaddockTeleportRequestMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

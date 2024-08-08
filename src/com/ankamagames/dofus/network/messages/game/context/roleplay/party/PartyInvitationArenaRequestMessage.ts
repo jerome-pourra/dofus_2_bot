@@ -10,6 +10,9 @@ export class PartyInvitationArenaRequestMessage extends PartyInvitationRequestMe
 
 	public static readonly protocolId: number = 2774;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -18,6 +21,16 @@ export class PartyInvitationArenaRequestMessage extends PartyInvitationRequestMe
     public getMessageId()
     {
         return PartyInvitationArenaRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyInvitationArenaRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyInvitationArenaRequestMessage.endpointServer;
     }
 
     public initPartyInvitationArenaRequestMessage(target: AbstractPlayerSearchInformation = null): PartyInvitationArenaRequestMessage
@@ -30,7 +43,7 @@ export class PartyInvitationArenaRequestMessage extends PartyInvitationRequestMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

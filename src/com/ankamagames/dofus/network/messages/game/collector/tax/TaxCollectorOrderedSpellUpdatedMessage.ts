@@ -10,6 +10,9 @@ export class TaxCollectorOrderedSpellUpdatedMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 2428;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public taxCollectorId: number = 0;
 	public taxCollectorSpells: Array<TaxCollectorOrderedSpell>;
 
@@ -24,6 +27,16 @@ export class TaxCollectorOrderedSpellUpdatedMessage extends NetworkMessage imple
         return TaxCollectorOrderedSpellUpdatedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TaxCollectorOrderedSpellUpdatedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorOrderedSpellUpdatedMessage.endpointServer;
+    }
+
     public initTaxCollectorOrderedSpellUpdatedMessage(taxCollectorId: number = 0, taxCollectorSpells: Array<TaxCollectorOrderedSpell> = null): TaxCollectorOrderedSpellUpdatedMessage
     {
         this.taxCollectorId = taxCollectorId;
@@ -35,7 +48,7 @@ export class TaxCollectorOrderedSpellUpdatedMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

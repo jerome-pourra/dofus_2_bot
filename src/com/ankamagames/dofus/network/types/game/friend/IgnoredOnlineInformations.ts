@@ -10,6 +10,9 @@ export class IgnoredOnlineInformations extends IgnoredInformations implements IN
 
 	public static readonly protocolId: number = 941;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerId: number = 0;
 	public playerName: string = "";
 	public breed: number = 0;
@@ -23,6 +26,16 @@ export class IgnoredOnlineInformations extends IgnoredInformations implements IN
     public getTypeId()
     {
         return IgnoredOnlineInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return IgnoredOnlineInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IgnoredOnlineInformations.endpointServer;
     }
 
     public initIgnoredOnlineInformations(accountId: number = 0, accountTag: AccountTagInformation = null, playerId: number = 0, playerName: string = "", breed: number = 0, sex: boolean = false): IgnoredOnlineInformations

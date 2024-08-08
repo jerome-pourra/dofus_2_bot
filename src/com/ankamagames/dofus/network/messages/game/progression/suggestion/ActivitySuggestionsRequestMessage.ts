@@ -9,6 +9,9 @@ export class ActivitySuggestionsRequestMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 5447;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public minLevel: number = 0;
 	public maxLevel: number = 0;
 	public areaId: number = 0;
@@ -25,6 +28,16 @@ export class ActivitySuggestionsRequestMessage extends NetworkMessage implements
         return ActivitySuggestionsRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ActivitySuggestionsRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ActivitySuggestionsRequestMessage.endpointServer;
+    }
+
     public initActivitySuggestionsRequestMessage(minLevel: number = 0, maxLevel: number = 0, areaId: number = 0, activityCategoryId: number = 0, nbCards: number = 0): ActivitySuggestionsRequestMessage
     {
         this.minLevel = minLevel;
@@ -39,7 +52,7 @@ export class ActivitySuggestionsRequestMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

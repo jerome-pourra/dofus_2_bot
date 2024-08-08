@@ -9,6 +9,9 @@ export class HouseInformationsForGuild extends HouseInformations implements INet
 
 	public static readonly protocolId: number = 409;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public instanceId: number = 0;
 	public secondHand: boolean = false;
 	public ownerTag: AccountTagInformation;
@@ -29,6 +32,16 @@ export class HouseInformationsForGuild extends HouseInformations implements INet
     public getTypeId()
     {
         return HouseInformationsForGuild.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HouseInformationsForGuild.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseInformationsForGuild.endpointServer;
     }
 
     public initHouseInformationsForGuild(houseId: number = 0, modelId: number = 0, instanceId: number = 0, secondHand: boolean = false, ownerTag: AccountTagInformation = null, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, skillListIds: Array<number> = null, guildshareParams: number = 0): HouseInformationsForGuild

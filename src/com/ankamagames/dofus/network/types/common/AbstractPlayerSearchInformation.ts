@@ -7,6 +7,9 @@ export class AbstractPlayerSearchInformation implements INetworkType
 
 	public static readonly protocolId: number = 1300;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
 
@@ -15,6 +18,16 @@ export class AbstractPlayerSearchInformation implements INetworkType
     public getTypeId()
     {
         return AbstractPlayerSearchInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AbstractPlayerSearchInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AbstractPlayerSearchInformation.endpointServer;
     }
 
     public initAbstractPlayerSearchInformation(): AbstractPlayerSearchInformation

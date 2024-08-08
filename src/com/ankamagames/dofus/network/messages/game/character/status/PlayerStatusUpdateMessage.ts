@@ -11,6 +11,9 @@ export class PlayerStatusUpdateMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 3675;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public accountId: number = 0;
 	public playerId: number = 0;
 	public status: PlayerStatus;
@@ -26,6 +29,16 @@ export class PlayerStatusUpdateMessage extends NetworkMessage implements INetwor
         return PlayerStatusUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PlayerStatusUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PlayerStatusUpdateMessage.endpointServer;
+    }
+
     public initPlayerStatusUpdateMessage(accountId: number = 0, playerId: number = 0, status: PlayerStatus = null): PlayerStatusUpdateMessage
     {
         this.accountId = accountId;
@@ -38,7 +51,7 @@ export class PlayerStatusUpdateMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

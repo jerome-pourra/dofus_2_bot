@@ -10,6 +10,9 @@ export class JobBookSubscriptionMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 6723;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public subscriptions: Array<JobBookSubscription>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class JobBookSubscriptionMessage extends NetworkMessage implements INetwo
         return JobBookSubscriptionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return JobBookSubscriptionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobBookSubscriptionMessage.endpointServer;
+    }
+
     public initJobBookSubscriptionMessage(subscriptions: Array<JobBookSubscription> = null): JobBookSubscriptionMessage
     {
         this.subscriptions = subscriptions;
@@ -33,7 +46,7 @@ export class JobBookSubscriptionMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

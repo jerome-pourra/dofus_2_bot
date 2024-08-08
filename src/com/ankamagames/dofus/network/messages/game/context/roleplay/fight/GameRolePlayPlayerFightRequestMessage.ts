@@ -9,6 +9,9 @@ export class GameRolePlayPlayerFightRequestMessage extends NetworkMessage implem
 
 	public static readonly protocolId: number = 6628;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public targetId: number = 0;
 	public targetCellId: number = 0;
 	public friendly: boolean = false;
@@ -23,6 +26,16 @@ export class GameRolePlayPlayerFightRequestMessage extends NetworkMessage implem
         return GameRolePlayPlayerFightRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayPlayerFightRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayPlayerFightRequestMessage.endpointServer;
+    }
+
     public initGameRolePlayPlayerFightRequestMessage(targetId: number = 0, targetCellId: number = 0, friendly: boolean = false): GameRolePlayPlayerFightRequestMessage
     {
         this.targetId = targetId;
@@ -35,7 +48,7 @@ export class GameRolePlayPlayerFightRequestMessage extends NetworkMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

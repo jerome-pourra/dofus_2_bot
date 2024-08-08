@@ -11,6 +11,9 @@ export class PartyInvitationDungeonDetailsMessage extends PartyInvitationDetails
 
 	public static readonly protocolId: number = 2367;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dungeonId: number = 0;
 	public playersDungeonReady: Array<boolean>;
 
@@ -25,6 +28,16 @@ export class PartyInvitationDungeonDetailsMessage extends PartyInvitationDetails
         return PartyInvitationDungeonDetailsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PartyInvitationDungeonDetailsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyInvitationDungeonDetailsMessage.endpointServer;
+    }
+
     public initPartyInvitationDungeonDetailsMessage(partyId: number = 0, partyType: number = 0, partyName: string = "", fromId: number = 0, fromName: string = "", leaderId: number = 0, members: Array<PartyInvitationMemberInformations> = null, guests: Array<PartyGuestInformations> = null, dungeonId: number = 0, playersDungeonReady: Array<boolean> = null): PartyInvitationDungeonDetailsMessage
     {
         super.initPartyInvitationDetailsMessage(partyId,partyType,partyName,fromId,fromName,leaderId,members,guests);
@@ -37,7 +50,7 @@ export class PartyInvitationDungeonDetailsMessage extends PartyInvitationDetails
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

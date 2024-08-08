@@ -12,6 +12,9 @@ export class GameContextSummonsInformation implements INetworkType
 
 	public static readonly protocolId: number = 5419;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spawnInformation: SpawnInformation;
 	public wave: number = 0;
 	public look: EntityLook;
@@ -29,6 +32,16 @@ export class GameContextSummonsInformation implements INetworkType
     public getTypeId()
     {
         return GameContextSummonsInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameContextSummonsInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameContextSummonsInformation.endpointServer;
     }
 
     public initGameContextSummonsInformation(spawnInformation: SpawnInformation = null, wave: number = 0, look: EntityLook = null, stats: GameFightCharacteristics = null, summons: Array<GameContextBasicSpawnInformation> = null): GameContextSummonsInformation

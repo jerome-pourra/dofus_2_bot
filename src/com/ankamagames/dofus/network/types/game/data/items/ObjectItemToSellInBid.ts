@@ -9,6 +9,9 @@ export class ObjectItemToSellInBid extends ObjectItemToSell implements INetworkT
 
 	public static readonly protocolId: number = 859;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public unsoldDelay: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class ObjectItemToSellInBid extends ObjectItemToSell implements INetworkT
     public getTypeId()
     {
         return ObjectItemToSellInBid.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectItemToSellInBid.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectItemToSellInBid.endpointServer;
     }
 
     public initObjectItemToSellInBid(objectGID: number = 0, effects: Array<ObjectEffect> = null, objectUID: number = 0, quantity: number = 0, objectPrice: number = 0, unsoldDelay: number = 0): ObjectItemToSellInBid

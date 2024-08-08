@@ -10,6 +10,9 @@ export class GoldAddedMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 1521;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public gold: GoldItem;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GoldAddedMessage extends NetworkMessage implements INetworkMessage
         return GoldAddedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GoldAddedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GoldAddedMessage.endpointServer;
+    }
+
     public initGoldAddedMessage(gold: GoldItem = null): GoldAddedMessage
     {
         this.gold = gold;
@@ -33,7 +46,7 @@ export class GoldAddedMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

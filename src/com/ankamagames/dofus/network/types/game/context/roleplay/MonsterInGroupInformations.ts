@@ -9,6 +9,9 @@ export class MonsterInGroupInformations extends MonsterInGroupLightInformations 
 
 	public static readonly protocolId: number = 7023;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public look: EntityLook;
 
     public constructor()
@@ -20,6 +23,16 @@ export class MonsterInGroupInformations extends MonsterInGroupLightInformations 
     public getTypeId()
     {
         return MonsterInGroupInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MonsterInGroupInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MonsterInGroupInformations.endpointServer;
     }
 
     public initMonsterInGroupInformations(genericId: number = 0, grade: number = 0, level: number = 0, look: EntityLook = null): MonsterInGroupInformations

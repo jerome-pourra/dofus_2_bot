@@ -9,6 +9,9 @@ export class GameActionFightNoSpellCastMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 393;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spellLevelId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameActionFightNoSpellCastMessage extends NetworkMessage implements
         return GameActionFightNoSpellCastMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameActionFightNoSpellCastMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightNoSpellCastMessage.endpointServer;
+    }
+
     public initGameActionFightNoSpellCastMessage(spellLevelId: number = 0): GameActionFightNoSpellCastMessage
     {
         this.spellLevelId = spellLevelId;
@@ -31,7 +44,7 @@ export class GameActionFightNoSpellCastMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

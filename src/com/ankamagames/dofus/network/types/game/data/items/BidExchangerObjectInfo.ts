@@ -9,6 +9,9 @@ export class BidExchangerObjectInfo implements INetworkType
 
 	public static readonly protocolId: number = 2811;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectUID: number = 0;
 	public objectGID: number = 0;
 	public objectType: number = 0;
@@ -24,6 +27,16 @@ export class BidExchangerObjectInfo implements INetworkType
     public getTypeId()
     {
         return BidExchangerObjectInfo.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return BidExchangerObjectInfo.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BidExchangerObjectInfo.endpointServer;
     }
 
     public initBidExchangerObjectInfo(objectUID: number = 0, objectGID: number = 0, objectType: number = 0, effects: Array<ObjectEffect> = null, prices: Array<number> = null): BidExchangerObjectInfo

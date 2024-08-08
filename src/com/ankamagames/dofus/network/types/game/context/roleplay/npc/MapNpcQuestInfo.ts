@@ -8,6 +8,9 @@ export class MapNpcQuestInfo implements INetworkType
 
 	public static readonly protocolId: number = 7887;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public mapId: number = 0;
 	public npcsIdsWithQuest: Array<number>;
 	public questFlags: Array<GameRolePlayNpcQuestFlag>;
@@ -21,6 +24,16 @@ export class MapNpcQuestInfo implements INetworkType
     public getTypeId()
     {
         return MapNpcQuestInfo.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MapNpcQuestInfo.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapNpcQuestInfo.endpointServer;
     }
 
     public initMapNpcQuestInfo(mapId: number = 0, npcsIdsWithQuest: Array<number> = null, questFlags: Array<GameRolePlayNpcQuestFlag> = null): MapNpcQuestInfo

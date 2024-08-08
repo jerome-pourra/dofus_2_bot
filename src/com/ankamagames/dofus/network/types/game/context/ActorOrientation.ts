@@ -7,6 +7,9 @@ export class ActorOrientation implements INetworkType
 
 	public static readonly protocolId: number = 2066;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public direction: number = 1;
 
@@ -18,6 +21,16 @@ export class ActorOrientation implements INetworkType
     public getTypeId()
     {
         return ActorOrientation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ActorOrientation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ActorOrientation.endpointServer;
     }
 
     public initActorOrientation(id: number = 0, direction: number = 1): ActorOrientation

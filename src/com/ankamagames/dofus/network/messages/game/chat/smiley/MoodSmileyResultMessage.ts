@@ -9,6 +9,9 @@ export class MoodSmileyResultMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 1383;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public resultCode: number = 1;
 	public smileyId: number = 0;
 
@@ -22,6 +25,16 @@ export class MoodSmileyResultMessage extends NetworkMessage implements INetworkM
         return MoodSmileyResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MoodSmileyResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MoodSmileyResultMessage.endpointServer;
+    }
+
     public initMoodSmileyResultMessage(resultCode: number = 1, smileyId: number = 0): MoodSmileyResultMessage
     {
         this.resultCode = resultCode;
@@ -33,7 +46,7 @@ export class MoodSmileyResultMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

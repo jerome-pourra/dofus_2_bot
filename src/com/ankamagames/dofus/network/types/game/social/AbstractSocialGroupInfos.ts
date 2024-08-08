@@ -7,6 +7,9 @@ export class AbstractSocialGroupInfos implements INetworkType
 
 	public static readonly protocolId: number = 6837;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
 
@@ -15,6 +18,16 @@ export class AbstractSocialGroupInfos implements INetworkType
     public getTypeId()
     {
         return AbstractSocialGroupInfos.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AbstractSocialGroupInfos.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AbstractSocialGroupInfos.endpointServer;
     }
 
     public initAbstractSocialGroupInfos(): AbstractSocialGroupInfos

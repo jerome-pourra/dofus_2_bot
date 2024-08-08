@@ -7,6 +7,9 @@ export class KohScore implements INetworkType
 
 	public static readonly protocolId: number = 5560;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public avaScoreTypeEnum: number = 1;
 	public roundScores: number = 0;
 	public cumulScores: number = 0;
@@ -19,6 +22,16 @@ export class KohScore implements INetworkType
     public getTypeId()
     {
         return KohScore.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return KohScore.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return KohScore.endpointServer;
     }
 
     public initKohScore(avaScoreTypeEnum: number = 1, roundScores: number = 0, cumulScores: number = 0): KohScore

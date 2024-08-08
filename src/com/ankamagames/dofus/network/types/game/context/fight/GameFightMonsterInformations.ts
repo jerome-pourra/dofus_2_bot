@@ -12,6 +12,9 @@ export class GameFightMonsterInformations extends GameFightAIInformations implem
 
 	public static readonly protocolId: number = 1792;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public creatureGenericId: number = 0;
 	public creatureGrade: number = 0;
 	public creatureLevel: number = 0;
@@ -24,6 +27,16 @@ export class GameFightMonsterInformations extends GameFightAIInformations implem
     public getTypeId()
     {
         return GameFightMonsterInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightMonsterInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightMonsterInformations.endpointServer;
     }
 
     public initGameFightMonsterInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, spawnInfo: GameContextBasicSpawnInformation = null, wave: number = 0, stats: GameFightCharacteristics = null, previousPositions: Array<number> = null, creatureGenericId: number = 0, creatureGrade: number = 0, creatureLevel: number = 0): GameFightMonsterInformations

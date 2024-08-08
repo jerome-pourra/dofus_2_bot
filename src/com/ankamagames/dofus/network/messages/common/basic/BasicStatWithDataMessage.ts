@@ -11,6 +11,9 @@ export class BasicStatWithDataMessage extends BasicStatMessage implements INetwo
 
 	public static readonly protocolId: number = 6918;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public datas: Array<StatisticData>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class BasicStatWithDataMessage extends BasicStatMessage implements INetwo
         return BasicStatWithDataMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BasicStatWithDataMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicStatWithDataMessage.endpointServer;
+    }
+
     public initBasicStatWithDataMessage(timeSpent: number = 0, statId: number = 0, datas: Array<StatisticData> = null): BasicStatWithDataMessage
     {
         super.initBasicStatMessage(timeSpent,statId);
@@ -35,7 +48,7 @@ export class BasicStatWithDataMessage extends BasicStatMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

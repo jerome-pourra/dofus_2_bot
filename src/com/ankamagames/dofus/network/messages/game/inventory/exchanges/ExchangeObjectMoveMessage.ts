@@ -9,6 +9,9 @@ export class ExchangeObjectMoveMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 5939;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectUID: number = 0;
 	public quantity: number = 0;
 
@@ -22,6 +25,16 @@ export class ExchangeObjectMoveMessage extends NetworkMessage implements INetwor
         return ExchangeObjectMoveMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeObjectMoveMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeObjectMoveMessage.endpointServer;
+    }
+
     public initExchangeObjectMoveMessage(objectUID: number = 0, quantity: number = 0): ExchangeObjectMoveMessage
     {
         this.objectUID = objectUID;
@@ -33,7 +46,7 @@ export class ExchangeObjectMoveMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

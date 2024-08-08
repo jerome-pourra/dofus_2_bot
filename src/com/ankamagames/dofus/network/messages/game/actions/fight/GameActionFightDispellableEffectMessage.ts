@@ -11,6 +11,9 @@ export class GameActionFightDispellableEffectMessage extends AbstractGameActionM
 
 	public static readonly protocolId: number = 3071;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public effect: AbstractFightDispellableEffect;
 
     public constructor()
@@ -24,6 +27,16 @@ export class GameActionFightDispellableEffectMessage extends AbstractGameActionM
         return GameActionFightDispellableEffectMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameActionFightDispellableEffectMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightDispellableEffectMessage.endpointServer;
+    }
+
     public initGameActionFightDispellableEffectMessage(actionId: number = 0, sourceId: number = 0, effect: AbstractFightDispellableEffect = null): GameActionFightDispellableEffectMessage
     {
         super.initAbstractGameActionMessage(actionId,sourceId);
@@ -35,7 +48,7 @@ export class GameActionFightDispellableEffectMessage extends AbstractGameActionM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

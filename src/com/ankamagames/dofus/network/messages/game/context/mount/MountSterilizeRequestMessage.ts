@@ -9,6 +9,9 @@ export class MountSterilizeRequestMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 658;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class MountSterilizeRequestMessage extends NetworkMessage implements INet
     public getMessageId()
     {
         return MountSterilizeRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MountSterilizeRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountSterilizeRequestMessage.endpointServer;
     }
 
     public initMountSterilizeRequestMessage(): MountSterilizeRequestMessage
@@ -28,7 +41,7 @@ export class MountSterilizeRequestMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

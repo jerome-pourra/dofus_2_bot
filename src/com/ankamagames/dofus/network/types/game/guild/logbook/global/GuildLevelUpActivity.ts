@@ -8,6 +8,9 @@ export class GuildLevelUpActivity extends GuildLogbookEntryBasicInformation impl
 
 	public static readonly protocolId: number = 3398;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public newGuildLevel: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class GuildLevelUpActivity extends GuildLogbookEntryBasicInformation impl
     public getTypeId()
     {
         return GuildLevelUpActivity.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildLevelUpActivity.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildLevelUpActivity.endpointServer;
     }
 
     public initGuildLevelUpActivity(id: number = 0, date: number = 0, newGuildLevel: number = 0): GuildLevelUpActivity

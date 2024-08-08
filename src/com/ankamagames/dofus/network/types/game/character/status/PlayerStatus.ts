@@ -7,6 +7,9 @@ export class PlayerStatus implements INetworkType
 
 	public static readonly protocolId: number = 2273;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public statusId: number = 1;
 
     public constructor()
@@ -17,6 +20,16 @@ export class PlayerStatus implements INetworkType
     public getTypeId()
     {
         return PlayerStatus.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PlayerStatus.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PlayerStatus.endpointServer;
     }
 
     public initPlayerStatus(statusId: number = 1): PlayerStatus

@@ -10,6 +10,9 @@ export class FinishMoveListMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 4769;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public finishMoves: Array<FinishMoveInformations>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class FinishMoveListMessage extends NetworkMessage implements INetworkMes
         return FinishMoveListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FinishMoveListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FinishMoveListMessage.endpointServer;
+    }
+
     public initFinishMoveListMessage(finishMoves: Array<FinishMoveInformations> = null): FinishMoveListMessage
     {
         this.finishMoves = finishMoves;
@@ -33,7 +46,7 @@ export class FinishMoveListMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

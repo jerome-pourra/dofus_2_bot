@@ -9,6 +9,9 @@ export class IconPresetSaveRequestMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 6591;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public presetId: number = 0;
 	public symbolId: number = 0;
 	public updateData: boolean = false;
@@ -23,6 +26,16 @@ export class IconPresetSaveRequestMessage extends NetworkMessage implements INet
         return IconPresetSaveRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return IconPresetSaveRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IconPresetSaveRequestMessage.endpointServer;
+    }
+
     public initIconPresetSaveRequestMessage(presetId: number = 0, symbolId: number = 0, updateData: boolean = false): IconPresetSaveRequestMessage
     {
         this.presetId = presetId;
@@ -35,7 +48,7 @@ export class IconPresetSaveRequestMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

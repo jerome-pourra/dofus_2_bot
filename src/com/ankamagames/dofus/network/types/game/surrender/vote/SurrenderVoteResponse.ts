@@ -7,6 +7,9 @@ export class SurrenderVoteResponse implements INetworkType
 
 	public static readonly protocolId: number = 3674;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
 
@@ -15,6 +18,16 @@ export class SurrenderVoteResponse implements INetworkType
     public getTypeId()
     {
         return SurrenderVoteResponse.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SurrenderVoteResponse.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SurrenderVoteResponse.endpointServer;
     }
 
     public initSurrenderVoteResponse(): SurrenderVoteResponse

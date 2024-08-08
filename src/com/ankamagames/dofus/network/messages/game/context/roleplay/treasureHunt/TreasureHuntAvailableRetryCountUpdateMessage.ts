@@ -9,6 +9,9 @@ export class TreasureHuntAvailableRetryCountUpdateMessage extends NetworkMessage
 
 	public static readonly protocolId: number = 1628;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public questType: number = 0;
 	public availableRetryCount: number = 0;
 
@@ -22,6 +25,16 @@ export class TreasureHuntAvailableRetryCountUpdateMessage extends NetworkMessage
         return TreasureHuntAvailableRetryCountUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TreasureHuntAvailableRetryCountUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntAvailableRetryCountUpdateMessage.endpointServer;
+    }
+
     public initTreasureHuntAvailableRetryCountUpdateMessage(questType: number = 0, availableRetryCount: number = 0): TreasureHuntAvailableRetryCountUpdateMessage
     {
         this.questType = questType;
@@ -33,7 +46,7 @@ export class TreasureHuntAvailableRetryCountUpdateMessage extends NetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

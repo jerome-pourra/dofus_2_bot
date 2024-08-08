@@ -7,6 +7,9 @@ export class SkillActionDescription implements INetworkType
 
 	public static readonly protocolId: number = 3573;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public skillId: number = 0;
 
     public constructor()
@@ -17,6 +20,16 @@ export class SkillActionDescription implements INetworkType
     public getTypeId()
     {
         return SkillActionDescription.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SkillActionDescription.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SkillActionDescription.endpointServer;
     }
 
     public initSkillActionDescription(skillId: number = 0): SkillActionDescription

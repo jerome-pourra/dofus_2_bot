@@ -10,6 +10,9 @@ export class AllianceModificationValidMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 4239;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public allianceName: string = "";
 	public allianceTag: string = "";
 	public allianceEmblem: SocialEmblem;
@@ -25,6 +28,16 @@ export class AllianceModificationValidMessage extends NetworkMessage implements 
         return AllianceModificationValidMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceModificationValidMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceModificationValidMessage.endpointServer;
+    }
+
     public initAllianceModificationValidMessage(allianceName: string = "", allianceTag: string = "", allianceEmblem: SocialEmblem = null): AllianceModificationValidMessage
     {
         this.allianceName = allianceName;
@@ -37,7 +50,7 @@ export class AllianceModificationValidMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

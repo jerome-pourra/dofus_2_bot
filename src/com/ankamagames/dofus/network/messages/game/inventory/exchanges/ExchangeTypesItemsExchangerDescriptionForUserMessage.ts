@@ -10,6 +10,9 @@ export class ExchangeTypesItemsExchangerDescriptionForUserMessage extends Networ
 
 	public static readonly protocolId: number = 2738;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objectGID: number = 0;
 	public objectType: number = 0;
 	public itemTypeDescriptions: Array<BidExchangerObjectInfo>;
@@ -25,6 +28,16 @@ export class ExchangeTypesItemsExchangerDescriptionForUserMessage extends Networ
         return ExchangeTypesItemsExchangerDescriptionForUserMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeTypesItemsExchangerDescriptionForUserMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeTypesItemsExchangerDescriptionForUserMessage.endpointServer;
+    }
+
     public initExchangeTypesItemsExchangerDescriptionForUserMessage(objectGID: number = 0, objectType: number = 0, itemTypeDescriptions: Array<BidExchangerObjectInfo> = null): ExchangeTypesItemsExchangerDescriptionForUserMessage
     {
         this.objectGID = objectGID;
@@ -37,7 +50,7 @@ export class ExchangeTypesItemsExchangerDescriptionForUserMessage extends Networ
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

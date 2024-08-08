@@ -9,6 +9,9 @@ export class GuildPlayerApplicationAbstractMessage extends NetworkMessage implem
 
 	public static readonly protocolId: number = 4745;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class GuildPlayerApplicationAbstractMessage extends NetworkMessage implem
     public getMessageId()
     {
         return GuildPlayerApplicationAbstractMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildPlayerApplicationAbstractMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildPlayerApplicationAbstractMessage.endpointServer;
     }
 
     public initGuildPlayerApplicationAbstractMessage(): GuildPlayerApplicationAbstractMessage
@@ -28,7 +41,7 @@ export class GuildPlayerApplicationAbstractMessage extends NetworkMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

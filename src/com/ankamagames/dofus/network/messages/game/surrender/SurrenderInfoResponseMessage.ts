@@ -12,6 +12,9 @@ export class SurrenderInfoResponseMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 99;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public hasSanction: boolean = false;
 	public surrenderResponse: SurrenderResponse;
 	public surrenderVoteResponse: SurrenderVoteResponse;
@@ -28,6 +31,16 @@ export class SurrenderInfoResponseMessage extends NetworkMessage implements INet
         return SurrenderInfoResponseMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SurrenderInfoResponseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SurrenderInfoResponseMessage.endpointServer;
+    }
+
     public initSurrenderInfoResponseMessage(hasSanction: boolean = false, surrenderResponse: SurrenderResponse = null, surrenderVoteResponse: SurrenderVoteResponse = null): SurrenderInfoResponseMessage
     {
         this.hasSanction = hasSanction;
@@ -40,7 +53,7 @@ export class SurrenderInfoResponseMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

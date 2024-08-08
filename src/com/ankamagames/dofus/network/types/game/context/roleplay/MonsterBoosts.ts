@@ -7,6 +7,9 @@ export class MonsterBoosts implements INetworkType
 
 	public static readonly protocolId: number = 1084;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public xpBoost: number = 0;
 	public dropBoost: number = 0;
@@ -19,6 +22,16 @@ export class MonsterBoosts implements INetworkType
     public getTypeId()
     {
         return MonsterBoosts.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MonsterBoosts.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MonsterBoosts.endpointServer;
     }
 
     public initMonsterBoosts(id: number = 0, xpBoost: number = 0, dropBoost: number = 0): MonsterBoosts

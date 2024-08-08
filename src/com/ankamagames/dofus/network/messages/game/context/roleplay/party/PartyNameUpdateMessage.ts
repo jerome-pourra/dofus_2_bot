@@ -9,6 +9,9 @@ export class PartyNameUpdateMessage extends AbstractPartyMessage implements INet
 
 	public static readonly protocolId: number = 9591;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public partyName: string = "";
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyNameUpdateMessage extends AbstractPartyMessage implements INet
     public getMessageId()
     {
         return PartyNameUpdateMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyNameUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyNameUpdateMessage.endpointServer;
     }
 
     public initPartyNameUpdateMessage(partyId: number = 0, partyName: string = ""): PartyNameUpdateMessage
@@ -32,7 +45,7 @@ export class PartyNameUpdateMessage extends AbstractPartyMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

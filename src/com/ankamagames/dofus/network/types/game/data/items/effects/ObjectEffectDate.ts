@@ -8,6 +8,9 @@ export class ObjectEffectDate extends ObjectEffect implements INetworkType
 
 	public static readonly protocolId: number = 3435;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public year: number = 0;
 	public month: number = 0;
 	public day: number = 0;
@@ -22,6 +25,16 @@ export class ObjectEffectDate extends ObjectEffect implements INetworkType
     public getTypeId()
     {
         return ObjectEffectDate.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectEffectDate.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectEffectDate.endpointServer;
     }
 
     public initObjectEffectDate(actionId: number = 0, year: number = 0, month: number = 0, day: number = 0, hour: number = 0, minute: number = 0): ObjectEffectDate

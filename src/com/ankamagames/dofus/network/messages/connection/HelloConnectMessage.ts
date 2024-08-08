@@ -9,6 +9,9 @@ export class HelloConnectMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 5586;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public salt: string = "";
 	public key: Array<number>;
 
@@ -23,6 +26,16 @@ export class HelloConnectMessage extends NetworkMessage implements INetworkMessa
         return HelloConnectMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HelloConnectMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HelloConnectMessage.endpointServer;
+    }
+
     public initHelloConnectMessage(salt: string = "", key: Array<number> = null): HelloConnectMessage
     {
         this.salt = salt;
@@ -34,7 +47,7 @@ export class HelloConnectMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

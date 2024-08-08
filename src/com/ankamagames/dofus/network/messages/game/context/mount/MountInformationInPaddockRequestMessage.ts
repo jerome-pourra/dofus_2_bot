@@ -9,6 +9,9 @@ export class MountInformationInPaddockRequestMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 7545;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public mapRideId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class MountInformationInPaddockRequestMessage extends NetworkMessage impl
         return MountInformationInPaddockRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MountInformationInPaddockRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountInformationInPaddockRequestMessage.endpointServer;
+    }
+
     public initMountInformationInPaddockRequestMessage(mapRideId: number = 0): MountInformationInPaddockRequestMessage
     {
         this.mapRideId = mapRideId;
@@ -31,7 +44,7 @@ export class MountInformationInPaddockRequestMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

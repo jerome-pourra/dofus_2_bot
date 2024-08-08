@@ -9,6 +9,9 @@ export class AllianceUpdateApplicationMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 8299;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public applyText: string = "";
 	public allianceId: number = 0;
 
@@ -22,6 +25,16 @@ export class AllianceUpdateApplicationMessage extends NetworkMessage implements 
         return AllianceUpdateApplicationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceUpdateApplicationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceUpdateApplicationMessage.endpointServer;
+    }
+
     public initAllianceUpdateApplicationMessage(applyText: string = "", allianceId: number = 0): AllianceUpdateApplicationMessage
     {
         this.applyText = applyText;
@@ -33,7 +46,7 @@ export class AllianceUpdateApplicationMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

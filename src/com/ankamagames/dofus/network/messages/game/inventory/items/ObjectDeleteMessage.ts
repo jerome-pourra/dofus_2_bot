@@ -9,6 +9,9 @@ export class ObjectDeleteMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 5997;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectUID: number = 0;
 	public quantity: number = 0;
 
@@ -22,6 +25,16 @@ export class ObjectDeleteMessage extends NetworkMessage implements INetworkMessa
         return ObjectDeleteMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectDeleteMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectDeleteMessage.endpointServer;
+    }
+
     public initObjectDeleteMessage(objectUID: number = 0, quantity: number = 0): ObjectDeleteMessage
     {
         this.objectUID = objectUID;
@@ -33,7 +46,7 @@ export class ObjectDeleteMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

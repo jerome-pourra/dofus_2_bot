@@ -8,6 +8,9 @@ export class PlayerSearchCharacterNameInformation extends AbstractPlayerSearchIn
 
 	public static readonly protocolId: number = 3022;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public name: string = "";
 
     public constructor()
@@ -18,6 +21,16 @@ export class PlayerSearchCharacterNameInformation extends AbstractPlayerSearchIn
     public getTypeId()
     {
         return PlayerSearchCharacterNameInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PlayerSearchCharacterNameInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PlayerSearchCharacterNameInformation.endpointServer;
     }
 
     public initPlayerSearchCharacterNameInformation(name: string = ""): PlayerSearchCharacterNameInformation

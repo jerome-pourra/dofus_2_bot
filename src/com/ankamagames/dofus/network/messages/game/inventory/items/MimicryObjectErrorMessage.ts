@@ -9,6 +9,9 @@ export class MimicryObjectErrorMessage extends SymbioticObjectErrorMessage imple
 
 	public static readonly protocolId: number = 3920;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public preview: boolean = false;
 
     public constructor()
@@ -19,6 +22,16 @@ export class MimicryObjectErrorMessage extends SymbioticObjectErrorMessage imple
     public getMessageId()
     {
         return MimicryObjectErrorMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MimicryObjectErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MimicryObjectErrorMessage.endpointServer;
     }
 
     public initMimicryObjectErrorMessage(reason: number = 0, errorCode: number = 0, preview: boolean = false): MimicryObjectErrorMessage
@@ -32,7 +45,7 @@ export class MimicryObjectErrorMessage extends SymbioticObjectErrorMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class GuildApplicationIsAnsweredMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 3637;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public accepted: boolean = false;
 	public guildInformation: GuildInformations;
 
@@ -24,6 +27,16 @@ export class GuildApplicationIsAnsweredMessage extends NetworkMessage implements
         return GuildApplicationIsAnsweredMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildApplicationIsAnsweredMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildApplicationIsAnsweredMessage.endpointServer;
+    }
+
     public initGuildApplicationIsAnsweredMessage(accepted: boolean = false, guildInformation: GuildInformations = null): GuildApplicationIsAnsweredMessage
     {
         this.accepted = accepted;
@@ -35,7 +48,7 @@ export class GuildApplicationIsAnsweredMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

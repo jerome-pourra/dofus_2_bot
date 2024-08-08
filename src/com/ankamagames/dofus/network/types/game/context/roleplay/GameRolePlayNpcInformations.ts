@@ -10,6 +10,9 @@ export class GameRolePlayNpcInformations extends GameRolePlayActorInformations i
 
 	public static readonly protocolId: number = 8347;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public npcId: number = 0;
 	public sex: boolean = false;
 	public specialArtworkId: number = 0;
@@ -22,6 +25,16 @@ export class GameRolePlayNpcInformations extends GameRolePlayActorInformations i
     public getTypeId()
     {
         return GameRolePlayNpcInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayNpcInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayNpcInformations.endpointServer;
     }
 
     public initGameRolePlayNpcInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, npcId: number = 0, sex: boolean = false, specialArtworkId: number = 0): GameRolePlayNpcInformations

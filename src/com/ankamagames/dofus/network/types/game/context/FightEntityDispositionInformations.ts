@@ -8,6 +8,9 @@ export class FightEntityDispositionInformations extends EntityDispositionInforma
 
 	public static readonly protocolId: number = 3736;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public carryingCharacterId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class FightEntityDispositionInformations extends EntityDispositionInforma
     public getTypeId()
     {
         return FightEntityDispositionInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightEntityDispositionInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightEntityDispositionInformations.endpointServer;
     }
 
     public initFightEntityDispositionInformations(cellId: number = 0, direction: number = 1, carryingCharacterId: number = 0): FightEntityDispositionInformations

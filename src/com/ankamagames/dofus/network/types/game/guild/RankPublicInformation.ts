@@ -8,6 +8,9 @@ export class RankPublicInformation extends RankMinimalInformation implements INe
 
 	public static readonly protocolId: number = 5787;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public order: number = 0;
 	public gfxId: number = 0;
 
@@ -19,6 +22,16 @@ export class RankPublicInformation extends RankMinimalInformation implements INe
     public getTypeId()
     {
         return RankPublicInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return RankPublicInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return RankPublicInformation.endpointServer;
     }
 
     public initRankPublicInformation(id: number = 0, name: string = "", order: number = 0, gfxId: number = 0): RankPublicInformation

@@ -11,6 +11,9 @@ export class AddTaxCollectorPresetSpellMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 6564;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public presetId: Uuid;
 	public spell: TaxCollectorOrderedSpell;
 
@@ -26,6 +29,16 @@ export class AddTaxCollectorPresetSpellMessage extends NetworkMessage implements
         return AddTaxCollectorPresetSpellMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AddTaxCollectorPresetSpellMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AddTaxCollectorPresetSpellMessage.endpointServer;
+    }
+
     public initAddTaxCollectorPresetSpellMessage(presetId: Uuid = null, spell: TaxCollectorOrderedSpell = null): AddTaxCollectorPresetSpellMessage
     {
         this.presetId = presetId;
@@ -37,7 +50,7 @@ export class AddTaxCollectorPresetSpellMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

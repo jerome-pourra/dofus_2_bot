@@ -9,6 +9,9 @@ export class MapRunningFightDetailsRequestMessage extends NetworkMessage impleme
 
 	public static readonly protocolId: number = 337;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public fightId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class MapRunningFightDetailsRequestMessage extends NetworkMessage impleme
         return MapRunningFightDetailsRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MapRunningFightDetailsRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapRunningFightDetailsRequestMessage.endpointServer;
+    }
+
     public initMapRunningFightDetailsRequestMessage(fightId: number = 0): MapRunningFightDetailsRequestMessage
     {
         this.fightId = fightId;
@@ -31,7 +44,7 @@ export class MapRunningFightDetailsRequestMessage extends NetworkMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

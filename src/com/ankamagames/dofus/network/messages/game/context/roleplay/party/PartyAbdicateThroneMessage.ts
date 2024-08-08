@@ -9,6 +9,9 @@ export class PartyAbdicateThroneMessage extends AbstractPartyMessage implements 
 
 	public static readonly protocolId: number = 7804;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyAbdicateThroneMessage extends AbstractPartyMessage implements 
     public getMessageId()
     {
         return PartyAbdicateThroneMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyAbdicateThroneMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyAbdicateThroneMessage.endpointServer;
     }
 
     public initPartyAbdicateThroneMessage(partyId: number = 0, playerId: number = 0): PartyAbdicateThroneMessage
@@ -32,7 +45,7 @@ export class PartyAbdicateThroneMessage extends AbstractPartyMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

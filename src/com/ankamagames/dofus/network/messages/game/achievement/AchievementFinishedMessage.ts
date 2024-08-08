@@ -10,6 +10,9 @@ export class AchievementFinishedMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 1474;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public achievement: AchievementAchievedRewardable;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AchievementFinishedMessage extends NetworkMessage implements INetwo
         return AchievementFinishedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AchievementFinishedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementFinishedMessage.endpointServer;
+    }
+
     public initAchievementFinishedMessage(achievement: AchievementAchievedRewardable = null): AchievementFinishedMessage
     {
         this.achievement = achievement;
@@ -33,7 +46,7 @@ export class AchievementFinishedMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class BreachSavedMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 21;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public saved: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class BreachSavedMessage extends NetworkMessage implements INetworkMessag
         return BreachSavedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachSavedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachSavedMessage.endpointServer;
+    }
+
     public initBreachSavedMessage(saved: boolean = false): BreachSavedMessage
     {
         this.saved = saved;
@@ -31,7 +44,7 @@ export class BreachSavedMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

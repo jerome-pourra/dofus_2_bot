@@ -10,6 +10,9 @@ export class ItemForPresetUpdateMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 6815;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public presetId: number = 0;
 	public presetItem: ItemForPreset;
 
@@ -24,6 +27,16 @@ export class ItemForPresetUpdateMessage extends NetworkMessage implements INetwo
         return ItemForPresetUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ItemForPresetUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ItemForPresetUpdateMessage.endpointServer;
+    }
+
     public initItemForPresetUpdateMessage(presetId: number = 0, presetItem: ItemForPreset = null): ItemForPresetUpdateMessage
     {
         this.presetId = presetId;
@@ -35,7 +48,7 @@ export class ItemForPresetUpdateMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

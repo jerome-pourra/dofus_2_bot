@@ -8,6 +8,9 @@ export class GameActionMark implements INetworkType
 
 	public static readonly protocolId: number = 8022;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public markAuthorId: number = 0;
 	public markTeamId: number = 2;
 	public markSpellId: number = 0;
@@ -26,6 +29,16 @@ export class GameActionMark implements INetworkType
     public getTypeId()
     {
         return GameActionMark.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionMark.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionMark.endpointServer;
     }
 
     public initGameActionMark(markAuthorId: number = 0, markTeamId: number = 2, markSpellId: number = 0, markSpellLevel: number = 0, markId: number = 0, markType: number = 0, markimpactCell: number = 0, cells: Array<GameActionMarkedCell> = null, active: boolean = false): GameActionMark

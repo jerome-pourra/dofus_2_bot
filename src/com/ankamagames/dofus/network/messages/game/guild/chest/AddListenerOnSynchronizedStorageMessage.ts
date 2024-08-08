@@ -9,6 +9,9 @@ export class AddListenerOnSynchronizedStorageMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 1826;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public player: string = "";
 
     public constructor()
@@ -21,6 +24,16 @@ export class AddListenerOnSynchronizedStorageMessage extends NetworkMessage impl
         return AddListenerOnSynchronizedStorageMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AddListenerOnSynchronizedStorageMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AddListenerOnSynchronizedStorageMessage.endpointServer;
+    }
+
     public initAddListenerOnSynchronizedStorageMessage(player: string = ""): AddListenerOnSynchronizedStorageMessage
     {
         this.player = player;
@@ -31,7 +44,7 @@ export class AddListenerOnSynchronizedStorageMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

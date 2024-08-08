@@ -10,6 +10,9 @@ export class ChallengeListMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 4436;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public challengesInformation: Array<ChallengeInformation>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ChallengeListMessage extends NetworkMessage implements INetworkMess
         return ChallengeListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChallengeListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChallengeListMessage.endpointServer;
+    }
+
     public initChallengeListMessage(challengesInformation: Array<ChallengeInformation> = null): ChallengeListMessage
     {
         this.challengesInformation = challengesInformation;
@@ -33,7 +46,7 @@ export class ChallengeListMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

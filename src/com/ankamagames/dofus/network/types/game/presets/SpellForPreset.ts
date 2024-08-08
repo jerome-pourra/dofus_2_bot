@@ -7,6 +7,9 @@ export class SpellForPreset implements INetworkType
 
 	public static readonly protocolId: number = 1457;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public spellId: number = 0;
 	public shortcuts: Array<number>;
 
@@ -18,6 +21,16 @@ export class SpellForPreset implements INetworkType
     public getTypeId()
     {
         return SpellForPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SpellForPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpellForPreset.endpointServer;
     }
 
     public initSpellForPreset(spellId: number = 0, shortcuts: Array<number> = null): SpellForPreset

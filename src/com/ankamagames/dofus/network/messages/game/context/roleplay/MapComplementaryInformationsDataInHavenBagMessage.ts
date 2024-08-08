@@ -17,6 +17,9 @@ export class MapComplementaryInformationsDataInHavenBagMessage extends MapComple
 
 	public static readonly protocolId: number = 2021;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public ownerInformations: CharacterMinimalInformations;
 	public theme: number = 0;
 	public roomId: number = 0;
@@ -33,6 +36,16 @@ export class MapComplementaryInformationsDataInHavenBagMessage extends MapComple
         return MapComplementaryInformationsDataInHavenBagMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MapComplementaryInformationsDataInHavenBagMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapComplementaryInformationsDataInHavenBagMessage.endpointServer;
+    }
+
     public initMapComplementaryInformationsDataInHavenBagMessage(subAreaId: number = 0, mapId: number = 0, houses: Array<HouseInformations> = null, actors: Array<GameRolePlayActorInformations> = null, interactiveElements: Array<InteractiveElement> = null, statedElements: Array<StatedElement> = null, obstacles: Array<MapObstacle> = null, fights: Array<FightCommonInformations> = null, hasAggressiveMonsters: boolean = false, fightStartPositions: FightStartingPositions = null, ownerInformations: CharacterMinimalInformations = null, theme: number = 0, roomId: number = 0, maxRoomId: number = 0): MapComplementaryInformationsDataInHavenBagMessage
     {
         super.initMapComplementaryInformationsDataMessage(subAreaId,mapId,houses,actors,interactiveElements,statedElements,obstacles,fights,hasAggressiveMonsters,fightStartPositions);
@@ -47,7 +60,7 @@ export class MapComplementaryInformationsDataInHavenBagMessage extends MapComple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

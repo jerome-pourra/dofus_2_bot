@@ -9,6 +9,9 @@ export class GuildMotdSetErrorMessage extends SocialNoticeSetErrorMessage implem
 
 	public static readonly protocolId: number = 6422;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class GuildMotdSetErrorMessage extends SocialNoticeSetErrorMessage implem
     public getMessageId()
     {
         return GuildMotdSetErrorMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildMotdSetErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildMotdSetErrorMessage.endpointServer;
     }
 
     public initGuildMotdSetErrorMessage(reason: number = 0): GuildMotdSetErrorMessage
@@ -29,7 +42,7 @@ export class GuildMotdSetErrorMessage extends SocialNoticeSetErrorMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

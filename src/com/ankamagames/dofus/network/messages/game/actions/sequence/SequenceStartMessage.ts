@@ -9,6 +9,9 @@ export class SequenceStartMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 7231;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public sequenceType: number = 0;
 	public authorId: number = 0;
 
@@ -22,6 +25,16 @@ export class SequenceStartMessage extends NetworkMessage implements INetworkMess
         return SequenceStartMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SequenceStartMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SequenceStartMessage.endpointServer;
+    }
+
     public initSequenceStartMessage(sequenceType: number = 0, authorId: number = 0): SequenceStartMessage
     {
         this.sequenceType = sequenceType;
@@ -33,7 +46,7 @@ export class SequenceStartMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

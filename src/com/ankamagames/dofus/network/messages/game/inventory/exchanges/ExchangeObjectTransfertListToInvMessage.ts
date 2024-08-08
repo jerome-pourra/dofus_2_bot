@@ -9,6 +9,9 @@ export class ExchangeObjectTransfertListToInvMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 8793;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public ids: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class ExchangeObjectTransfertListToInvMessage extends NetworkMessage impl
         return ExchangeObjectTransfertListToInvMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeObjectTransfertListToInvMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeObjectTransfertListToInvMessage.endpointServer;
+    }
+
     public initExchangeObjectTransfertListToInvMessage(ids: Array<number> = null): ExchangeObjectTransfertListToInvMessage
     {
         this.ids = ids;
@@ -32,7 +45,7 @@ export class ExchangeObjectTransfertListToInvMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class CompassUpdatePartyMemberMessage extends CompassUpdateMessage implem
 
 	public static readonly protocolId: number = 9981;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public memberId: number = 0;
 	public active: boolean = false;
 
@@ -21,6 +24,16 @@ export class CompassUpdatePartyMemberMessage extends CompassUpdateMessage implem
     public getMessageId()
     {
         return CompassUpdatePartyMemberMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CompassUpdatePartyMemberMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CompassUpdatePartyMemberMessage.endpointServer;
     }
 
     public initCompassUpdatePartyMemberMessage(type: number = 0, coords: MapCoordinates = null, memberId: number = 0, active: boolean = false): CompassUpdatePartyMemberMessage
@@ -35,7 +48,7 @@ export class CompassUpdatePartyMemberMessage extends CompassUpdateMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

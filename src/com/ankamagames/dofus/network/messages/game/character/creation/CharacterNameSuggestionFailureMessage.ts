@@ -9,6 +9,9 @@ export class CharacterNameSuggestionFailureMessage extends NetworkMessage implem
 
 	public static readonly protocolId: number = 5371;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 1;
 
     public constructor()
@@ -21,6 +24,16 @@ export class CharacterNameSuggestionFailureMessage extends NetworkMessage implem
         return CharacterNameSuggestionFailureMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterNameSuggestionFailureMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterNameSuggestionFailureMessage.endpointServer;
+    }
+
     public initCharacterNameSuggestionFailureMessage(reason: number = 1): CharacterNameSuggestionFailureMessage
     {
         this.reason = reason;
@@ -31,7 +44,7 @@ export class CharacterNameSuggestionFailureMessage extends NetworkMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

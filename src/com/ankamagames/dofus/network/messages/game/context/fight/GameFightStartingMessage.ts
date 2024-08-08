@@ -9,6 +9,9 @@ export class GameFightStartingMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 6131;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public fightType: number = 0;
 	public fightId: number = 0;
 	public attackerId: number = 0;
@@ -27,6 +30,16 @@ export class GameFightStartingMessage extends NetworkMessage implements INetwork
         return GameFightStartingMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightStartingMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightStartingMessage.endpointServer;
+    }
+
     public initGameFightStartingMessage(fightType: number = 0, fightId: number = 0, attackerId: number = 0, defenderId: number = 0, containsBoss: boolean = false, monsters: Array<number> = null): GameFightStartingMessage
     {
         this.fightType = fightType;
@@ -42,7 +55,7 @@ export class GameFightStartingMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

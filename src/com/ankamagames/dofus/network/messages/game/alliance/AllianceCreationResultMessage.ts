@@ -9,6 +9,9 @@ export class AllianceCreationResultMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 7302;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public result: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AllianceCreationResultMessage extends NetworkMessage implements INe
         return AllianceCreationResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceCreationResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceCreationResultMessage.endpointServer;
+    }
+
     public initAllianceCreationResultMessage(result: number = 0): AllianceCreationResultMessage
     {
         this.result = result;
@@ -31,7 +44,7 @@ export class AllianceCreationResultMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

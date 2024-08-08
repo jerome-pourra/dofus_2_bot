@@ -12,6 +12,9 @@ export class PartyMemberInformations extends CharacterBaseInformations implement
 
 	public static readonly protocolId: number = 9391;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public lifePoints: number = 0;
 	public maxLifePoints: number = 0;
 	public prospecting: number = 0;
@@ -35,6 +38,16 @@ export class PartyMemberInformations extends CharacterBaseInformations implement
     public getTypeId()
     {
         return PartyMemberInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyMemberInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyMemberInformations.endpointServer;
     }
 
     public initPartyMemberInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0, sex: boolean = false, lifePoints: number = 0, maxLifePoints: number = 0, prospecting: number = 0, regenRate: number = 0, initiative: number = 0, alignmentSide: number = 0, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, status: PlayerStatus = null, entities: Array<PartyEntityBaseInformation> = null): PartyMemberInformations

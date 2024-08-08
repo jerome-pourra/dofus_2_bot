@@ -9,6 +9,9 @@ export class LivingObjectChangeSkinRequestMessage extends NetworkMessage impleme
 
 	public static readonly protocolId: number = 2511;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public livingUID: number = 0;
 	public livingPosition: number = 0;
 	public skinId: number = 0;
@@ -23,6 +26,16 @@ export class LivingObjectChangeSkinRequestMessage extends NetworkMessage impleme
         return LivingObjectChangeSkinRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return LivingObjectChangeSkinRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return LivingObjectChangeSkinRequestMessage.endpointServer;
+    }
+
     public initLivingObjectChangeSkinRequestMessage(livingUID: number = 0, livingPosition: number = 0, skinId: number = 0): LivingObjectChangeSkinRequestMessage
     {
         this.livingUID = livingUID;
@@ -35,7 +48,7 @@ export class LivingObjectChangeSkinRequestMessage extends NetworkMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

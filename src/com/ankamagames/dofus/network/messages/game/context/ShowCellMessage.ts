@@ -9,6 +9,9 @@ export class ShowCellMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 9194;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public sourceId: number = 0;
 	public cellId: number = 0;
 
@@ -22,6 +25,16 @@ export class ShowCellMessage extends NetworkMessage implements INetworkMessage
         return ShowCellMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ShowCellMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShowCellMessage.endpointServer;
+    }
+
     public initShowCellMessage(sourceId: number = 0, cellId: number = 0): ShowCellMessage
     {
         this.sourceId = sourceId;
@@ -33,7 +46,7 @@ export class ShowCellMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

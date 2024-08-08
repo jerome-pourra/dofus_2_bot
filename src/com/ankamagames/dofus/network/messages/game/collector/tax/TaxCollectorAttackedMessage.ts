@@ -10,6 +10,9 @@ export class TaxCollectorAttackedMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 5361;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public firstNameId: number = 0;
 	public lastNameId: number = 0;
 	public worldX: number = 0;
@@ -29,6 +32,16 @@ export class TaxCollectorAttackedMessage extends NetworkMessage implements INetw
         return TaxCollectorAttackedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TaxCollectorAttackedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorAttackedMessage.endpointServer;
+    }
+
     public initTaxCollectorAttackedMessage(firstNameId: number = 0, lastNameId: number = 0, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, alliance: BasicAllianceInformations = null): TaxCollectorAttackedMessage
     {
         this.firstNameId = firstNameId;
@@ -45,7 +58,7 @@ export class TaxCollectorAttackedMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class FriendSpouseJoinRequestMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 2260;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class FriendSpouseJoinRequestMessage extends NetworkMessage implements IN
     public getMessageId()
     {
         return FriendSpouseJoinRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FriendSpouseJoinRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendSpouseJoinRequestMessage.endpointServer;
     }
 
     public initFriendSpouseJoinRequestMessage(): FriendSpouseJoinRequestMessage
@@ -28,7 +41,7 @@ export class FriendSpouseJoinRequestMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

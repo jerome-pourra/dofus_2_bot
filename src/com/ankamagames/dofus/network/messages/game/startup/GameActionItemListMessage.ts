@@ -10,6 +10,9 @@ export class GameActionItemListMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 6041;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public actions: Array<GameActionItem>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameActionItemListMessage extends NetworkMessage implements INetwor
         return GameActionItemListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameActionItemListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionItemListMessage.endpointServer;
+    }
+
     public initGameActionItemListMessage(actions: Array<GameActionItem> = null): GameActionItemListMessage
     {
         this.actions = actions;
@@ -33,7 +46,7 @@ export class GameActionItemListMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

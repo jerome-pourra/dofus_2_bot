@@ -10,6 +10,9 @@ export class GuildListApplicationModifiedMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 7224;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public apply: SocialApplicationInformation;
 	public state: number = 0;
 	public playerId: number = 0;
@@ -25,6 +28,16 @@ export class GuildListApplicationModifiedMessage extends NetworkMessage implemen
         return GuildListApplicationModifiedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildListApplicationModifiedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildListApplicationModifiedMessage.endpointServer;
+    }
+
     public initGuildListApplicationModifiedMessage(apply: SocialApplicationInformation = null, state: number = 0, playerId: number = 0): GuildListApplicationModifiedMessage
     {
         this.apply = apply;
@@ -37,7 +50,7 @@ export class GuildListApplicationModifiedMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

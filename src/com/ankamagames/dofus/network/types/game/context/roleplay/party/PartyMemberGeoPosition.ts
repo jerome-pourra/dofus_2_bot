@@ -7,6 +7,9 @@ export class PartyMemberGeoPosition implements INetworkType
 
 	public static readonly protocolId: number = 5313;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public memberId: number = 0;
 	public worldX: number = 0;
 	public worldY: number = 0;
@@ -21,6 +24,16 @@ export class PartyMemberGeoPosition implements INetworkType
     public getTypeId()
     {
         return PartyMemberGeoPosition.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyMemberGeoPosition.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyMemberGeoPosition.endpointServer;
     }
 
     public initPartyMemberGeoPosition(memberId: number = 0, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0): PartyMemberGeoPosition

@@ -10,6 +10,9 @@ export class WatchQuestListMessage extends QuestListMessage implements INetworkM
 
 	public static readonly protocolId: number = 5644;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerId: number = 0;
 
     public constructor()
@@ -20,6 +23,16 @@ export class WatchQuestListMessage extends QuestListMessage implements INetworkM
     public getMessageId()
     {
         return WatchQuestListMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return WatchQuestListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return WatchQuestListMessage.endpointServer;
     }
 
     public initWatchQuestListMessage(finishedQuestsIds: Array<number> = null, finishedQuestsCounts: Array<number> = null, activeQuests: Array<QuestActiveInformations> = null, reinitDoneQuestsIds: Array<number> = null, playerId: number = 0): WatchQuestListMessage
@@ -33,7 +46,7 @@ export class WatchQuestListMessage extends QuestListMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

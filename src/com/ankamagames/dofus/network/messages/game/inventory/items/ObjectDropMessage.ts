@@ -9,6 +9,9 @@ export class ObjectDropMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 2531;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectUID: number = 0;
 	public quantity: number = 0;
 
@@ -22,6 +25,16 @@ export class ObjectDropMessage extends NetworkMessage implements INetworkMessage
         return ObjectDropMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectDropMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectDropMessage.endpointServer;
+    }
+
     public initObjectDropMessage(objectUID: number = 0, quantity: number = 0): ObjectDropMessage
     {
         this.objectUID = objectUID;
@@ -33,7 +46,7 @@ export class ObjectDropMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

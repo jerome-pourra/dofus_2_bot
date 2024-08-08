@@ -8,6 +8,9 @@ export class CharacterCharacteristicDetailed extends CharacterCharacteristic imp
 
 	public static readonly protocolId: number = 901;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public base: number = 0;
 	public additional: number = 0;
 	public objectsAndMountBonus: number = 0;
@@ -22,6 +25,16 @@ export class CharacterCharacteristicDetailed extends CharacterCharacteristic imp
     public getTypeId()
     {
         return CharacterCharacteristicDetailed.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterCharacteristicDetailed.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterCharacteristicDetailed.endpointServer;
     }
 
     public initCharacterCharacteristicDetailed(characteristicId: number = 0, base: number = 0, additional: number = 0, objectsAndMountBonus: number = 0, alignGiftBonus: number = 0, contextModif: number = 0): CharacterCharacteristicDetailed

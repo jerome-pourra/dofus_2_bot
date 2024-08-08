@@ -10,6 +10,9 @@ export class GameEntityDispositionMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 4;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public disposition: IdentifiedEntityDispositionInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameEntityDispositionMessage extends NetworkMessage implements INet
         return GameEntityDispositionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameEntityDispositionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameEntityDispositionMessage.endpointServer;
+    }
+
     public initGameEntityDispositionMessage(disposition: IdentifiedEntityDispositionInformations = null): GameEntityDispositionMessage
     {
         this.disposition = disposition;
@@ -33,7 +46,7 @@ export class GameEntityDispositionMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

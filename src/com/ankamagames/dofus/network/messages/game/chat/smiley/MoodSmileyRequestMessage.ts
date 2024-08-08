@@ -9,6 +9,9 @@ export class MoodSmileyRequestMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 6420;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public smileyId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class MoodSmileyRequestMessage extends NetworkMessage implements INetwork
         return MoodSmileyRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MoodSmileyRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MoodSmileyRequestMessage.endpointServer;
+    }
+
     public initMoodSmileyRequestMessage(smileyId: number = 0): MoodSmileyRequestMessage
     {
         this.smileyId = smileyId;
@@ -31,7 +44,7 @@ export class MoodSmileyRequestMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

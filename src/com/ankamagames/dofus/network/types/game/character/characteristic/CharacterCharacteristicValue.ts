@@ -8,6 +8,9 @@ export class CharacterCharacteristicValue extends CharacterCharacteristic implem
 
 	public static readonly protocolId: number = 3951;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public total: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class CharacterCharacteristicValue extends CharacterCharacteristic implem
     public getTypeId()
     {
         return CharacterCharacteristicValue.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterCharacteristicValue.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterCharacteristicValue.endpointServer;
     }
 
     public initCharacterCharacteristicValue(characteristicId: number = 0, total: number = 0): CharacterCharacteristicValue

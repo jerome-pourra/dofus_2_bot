@@ -9,6 +9,9 @@ export class ObjectGroundAddedMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 3774;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public cellId: number = 0;
 	public objectGID: number = 0;
 
@@ -22,6 +25,16 @@ export class ObjectGroundAddedMessage extends NetworkMessage implements INetwork
         return ObjectGroundAddedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectGroundAddedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectGroundAddedMessage.endpointServer;
+    }
+
     public initObjectGroundAddedMessage(cellId: number = 0, objectGID: number = 0): ObjectGroundAddedMessage
     {
         this.cellId = cellId;
@@ -33,7 +46,7 @@ export class ObjectGroundAddedMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

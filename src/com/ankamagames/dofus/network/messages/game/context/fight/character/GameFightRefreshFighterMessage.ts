@@ -11,6 +11,9 @@ export class GameFightRefreshFighterMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 3786;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public informations: GameContextActorInformations;
 
     public constructor()
@@ -24,6 +27,16 @@ export class GameFightRefreshFighterMessage extends NetworkMessage implements IN
         return GameFightRefreshFighterMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightRefreshFighterMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightRefreshFighterMessage.endpointServer;
+    }
+
     public initGameFightRefreshFighterMessage(informations: GameContextActorInformations = null): GameFightRefreshFighterMessage
     {
         this.informations = informations;
@@ -34,7 +47,7 @@ export class GameFightRefreshFighterMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

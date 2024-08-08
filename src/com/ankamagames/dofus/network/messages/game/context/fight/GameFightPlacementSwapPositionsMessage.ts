@@ -10,6 +10,9 @@ export class GameFightPlacementSwapPositionsMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 5606;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dispositions: Array<IdentifiedEntityDispositionInformations>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameFightPlacementSwapPositionsMessage extends NetworkMessage imple
         return GameFightPlacementSwapPositionsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightPlacementSwapPositionsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightPlacementSwapPositionsMessage.endpointServer;
+    }
+
     public initGameFightPlacementSwapPositionsMessage(dispositions: Array<IdentifiedEntityDispositionInformations> = null): GameFightPlacementSwapPositionsMessage
     {
         this.dispositions = dispositions;
@@ -33,7 +46,7 @@ export class GameFightPlacementSwapPositionsMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

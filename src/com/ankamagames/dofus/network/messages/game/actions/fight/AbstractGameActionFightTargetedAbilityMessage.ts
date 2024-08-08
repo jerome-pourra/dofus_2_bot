@@ -10,6 +10,9 @@ export class AbstractGameActionFightTargetedAbilityMessage extends AbstractGameA
 
 	public static readonly protocolId: number = 5172;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public targetId: number = 0;
 	public destinationCellId: number = 0;
 	public critical: number = 1;
@@ -24,6 +27,16 @@ export class AbstractGameActionFightTargetedAbilityMessage extends AbstractGameA
     public getMessageId()
     {
         return AbstractGameActionFightTargetedAbilityMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AbstractGameActionFightTargetedAbilityMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AbstractGameActionFightTargetedAbilityMessage.endpointServer;
     }
 
     public initAbstractGameActionFightTargetedAbilityMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, destinationCellId: number = 0, critical: number = 1, silentCast: boolean = false, verboseCast: boolean = false): AbstractGameActionFightTargetedAbilityMessage
@@ -41,7 +54,7 @@ export class AbstractGameActionFightTargetedAbilityMessage extends AbstractGameA
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

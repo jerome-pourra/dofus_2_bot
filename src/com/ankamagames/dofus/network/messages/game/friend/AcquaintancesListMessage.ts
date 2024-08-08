@@ -11,6 +11,9 @@ export class AcquaintancesListMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 5647;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public acquaintanceList: Array<AcquaintanceInformation>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class AcquaintancesListMessage extends NetworkMessage implements INetwork
         return AcquaintancesListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AcquaintancesListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AcquaintancesListMessage.endpointServer;
+    }
+
     public initAcquaintancesListMessage(acquaintanceList: Array<AcquaintanceInformation> = null): AcquaintancesListMessage
     {
         this.acquaintanceList = acquaintanceList;
@@ -34,7 +47,7 @@ export class AcquaintancesListMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

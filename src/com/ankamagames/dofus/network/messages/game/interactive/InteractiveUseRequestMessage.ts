@@ -9,6 +9,9 @@ export class InteractiveUseRequestMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 1424;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public elemId: number = 0;
 	public skillInstanceUid: number = 0;
 
@@ -22,6 +25,16 @@ export class InteractiveUseRequestMessage extends NetworkMessage implements INet
         return InteractiveUseRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return InteractiveUseRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InteractiveUseRequestMessage.endpointServer;
+    }
+
     public initInteractiveUseRequestMessage(elemId: number = 0, skillInstanceUid: number = 0): InteractiveUseRequestMessage
     {
         this.elemId = elemId;
@@ -33,7 +46,7 @@ export class InteractiveUseRequestMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

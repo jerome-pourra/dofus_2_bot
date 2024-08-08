@@ -10,6 +10,9 @@ export class ConfirmationOfListeningTaxCollectorUpdatesMessage extends NetworkMe
 
 	public static readonly protocolId: number = 1625;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public information: TaxCollectorInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ConfirmationOfListeningTaxCollectorUpdatesMessage extends NetworkMe
         return ConfirmationOfListeningTaxCollectorUpdatesMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ConfirmationOfListeningTaxCollectorUpdatesMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ConfirmationOfListeningTaxCollectorUpdatesMessage.endpointServer;
+    }
+
     public initConfirmationOfListeningTaxCollectorUpdatesMessage(information: TaxCollectorInformations = null): ConfirmationOfListeningTaxCollectorUpdatesMessage
     {
         this.information = information;
@@ -33,7 +46,7 @@ export class ConfirmationOfListeningTaxCollectorUpdatesMessage extends NetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class AchievementPioneerRank implements INetworkType
 
 	public static readonly protocolId: number = 6487;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public achievementId: number = 0;
 	public pioneerRank: number = 0;
 
@@ -18,6 +21,16 @@ export class AchievementPioneerRank implements INetworkType
     public getTypeId()
     {
         return AchievementPioneerRank.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AchievementPioneerRank.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementPioneerRank.endpointServer;
     }
 
     public initAchievementPioneerRank(achievementId: number = 0, pioneerRank: number = 0): AchievementPioneerRank

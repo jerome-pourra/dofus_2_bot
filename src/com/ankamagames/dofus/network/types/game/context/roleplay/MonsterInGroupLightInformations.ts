@@ -7,6 +7,9 @@ export class MonsterInGroupLightInformations implements INetworkType
 
 	public static readonly protocolId: number = 1537;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public genericId: number = 0;
 	public grade: number = 0;
 	public level: number = 0;
@@ -19,6 +22,16 @@ export class MonsterInGroupLightInformations implements INetworkType
     public getTypeId()
     {
         return MonsterInGroupLightInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MonsterInGroupLightInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MonsterInGroupLightInformations.endpointServer;
     }
 
     public initMonsterInGroupLightInformations(genericId: number = 0, grade: number = 0, level: number = 0): MonsterInGroupLightInformations

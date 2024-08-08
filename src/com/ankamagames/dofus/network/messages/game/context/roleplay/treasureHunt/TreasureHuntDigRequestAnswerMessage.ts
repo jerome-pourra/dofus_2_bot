@@ -9,6 +9,9 @@ export class TreasureHuntDigRequestAnswerMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 3567;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public questType: number = 0;
 	public result: number = 0;
 
@@ -22,6 +25,16 @@ export class TreasureHuntDigRequestAnswerMessage extends NetworkMessage implemen
         return TreasureHuntDigRequestAnswerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TreasureHuntDigRequestAnswerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntDigRequestAnswerMessage.endpointServer;
+    }
+
     public initTreasureHuntDigRequestAnswerMessage(questType: number = 0, result: number = 0): TreasureHuntDigRequestAnswerMessage
     {
         this.questType = questType;
@@ -33,7 +46,7 @@ export class TreasureHuntDigRequestAnswerMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

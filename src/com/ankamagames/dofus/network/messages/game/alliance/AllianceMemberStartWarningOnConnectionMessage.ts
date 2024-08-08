@@ -9,6 +9,9 @@ export class AllianceMemberStartWarningOnConnectionMessage extends NetworkMessag
 
 	public static readonly protocolId: number = 3707;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class AllianceMemberStartWarningOnConnectionMessage extends NetworkMessag
     public getMessageId()
     {
         return AllianceMemberStartWarningOnConnectionMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceMemberStartWarningOnConnectionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceMemberStartWarningOnConnectionMessage.endpointServer;
     }
 
     public initAllianceMemberStartWarningOnConnectionMessage(): AllianceMemberStartWarningOnConnectionMessage
@@ -28,7 +41,7 @@ export class AllianceMemberStartWarningOnConnectionMessage extends NetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

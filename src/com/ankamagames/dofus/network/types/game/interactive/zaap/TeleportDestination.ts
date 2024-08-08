@@ -7,6 +7,9 @@ export class TeleportDestination implements INetworkType
 
 	public static readonly protocolId: number = 1570;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public type: number = 0;
 	public mapId: number = 0;
 	public subAreaId: number = 0;
@@ -21,6 +24,16 @@ export class TeleportDestination implements INetworkType
     public getTypeId()
     {
         return TeleportDestination.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TeleportDestination.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TeleportDestination.endpointServer;
     }
 
     public initTeleportDestination(type: number = 0, mapId: number = 0, subAreaId: number = 0, level: number = 0, cost: number = 0): TeleportDestination

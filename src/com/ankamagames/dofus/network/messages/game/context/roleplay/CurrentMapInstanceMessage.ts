@@ -9,6 +9,9 @@ export class CurrentMapInstanceMessage extends CurrentMapMessage implements INet
 
 	public static readonly protocolId: number = 5476;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public instantiatedMapId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class CurrentMapInstanceMessage extends CurrentMapMessage implements INet
     public getMessageId()
     {
         return CurrentMapInstanceMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CurrentMapInstanceMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CurrentMapInstanceMessage.endpointServer;
     }
 
     public initCurrentMapInstanceMessage(mapId: number = 0, instantiatedMapId: number = 0): CurrentMapInstanceMessage
@@ -32,7 +45,7 @@ export class CurrentMapInstanceMessage extends CurrentMapMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

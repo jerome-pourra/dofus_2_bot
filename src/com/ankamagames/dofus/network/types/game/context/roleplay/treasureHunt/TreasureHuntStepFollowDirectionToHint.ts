@@ -8,6 +8,9 @@ export class TreasureHuntStepFollowDirectionToHint extends TreasureHuntStep impl
 
 	public static readonly protocolId: number = 8809;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public direction: number = 1;
 	public npcId: number = 0;
 
@@ -19,6 +22,16 @@ export class TreasureHuntStepFollowDirectionToHint extends TreasureHuntStep impl
     public getTypeId()
     {
         return TreasureHuntStepFollowDirectionToHint.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TreasureHuntStepFollowDirectionToHint.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntStepFollowDirectionToHint.endpointServer;
     }
 
     public initTreasureHuntStepFollowDirectionToHint(direction: number = 1, npcId: number = 0): TreasureHuntStepFollowDirectionToHint

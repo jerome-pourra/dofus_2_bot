@@ -7,6 +7,9 @@ export class JobBookSubscription implements INetworkType
 
 	public static readonly protocolId: number = 5496;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public jobId: number = 0;
 	public subscribed: boolean = false;
 
@@ -18,6 +21,16 @@ export class JobBookSubscription implements INetworkType
     public getTypeId()
     {
         return JobBookSubscription.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return JobBookSubscription.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobBookSubscription.endpointServer;
     }
 
     public initJobBookSubscription(jobId: number = 0, subscribed: boolean = false): JobBookSubscription

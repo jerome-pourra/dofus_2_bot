@@ -8,6 +8,9 @@ export class InteractiveElementNamedSkill extends InteractiveElementSkill implem
 
 	public static readonly protocolId: number = 7880;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public nameId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class InteractiveElementNamedSkill extends InteractiveElementSkill implem
     public getTypeId()
     {
         return InteractiveElementNamedSkill.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return InteractiveElementNamedSkill.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InteractiveElementNamedSkill.endpointServer;
     }
 
     public initInteractiveElementNamedSkill(skillId: number = 0, skillInstanceUid: number = 0, nameId: number = 0): InteractiveElementNamedSkill

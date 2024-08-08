@@ -9,6 +9,9 @@ export class AllianceMemberOnlineStatusMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 5529;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public memberId: number = 0;
 	public online: boolean = false;
 
@@ -22,6 +25,16 @@ export class AllianceMemberOnlineStatusMessage extends NetworkMessage implements
         return AllianceMemberOnlineStatusMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceMemberOnlineStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceMemberOnlineStatusMessage.endpointServer;
+    }
+
     public initAllianceMemberOnlineStatusMessage(memberId: number = 0, online: boolean = false): AllianceMemberOnlineStatusMessage
     {
         this.memberId = memberId;
@@ -33,7 +46,7 @@ export class AllianceMemberOnlineStatusMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

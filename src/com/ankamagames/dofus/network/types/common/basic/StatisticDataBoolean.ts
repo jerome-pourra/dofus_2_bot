@@ -8,6 +8,9 @@ export class StatisticDataBoolean extends StatisticData implements INetworkType
 
 	public static readonly protocolId: number = 7901;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public value: boolean = false;
 
     public constructor()
@@ -18,6 +21,16 @@ export class StatisticDataBoolean extends StatisticData implements INetworkType
     public getTypeId()
     {
         return StatisticDataBoolean.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return StatisticDataBoolean.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StatisticDataBoolean.endpointServer;
     }
 
     public initStatisticDataBoolean(value: boolean = false): StatisticDataBoolean

@@ -12,6 +12,9 @@ export class AllianceFactsMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 9269;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public infos: AllianceFactSheetInformation;
 	public members: Array<CharacterMinimalSocialPublicInformations>;
 	public controlledSubareaIds: Array<number>;
@@ -31,6 +34,16 @@ export class AllianceFactsMessage extends NetworkMessage implements INetworkMess
         return AllianceFactsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceFactsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceFactsMessage.endpointServer;
+    }
+
     public initAllianceFactsMessage(infos: AllianceFactSheetInformation = null, members: Array<CharacterMinimalSocialPublicInformations> = null, controlledSubareaIds: Array<number> = null, leaderCharacterId: number = 0, leaderCharacterName: string = ""): AllianceFactsMessage
     {
         this.infos = infos;
@@ -45,7 +58,7 @@ export class AllianceFactsMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

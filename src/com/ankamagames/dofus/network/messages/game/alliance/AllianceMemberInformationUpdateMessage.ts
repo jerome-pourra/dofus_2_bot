@@ -10,6 +10,9 @@ export class AllianceMemberInformationUpdateMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 3877;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public member: AllianceMemberInfo;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AllianceMemberInformationUpdateMessage extends NetworkMessage imple
         return AllianceMemberInformationUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceMemberInformationUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceMemberInformationUpdateMessage.endpointServer;
+    }
+
     public initAllianceMemberInformationUpdateMessage(member: AllianceMemberInfo = null): AllianceMemberInformationUpdateMessage
     {
         this.member = member;
@@ -33,7 +46,7 @@ export class AllianceMemberInformationUpdateMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class AbstractPartyMemberInFightMessage extends AbstractPartyMessage impl
 
 	public static readonly protocolId: number = 6938;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 0;
 	public memberId: number = 0;
 	public memberAccountId: number = 0;
@@ -24,6 +27,16 @@ export class AbstractPartyMemberInFightMessage extends AbstractPartyMessage impl
     public getMessageId()
     {
         return AbstractPartyMemberInFightMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AbstractPartyMemberInFightMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AbstractPartyMemberInFightMessage.endpointServer;
     }
 
     public initAbstractPartyMemberInFightMessage(partyId: number = 0, reason: number = 0, memberId: number = 0, memberAccountId: number = 0, memberName: string = "", fightId: number = 0, timeBeforeFightStart: number = 0): AbstractPartyMemberInFightMessage
@@ -42,7 +55,7 @@ export class AbstractPartyMemberInFightMessage extends AbstractPartyMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

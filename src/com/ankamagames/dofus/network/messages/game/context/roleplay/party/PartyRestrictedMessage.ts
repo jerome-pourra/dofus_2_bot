@@ -9,6 +9,9 @@ export class PartyRestrictedMessage extends AbstractPartyMessage implements INet
 
 	public static readonly protocolId: number = 2879;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public restricted: boolean = false;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyRestrictedMessage extends AbstractPartyMessage implements INet
     public getMessageId()
     {
         return PartyRestrictedMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyRestrictedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyRestrictedMessage.endpointServer;
     }
 
     public initPartyRestrictedMessage(partyId: number = 0, restricted: boolean = false): PartyRestrictedMessage
@@ -32,7 +45,7 @@ export class PartyRestrictedMessage extends AbstractPartyMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

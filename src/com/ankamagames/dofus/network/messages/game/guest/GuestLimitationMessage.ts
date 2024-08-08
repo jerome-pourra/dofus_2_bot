@@ -9,6 +9,9 @@ export class GuestLimitationMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 7707;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuestLimitationMessage extends NetworkMessage implements INetworkMe
         return GuestLimitationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuestLimitationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuestLimitationMessage.endpointServer;
+    }
+
     public initGuestLimitationMessage(reason: number = 0): GuestLimitationMessage
     {
         this.reason = reason;
@@ -31,7 +44,7 @@ export class GuestLimitationMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

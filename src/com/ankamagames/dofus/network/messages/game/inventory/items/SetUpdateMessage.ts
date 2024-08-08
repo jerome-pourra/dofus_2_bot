@@ -11,6 +11,9 @@ export class SetUpdateMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 7483;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public setId: number = 0;
 	public setObjects: Array<number>;
 	public setEffects: Array<ObjectEffect>;
@@ -27,6 +30,16 @@ export class SetUpdateMessage extends NetworkMessage implements INetworkMessage
         return SetUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SetUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SetUpdateMessage.endpointServer;
+    }
+
     public initSetUpdateMessage(setId: number = 0, setObjects: Array<number> = null, setEffects: Array<ObjectEffect> = null): SetUpdateMessage
     {
         this.setId = setId;
@@ -39,7 +52,7 @@ export class SetUpdateMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

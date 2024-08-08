@@ -9,6 +9,9 @@ export class GameRolePlaySpellAnimMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 1173;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public casterId: number = 0;
 	public targetCellId: number = 0;
 	public spellId: number = 0;
@@ -25,6 +28,16 @@ export class GameRolePlaySpellAnimMessage extends NetworkMessage implements INet
         return GameRolePlaySpellAnimMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlaySpellAnimMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlaySpellAnimMessage.endpointServer;
+    }
+
     public initGameRolePlaySpellAnimMessage(casterId: number = 0, targetCellId: number = 0, spellId: number = 0, spellLevel: number = 0, direction: number = 0): GameRolePlaySpellAnimMessage
     {
         this.casterId = casterId;
@@ -39,7 +52,7 @@ export class GameRolePlaySpellAnimMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

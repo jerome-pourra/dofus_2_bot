@@ -9,6 +9,9 @@ export class TeleportOnSameMapMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 6669;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public targetId: number = 0;
 	public cellId: number = 0;
 
@@ -22,6 +25,16 @@ export class TeleportOnSameMapMessage extends NetworkMessage implements INetwork
         return TeleportOnSameMapMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TeleportOnSameMapMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TeleportOnSameMapMessage.endpointServer;
+    }
+
     public initTeleportOnSameMapMessage(targetId: number = 0, cellId: number = 0): TeleportOnSameMapMessage
     {
         this.targetId = targetId;
@@ -33,7 +46,7 @@ export class TeleportOnSameMapMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

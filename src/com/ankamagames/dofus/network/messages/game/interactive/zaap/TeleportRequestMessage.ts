@@ -9,6 +9,9 @@ export class TeleportRequestMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 9439;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public sourceType: number = 0;
 	public destinationType: number = 0;
 	public mapId: number = 0;
@@ -23,6 +26,16 @@ export class TeleportRequestMessage extends NetworkMessage implements INetworkMe
         return TeleportRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TeleportRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TeleportRequestMessage.endpointServer;
+    }
+
     public initTeleportRequestMessage(sourceType: number = 0, destinationType: number = 0, mapId: number = 0): TeleportRequestMessage
     {
         this.sourceType = sourceType;
@@ -35,7 +48,7 @@ export class TeleportRequestMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

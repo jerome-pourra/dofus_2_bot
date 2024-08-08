@@ -9,6 +9,9 @@ export class LocalizedChatSmileyMessage extends ChatSmileyMessage implements INe
 
 	public static readonly protocolId: number = 8626;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public cellId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class LocalizedChatSmileyMessage extends ChatSmileyMessage implements INe
     public getMessageId()
     {
         return LocalizedChatSmileyMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return LocalizedChatSmileyMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return LocalizedChatSmileyMessage.endpointServer;
     }
 
     public initLocalizedChatSmileyMessage(entityId: number = 0, smileyId: number = 0, accountId: number = 0, cellId: number = 0): LocalizedChatSmileyMessage
@@ -32,7 +45,7 @@ export class LocalizedChatSmileyMessage extends ChatSmileyMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

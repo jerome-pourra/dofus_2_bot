@@ -10,6 +10,9 @@ export class PrismAddOrUpdateMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 1525;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public prism: PrismGeolocalizedInformation;
 
     public constructor()
@@ -23,6 +26,16 @@ export class PrismAddOrUpdateMessage extends NetworkMessage implements INetworkM
         return PrismAddOrUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PrismAddOrUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PrismAddOrUpdateMessage.endpointServer;
+    }
+
     public initPrismAddOrUpdateMessage(prism: PrismGeolocalizedInformation = null): PrismAddOrUpdateMessage
     {
         this.prism = prism;
@@ -33,7 +46,7 @@ export class PrismAddOrUpdateMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

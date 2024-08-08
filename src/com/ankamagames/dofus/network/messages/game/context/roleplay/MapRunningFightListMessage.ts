@@ -10,6 +10,9 @@ export class MapRunningFightListMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 8225;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public fights: Array<FightExternalInformations>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class MapRunningFightListMessage extends NetworkMessage implements INetwo
         return MapRunningFightListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MapRunningFightListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapRunningFightListMessage.endpointServer;
+    }
+
     public initMapRunningFightListMessage(fights: Array<FightExternalInformations> = null): MapRunningFightListMessage
     {
         this.fights = fights;
@@ -33,7 +46,7 @@ export class MapRunningFightListMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

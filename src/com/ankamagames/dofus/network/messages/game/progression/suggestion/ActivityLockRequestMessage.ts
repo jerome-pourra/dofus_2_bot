@@ -9,6 +9,9 @@ export class ActivityLockRequestMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 5738;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public activityId: number = 0;
 	public lock: boolean = false;
 
@@ -22,6 +25,16 @@ export class ActivityLockRequestMessage extends NetworkMessage implements INetwo
         return ActivityLockRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ActivityLockRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ActivityLockRequestMessage.endpointServer;
+    }
+
     public initActivityLockRequestMessage(activityId: number = 0, lock: boolean = false): ActivityLockRequestMessage
     {
         this.activityId = activityId;
@@ -33,7 +46,7 @@ export class ActivityLockRequestMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

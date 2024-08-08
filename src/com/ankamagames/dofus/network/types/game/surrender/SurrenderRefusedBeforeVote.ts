@@ -8,6 +8,9 @@ export class SurrenderRefusedBeforeVote extends SurrenderRefused implements INet
 
 	public static readonly protocolId: number = 2726;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -16,6 +19,16 @@ export class SurrenderRefusedBeforeVote extends SurrenderRefused implements INet
     public getTypeId()
     {
         return SurrenderRefusedBeforeVote.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SurrenderRefusedBeforeVote.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SurrenderRefusedBeforeVote.endpointServer;
     }
 
     public initSurrenderRefusedBeforeVote(): SurrenderRefusedBeforeVote

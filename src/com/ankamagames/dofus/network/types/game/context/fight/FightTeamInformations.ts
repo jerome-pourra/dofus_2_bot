@@ -10,6 +10,9 @@ export class FightTeamInformations extends AbstractFightTeamInformations impleme
 
 	public static readonly protocolId: number = 3291;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public teamMembers: Array<FightTeamMemberInformations>;
 
     public constructor()
@@ -21,6 +24,16 @@ export class FightTeamInformations extends AbstractFightTeamInformations impleme
     public getTypeId()
     {
         return FightTeamInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightTeamInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightTeamInformations.endpointServer;
     }
 
     public initFightTeamInformations(teamId: number = 2, leaderId: number = 0, teamSide: number = 0, teamTypeId: number = 0, nbWaves: number = 0, teamMembers: Array<FightTeamMemberInformations> = null): FightTeamInformations

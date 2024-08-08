@@ -9,6 +9,9 @@ export class FriendWarnOnLevelGainStateMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 2158;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public enable: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class FriendWarnOnLevelGainStateMessage extends NetworkMessage implements
         return FriendWarnOnLevelGainStateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FriendWarnOnLevelGainStateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendWarnOnLevelGainStateMessage.endpointServer;
+    }
+
     public initFriendWarnOnLevelGainStateMessage(enable: boolean = false): FriendWarnOnLevelGainStateMessage
     {
         this.enable = enable;
@@ -31,7 +44,7 @@ export class FriendWarnOnLevelGainStateMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

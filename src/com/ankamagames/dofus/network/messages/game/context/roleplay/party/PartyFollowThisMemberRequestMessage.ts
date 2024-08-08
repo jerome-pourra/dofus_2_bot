@@ -9,6 +9,9 @@ export class PartyFollowThisMemberRequestMessage extends PartyFollowMemberReques
 
 	public static readonly protocolId: number = 327;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public enabled: boolean = false;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyFollowThisMemberRequestMessage extends PartyFollowMemberReques
     public getMessageId()
     {
         return PartyFollowThisMemberRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyFollowThisMemberRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyFollowThisMemberRequestMessage.endpointServer;
     }
 
     public initPartyFollowThisMemberRequestMessage(partyId: number = 0, playerId: number = 0, enabled: boolean = false): PartyFollowThisMemberRequestMessage
@@ -32,7 +45,7 @@ export class PartyFollowThisMemberRequestMessage extends PartyFollowMemberReques
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

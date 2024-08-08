@@ -7,6 +7,9 @@ export class SpellModifierMessage implements INetworkType
 
 	public static readonly protocolId: number = 2892;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public spellId: number = 0;
 	public actionType: number = 0;
 	public modifierType: number = 0;
@@ -21,6 +24,16 @@ export class SpellModifierMessage implements INetworkType
     public getTypeId()
     {
         return SpellModifierMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SpellModifierMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpellModifierMessage.endpointServer;
     }
 
     public initSpellModifierMessage(spellId: number = 0, actionType: number = 0, modifierType: number = 0, context: number = 0, equipment: number = 0): SpellModifierMessage

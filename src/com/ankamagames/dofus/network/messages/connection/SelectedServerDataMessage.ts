@@ -9,6 +9,9 @@ export class SelectedServerDataMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 4944;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public serverId: number = 0;
 	public address: string = "";
 	public ports: Array<number>;
@@ -27,6 +30,16 @@ export class SelectedServerDataMessage extends NetworkMessage implements INetwor
         return SelectedServerDataMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SelectedServerDataMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SelectedServerDataMessage.endpointServer;
+    }
+
     public initSelectedServerDataMessage(serverId: number = 0, address: string = "", ports: Array<number> = null, canCreateNewCharacter: boolean = false, ticket: Array<number> = null): SelectedServerDataMessage
     {
         this.serverId = serverId;
@@ -41,7 +54,7 @@ export class SelectedServerDataMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

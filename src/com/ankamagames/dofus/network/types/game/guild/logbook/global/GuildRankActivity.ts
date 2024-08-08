@@ -9,6 +9,9 @@ export class GuildRankActivity extends GuildLogbookEntryBasicInformation impleme
 
 	public static readonly protocolId: number = 3270;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public rankActivityType: number = 0;
 	public guildRankMinimalInfos: RankMinimalInformation;
 
@@ -21,6 +24,16 @@ export class GuildRankActivity extends GuildLogbookEntryBasicInformation impleme
     public getTypeId()
     {
         return GuildRankActivity.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildRankActivity.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildRankActivity.endpointServer;
     }
 
     public initGuildRankActivity(id: number = 0, date: number = 0, rankActivityType: number = 0, guildRankMinimalInfos: RankMinimalInformation = null): GuildRankActivity

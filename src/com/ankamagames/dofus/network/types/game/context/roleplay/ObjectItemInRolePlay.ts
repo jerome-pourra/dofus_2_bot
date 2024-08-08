@@ -7,6 +7,9 @@ export class ObjectItemInRolePlay implements INetworkType
 
 	public static readonly protocolId: number = 1282;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public cellId: number = 0;
 	public objectGID: number = 0;
 
@@ -18,6 +21,16 @@ export class ObjectItemInRolePlay implements INetworkType
     public getTypeId()
     {
         return ObjectItemInRolePlay.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectItemInRolePlay.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectItemInRolePlay.endpointServer;
     }
 
     public initObjectItemInRolePlay(cellId: number = 0, objectGID: number = 0): ObjectItemInRolePlay

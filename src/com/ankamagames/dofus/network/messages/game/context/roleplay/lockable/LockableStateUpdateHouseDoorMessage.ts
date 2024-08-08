@@ -9,6 +9,9 @@ export class LockableStateUpdateHouseDoorMessage extends LockableStateUpdateAbst
 
 	public static readonly protocolId: number = 7692;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public houseId: number = 0;
 	public instanceId: number = 0;
 	public secondHand: boolean = false;
@@ -21,6 +24,16 @@ export class LockableStateUpdateHouseDoorMessage extends LockableStateUpdateAbst
     public getMessageId()
     {
         return LockableStateUpdateHouseDoorMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return LockableStateUpdateHouseDoorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return LockableStateUpdateHouseDoorMessage.endpointServer;
     }
 
     public initLockableStateUpdateHouseDoorMessage(locked: boolean = false, houseId: number = 0, instanceId: number = 0, secondHand: boolean = false): LockableStateUpdateHouseDoorMessage
@@ -36,7 +49,7 @@ export class LockableStateUpdateHouseDoorMessage extends LockableStateUpdateAbst
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

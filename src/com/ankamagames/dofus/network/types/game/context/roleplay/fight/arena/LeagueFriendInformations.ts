@@ -10,6 +10,9 @@ export class LeagueFriendInformations extends AbstractContactInformations implem
 
 	public static readonly protocolId: number = 7750;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerId: number = 0;
 	public playerName: string = "";
 	public breed: number = 0;
@@ -27,6 +30,16 @@ export class LeagueFriendInformations extends AbstractContactInformations implem
     public getTypeId()
     {
         return LeagueFriendInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return LeagueFriendInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return LeagueFriendInformations.endpointServer;
     }
 
     public initLeagueFriendInformations(accountId: number = 0, accountTag: AccountTagInformation = null, playerId: number = 0, playerName: string = "", breed: number = 0, sex: boolean = false, level: number = 0, leagueId: number = 0, totalLeaguePoints: number = 0, ladderPosition: number = 0): LeagueFriendInformations

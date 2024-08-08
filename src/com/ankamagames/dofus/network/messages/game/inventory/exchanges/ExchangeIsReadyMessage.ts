@@ -9,6 +9,9 @@ export class ExchangeIsReadyMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 4377;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 	public ready: boolean = false;
 
@@ -22,6 +25,16 @@ export class ExchangeIsReadyMessage extends NetworkMessage implements INetworkMe
         return ExchangeIsReadyMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeIsReadyMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeIsReadyMessage.endpointServer;
+    }
+
     public initExchangeIsReadyMessage(id: number = 0, ready: boolean = false): ExchangeIsReadyMessage
     {
         this.id = id;
@@ -33,7 +46,7 @@ export class ExchangeIsReadyMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

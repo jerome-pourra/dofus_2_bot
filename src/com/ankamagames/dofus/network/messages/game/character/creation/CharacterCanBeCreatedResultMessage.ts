@@ -9,6 +9,9 @@ export class CharacterCanBeCreatedResultMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 7317;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public yesYouCan: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class CharacterCanBeCreatedResultMessage extends NetworkMessage implement
         return CharacterCanBeCreatedResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterCanBeCreatedResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterCanBeCreatedResultMessage.endpointServer;
+    }
+
     public initCharacterCanBeCreatedResultMessage(yesYouCan: boolean = false): CharacterCanBeCreatedResultMessage
     {
         this.yesYouCan = yesYouCan;
@@ -31,7 +44,7 @@ export class CharacterCanBeCreatedResultMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

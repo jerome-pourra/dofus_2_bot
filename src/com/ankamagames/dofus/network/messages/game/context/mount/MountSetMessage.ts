@@ -10,6 +10,9 @@ export class MountSetMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 110;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mountData: MountClientData;
 
     public constructor()
@@ -23,6 +26,16 @@ export class MountSetMessage extends NetworkMessage implements INetworkMessage
         return MountSetMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MountSetMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountSetMessage.endpointServer;
+    }
+
     public initMountSetMessage(mountData: MountClientData = null): MountSetMessage
     {
         this.mountData = mountData;
@@ -33,7 +46,7 @@ export class MountSetMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

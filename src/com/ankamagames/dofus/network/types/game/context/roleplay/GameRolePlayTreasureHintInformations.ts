@@ -10,6 +10,9 @@ export class GameRolePlayTreasureHintInformations extends GameRolePlayActorInfor
 
 	public static readonly protocolId: number = 9279;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public npcId: number = 0;
 
     public constructor()
@@ -20,6 +23,16 @@ export class GameRolePlayTreasureHintInformations extends GameRolePlayActorInfor
     public getTypeId()
     {
         return GameRolePlayTreasureHintInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayTreasureHintInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayTreasureHintInformations.endpointServer;
     }
 
     public initGameRolePlayTreasureHintInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, npcId: number = 0): GameRolePlayTreasureHintInformations

@@ -7,6 +7,9 @@ export class MountInformationsForPaddock implements INetworkType
 
 	public static readonly protocolId: number = 4252;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public modelId: number = 0;
 	public name: string = "";
 	public ownerName: string = "";
@@ -19,6 +22,16 @@ export class MountInformationsForPaddock implements INetworkType
     public getTypeId()
     {
         return MountInformationsForPaddock.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MountInformationsForPaddock.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountInformationsForPaddock.endpointServer;
     }
 
     public initMountInformationsForPaddock(modelId: number = 0, name: string = "", ownerName: string = ""): MountInformationsForPaddock

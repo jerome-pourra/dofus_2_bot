@@ -8,6 +8,9 @@ export class TaxCollectorLootInformations extends TaxCollectorComplementaryInfor
 
 	public static readonly protocolId: number = 4183;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public pods: number = 0;
 	public itemsValue: number = 0;
 
@@ -19,6 +22,16 @@ export class TaxCollectorLootInformations extends TaxCollectorComplementaryInfor
     public getTypeId()
     {
         return TaxCollectorLootInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TaxCollectorLootInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorLootInformations.endpointServer;
     }
 
     public initTaxCollectorLootInformations(pods: number = 0, itemsValue: number = 0): TaxCollectorLootInformations

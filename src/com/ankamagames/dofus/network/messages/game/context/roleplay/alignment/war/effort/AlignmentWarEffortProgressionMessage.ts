@@ -10,6 +10,9 @@ export class AlignmentWarEffortProgressionMessage extends NetworkMessage impleme
 
 	public static readonly protocolId: number = 2045;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public effortProgressions: Array<AlignmentWarEffortInformation>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AlignmentWarEffortProgressionMessage extends NetworkMessage impleme
         return AlignmentWarEffortProgressionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AlignmentWarEffortProgressionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AlignmentWarEffortProgressionMessage.endpointServer;
+    }
+
     public initAlignmentWarEffortProgressionMessage(effortProgressions: Array<AlignmentWarEffortInformation> = null): AlignmentWarEffortProgressionMessage
     {
         this.effortProgressions = effortProgressions;
@@ -33,7 +46,7 @@ export class AlignmentWarEffortProgressionMessage extends NetworkMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

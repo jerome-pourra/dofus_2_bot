@@ -9,6 +9,9 @@ export class AllianceBulletinSetErrorMessage extends SocialNoticeSetErrorMessage
 
 	public static readonly protocolId: number = 8685;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class AllianceBulletinSetErrorMessage extends SocialNoticeSetErrorMessage
     public getMessageId()
     {
         return AllianceBulletinSetErrorMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceBulletinSetErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceBulletinSetErrorMessage.endpointServer;
     }
 
     public initAllianceBulletinSetErrorMessage(reason: number = 0): AllianceBulletinSetErrorMessage
@@ -29,7 +42,7 @@ export class AllianceBulletinSetErrorMessage extends SocialNoticeSetErrorMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

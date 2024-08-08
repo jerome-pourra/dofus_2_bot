@@ -10,6 +10,9 @@ export class GameRolePlayShowChallengeMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 7254;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public commonsInfos: FightCommonInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameRolePlayShowChallengeMessage extends NetworkMessage implements 
         return GameRolePlayShowChallengeMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayShowChallengeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayShowChallengeMessage.endpointServer;
+    }
+
     public initGameRolePlayShowChallengeMessage(commonsInfos: FightCommonInformations = null): GameRolePlayShowChallengeMessage
     {
         this.commonsInfos = commonsInfos;
@@ -33,7 +46,7 @@ export class GameRolePlayShowChallengeMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

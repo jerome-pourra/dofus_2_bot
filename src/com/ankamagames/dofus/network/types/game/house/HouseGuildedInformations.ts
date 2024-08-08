@@ -10,6 +10,9 @@ export class HouseGuildedInformations extends HouseInstanceInformations implemen
 
 	public static readonly protocolId: number = 4071;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guildInfo: GuildInformations;
 
     public constructor()
@@ -21,6 +24,16 @@ export class HouseGuildedInformations extends HouseInstanceInformations implemen
     public getTypeId()
     {
         return HouseGuildedInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HouseGuildedInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseGuildedInformations.endpointServer;
     }
 
     public initHouseGuildedInformations(instanceId: number = 0, secondHand: boolean = false, isLocked: boolean = false, ownerTag: AccountTagInformation = null, hasOwner: boolean = false, price: number = 0, isSaleLocked: boolean = false, isAdminLocked: boolean = false, guildInfo: GuildInformations = null): HouseGuildedInformations

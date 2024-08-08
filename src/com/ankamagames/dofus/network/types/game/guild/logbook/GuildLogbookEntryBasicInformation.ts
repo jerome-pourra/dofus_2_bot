@@ -7,6 +7,9 @@ export class GuildLogbookEntryBasicInformation implements INetworkType
 
 	public static readonly protocolId: number = 8590;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 	public date: number = 0;
 
@@ -18,6 +21,16 @@ export class GuildLogbookEntryBasicInformation implements INetworkType
     public getTypeId()
     {
         return GuildLogbookEntryBasicInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildLogbookEntryBasicInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildLogbookEntryBasicInformation.endpointServer;
     }
 
     public initGuildLogbookEntryBasicInformation(id: number = 0, date: number = 0): GuildLogbookEntryBasicInformation

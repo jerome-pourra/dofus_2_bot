@@ -8,6 +8,9 @@ export class FightTemporaryBoostWeaponDamagesEffect extends FightTemporaryBoostE
 
 	public static readonly protocolId: number = 9695;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public weaponTypeId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class FightTemporaryBoostWeaponDamagesEffect extends FightTemporaryBoostE
     public getTypeId()
     {
         return FightTemporaryBoostWeaponDamagesEffect.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightTemporaryBoostWeaponDamagesEffect.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightTemporaryBoostWeaponDamagesEffect.endpointServer;
     }
 
     public initFightTemporaryBoostWeaponDamagesEffect(uid: number = 0, targetId: number = 0, turnDuration: number = 0, dispelable: number = 1, spellId: number = 0, effectId: number = 0, parentBoostUid: number = 0, delta: number = 0, weaponTypeId: number = 0): FightTemporaryBoostWeaponDamagesEffect

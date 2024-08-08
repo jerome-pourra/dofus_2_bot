@@ -9,6 +9,9 @@ export class ExchangeStartOkMulticraftCrafterMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 7458;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public skillId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ExchangeStartOkMulticraftCrafterMessage extends NetworkMessage impl
         return ExchangeStartOkMulticraftCrafterMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeStartOkMulticraftCrafterMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartOkMulticraftCrafterMessage.endpointServer;
+    }
+
     public initExchangeStartOkMulticraftCrafterMessage(skillId: number = 0): ExchangeStartOkMulticraftCrafterMessage
     {
         this.skillId = skillId;
@@ -31,7 +44,7 @@ export class ExchangeStartOkMulticraftCrafterMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

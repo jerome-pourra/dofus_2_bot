@@ -8,6 +8,9 @@ export class SurrenderVoteRefusedAlreadyAsked extends SurrenderVoteRefused imple
 
 	public static readonly protocolId: number = 8978;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -16,6 +19,16 @@ export class SurrenderVoteRefusedAlreadyAsked extends SurrenderVoteRefused imple
     public getTypeId()
     {
         return SurrenderVoteRefusedAlreadyAsked.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SurrenderVoteRefusedAlreadyAsked.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SurrenderVoteRefusedAlreadyAsked.endpointServer;
     }
 
     public initSurrenderVoteRefusedAlreadyAsked(): SurrenderVoteRefusedAlreadyAsked

@@ -9,6 +9,9 @@ export class ContactLookRequestByNameMessage extends ContactLookRequestMessage i
 
 	public static readonly protocolId: number = 2776;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerName: string = "";
 
     public constructor()
@@ -19,6 +22,16 @@ export class ContactLookRequestByNameMessage extends ContactLookRequestMessage i
     public getMessageId()
     {
         return ContactLookRequestByNameMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ContactLookRequestByNameMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ContactLookRequestByNameMessage.endpointServer;
     }
 
     public initContactLookRequestByNameMessage(requestId: number = 0, contactType: number = 0, playerName: string = ""): ContactLookRequestByNameMessage
@@ -32,7 +45,7 @@ export class ContactLookRequestByNameMessage extends ContactLookRequestMessage i
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

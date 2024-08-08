@@ -9,6 +9,9 @@ export class FullStatsPreset extends Preset implements INetworkType
 
 	public static readonly protocolId: number = 4653;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public stats: Array<CharacterCharacteristicForPreset>;
 
     public constructor()
@@ -20,6 +23,16 @@ export class FullStatsPreset extends Preset implements INetworkType
     public getTypeId()
     {
         return FullStatsPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FullStatsPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FullStatsPreset.endpointServer;
     }
 
     public initFullStatsPreset(id: number = 0, stats: Array<CharacterCharacteristicForPreset> = null): FullStatsPreset

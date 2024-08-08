@@ -10,6 +10,9 @@ export class GuildHousesInformationMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 5207;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public housesInformations: Array<HouseInformationsForGuild>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GuildHousesInformationMessage extends NetworkMessage implements INe
         return GuildHousesInformationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildHousesInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildHousesInformationMessage.endpointServer;
+    }
+
     public initGuildHousesInformationMessage(housesInformations: Array<HouseInformationsForGuild> = null): GuildHousesInformationMessage
     {
         this.housesInformations = housesInformations;
@@ -33,7 +46,7 @@ export class GuildHousesInformationMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

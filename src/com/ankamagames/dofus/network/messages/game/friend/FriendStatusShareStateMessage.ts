@@ -9,6 +9,9 @@ export class FriendStatusShareStateMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 8565;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public share: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class FriendStatusShareStateMessage extends NetworkMessage implements INe
         return FriendStatusShareStateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FriendStatusShareStateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendStatusShareStateMessage.endpointServer;
+    }
+
     public initFriendStatusShareStateMessage(share: boolean = false): FriendStatusShareStateMessage
     {
         this.share = share;
@@ -31,7 +44,7 @@ export class FriendStatusShareStateMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

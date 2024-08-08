@@ -7,6 +7,9 @@ export class PrismInformation implements INetworkType
 
 	public static readonly protocolId: number = 65;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public state: number = 1;
 	public placementDate: number = 0;
 	public nuggetsCount: number = 0;
@@ -21,6 +24,16 @@ export class PrismInformation implements INetworkType
     public getTypeId()
     {
         return PrismInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PrismInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PrismInformation.endpointServer;
     }
 
     public initPrismInformation(state: number = 1, placementDate: number = 0, nuggetsCount: number = 0, durability: number = 0, nextEvolutionDate: number = 0): PrismInformation

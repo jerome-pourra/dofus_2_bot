@@ -9,6 +9,9 @@ export class JobCrafterDirectoryEntryRequestMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 1749;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class JobCrafterDirectoryEntryRequestMessage extends NetworkMessage imple
         return JobCrafterDirectoryEntryRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return JobCrafterDirectoryEntryRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobCrafterDirectoryEntryRequestMessage.endpointServer;
+    }
+
     public initJobCrafterDirectoryEntryRequestMessage(playerId: number = 0): JobCrafterDirectoryEntryRequestMessage
     {
         this.playerId = playerId;
@@ -31,7 +44,7 @@ export class JobCrafterDirectoryEntryRequestMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class SpellVariantActivationMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 7767;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spellId: number = 0;
 	public result: boolean = false;
 
@@ -22,6 +25,16 @@ export class SpellVariantActivationMessage extends NetworkMessage implements INe
         return SpellVariantActivationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SpellVariantActivationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpellVariantActivationMessage.endpointServer;
+    }
+
     public initSpellVariantActivationMessage(spellId: number = 0, result: boolean = false): SpellVariantActivationMessage
     {
         this.spellId = spellId;
@@ -33,7 +46,7 @@ export class SpellVariantActivationMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

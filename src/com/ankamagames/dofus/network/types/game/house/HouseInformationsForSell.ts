@@ -8,6 +8,9 @@ export class HouseInformationsForSell implements INetworkType
 
 	public static readonly protocolId: number = 6977;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public instanceId: number = 0;
 	public secondHand: boolean = false;
 	public modelId: number = 0;
@@ -32,6 +35,16 @@ export class HouseInformationsForSell implements INetworkType
     public getTypeId()
     {
         return HouseInformationsForSell.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HouseInformationsForSell.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseInformationsForSell.endpointServer;
     }
 
     public initHouseInformationsForSell(instanceId: number = 0, secondHand: boolean = false, modelId: number = 0, ownerTag: AccountTagInformation = null, hasOwner: boolean = false, ownerCharacterName: string = "", worldX: number = 0, worldY: number = 0, subAreaId: number = 0, nbRoom: number = 0, nbChest: number = 0, skillListIds: Array<number> = null, isLocked: boolean = false, price: number = 0): HouseInformationsForSell

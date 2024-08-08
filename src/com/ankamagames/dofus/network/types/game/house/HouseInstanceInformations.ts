@@ -9,6 +9,9 @@ export class HouseInstanceInformations implements INetworkType
 
 	public static readonly protocolId: number = 3219;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public instanceId: number = 0;
 	public secondHand: boolean = false;
 	public isLocked: boolean = false;
@@ -26,6 +29,16 @@ export class HouseInstanceInformations implements INetworkType
     public getTypeId()
     {
         return HouseInstanceInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HouseInstanceInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseInstanceInformations.endpointServer;
     }
 
     public initHouseInstanceInformations(instanceId: number = 0, secondHand: boolean = false, isLocked: boolean = false, ownerTag: AccountTagInformation = null, hasOwner: boolean = false, price: number = 0, isSaleLocked: boolean = false, isAdminLocked: boolean = false): HouseInstanceInformations

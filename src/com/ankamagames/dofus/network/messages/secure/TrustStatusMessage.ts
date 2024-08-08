@@ -9,6 +9,9 @@ export class TrustStatusMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 3339;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public certified: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class TrustStatusMessage extends NetworkMessage implements INetworkMessag
         return TrustStatusMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TrustStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TrustStatusMessage.endpointServer;
+    }
+
     public initTrustStatusMessage(certified: boolean = false): TrustStatusMessage
     {
         this.certified = certified;
@@ -31,7 +44,7 @@ export class TrustStatusMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

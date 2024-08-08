@@ -8,6 +8,9 @@ export class BasicNamedAllianceInformations extends BasicAllianceInformations im
 
 	public static readonly protocolId: number = 5416;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceName: string = "";
 
     public constructor()
@@ -18,6 +21,16 @@ export class BasicNamedAllianceInformations extends BasicAllianceInformations im
     public getTypeId()
     {
         return BasicNamedAllianceInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return BasicNamedAllianceInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicNamedAllianceInformations.endpointServer;
     }
 
     public initBasicNamedAllianceInformations(allianceId: number = 0, allianceTag: string = "", allianceName: string = ""): BasicNamedAllianceInformations

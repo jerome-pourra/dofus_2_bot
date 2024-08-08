@@ -7,6 +7,9 @@ export class UpdateMountCharacteristic implements INetworkType
 
 	public static readonly protocolId: number = 470;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public type: number = 0;
 
     public constructor()
@@ -17,6 +20,16 @@ export class UpdateMountCharacteristic implements INetworkType
     public getTypeId()
     {
         return UpdateMountCharacteristic.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return UpdateMountCharacteristic.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return UpdateMountCharacteristic.endpointServer;
     }
 
     public initUpdateMountCharacteristic(type: number = 0): UpdateMountCharacteristic

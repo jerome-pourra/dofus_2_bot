@@ -9,6 +9,9 @@ export class TeleportBuddiesMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 9554;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dungeonId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class TeleportBuddiesMessage extends NetworkMessage implements INetworkMe
         return TeleportBuddiesMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TeleportBuddiesMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TeleportBuddiesMessage.endpointServer;
+    }
+
     public initTeleportBuddiesMessage(dungeonId: number = 0): TeleportBuddiesMessage
     {
         this.dungeonId = dungeonId;
@@ -31,7 +44,7 @@ export class TeleportBuddiesMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

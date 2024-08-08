@@ -9,6 +9,9 @@ export class FriendDeleteRequestMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 9081;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public accountId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class FriendDeleteRequestMessage extends NetworkMessage implements INetwo
         return FriendDeleteRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FriendDeleteRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendDeleteRequestMessage.endpointServer;
+    }
+
     public initFriendDeleteRequestMessage(accountId: number = 0): FriendDeleteRequestMessage
     {
         this.accountId = accountId;
@@ -31,7 +44,7 @@ export class FriendDeleteRequestMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

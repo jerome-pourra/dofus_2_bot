@@ -9,6 +9,9 @@ export class HaapiValidationMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 7090;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public action: number = 0;
 	public code: number = 0;
 
@@ -22,6 +25,16 @@ export class HaapiValidationMessage extends NetworkMessage implements INetworkMe
         return HaapiValidationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HaapiValidationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HaapiValidationMessage.endpointServer;
+    }
+
     public initHaapiValidationMessage(action: number = 0, code: number = 0): HaapiValidationMessage
     {
         this.action = action;
@@ -33,7 +46,7 @@ export class HaapiValidationMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class ObjectItemMinimalInformation extends Item implements INetworkType
 
 	public static readonly protocolId: number = 9931;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectGID: number = 0;
 	public effects: Array<ObjectEffect>;
 
@@ -22,6 +25,16 @@ export class ObjectItemMinimalInformation extends Item implements INetworkType
     public getTypeId()
     {
         return ObjectItemMinimalInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectItemMinimalInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectItemMinimalInformation.endpointServer;
     }
 
     public initObjectItemMinimalInformation(objectGID: number = 0, effects: Array<ObjectEffect> = null): ObjectItemMinimalInformation

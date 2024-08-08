@@ -9,6 +9,9 @@ export class FriendInformations extends AbstractContactInformations implements I
 
 	public static readonly protocolId: number = 861;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerState: number = 99;
 	public lastConnection: number = 0;
 	public achievementPoints: number = 0;
@@ -23,6 +26,16 @@ export class FriendInformations extends AbstractContactInformations implements I
     public getTypeId()
     {
         return FriendInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FriendInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendInformations.endpointServer;
     }
 
     public initFriendInformations(accountId: number = 0, accountTag: AccountTagInformation = null, playerState: number = 99, lastConnection: number = 0, achievementPoints: number = 0, leagueId: number = 0, ladderPosition: number = 0): FriendInformations

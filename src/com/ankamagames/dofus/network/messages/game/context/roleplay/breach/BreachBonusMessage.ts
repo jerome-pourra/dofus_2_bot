@@ -10,6 +10,9 @@ export class BreachBonusMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 427;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public bonus: ObjectEffectInteger;
 
     public constructor()
@@ -23,6 +26,16 @@ export class BreachBonusMessage extends NetworkMessage implements INetworkMessag
         return BreachBonusMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachBonusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachBonusMessage.endpointServer;
+    }
+
     public initBreachBonusMessage(bonus: ObjectEffectInteger = null): BreachBonusMessage
     {
         this.bonus = bonus;
@@ -33,7 +46,7 @@ export class BreachBonusMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

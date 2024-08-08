@@ -9,6 +9,9 @@ export class AlignmentWarEffortDonateRequestMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 5431;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public donation: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AlignmentWarEffortDonateRequestMessage extends NetworkMessage imple
         return AlignmentWarEffortDonateRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AlignmentWarEffortDonateRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AlignmentWarEffortDonateRequestMessage.endpointServer;
+    }
+
     public initAlignmentWarEffortDonateRequestMessage(donation: number = 0): AlignmentWarEffortDonateRequestMessage
     {
         this.donation = donation;
@@ -31,7 +44,7 @@ export class AlignmentWarEffortDonateRequestMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

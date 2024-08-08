@@ -8,6 +8,9 @@ export class SpawnMonsterInformation extends BaseSpawnMonsterInformation impleme
 
 	public static readonly protocolId: number = 571;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public creatureGrade: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class SpawnMonsterInformation extends BaseSpawnMonsterInformation impleme
     public getTypeId()
     {
         return SpawnMonsterInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SpawnMonsterInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpawnMonsterInformation.endpointServer;
     }
 
     public initSpawnMonsterInformation(creatureGenericId: number = 0, creatureGrade: number = 0): SpawnMonsterInformation

@@ -10,6 +10,9 @@ export class HouseSellingUpdateMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 6800;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public houseId: number = 0;
 	public instanceId: number = 0;
 	public secondHand: boolean = false;
@@ -27,6 +30,16 @@ export class HouseSellingUpdateMessage extends NetworkMessage implements INetwor
         return HouseSellingUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HouseSellingUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseSellingUpdateMessage.endpointServer;
+    }
+
     public initHouseSellingUpdateMessage(houseId: number = 0, instanceId: number = 0, secondHand: boolean = false, realPrice: number = 0, buyerTag: AccountTagInformation = null): HouseSellingUpdateMessage
     {
         this.houseId = houseId;
@@ -41,7 +54,7 @@ export class HouseSellingUpdateMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

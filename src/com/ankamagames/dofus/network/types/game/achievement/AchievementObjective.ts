@@ -7,6 +7,9 @@ export class AchievementObjective implements INetworkType
 
 	public static readonly protocolId: number = 2341;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public maxValue: number = 0;
 
@@ -18,6 +21,16 @@ export class AchievementObjective implements INetworkType
     public getTypeId()
     {
         return AchievementObjective.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AchievementObjective.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementObjective.endpointServer;
     }
 
     public initAchievementObjective(id: number = 0, maxValue: number = 0): AchievementObjective

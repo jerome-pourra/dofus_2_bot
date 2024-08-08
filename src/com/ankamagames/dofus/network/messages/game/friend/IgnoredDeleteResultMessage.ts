@@ -11,6 +11,9 @@ export class IgnoredDeleteResultMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 2365;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public success: boolean = false;
 	public tag: AccountTagInformation;
 	public session: boolean = false;
@@ -26,6 +29,16 @@ export class IgnoredDeleteResultMessage extends NetworkMessage implements INetwo
         return IgnoredDeleteResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return IgnoredDeleteResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IgnoredDeleteResultMessage.endpointServer;
+    }
+
     public initIgnoredDeleteResultMessage(success: boolean = false, tag: AccountTagInformation = null, session: boolean = false): IgnoredDeleteResultMessage
     {
         this.success = success;
@@ -38,7 +51,7 @@ export class IgnoredDeleteResultMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class DebtInformation implements INetworkType
 
 	public static readonly protocolId: number = 8943;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 	public timestamp: number = 0;
 
@@ -18,6 +21,16 @@ export class DebtInformation implements INetworkType
     public getTypeId()
     {
         return DebtInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return DebtInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DebtInformation.endpointServer;
     }
 
     public initDebtInformation(id: number = 0, timestamp: number = 0): DebtInformation

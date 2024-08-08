@@ -9,6 +9,9 @@ export class ConsumeAllGameActionItemMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 3120;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public characterId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ConsumeAllGameActionItemMessage extends NetworkMessage implements I
         return ConsumeAllGameActionItemMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ConsumeAllGameActionItemMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ConsumeAllGameActionItemMessage.endpointServer;
+    }
+
     public initConsumeAllGameActionItemMessage(characterId: number = 0): ConsumeAllGameActionItemMessage
     {
         this.characterId = characterId;
@@ -31,7 +44,7 @@ export class ConsumeAllGameActionItemMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

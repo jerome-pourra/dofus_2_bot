@@ -9,6 +9,9 @@ export class CharacterBaseInformations extends CharacterMinimalPlusLookInformati
 
 	public static readonly protocolId: number = 4367;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public sex: boolean = false;
 
     public constructor()
@@ -19,6 +22,16 @@ export class CharacterBaseInformations extends CharacterMinimalPlusLookInformati
     public getTypeId()
     {
         return CharacterBaseInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterBaseInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterBaseInformations.endpointServer;
     }
 
     public initCharacterBaseInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0, sex: boolean = false): CharacterBaseInformations

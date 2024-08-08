@@ -9,6 +9,9 @@ export class BreachTeleportRequestMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 2317;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class BreachTeleportRequestMessage extends NetworkMessage implements INet
     public getMessageId()
     {
         return BreachTeleportRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return BreachTeleportRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachTeleportRequestMessage.endpointServer;
     }
 
     public initBreachTeleportRequestMessage(): BreachTeleportRequestMessage
@@ -28,7 +41,7 @@ export class BreachTeleportRequestMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

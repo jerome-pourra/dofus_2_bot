@@ -9,6 +9,9 @@ export class DebugInClientMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 6256;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public level: number = 0;
 	public message: string = "";
 
@@ -22,6 +25,16 @@ export class DebugInClientMessage extends NetworkMessage implements INetworkMess
         return DebugInClientMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DebugInClientMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DebugInClientMessage.endpointServer;
+    }
+
     public initDebugInClientMessage(level: number = 0, message: string = ""): DebugInClientMessage
     {
         this.level = level;
@@ -33,7 +46,7 @@ export class DebugInClientMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

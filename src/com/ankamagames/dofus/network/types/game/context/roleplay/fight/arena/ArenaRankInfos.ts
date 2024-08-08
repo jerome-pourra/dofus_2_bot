@@ -8,6 +8,9 @@ export class ArenaRankInfos implements INetworkType
 
 	public static readonly protocolId: number = 2174;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public arenaType: number = 3;
 	public leagueRanking: ArenaLeagueRanking;
 	public bestLeagueId: number = 0;
@@ -26,6 +29,16 @@ export class ArenaRankInfos implements INetworkType
     public getTypeId()
     {
         return ArenaRankInfos.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ArenaRankInfos.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ArenaRankInfos.endpointServer;
     }
 
     public initArenaRankInfos(arenaType: number = 3, leagueRanking: ArenaLeagueRanking = null, bestLeagueId: number = 0, bestRating: number = 0, dailyVictoryCount: number = 0, seasonVictoryCount: number = 0, dailyFightcount: number = 0, seasonFightcount: number = 0, numFightNeededForLadder: number = 0): ArenaRankInfos

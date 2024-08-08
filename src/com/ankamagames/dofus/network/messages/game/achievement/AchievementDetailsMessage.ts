@@ -10,6 +10,9 @@ export class AchievementDetailsMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 2058;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public achievement: Achievement;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AchievementDetailsMessage extends NetworkMessage implements INetwor
         return AchievementDetailsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AchievementDetailsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementDetailsMessage.endpointServer;
+    }
+
     public initAchievementDetailsMessage(achievement: Achievement = null): AchievementDetailsMessage
     {
         this.achievement = achievement;
@@ -33,7 +46,7 @@ export class AchievementDetailsMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

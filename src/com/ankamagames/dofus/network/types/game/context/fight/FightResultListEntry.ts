@@ -8,6 +8,9 @@ export class FightResultListEntry implements INetworkType
 
 	public static readonly protocolId: number = 3594;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public outcome: number = 0;
 	public wave: number = 0;
 	public rewards: FightLoot;
@@ -20,6 +23,16 @@ export class FightResultListEntry implements INetworkType
     public getTypeId()
     {
         return FightResultListEntry.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightResultListEntry.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightResultListEntry.endpointServer;
     }
 
     public initFightResultListEntry(outcome: number = 0, wave: number = 0, rewards: FightLoot = null): FightResultListEntry

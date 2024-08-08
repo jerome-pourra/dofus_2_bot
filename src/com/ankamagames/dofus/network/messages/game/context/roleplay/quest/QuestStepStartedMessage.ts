@@ -9,6 +9,9 @@ export class QuestStepStartedMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 2945;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public questId: number = 0;
 	public stepId: number = 0;
 
@@ -22,6 +25,16 @@ export class QuestStepStartedMessage extends NetworkMessage implements INetworkM
         return QuestStepStartedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return QuestStepStartedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return QuestStepStartedMessage.endpointServer;
+    }
+
     public initQuestStepStartedMessage(questId: number = 0, stepId: number = 0): QuestStepStartedMessage
     {
         this.questId = questId;
@@ -33,7 +46,7 @@ export class QuestStepStartedMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

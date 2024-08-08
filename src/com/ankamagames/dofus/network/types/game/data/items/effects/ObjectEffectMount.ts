@@ -10,6 +10,9 @@ export class ObjectEffectMount extends ObjectEffect implements INetworkType
 
 	public static readonly protocolId: number = 3353;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 	public expirationDate: number = 0;
 	public model: number = 0;
@@ -35,6 +38,16 @@ export class ObjectEffectMount extends ObjectEffect implements INetworkType
     public getTypeId()
     {
         return ObjectEffectMount.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectEffectMount.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectEffectMount.endpointServer;
     }
 
     public initObjectEffectMount(actionId: number = 0, id: number = 0, expirationDate: number = 0, model: number = 0, name: string = "", owner: string = "", level: number = 0, sex: boolean = false, isRideable: boolean = false, isFeconded: boolean = false, isFecondationReady: boolean = false, reproductionCount: number = 0, reproductionCountMax: number = 0, effects: Array<ObjectEffectInteger> = null, capacities: Array<number> = null): ObjectEffectMount

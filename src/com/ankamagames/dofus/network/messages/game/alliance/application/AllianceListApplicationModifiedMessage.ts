@@ -10,6 +10,9 @@ export class AllianceListApplicationModifiedMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 3470;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public apply: SocialApplicationInformation;
 	public state: number = 0;
 	public playerId: number = 0;
@@ -25,6 +28,16 @@ export class AllianceListApplicationModifiedMessage extends NetworkMessage imple
         return AllianceListApplicationModifiedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceListApplicationModifiedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceListApplicationModifiedMessage.endpointServer;
+    }
+
     public initAllianceListApplicationModifiedMessage(apply: SocialApplicationInformation = null, state: number = 0, playerId: number = 0): AllianceListApplicationModifiedMessage
     {
         this.apply = apply;
@@ -37,7 +50,7 @@ export class AllianceListApplicationModifiedMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
