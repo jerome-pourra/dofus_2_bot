@@ -9,6 +9,7 @@ export class CustomDataWrapper extends CustomBuffer implements ICustomDataInput,
     private static readonly SHORT_SIZE: number = 16;
     private static readonly INT_SIZE: number = 32;
     private static readonly SHORT_MAX_VALUE: number = 32767;
+    private static readonly SHORT_MIN_VALUE: number = -32768;
     private static readonly UNSIGNED_SHORT_MAX_VALUE: number = 65536;
     private static readonly CHUNCK_BIT_SIZE: number = 7;
     private static readonly MASK_10000000: number = 128;
@@ -85,78 +86,74 @@ export class CustomDataWrapper extends CustomBuffer implements ICustomDataInput,
         return this.readUInt64().toNumber();
     }
 
-    public writeVarInt(value: number): void { }
-    public writeVarShort(value: number): void { }
-    public writeVarLong(value: number): void { }
+    public writeVarInt(value: number): void {}
+    public writeVarShort(value: number): void {}
+    public writeVarLong(value: number): void {}
 
     // public writeVarInt(value: number): void {
-    // 	var b: * = 0;
-    // 	var ba: ByteArray = new ByteArray();
-    // 	if (value >= 0 && value <= MASK_01111111) {
-    // 		ba.writeByte(value);
-    // 		this._data.writeBytes(ba);
-    // 		return;
-    // 	}
-    // 	var c: number = value;
-    // 	var buffer: ByteArray = new ByteArray();
-    // 	while (c != 0) {
-    // 		buffer.writeByte(c & CustomDataWrapper.MASK_01111111);
-    // 		buffer.position = buffer.length - 1;
-    // 		b = buffer.readByte();
-    // 		c >>>= CustomDataWrapper.CHUNCK_BIT_SIZE;
-    // 		if (c > 0) {
-    // 			b |= CustomDataWrapper.MASK_10000000;
-    // 		}
-    // 		ba.writeByte(b);
-    // 	}
-    // 	this._data.writeBytes(ba);
+    //     let b: number = 0;
+    //     let ba: number[] = [];
+    //     if (value >= 0 && value <= CustomDataWrapper.MASK_01111111) {
+    //         ba.push(value);
+    //         this.writeBytes(new CustomBuffer(Buffer.from(ba)));
+    //         return;
+    //     }
+    //     let c: number = value;
+    //     let buffer: number[] = [];
+    //     while (c != 0) {
+    //         buffer.push(c & CustomDataWrapper.MASK_01111111);
+    //         b = buffer[buffer.length - 1];
+    //         c >>>= CustomDataWrapper.CHUNCK_BIT_SIZE;
+    //         if (c > 0) {
+    //             b |= CustomDataWrapper.MASK_10000000;
+    //         }
+    //         ba.push(b);
+    //     }
+    //     this.writeBytes(new CustomBuffer(Buffer.from(ba)));
     // }
 
     // public writeVarShort(value: number): void {
-    // 	var b: * = 0;
-    // 	if (value > CustomDataWrapper.SHORT_MAX_VALUE || value < CustomDataWrapper.SHORT_MIN_VALUE) {
-    // 		throw new Error("Forbidden value");
-    // 	}
-    // 	var ba: ByteArray = new ByteArray();
-    // 	if (value >= 0 && value <= CustomDataWrapper.MASK_01111111) {
-    // 		ba.writeByte(value);
-    // 		this._data.writeBytes(ba);
-    // 		return;
-    // 	}
-    // 	var c: * = value & 65535;
-    // 	var buffer: ByteArray = new ByteArray();
-    // 	while (c != 0) {
-    // 		buffer.writeByte(c & CustomDataWrapper.MASK_01111111);
-    // 		buffer.position = buffer.length - 1;
-    // 		b = buffer.readByte();
-    // 		c >>>= CustomDataWrapper.CHUNCK_BIT_SIZE;
-    // 		if (c > 0) {
-    // 			b |= CustomDataWrapper.MASK_10000000;
-    // 		}
-    // 		ba.writeByte(b);
-    // 	}
-    // 	this._data.writeBytes(ba);
+    //     let b: number = 0;
+    //     if (value > CustomDataWrapper.SHORT_MAX_VALUE || value < CustomDataWrapper.SHORT_MIN_VALUE) {
+    //         throw new Error("Forbidden value");
+    //     }
+    //     let ba: number[] = [];
+    //     if (value >= 0 && value <= CustomDataWrapper.MASK_01111111) {
+    //         ba.push(value);
+    //         this.writeBytes(new CustomBuffer(Buffer.from(ba)));
+    //         return;
+    //     }
+    //     let c: number = value & 65535;
+    //     let buffer: number[] = [];
+    //     while (c != 0) {
+    //         buffer.push(c & CustomDataWrapper.MASK_01111111);
+    //         b = buffer[buffer.length - 1];
+    //         c >>>= CustomDataWrapper.CHUNCK_BIT_SIZE;
+    //         if (c > 0) {
+    //             b |= CustomDataWrapper.MASK_10000000;
+    //         }
+    //         ba.push(b);
+    //     }
+    //     this.writeBytes(new CustomBuffer(Buffer.from(ba)));
     // }
 
-    // public writeVarLong(value: Number): void {
-    // 	var i: number = 0;
-    // 	var val: Int64 = Int64.fromNumber(value);
-    // 	if (val.high == 0) {
-    // 		this.writeint32(this._data, val.low);
-    // 	}
-    // 	else {
-    // 		for (i = 0; i < 4; i++) {
-    // 			this._data.writeByte(val.low & 127 | 128);
-    // 			val.low >>>= 7;
-    // 		}
-    // 		if ((val.high & 268435455 << 3) == 0) {
-    // 			this._data.writeByte(val.high << 4 | val.low);
-    // 		}
-    // 		else {
-    // 			this._data.writeByte((val.high << 4 | val.low) & 127 | 128);
-    // 			this.writeint32(this._data, val.high >>> 3);
-    // 		}
-    // 	}
+    // public writeVarLong(value: number): void {
+    //     let i: number = 0;
+    //     let val: Int64 = Int64.fromNumber(value);
+    //     if (val.high === 0) {
+    //         this.writeint32(val.low);
+    //     } else {
+    //         for (i = 0; i < 4; i++) {
+    //             this.writeByte(val.low & CustomDataWrapper.MASK_01111111 | CustomDataWrapper.MASK_10000000);
+    //             val.low >>>= CustomDataWrapper.CHUNCK_BIT_SIZE;
+    //         }
+    //         if ((val.high & (268435455 << 3)) === 0) {
+    //             this.writeByte(val.high << 4 | val.low);
+    //         } else {
+    //             this.writeByte((val.high << 4 | val.low) & CustomDataWrapper.MASK_01111111 | CustomDataWrapper.MASK_10000000);
+    //             this.writeint32(val.high >>> 3);
+    //         }
+    //     }
     // }
 
     private readInt64(): Int64 {
@@ -236,4 +233,13 @@ export class CustomDataWrapper extends CustomBuffer implements ICustomDataInput,
         result.high = b >>> 4;
         return result;
     }
+
+    private writeint32(value: number): void {
+        while (value >= 128) {
+            this.writeByte(value & 127 | 128);
+            value >>>= 7;
+        }
+        this.writeByte(value);
+    }
+
 }
