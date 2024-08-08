@@ -15,7 +15,7 @@ export class NetworkHandler {
                 new ChatClientMultiMessageHandler(message as ChatClientMultiMessage).process();
                 break;
             case "GameMapChangeOrientationMessage":
-                new GameMapChangeOrientationHandler(message as GameMapChangeOrientationMessage).process();
+                // new GameMapChangeOrientationHandler(message as GameMapChangeOrientationMessage).process();
                 break;
             default:
                 // console.log("Unhandled message: " + networkClass);

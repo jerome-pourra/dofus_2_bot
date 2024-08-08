@@ -1,3 +1,4 @@
+import { BasicPongMessage } from "../../com/ankamagames/dofus/network/messages/common/basic/BasicPongMessage";
 import { ChatClientMultiMessage } from "../../com/ankamagames/dofus/network/messages/game/chat/ChatClientMultiMessage";
 import { ChatServerMessage } from "../../com/ankamagames/dofus/network/messages/game/chat/ChatServerMessage";import { GameMapChangeOrientationMessage } from "../../com/ankamagames/dofus/network/messages/game/context/GameMapChangeOrientationMessage";
 import { GameMapChangeOrientationRequestMessage } from "../../com/ankamagames/dofus/network/messages/game/context/GameMapChangeOrientationRequestMessage";
@@ -42,20 +43,31 @@ export class ChatClientMultiMessageHandler {
     }
 
     private executeCommand() {
+
         const { command, args } = this.parseCommand();
+
+        let output = new CustomDataWrapper();
+
         switch (command) {
 
-            case "me": 
+            case "send": 
 
-                let data = new CustomDataWrapper();
-                let message = new ChatServerMessage();
-                message.initChatServerMessage(0, "Hello, World!", 1722956526, "mkxriv6x", 811518853413, "Fleurentia", "", 170037941);
-                message.pack(data);
+                let msg = args[0];
+                console.log("Sending message: " + msg);
 
-                console.log(data.buffer);
-                // console.log(ConnectionHandler.getClient().send());
+                // <font color='#RRGGBB'>Votre texte ici</font>
+                // <font size='20'>Texte en taille 20</font>
+
+                // <b>Votre texte ici</b>
+                // <i>Votre texte ici</i>
+                // <u>Votre texte ici</u>
+                // <a href='lien'>Votre texte ici</a>
                 
-                // ConnectionHandler.getClient().getRemoteAddress();
+
+                let message = new ChatServerMessage();
+                message.initChatServerMessage(0, args.join(" "), 0, "", 0, "", "", 0);
+                message.pack(output);
+                ConnectionHandler.getClient().send(output.buffer);
 
                 break;
 
@@ -95,6 +107,13 @@ export class ChatClientMultiMessageHandler {
 
                 // let buffer = new PacketHandler().acquisition(result.buffer, AnkSocketEndpoint.SERVER);
                 // console.log(buffer);
+
+            case "pong":
+
+                let bp = new BasicPongMessage();
+                bp.initBasicPongMessage(true);
+                bp.pack(output);
+                ConnectionHandler.getClient().send(output.buffer);
 
                 break;
             default:
