@@ -1,18 +1,21 @@
 import * as util from "util";
 import { AnkSocketEndpoint } from "../AnkSocket";
 import { PacketHeaderDecoded, PacketHeaderDecoder } from "./PacketHeaderDecoder";
-import { PacketHeaderEncoder } from "./PacketHeaderEncoder";
-import { NetworkHandler } from "../../bot/network/NetworkHandler";
 import { CustomDataWrapper } from "../../com/ankamagames/jerakine/network/CustomDataWrapper";
 import { MessageReceiver } from "../../com/ankamagames/dofus/network/MessageReceiver";
 import { Logger } from "../../tools/Logger";
+import { ICustomDataInput } from "../../com/ankamagames/jerakine/network/ICustomDataInput";
+import { NetworkMessage } from "../../com/ankamagames/jerakine/network/NetworkMessage";
+import { NetworkMessageWrapper } from "./NetworkMessageWrapper";
+import { INetworkMessage } from "../../com/ankamagames/jerakine/network/INetworkMessage";
+import { NetworkHandler } from "../../bot/network/NetworkHandler";
+import { PacketHeaderEncoder } from "./PacketHeaderEncoder";
 
 export class PacketHandler {
 
     private static LOG_NETWORK = true;
+    private static LOG_NETWORK_MITM = true;
     private static LOG_UNPACK = false;
-
-    private static SEQUENCE_ID: number = 0;
 
     private _buffer: Buffer;
 
@@ -31,6 +34,7 @@ export class PacketHandler {
             let buffer = Buffer.from(this._buffer);
             let encodedQueue: Buffer[] = [];
             let decodedQueue: PacketHeaderDecoded[] = [];
+            let messagesQueue: NetworkMessageWrapper[] = [];
 
             do {
 
@@ -51,26 +55,54 @@ export class PacketHandler {
                 }
 
                 decodedQueue.push(decoded);
+                // console.log(buffer.toString("hex"));
                 buffer = buffer.subarray(decoded.nextOffset);
 
             } while (buffer.length > 0);
 
             for (const decoded of decodedQueue) {
-                this.process(decoded);
-                let sequence = PacketHandler.SEQUENCE_ID;
-                if (increaseSeq) {
-                    sequence = ++PacketHandler.SEQUENCE_ID;
-                }
-                let encoded: Buffer = PacketHeaderEncoder.encode(decoded.id, sequence, decoded.content.buffer, enpoint);
+
+                let networkMessage = this.parseMessage(decoded.content, decoded.id, decoded.size);
+                let networkMessageWrapper = new NetworkMessageWrapper(
+                    decoded.id,
+                    networkMessage.getInstanceId(),
+                    enpoint,
+                    networkMessage
+                );
+
+                messagesQueue.push(networkMessageWrapper);
+
+                // MessageReceiver.parse(input, decoded.id, decoded.size);
+
+                // this.process(decoded);
+                // let sequence = 1; // parsedMessage.getInstanceId();
+                // if (increaseSeq) {
+                //     sequence = ++PacketHandler.SEQUENCE_ID;
+                // }
+                let encoded: Buffer = PacketHeaderEncoder.encode(decoded.id, networkMessage.getInstanceId(), decoded.content.buffer, enpoint);
                 encodedQueue.push(encoded);
             }
+
+            // for (const message of messagesQueue) {
+
+            //     NetworkHandler.process(message);
+
+            //     let buffer = new CustomDataWrapper();
+            //     message.networkMessage.pack(buffer);
+            //     console.log(buffer.buffer.toString("hex"));
+                
+
+            //     // let encoded: Buffer = PacketHeaderEncoder.encode(message.id, message.sequence, message.networkMessage, message.endpoint);
+            //     encodedQueue.push(buffer.buffer);
+
+            // }
 
             this._buffer = buffer;
             return encodedQueue;
 
         } catch (error: unknown) {
             if (error instanceof Error) {
-                console.error(error.message);
+                console.error(error.message, error.stack);
             } else {
                 console.error("PacketHandler.acquisition() -> unknown error", error);
             }
@@ -82,6 +114,20 @@ export class PacketHandler {
 
     private truncateContent(str: string, maxLength: number = 32): string {
         return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
+    }
+
+    private parseMessage(input: ICustomDataInput, id: number, size: number): INetworkMessage {
+        console.log(input.buffer.byteLength, input.readOffset, id, size);
+        
+        let message = MessageReceiver.parse(input, id, size);
+        if (input.length !== input.readOffset) {
+            console.error("PacketHandler.parseMessage() -> data length and read offset mismatch");
+        }
+        if (PacketHandler.LOG_UNPACK) {
+            console.log(JSON.stringify(message));
+            // console.log(util.inspect(message, { depth: null, colors: true }));
+        }
+        return message;
     }
 
     private process(decoded: PacketHeaderDecoded): void {
@@ -98,7 +144,7 @@ export class PacketHandler {
             // console.log(util.inspect(message, { depth: null, colors: true }));
         }
 
-        NetworkHandler.process(message);
+        // NetworkHandler.process(message);
 
     }
 
