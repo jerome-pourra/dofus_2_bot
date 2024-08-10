@@ -29,6 +29,16 @@ export abstract class NetworkMessage implements INetworkMessage {
         return this._instance_id;
     }
 
+    // NEED STATIC ?
+    public increaseInstanceId(): void {
+        this._instance_id = ++NetworkMessage.GLOBAL_INSTANCE_ID;
+    }
+
+    // NEED STATIC ?
+    public decreaseInstanceId(): void {
+        this._instance_id = --NetworkMessage.GLOBAL_INSTANCE_ID;
+    }
+
     public writePacketClient(output: ICustomDataOutput, id: number, data: CustomDataWrapper): void {
         this.writePacket(output, id, data, AnkSocketEndpoint.CLIENT);
     }

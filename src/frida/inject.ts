@@ -46,7 +46,7 @@ export function inject(rd_host: string, rd_port: number, filter_ports: number[])
                     sockaddr_p.add(4).writeByteArray(ipToBytes(rd_host));
                     console.log("Connect to: " + addr + "::" + port + " is redirected to " + rd_host + "::" + rd_port);
                 } else {
-                    console.log("Connect to: " + addr + "::" + port + " is not allowed");
+                    console.log("Connect to: " + addr + "::" + port + " is not redirected");
                 }
                 
             },
@@ -54,7 +54,7 @@ export function inject(rd_host: string, rd_port: number, filter_ports: number[])
             onLeave: function (retval) {
     
                 if (!can_hook) {
-                    console.log("Connect to: " + addr + "::" + port + " is not allowed");
+                    console.log("Connect to: " + addr + "::" + port + " is not redirected");
                     return;
                 }
 

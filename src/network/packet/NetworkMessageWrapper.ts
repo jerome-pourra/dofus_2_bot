@@ -20,4 +20,26 @@ export class NetworkMessageWrapper {
 
     }
 
+    public lock(): void {
+        if (this.locked) {
+            return;
+        }
+        this.locked = true;
+        if (this.endpoint === AnkSocketEndpoint.SERVER) {
+            // On lock un packet qui été sencé partir vers le serveur, on decrémente l'instanceId
+            this.networkMessage.decreaseInstanceId();
+        }
+    }
+
+    public unlock(): void {
+        if (!this.locked) {
+            return;
+        }
+        this.locked = false;
+        if (this.endpoint === AnkSocketEndpoint.SERVER) {
+            // On unlock un packet qui partira vers le serveur, on incrémente l'instanceId
+            this.networkMessage.increaseInstanceId();
+        }
+    }
+
 }

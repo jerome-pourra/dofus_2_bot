@@ -8,10 +8,11 @@ import { ICustomDataInput } from "../../com/ankamagames/jerakine/network/ICustom
 import { NetworkMessageWrapper } from "./NetworkMessageWrapper";
 import { INetworkMessage } from "../../com/ankamagames/jerakine/network/INetworkMessage";
 import { NetworkHandler } from "../../bot/network/NetworkHandler";
+import { PacketTooShortError } from "./PacketTooShortError";
 
 export class PacketHandler {
 
-    private static LOG_NETWORK = false;
+    private static LOG_NETWORK = true;
     private static LOG_UNPACK = false;
 
     private _buffer: Buffer;
@@ -85,10 +86,10 @@ export class PacketHandler {
             return encodedQueue;
 
         } catch (error: unknown) {
-            if (error instanceof Error) {
+            if (error instanceof PacketTooShortError) {
                 console.error(error.message);
             } else {
-                console.error("PacketHandler.acquisition() -> unknown error", error);
+                throw error;
             }
         }
 
@@ -105,13 +106,16 @@ export class PacketHandler {
         let message = MessageReceiver.parse(input, id, size);
 
         if (input.length !== input.readOffset) {
-            console.error("PacketHandler.parseMessage() -> data length and read offset mismatch read " + input.readOffset + " bytes, expected " + input.length + " bytes");
+            throw new Error("PacketHandler.parseMessage() -> data length and read offset mismatch read " + input.readOffset + " bytes, expected " + input.length + " bytes");
         }
+
         if (PacketHandler.LOG_UNPACK) {
             console.log(JSON.stringify(message));
             // console.log(util.inspect(message, { depth: null, colors: true }));
         }
+
         return message;
+
     }
 
 }

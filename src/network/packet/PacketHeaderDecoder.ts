@@ -1,5 +1,6 @@
 import { ICustomDataInput } from "../../com/ankamagames/jerakine/network/ICustomDataInput";
 import { AnkSocketEndpoint } from "../AnkSocket";
+import { PacketTooShortError } from "./PacketTooShortError";
 
 export type PacketHeaderDecoded = {
     id: number;
@@ -52,7 +53,7 @@ export class PacketHeaderDecoder {
     private decodeHead(): void {
 
         if (!this._rawInput.canRead(PacketHeaderDecoder.ENCODING_HEAD_LENGTH)) {
-            throw new Error("PacketHeaderDecoder.decodeHead() -> packet too short");
+            throw new PacketTooShortError("PacketHeaderDecoder.decodeHead() -> packet too short");
         }
 
         let head = this._rawInput.readUnsignedShort();
@@ -66,7 +67,7 @@ export class PacketHeaderDecoder {
         if (this._endpoint === AnkSocketEndpoint.SERVER) {
 
             if (!this._rawInput.canRead(PacketHeaderDecoder.ENCODING_SEQ_LENGTH)) {
-                throw new Error("PacketHeaderDecoder.decodeSeq() -> packet too short");
+                throw new PacketTooShortError("PacketHeaderDecoder.decodeSeq() -> packet too short");
             }
 
             this._seq = this._rawInput.readUnsignedInt();
@@ -78,7 +79,7 @@ export class PacketHeaderDecoder {
     private decodeSize(): void {
 
         if (!this._rawInput.canRead(this._sos)) {
-            throw new Error("PacketHeaderDecoder.decodeSize() -> packet too short");
+            throw new PacketTooShortError("PacketHeaderDecoder.decodeSize() -> packet too short");
         }
 
         switch (this._sos) {
@@ -103,7 +104,7 @@ export class PacketHeaderDecoder {
     private decodeContent(): void {
 
         if (!this._rawInput.canRead(this._size)) {
-            throw new Error("PacketHeaderDecoder.decodeContent() -> packet too short");
+            throw new PacketTooShortError("PacketHeaderDecoder.decodeContent() -> packet too short");
         }
 
         let start = this._rawInput.readOffset;
