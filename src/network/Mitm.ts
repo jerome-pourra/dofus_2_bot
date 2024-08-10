@@ -28,6 +28,9 @@ export class Mitm {
 
             console.log("Mitm() -> new connection from " + socketClient.remoteAddress + "::" + socketClient.remotePort);
 
+            // TODO Ici on va peut etre avoir un soucis avec le switch de connexion entre l'host server et le game server
+            // Quand on switch de connexion on reset tout c'est comme si un nouveau client vennait de se connecter (FRIDA)
+
             let gameInstance = new GameInstance(socketClient);
             gameInstance.ankClient.attachEvent("close", () => gameInstance.ankServer.end());
             gameInstance.ankClient.attachEvent("data", (data: Buffer) => {
