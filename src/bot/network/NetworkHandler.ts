@@ -13,30 +13,20 @@ export class NetworkHandler {
         this._types.set("GameMapChangeOrientationMessage", GameMapChangeOrientationHandler);
     }
 
-    public static getType(id: number): string {
-        let type = NetworkHandler._types[id];
+    public static getType(id: string): string {
+        let type = NetworkHandler._types.get(id);
         if (type) {
             return type.name;
         }
-        return "UNKNOWN";
+        return "UNHANDLED";
     }
 
     public static process(wrapper: NetworkMessageWrapper): void {
-
-        let message: INetworkMessage = wrapper.networkMessage;
-        let networkClassName = message.constructor.name;
-
-        if (!this._types.has(networkClassName)) {
-            return;
+        let handlerType: new (wrapper: NetworkMessageWrapper) => INetworkHandler = NetworkHandler._types.get(wrapper.networkMessage.constructor.name);
+        if (handlerType) {
+            console.log("Handle network message (CLASS " + wrapper.networkMessage.constructor.name + ")");
+            new handlerType(wrapper).process();
         }
-
-        let handlerClass = this._types.get(networkClassName);
-        if (!handlerClass) {
-            return;
-        }
-        
-        new handlerClass(wrapper).process();
-
     }
 
 }
