@@ -67,7 +67,6 @@ export class PacketHandler {
                     networkMessage
                 );
 
-                // Process network passage into bot
                 NetworkHandler.process(networkWrapper);
 
                 if (!networkWrapper.locked) {
@@ -110,8 +109,8 @@ export class PacketHandler {
         }
 
         if (PacketHandler.LOG_UNPACK) {
-            console.log(JSON.stringify(message));
-            // console.log(util.inspect(message, { depth: null, colors: true }));
+            // console.log(JSON.stringify(message));
+            console.log(util.inspect(message, { depth: null, colors: true }));
         }
 
         return message;

@@ -1,30 +1,41 @@
-import { ChatClientMultiMessage } from "../../com/ankamagames/dofus/network/messages/game/chat/ChatClientMultiMessage";
-import { GameMapChangeOrientationMessage } from "../../com/ankamagames/dofus/network/messages/game/context/GameMapChangeOrientationMessage";
 import { INetworkMessage } from "../../com/ankamagames/jerakine/network/INetworkMessage";
 import { NetworkMessageWrapper } from "../../network/packet/NetworkMessageWrapper";
-import { ChatClientMultiMessageHandler } from "./ChatClientMultiMessageHandler";
-import { GameMapChangeOrientationHandler } from "./GameMapChangeOrientationHandler";
+import { INetworkHandler } from "./INetworkHandler";
+import { ChatClientMultiMessageHandler } from "./messages/ChatClientMultiHandler";
+import { GameMapChangeOrientationHandler } from "./messages/GameMapChangeOrientationHandler";
 
 export class NetworkHandler {
+
+    private static readonly _types: Map<string, new (wrapper: NetworkMessageWrapper) => INetworkHandler> = new Map<string, new (wrapper: NetworkMessageWrapper) => INetworkHandler>();
+
+    static {
+        this._types.set("ChatClientMultiMessage", ChatClientMultiMessageHandler);
+        this._types.set("GameMapChangeOrientationMessage", GameMapChangeOrientationHandler);
+    }
+
+    public static getType(id: number): string {
+        let type = NetworkHandler._types[id];
+        if (type) {
+            return type.name;
+        }
+        return "UNKNOWN";
+    }
 
     public static process(wrapper: NetworkMessageWrapper): void {
 
         let message: INetworkMessage = wrapper.networkMessage;
-        let networkClass = message.constructor.name;
+        let networkClassName = message.constructor.name;
 
-        switch (networkClass) {
-            case "ChatClientMultiMessage":
-                // console.log("ChatClientMultiMessage locked");
-                // wrapper.locked = true;
-                // new ChatClientMultiMessageHandler(message).process();
-                break;
-            case "GameMapChangeOrientationMessage":
-                // new GameMapChangeOrientationHandler(message as GameMapChangeOrientationMessage).process();
-                break;
-            default:
-                // console.log("Unhandled message: " + networkClass);
-                break;
+        if (!this._types.has(networkClassName)) {
+            return;
         }
+
+        let handlerClass = this._types.get(networkClassName);
+        if (!handlerClass) {
+            return;
+        }
+        
+        new handlerClass(wrapper).process();
 
     }
 
