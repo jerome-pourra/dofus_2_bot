@@ -3,6 +3,13 @@ import { IDataOutput } from "./IDataOutput";
 
 export class CustomBuffer implements IDataInput, IDataOutput {
 
+    protected static readonly BYTE_LENGTH: number = 8;
+    protected static readonly SHORT_LENGTH: number = 16;
+    protected static readonly INT_LENGTH: number = 32;
+    protected static readonly LONG_LENGTH: bigint = 64n;
+    protected static readonly FLOAT_LENGTH: number = 32;
+    protected static readonly DOUBLE_LENGTH: number = 64;
+
     protected static readonly BYTE_MIN_SIZE: number = -128;
     protected static readonly BYTE_MAX_SIZE: number = 127;
 
