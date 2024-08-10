@@ -17,8 +17,6 @@ export interface IDataInput {
     readUnsignedInt(): number;
     readShort(): number;
     readUnsignedShort(): number;
-    readLong(): bigint;
-    readUnsignedLong(): bigint;
     readFloat(): number;
     readDouble(): number;
     readUTF(): string;

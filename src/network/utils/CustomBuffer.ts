@@ -3,11 +3,41 @@ import { IDataOutput } from "./IDataOutput";
 
 export class CustomBuffer implements IDataInput, IDataOutput {
 
+    protected static readonly BYTE_MIN_SIZE: number = -128;
+    protected static readonly BYTE_MAX_SIZE: number = 127;
+
+    protected static readonly BYTE_UNSIGNED_MIN_SIZE: number = 0;
+    protected static readonly BYTE_UNSIGNED_MAX_SIZE: number = 255;
+
+    protected static readonly SHORT_MIN_SIZE: number = -32768;
+    protected static readonly SHORT_MAX_SIZE: number = 32767;
+
+    protected static readonly SHORT_UNSIGNED_MIN_SIZE: number = 0;
+    protected static readonly SHORT_UNSIGNED_MAX_SIZE: number = 65535;
+
+    protected static readonly INT_MIN_SIZE: number = -2147483648;
+    protected static readonly INT_MAX_SIZE: number = 2147483647;
+
+    protected static readonly INT_UNSIGNED_MIN_SIZE: number = 0;
+    protected static readonly INT_UNSIGNED_MAX_SIZE: number = 4294967295;
+
+    protected static readonly LONG_MIN_SIZE: bigint = -9223372036854775808n;
+    protected static readonly LONG_MAX_SIZE: bigint = 9223372036854775807n;
+
+    protected static readonly LONG_UNSIGNED_MIN_SIZE: bigint = 0n;
+    protected static readonly LONG_UNSIGNED_MAX_SIZE: bigint = 18446744073709551615n;
+
+    protected static readonly FLOAT_MIN_SIZE: number = -3.4028234663852886e+38;
+    protected static readonly FLOAT_MAX_SIZE: number = 3.4028234663852886e+38;
+
+    protected static readonly DOUBLE_MIN_SIZE: number = -1.7976931348623157e+308;
+    protected static readonly DOUBLE_MAX_SIZE: number = 1.7976931348623157e+308;
+
     protected _buffer: Buffer;
     protected _readOffset: number;
     protected _writeOffset: number;
 
-    constructor(buffer: Buffer = null) {
+    constructor(buffer?: Buffer) {
         this._buffer = buffer ?? Buffer.alloc(0);
         this._readOffset = 0;
         this._writeOffset = 0;
@@ -57,44 +87,68 @@ export class CustomBuffer implements IDataInput, IDataOutput {
         return Boolean(this.readInt8());
     }
 
-    public readByte() {
-        return this.readInt8();
+    public readByte(): number {
+        let value = this.readInt8();
+        if (value < CustomBuffer.BYTE_MIN_SIZE || value > CustomBuffer.BYTE_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
+        return value;
     }
 
-    public readUnsignedByte() {
-        return this.readUInt8();
+    public readUnsignedByte(): number {
+        let value = this.readUInt8();
+        if (value < CustomBuffer.BYTE_UNSIGNED_MIN_SIZE || value > CustomBuffer.BYTE_UNSIGNED_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
+        return value;
     }
 
     public readInt(): number {
-        return this.readInt32BE();
+        let value = this.readInt32BE();
+        if (value < CustomBuffer.INT_MIN_SIZE || value > CustomBuffer.INT_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
+        return value;
     }
 
     public readUnsignedInt(): number {
-        return this.readUInt32BE();
+        let value = this.readUInt32BE();
+        if (value < CustomBuffer.INT_UNSIGNED_MIN_SIZE || value > CustomBuffer.INT_UNSIGNED_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
+        return value;
     }
 
     public readShort(): number {
-        return this.readInt16BE();
+        let value = this.readInt16BE();
+        if (value < CustomBuffer.SHORT_MIN_SIZE || value > CustomBuffer.SHORT_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
+        return value;
     }
 
     public readUnsignedShort(): number {
-        return this.readUInt16BE();
-    }
-
-    public readLong(): bigint {
-        return this.readInt64BE();
-    }
-
-    public readUnsignedLong(): bigint {
-        return this.readUInt64BE();
+        let value = this.readUInt16BE();
+        if (value < CustomBuffer.SHORT_UNSIGNED_MIN_SIZE || value > CustomBuffer.SHORT_UNSIGNED_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
+        return value;
     }
 
     public readFloat(): number {
-        return this.readFloatBE();
+        let value = this.readFloatBE();
+        if (value < CustomBuffer.FLOAT_MIN_SIZE || value > CustomBuffer.FLOAT_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
+        return value;
     }
 
     public readDouble(): number {
-        return this.readDoubleBE();
+        let value = this.readDoubleBE();
+        if (value < CustomBuffer.DOUBLE_MIN_SIZE || value > CustomBuffer.DOUBLE_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
+        return value;
     }
 
     public readUTF(): string {
@@ -163,18 +217,6 @@ export class CustomBuffer implements IDataInput, IDataOutput {
         return value;
     }
 
-    protected readInt64BE(): bigint {
-        const value = this._buffer.readBigInt64BE(this._readOffset);
-        this._readOffset += 8;
-        return value;
-    }
-
-    protected readUInt64BE(): bigint {
-        const value = this._buffer.readBigUInt64BE(this._readOffset);
-        this._readOffset += 8;
-        return value;
-    }
-
     protected readFloatBE(): number {
         const value = this._buffer.readFloatBE(this._readOffset);
         this._readOffset += 4;
@@ -200,43 +242,62 @@ export class CustomBuffer implements IDataInput, IDataOutput {
     }
 
     public writeByte(value: number): void {
-        this.writeInt8(value);
+        if (value < CustomBuffer.BYTE_MIN_SIZE || value > CustomBuffer.BYTE_MAX_SIZE) {
+            this.writeUnsignedByte(value);
+        } else {
+            this.writeInt8(value);
+        }
     }
 
     public writeUnsignedByte(value: number): void {
+        if (value < CustomBuffer.BYTE_UNSIGNED_MIN_SIZE || value > CustomBuffer.BYTE_UNSIGNED_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
         this.writeUInt8(value);
     }
 
-    public writeInt(value: number): void {
-        this.writeInt32BE(value);
-    }
-
-    public writeUnsignedInt(value: number): void {
-        this.writeUInt32BE(value);
-    }
-
     public writeShort(value: number): void {
-        this.writeInt16BE(value);
+        if (value < CustomBuffer.SHORT_MIN_SIZE || value > CustomBuffer.SHORT_MAX_SIZE) {
+            this.writeUnsignedShort(value);
+        } else {
+            this.writeInt16BE(value);
+        }
     }
 
     public writeUnsignedShort(value: number): void {
+        if (value < CustomBuffer.SHORT_UNSIGNED_MIN_SIZE || value > CustomBuffer.SHORT_UNSIGNED_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
         this.writeUInt16BE(value);
     }
 
+    public writeInt(value: number): void {
+        if (value < CustomBuffer.INT_MIN_SIZE || value > CustomBuffer.INT_MAX_SIZE) {
+            this.writeUnsignedInt(value);
+        } else {
+            this.writeInt32BE(value);
+        }
+    }
+
+    public writeUnsignedInt(value: number): void {
+        if (value < CustomBuffer.INT_UNSIGNED_MIN_SIZE || value > CustomBuffer.INT_UNSIGNED_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
+        this.writeUInt32BE(value);
+    }
+
     public writeFloat(value: number): void {
+        if (value < CustomBuffer.FLOAT_MIN_SIZE || value > CustomBuffer.FLOAT_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
         this.writeFloatBE(value);
     }
 
     public writeDouble(value: number): void {
+        if (value < CustomBuffer.DOUBLE_MIN_SIZE || value > CustomBuffer.DOUBLE_MAX_SIZE) {
+            throw new RangeError("Forbidden value (" + value + ") on element value.");
+        }
         this.writeDoubleBE(value);
-    }
-
-    public writeLong(value: bigint): void {
-        this.writeInt64BE(value);
-    }
-
-    public writeUnsignedLong(value: bigint): void {
-        this.writeUInt64BE(value);
     }
 
     public writeUTF(value: string): void {
