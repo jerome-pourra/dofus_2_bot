@@ -4,6 +4,7 @@ import { ChatServerMessage } from "../../com/ankamagames/dofus/network/messages/
 import { GameMapChangeOrientationRequestMessage } from "../../com/ankamagames/dofus/network/messages/game/context/GameMapChangeOrientationRequestMessage";
 import { ActorOrientation } from "../../com/ankamagames/dofus/network/types/game/context/ActorOrientation";
 import { CustomDataWrapper } from "../../com/ankamagames/jerakine/network/CustomDataWrapper";
+import { INetworkMessage } from "../../com/ankamagames/jerakine/network/INetworkMessage";
 import { AnkSocketEndpoint } from "../../network/AnkSocket";
 import { ConnectionHandler } from "../../network/ConnectionHandler";
 import { PacketHandler } from "../../network/packet/PacketHandler";
@@ -12,7 +13,10 @@ export class ChatClientMultiMessageHandler {
 
     private _message: ChatClientMultiMessage;
 
-    constructor(message: ChatClientMultiMessage) {
+    constructor(message: INetworkMessage) {
+        if (!(message instanceof ChatClientMultiMessage)) {
+            throw new Error("Invalid message type: " + message.constructor.name);
+        }
         this._message = message;
     }
 
