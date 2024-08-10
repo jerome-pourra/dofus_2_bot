@@ -7,6 +7,9 @@ export class StatedElement implements INetworkType
 
 	public static readonly protocolId: number = 1041;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public elementId: number = 0;
 	public elementCellId: number = 0;
 	public elementState: number = 0;
@@ -20,6 +23,16 @@ export class StatedElement implements INetworkType
     public getTypeId()
     {
         return StatedElement.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return StatedElement.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StatedElement.endpointServer;
     }
 
     public initStatedElement(elementId: number = 0, elementCellId: number = 0, elementState: number = 0, onCurrentMap: boolean = false): StatedElement

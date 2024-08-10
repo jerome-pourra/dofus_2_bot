@@ -7,6 +7,9 @@ export class EntityInformation implements INetworkType
 
 	public static readonly protocolId: number = 9779;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public experience: number = 0;
 	public status: boolean = false;
@@ -19,6 +22,16 @@ export class EntityInformation implements INetworkType
     public getTypeId()
     {
         return EntityInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return EntityInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EntityInformation.endpointServer;
     }
 
     public initEntityInformation(id: number = 0, experience: number = 0, status: boolean = false): EntityInformation

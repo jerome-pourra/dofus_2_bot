@@ -9,6 +9,9 @@ export class GameActionFightKillMessage extends AbstractGameActionMessage implem
 
 	public static readonly protocolId: number = 6293;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public targetId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class GameActionFightKillMessage extends AbstractGameActionMessage implem
     public getMessageId()
     {
         return GameActionFightKillMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionFightKillMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightKillMessage.endpointServer;
     }
 
     public initGameActionFightKillMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0): GameActionFightKillMessage
@@ -32,7 +45,7 @@ export class GameActionFightKillMessage extends AbstractGameActionMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

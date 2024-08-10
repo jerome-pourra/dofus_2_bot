@@ -7,6 +7,9 @@ export class ProtectedEntityWaitingForHelpInfo implements INetworkType
 
 	public static readonly protocolId: number = 9739;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public timeLeftBeforeFight: number = 0;
 	public waitTimeForPlacement: number = 0;
 	public nbPositionForDefensors: number = 0;
@@ -19,6 +22,16 @@ export class ProtectedEntityWaitingForHelpInfo implements INetworkType
     public getTypeId()
     {
         return ProtectedEntityWaitingForHelpInfo.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ProtectedEntityWaitingForHelpInfo.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ProtectedEntityWaitingForHelpInfo.endpointServer;
     }
 
     public initProtectedEntityWaitingForHelpInfo(timeLeftBeforeFight: number = 0, waitTimeForPlacement: number = 0, nbPositionForDefensors: number = 0): ProtectedEntityWaitingForHelpInfo

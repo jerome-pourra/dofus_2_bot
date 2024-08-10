@@ -9,6 +9,9 @@ export class ExchangeObjectModifyPricedMessage extends ExchangeObjectMovePricedM
 
 	public static readonly protocolId: number = 1058;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class ExchangeObjectModifyPricedMessage extends ExchangeObjectMovePricedM
     public getMessageId()
     {
         return ExchangeObjectModifyPricedMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeObjectModifyPricedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeObjectModifyPricedMessage.endpointServer;
     }
 
     public initExchangeObjectModifyPricedMessage(objectUID: number = 0, quantity: number = 0, price: number = 0): ExchangeObjectModifyPricedMessage
@@ -29,7 +42,7 @@ export class ExchangeObjectModifyPricedMessage extends ExchangeObjectMovePricedM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

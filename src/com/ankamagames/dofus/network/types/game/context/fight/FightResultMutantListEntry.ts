@@ -9,6 +9,9 @@ export class FightResultMutantListEntry extends FightResultFighterListEntry impl
 
 	public static readonly protocolId: number = 2795;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public level: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class FightResultMutantListEntry extends FightResultFighterListEntry impl
     public getTypeId()
     {
         return FightResultMutantListEntry.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightResultMutantListEntry.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightResultMutantListEntry.endpointServer;
     }
 
     public initFightResultMutantListEntry(outcome: number = 0, wave: number = 0, rewards: FightLoot = null, id: number = 0, alive: boolean = false, level: number = 0): FightResultMutantListEntry

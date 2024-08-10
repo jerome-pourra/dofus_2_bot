@@ -9,6 +9,9 @@ export class AcquaintanceInformation extends AbstractContactInformations impleme
 
 	public static readonly protocolId: number = 1584;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerState: number = 99;
 
     public constructor()
@@ -19,6 +22,16 @@ export class AcquaintanceInformation extends AbstractContactInformations impleme
     public getTypeId()
     {
         return AcquaintanceInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AcquaintanceInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AcquaintanceInformation.endpointServer;
     }
 
     public initAcquaintanceInformation(accountId: number = 0, accountTag: AccountTagInformation = null, playerState: number = 99): AcquaintanceInformation

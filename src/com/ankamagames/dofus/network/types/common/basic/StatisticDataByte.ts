@@ -8,6 +8,9 @@ export class StatisticDataByte extends StatisticData implements INetworkType
 
 	public static readonly protocolId: number = 4573;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public value: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class StatisticDataByte extends StatisticData implements INetworkType
     public getTypeId()
     {
         return StatisticDataByte.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return StatisticDataByte.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StatisticDataByte.endpointServer;
     }
 
     public initStatisticDataByte(value: number = 0): StatisticDataByte

@@ -9,6 +9,9 @@ export class HaapiBuyValidationMessage extends HaapiValidationMessage implements
 
 	public static readonly protocolId: number = 1448;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public amount: number = 0;
 	public email: string = "";
 
@@ -20,6 +23,16 @@ export class HaapiBuyValidationMessage extends HaapiValidationMessage implements
     public getMessageId()
     {
         return HaapiBuyValidationMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HaapiBuyValidationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HaapiBuyValidationMessage.endpointServer;
     }
 
     public initHaapiBuyValidationMessage(action: number = 0, code: number = 0, amount: number = 0, email: string = ""): HaapiBuyValidationMessage
@@ -34,7 +47,7 @@ export class HaapiBuyValidationMessage extends HaapiValidationMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

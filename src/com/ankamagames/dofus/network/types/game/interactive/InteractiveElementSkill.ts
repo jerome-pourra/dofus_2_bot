@@ -7,6 +7,9 @@ export class InteractiveElementSkill implements INetworkType
 
 	public static readonly protocolId: number = 2087;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public skillId: number = 0;
 	public skillInstanceUid: number = 0;
 
@@ -18,6 +21,16 @@ export class InteractiveElementSkill implements INetworkType
     public getTypeId()
     {
         return InteractiveElementSkill.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return InteractiveElementSkill.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InteractiveElementSkill.endpointServer;
     }
 
     public initInteractiveElementSkill(skillId: number = 0, skillInstanceUid: number = 0): InteractiveElementSkill

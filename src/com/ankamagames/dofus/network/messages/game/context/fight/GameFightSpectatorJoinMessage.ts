@@ -10,6 +10,9 @@ export class GameFightSpectatorJoinMessage extends GameFightJoinMessage implemen
 
 	public static readonly protocolId: number = 3924;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public namedPartyTeams: Array<NamedPartyTeam>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameFightSpectatorJoinMessage extends GameFightJoinMessage implemen
         return GameFightSpectatorJoinMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightSpectatorJoinMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightSpectatorJoinMessage.endpointServer;
+    }
+
     public initGameFightSpectatorJoinMessage(isTeamPhase: boolean = false, canBeCancelled: boolean = false, canSayReady: boolean = false, isFightStarted: boolean = false, timeMaxBeforeFightStart: number = 0, fightType: number = 0, namedPartyTeams: Array<NamedPartyTeam> = null): GameFightSpectatorJoinMessage
     {
         super.initGameFightJoinMessage(isTeamPhase,canBeCancelled,canSayReady,isFightStarted,timeMaxBeforeFightStart,fightType);
@@ -34,7 +47,7 @@ export class GameFightSpectatorJoinMessage extends GameFightJoinMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

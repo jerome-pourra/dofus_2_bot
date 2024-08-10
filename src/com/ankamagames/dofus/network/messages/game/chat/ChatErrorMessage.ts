@@ -9,6 +9,9 @@ export class ChatErrorMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 6135;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ChatErrorMessage extends NetworkMessage implements INetworkMessage
         return ChatErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChatErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChatErrorMessage.endpointServer;
+    }
+
     public initChatErrorMessage(reason: number = 0): ChatErrorMessage
     {
         this.reason = reason;
@@ -31,7 +44,7 @@ export class ChatErrorMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

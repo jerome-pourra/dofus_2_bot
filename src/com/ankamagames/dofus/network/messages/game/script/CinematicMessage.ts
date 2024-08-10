@@ -9,6 +9,9 @@ export class CinematicMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 991;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public cinematicId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class CinematicMessage extends NetworkMessage implements INetworkMessage
         return CinematicMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CinematicMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CinematicMessage.endpointServer;
+    }
+
     public initCinematicMessage(cinematicId: number = 0): CinematicMessage
     {
         this.cinematicId = cinematicId;
@@ -31,7 +44,7 @@ export class CinematicMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class GoldItem extends Item implements INetworkType
 
 	public static readonly protocolId: number = 8076;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public sum: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class GoldItem extends Item implements INetworkType
     public getTypeId()
     {
         return GoldItem.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GoldItem.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GoldItem.endpointServer;
     }
 
     public initGoldItem(sum: number = 0): GoldItem

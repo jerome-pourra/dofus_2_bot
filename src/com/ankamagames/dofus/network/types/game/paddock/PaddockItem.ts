@@ -9,6 +9,9 @@ export class PaddockItem extends ObjectItemInRolePlay implements INetworkType
 
 	public static readonly protocolId: number = 2373;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public durability: ItemDurability;
 
     public constructor()
@@ -20,6 +23,16 @@ export class PaddockItem extends ObjectItemInRolePlay implements INetworkType
     public getTypeId()
     {
         return PaddockItem.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PaddockItem.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaddockItem.endpointServer;
     }
 
     public initPaddockItem(cellId: number = 0, objectGID: number = 0, durability: ItemDurability = null): PaddockItem

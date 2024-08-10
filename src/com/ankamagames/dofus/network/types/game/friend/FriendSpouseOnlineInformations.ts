@@ -11,6 +11,9 @@ export class FriendSpouseOnlineInformations extends FriendSpouseInformations imp
 
 	public static readonly protocolId: number = 8676;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mapId: number = 0;
 	public subAreaId: number = 0;
 	public inFight: boolean = false;
@@ -24,6 +27,16 @@ export class FriendSpouseOnlineInformations extends FriendSpouseInformations imp
     public getTypeId()
     {
         return FriendSpouseOnlineInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FriendSpouseOnlineInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendSpouseOnlineInformations.endpointServer;
     }
 
     public initFriendSpouseOnlineInformations(spouseAccountId: number = 0, spouseId: number = 0, spouseName: string = "", spouseLevel: number = 0, breed: number = 0, sex: number = 0, spouseEntityLook: EntityLook = null, guildInfo: GuildInformations = null, alignmentSide: number = 0, mapId: number = 0, subAreaId: number = 0, inFight: boolean = false, followSpouse: boolean = false): FriendSpouseOnlineInformations

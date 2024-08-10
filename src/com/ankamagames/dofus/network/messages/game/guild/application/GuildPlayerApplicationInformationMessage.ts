@@ -11,6 +11,9 @@ export class GuildPlayerApplicationInformationMessage extends GuildPlayerApplica
 
 	public static readonly protocolId: number = 656;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guildInformation: GuildInformations;
 	public apply: SocialApplicationInformation;
 
@@ -26,6 +29,16 @@ export class GuildPlayerApplicationInformationMessage extends GuildPlayerApplica
         return GuildPlayerApplicationInformationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildPlayerApplicationInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildPlayerApplicationInformationMessage.endpointServer;
+    }
+
     public initGuildPlayerApplicationInformationMessage(guildInformation: GuildInformations = null, apply: SocialApplicationInformation = null): GuildPlayerApplicationInformationMessage
     {
         this.guildInformation = guildInformation;
@@ -37,7 +50,7 @@ export class GuildPlayerApplicationInformationMessage extends GuildPlayerApplica
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

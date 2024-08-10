@@ -10,6 +10,9 @@ export class AccountCapabilitiesMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 8908;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public accountId: number = 0;
 	public tutorialAvailable: boolean = false;
 	public status: number;
@@ -25,6 +28,16 @@ export class AccountCapabilitiesMessage extends NetworkMessage implements INetwo
         return AccountCapabilitiesMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AccountCapabilitiesMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AccountCapabilitiesMessage.endpointServer;
+    }
+
     public initAccountCapabilitiesMessage(accountId: number = 0, tutorialAvailable: boolean = false, status: number = -1, canCreateNewCharacter: boolean = false): AccountCapabilitiesMessage
     {
         this.accountId = accountId;
@@ -38,7 +51,7 @@ export class AccountCapabilitiesMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

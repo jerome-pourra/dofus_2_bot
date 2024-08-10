@@ -9,6 +9,9 @@ export class PartyCancelInvitationMessage extends AbstractPartyMessage implement
 
 	public static readonly protocolId: number = 425;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public guestId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyCancelInvitationMessage extends AbstractPartyMessage implement
     public getMessageId()
     {
         return PartyCancelInvitationMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyCancelInvitationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyCancelInvitationMessage.endpointServer;
     }
 
     public initPartyCancelInvitationMessage(partyId: number = 0, guestId: number = 0): PartyCancelInvitationMessage
@@ -32,7 +45,7 @@ export class PartyCancelInvitationMessage extends AbstractPartyMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

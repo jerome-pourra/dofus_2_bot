@@ -10,6 +10,9 @@ export class ChallengeAddMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 8563;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public challengeInformation: ChallengeInformation;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ChallengeAddMessage extends NetworkMessage implements INetworkMessa
         return ChallengeAddMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChallengeAddMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChallengeAddMessage.endpointServer;
+    }
+
     public initChallengeAddMessage(challengeInformation: ChallengeInformation = null): ChallengeAddMessage
     {
         this.challengeInformation = challengeInformation;
@@ -33,7 +46,7 @@ export class ChallengeAddMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

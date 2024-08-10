@@ -9,6 +9,9 @@ export class GameActionFightSpellCastMessage extends AbstractGameActionFightTarg
 
 	public static readonly protocolId: number = 2679;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spellId: number = 0;
 	public spellLevel: number = 0;
 	public portalsIds: Array<number>;
@@ -24,6 +27,16 @@ export class GameActionFightSpellCastMessage extends AbstractGameActionFightTarg
         return GameActionFightSpellCastMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameActionFightSpellCastMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightSpellCastMessage.endpointServer;
+    }
+
     public initGameActionFightSpellCastMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, destinationCellId: number = 0, critical: number = 1, silentCast: boolean = false, verboseCast: boolean = false, spellId: number = 0, spellLevel: number = 0, portalsIds: Array<number> = null): GameActionFightSpellCastMessage
     {
         super.initAbstractGameActionFightTargetedAbilityMessage(actionId,sourceId,targetId,destinationCellId,critical,silentCast,verboseCast);
@@ -37,7 +50,7 @@ export class GameActionFightSpellCastMessage extends AbstractGameActionFightTarg
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

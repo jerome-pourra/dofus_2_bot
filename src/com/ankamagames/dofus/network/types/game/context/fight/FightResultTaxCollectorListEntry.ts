@@ -10,6 +10,9 @@ export class FightResultTaxCollectorListEntry extends FightResultFighterListEntr
 
 	public static readonly protocolId: number = 6507;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceInfo: BasicAllianceInformations;
 
     public constructor()
@@ -21,6 +24,16 @@ export class FightResultTaxCollectorListEntry extends FightResultFighterListEntr
     public getTypeId()
     {
         return FightResultTaxCollectorListEntry.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightResultTaxCollectorListEntry.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightResultTaxCollectorListEntry.endpointServer;
     }
 
     public initFightResultTaxCollectorListEntry(outcome: number = 0, wave: number = 0, rewards: FightLoot = null, id: number = 0, alive: boolean = false, allianceInfo: BasicAllianceInformations = null): FightResultTaxCollectorListEntry

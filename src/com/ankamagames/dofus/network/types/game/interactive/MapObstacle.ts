@@ -7,6 +7,9 @@ export class MapObstacle implements INetworkType
 
 	public static readonly protocolId: number = 9518;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public obstacleCellId: number = 0;
 	public state: number = 0;
 
@@ -18,6 +21,16 @@ export class MapObstacle implements INetworkType
     public getTypeId()
     {
         return MapObstacle.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MapObstacle.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapObstacle.endpointServer;
     }
 
     public initMapObstacle(obstacleCellId: number = 0, state: number = 0): MapObstacle

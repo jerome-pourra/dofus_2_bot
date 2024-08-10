@@ -9,6 +9,9 @@ export class AllianceMemberInfo extends SocialMember implements INetworkType
 
 	public static readonly protocolId: number = 7753;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public avaRoleId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class AllianceMemberInfo extends SocialMember implements INetworkType
     public getTypeId()
     {
         return AllianceMemberInfo.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceMemberInfo.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceMemberInfo.endpointServer;
     }
 
     public initAllianceMemberInfo(id: number = 0, name: string = "", level: number = 0, breed: number = 0, sex: boolean = false, connected: number = 99, hoursSinceLastConnection: number = 0, accountId: number = 0, status: PlayerStatus = null, rankId: number = 0, enrollmentDate: number = 0, avaRoleId: number = 0): AllianceMemberInfo

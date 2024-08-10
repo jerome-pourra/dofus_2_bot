@@ -10,6 +10,9 @@ export class AccountHouseMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 7345;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public houses: Array<AccountHouseInformations>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AccountHouseMessage extends NetworkMessage implements INetworkMessa
         return AccountHouseMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AccountHouseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AccountHouseMessage.endpointServer;
+    }
+
     public initAccountHouseMessage(houses: Array<AccountHouseInformations> = null): AccountHouseMessage
     {
         this.houses = houses;
@@ -33,7 +46,7 @@ export class AccountHouseMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

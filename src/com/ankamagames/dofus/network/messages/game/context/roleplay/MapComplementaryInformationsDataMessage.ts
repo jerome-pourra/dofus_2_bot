@@ -17,6 +17,9 @@ export class MapComplementaryInformationsDataMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 9792;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public subAreaId: number = 0;
 	public mapId: number = 0;
 	public houses: Array<HouseInformations>;
@@ -45,6 +48,16 @@ export class MapComplementaryInformationsDataMessage extends NetworkMessage impl
         return MapComplementaryInformationsDataMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MapComplementaryInformationsDataMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapComplementaryInformationsDataMessage.endpointServer;
+    }
+
     public initMapComplementaryInformationsDataMessage(subAreaId: number = 0, mapId: number = 0, houses: Array<HouseInformations> = null, actors: Array<GameRolePlayActorInformations> = null, interactiveElements: Array<InteractiveElement> = null, statedElements: Array<StatedElement> = null, obstacles: Array<MapObstacle> = null, fights: Array<FightCommonInformations> = null, hasAggressiveMonsters: boolean = false, fightStartPositions: FightStartingPositions = null): MapComplementaryInformationsDataMessage
     {
         this.subAreaId = subAreaId;
@@ -64,7 +77,7 @@ export class MapComplementaryInformationsDataMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

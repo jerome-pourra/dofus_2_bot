@@ -9,6 +9,9 @@ export class SymbioticObjectErrorMessage extends ObjectErrorMessage implements I
 
 	public static readonly protocolId: number = 2086;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public errorCode: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class SymbioticObjectErrorMessage extends ObjectErrorMessage implements I
     public getMessageId()
     {
         return SymbioticObjectErrorMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SymbioticObjectErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SymbioticObjectErrorMessage.endpointServer;
     }
 
     public initSymbioticObjectErrorMessage(reason: number = 0, errorCode: number = 0): SymbioticObjectErrorMessage
@@ -32,7 +45,7 @@ export class SymbioticObjectErrorMessage extends ObjectErrorMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class GameRolePlayDelayedObjectUseMessage extends GameRolePlayDelayedActi
 
 	public static readonly protocolId: number = 3110;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objectGID: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class GameRolePlayDelayedObjectUseMessage extends GameRolePlayDelayedActi
     public getMessageId()
     {
         return GameRolePlayDelayedObjectUseMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayDelayedObjectUseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayDelayedObjectUseMessage.endpointServer;
     }
 
     public initGameRolePlayDelayedObjectUseMessage(delayedCharacterId: number = 0, delayTypeId: number = 0, delayEndTime: number = 0, objectGID: number = 0): GameRolePlayDelayedObjectUseMessage
@@ -32,7 +45,7 @@ export class GameRolePlayDelayedObjectUseMessage extends GameRolePlayDelayedActi
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

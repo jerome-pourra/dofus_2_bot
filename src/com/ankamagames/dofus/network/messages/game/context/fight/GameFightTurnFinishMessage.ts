@@ -9,6 +9,9 @@ export class GameFightTurnFinishMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 3915;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public isAfk: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameFightTurnFinishMessage extends NetworkMessage implements INetwo
         return GameFightTurnFinishMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightTurnFinishMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightTurnFinishMessage.endpointServer;
+    }
+
     public initGameFightTurnFinishMessage(isAfk: boolean = false): GameFightTurnFinishMessage
     {
         this.isAfk = isAfk;
@@ -31,7 +44,7 @@ export class GameFightTurnFinishMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

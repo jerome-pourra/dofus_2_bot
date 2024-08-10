@@ -9,6 +9,9 @@ export class TreasureHuntDigRequestAnswerFailedMessage extends TreasureHuntDigRe
 
 	public static readonly protocolId: number = 2459;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public wrongFlagCount: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class TreasureHuntDigRequestAnswerFailedMessage extends TreasureHuntDigRe
     public getMessageId()
     {
         return TreasureHuntDigRequestAnswerFailedMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TreasureHuntDigRequestAnswerFailedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntDigRequestAnswerFailedMessage.endpointServer;
     }
 
     public initTreasureHuntDigRequestAnswerFailedMessage(questType: number = 0, result: number = 0, wrongFlagCount: number = 0): TreasureHuntDigRequestAnswerFailedMessage
@@ -32,7 +45,7 @@ export class TreasureHuntDigRequestAnswerFailedMessage extends TreasureHuntDigRe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

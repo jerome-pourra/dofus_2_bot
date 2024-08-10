@@ -8,6 +8,9 @@ export class SocialRecruitmentInformation implements INetworkType
 
 	public static readonly protocolId: number = 2211;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public socialId: number = 0;
 	public recruitmentType: number = 0;
 	public recruitmentTitle: string = "";
@@ -30,6 +33,16 @@ export class SocialRecruitmentInformation implements INetworkType
     public getTypeId()
     {
         return SocialRecruitmentInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SocialRecruitmentInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SocialRecruitmentInformation.endpointServer;
     }
 
     public initSocialRecruitmentInformation(socialId: number = 0, recruitmentType: number = 0, recruitmentTitle: string = "", recruitmentText: string = "", selectedLanguages: Array<number> = null, selectedCriterion: Array<number> = null, minLevel: number = 0, minLevelFacultative: boolean = false, invalidatedByModeration: boolean = false, lastEditPlayerName: string = "", lastEditDate: number = 0, recruitmentAutoLocked: boolean = false): SocialRecruitmentInformation

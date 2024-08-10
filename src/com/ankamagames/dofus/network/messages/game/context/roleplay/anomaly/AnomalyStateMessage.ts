@@ -9,6 +9,9 @@ export class AnomalyStateMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 9316;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public subAreaId: number = 0;
 	public open: boolean = false;
 	public closingTime: number = 0;
@@ -23,6 +26,16 @@ export class AnomalyStateMessage extends NetworkMessage implements INetworkMessa
         return AnomalyStateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AnomalyStateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AnomalyStateMessage.endpointServer;
+    }
+
     public initAnomalyStateMessage(subAreaId: number = 0, open: boolean = false, closingTime: number = 0): AnomalyStateMessage
     {
         this.subAreaId = subAreaId;
@@ -35,7 +48,7 @@ export class AnomalyStateMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

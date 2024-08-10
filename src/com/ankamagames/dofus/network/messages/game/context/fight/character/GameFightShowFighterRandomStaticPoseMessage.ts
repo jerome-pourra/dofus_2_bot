@@ -10,6 +10,9 @@ export class GameFightShowFighterRandomStaticPoseMessage extends GameFightShowFi
 
 	public static readonly protocolId: number = 7583;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -18,6 +21,16 @@ export class GameFightShowFighterRandomStaticPoseMessage extends GameFightShowFi
     public getMessageId()
     {
         return GameFightShowFighterRandomStaticPoseMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightShowFighterRandomStaticPoseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightShowFighterRandomStaticPoseMessage.endpointServer;
     }
 
     public initGameFightShowFighterRandomStaticPoseMessage(informations: GameFightFighterInformations = null): GameFightShowFighterRandomStaticPoseMessage
@@ -30,7 +43,7 @@ export class GameFightShowFighterRandomStaticPoseMessage extends GameFightShowFi
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

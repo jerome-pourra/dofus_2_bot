@@ -9,6 +9,9 @@ export class ConsoleCommandsListMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 869;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public aliases: Array<string>;
 	public args: Array<string>;
 	public descriptions: Array<string>;
@@ -26,6 +29,16 @@ export class ConsoleCommandsListMessage extends NetworkMessage implements INetwo
         return ConsoleCommandsListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ConsoleCommandsListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ConsoleCommandsListMessage.endpointServer;
+    }
+
     public initConsoleCommandsListMessage(aliases: Array<string> = null, args: Array<string> = null, descriptions: Array<string> = null): ConsoleCommandsListMessage
     {
         this.aliases = aliases;
@@ -38,7 +51,7 @@ export class ConsoleCommandsListMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

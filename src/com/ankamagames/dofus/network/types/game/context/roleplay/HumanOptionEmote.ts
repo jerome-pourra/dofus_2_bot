@@ -8,6 +8,9 @@ export class HumanOptionEmote extends HumanOption implements INetworkType
 
 	public static readonly protocolId: number = 7646;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public emoteId: number = 0;
 	public emoteStartTime: number = 0;
 
@@ -19,6 +22,16 @@ export class HumanOptionEmote extends HumanOption implements INetworkType
     public getTypeId()
     {
         return HumanOptionEmote.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HumanOptionEmote.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HumanOptionEmote.endpointServer;
     }
 
     public initHumanOptionEmote(emoteId: number = 0, emoteStartTime: number = 0): HumanOptionEmote

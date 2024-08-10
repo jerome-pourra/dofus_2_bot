@@ -9,6 +9,9 @@ export class DocumentReadingBeginMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 9246;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public documentId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class DocumentReadingBeginMessage extends NetworkMessage implements INetw
         return DocumentReadingBeginMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DocumentReadingBeginMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DocumentReadingBeginMessage.endpointServer;
+    }
+
     public initDocumentReadingBeginMessage(documentId: number = 0): DocumentReadingBeginMessage
     {
         this.documentId = documentId;
@@ -31,7 +44,7 @@ export class DocumentReadingBeginMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

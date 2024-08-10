@@ -7,6 +7,9 @@ export class ActorAlignmentInformations implements INetworkType
 
 	public static readonly protocolId: number = 2626;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public alignmentSide: number = 0;
 	public alignmentValue: number = 0;
 	public alignmentGrade: number = 0;
@@ -20,6 +23,16 @@ export class ActorAlignmentInformations implements INetworkType
     public getTypeId()
     {
         return ActorAlignmentInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ActorAlignmentInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ActorAlignmentInformations.endpointServer;
     }
 
     public initActorAlignmentInformations(alignmentSide: number = 0, alignmentValue: number = 0, alignmentGrade: number = 0, characterPower: number = 0): ActorAlignmentInformations

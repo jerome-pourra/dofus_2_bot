@@ -9,17 +9,29 @@ export class RawDataMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 6253;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public content: Buffer;
 
     public constructor()
     {
         super();
-        this.content = Buffer.alloc(0);
     }
 
     public getMessageId()
     {
         return RawDataMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return RawDataMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return RawDataMessage.endpointServer;
     }
 
     public initRawDataMessage(content: Buffer = null): RawDataMessage
@@ -32,7 +44,7 @@ export class RawDataMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

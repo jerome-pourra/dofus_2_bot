@@ -9,6 +9,9 @@ export class ObjectsDeletedMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 5219;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objectUID: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class ObjectsDeletedMessage extends NetworkMessage implements INetworkMes
         return ObjectsDeletedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectsDeletedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectsDeletedMessage.endpointServer;
+    }
+
     public initObjectsDeletedMessage(objectUID: Array<number> = null): ObjectsDeletedMessage
     {
         this.objectUID = objectUID;
@@ -32,7 +45,7 @@ export class ObjectsDeletedMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

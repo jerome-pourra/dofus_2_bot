@@ -8,6 +8,9 @@ export class ShortcutSpell extends Shortcut implements INetworkType
 
 	public static readonly protocolId: number = 576;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spellId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class ShortcutSpell extends Shortcut implements INetworkType
     public getTypeId()
     {
         return ShortcutSpell.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ShortcutSpell.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShortcutSpell.endpointServer;
     }
 
     public initShortcutSpell(slot: number = 0, spellId: number = 0): ShortcutSpell

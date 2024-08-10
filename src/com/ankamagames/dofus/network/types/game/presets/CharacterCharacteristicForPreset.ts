@@ -8,6 +8,9 @@ export class CharacterCharacteristicForPreset extends SimpleCharacterCharacteris
 
 	public static readonly protocolId: number = 3299;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public stuff: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class CharacterCharacteristicForPreset extends SimpleCharacterCharacteris
     public getTypeId()
     {
         return CharacterCharacteristicForPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterCharacteristicForPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterCharacteristicForPreset.endpointServer;
     }
 
     public initCharacterCharacteristicForPreset(keyword: string = "", base: number = 0, additionnal: number = 0, stuff: number = 0): CharacterCharacteristicForPreset

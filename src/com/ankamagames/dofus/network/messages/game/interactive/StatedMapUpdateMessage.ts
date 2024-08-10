@@ -10,6 +10,9 @@ export class StatedMapUpdateMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 2054;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public statedElements: Array<StatedElement>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class StatedMapUpdateMessage extends NetworkMessage implements INetworkMe
         return StatedMapUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return StatedMapUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StatedMapUpdateMessage.endpointServer;
+    }
+
     public initStatedMapUpdateMessage(statedElements: Array<StatedElement> = null): StatedMapUpdateMessage
     {
         this.statedElements = statedElements;
@@ -33,7 +46,7 @@ export class StatedMapUpdateMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

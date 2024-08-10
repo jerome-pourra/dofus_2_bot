@@ -10,6 +10,9 @@ export class AchievementFinishedInformationMessage extends AchievementFinishedMe
 
 	public static readonly protocolId: number = 1898;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public name: string = "";
 	public playerId: number = 0;
 
@@ -21,6 +24,16 @@ export class AchievementFinishedInformationMessage extends AchievementFinishedMe
     public getMessageId()
     {
         return AchievementFinishedInformationMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AchievementFinishedInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementFinishedInformationMessage.endpointServer;
     }
 
     public initAchievementFinishedInformationMessage(achievement: AchievementAchievedRewardable = null, name: string = "", playerId: number = 0): AchievementFinishedInformationMessage
@@ -35,7 +48,7 @@ export class AchievementFinishedInformationMessage extends AchievementFinishedMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

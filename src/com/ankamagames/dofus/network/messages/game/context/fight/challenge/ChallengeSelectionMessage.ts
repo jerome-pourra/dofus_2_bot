@@ -9,6 +9,9 @@ export class ChallengeSelectionMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 5920;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public challengeId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ChallengeSelectionMessage extends NetworkMessage implements INetwor
         return ChallengeSelectionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChallengeSelectionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChallengeSelectionMessage.endpointServer;
+    }
+
     public initChallengeSelectionMessage(challengeId: number = 0): ChallengeSelectionMessage
     {
         this.challengeId = challengeId;
@@ -31,7 +44,7 @@ export class ChallengeSelectionMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

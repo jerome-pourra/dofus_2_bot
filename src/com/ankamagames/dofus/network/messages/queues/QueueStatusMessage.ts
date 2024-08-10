@@ -9,6 +9,9 @@ export class QueueStatusMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 4838;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public position: number = 0;
 	public total: number = 0;
 
@@ -22,6 +25,16 @@ export class QueueStatusMessage extends NetworkMessage implements INetworkMessag
         return QueueStatusMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return QueueStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return QueueStatusMessage.endpointServer;
+    }
+
     public initQueueStatusMessage(position: number = 0, total: number = 0): QueueStatusMessage
     {
         this.position = position;
@@ -33,7 +46,7 @@ export class QueueStatusMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

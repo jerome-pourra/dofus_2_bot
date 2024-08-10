@@ -9,6 +9,9 @@ export class DungeonKeyRingUpdateMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 6518;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dungeonId: number = 0;
 	public available: boolean = false;
 
@@ -22,6 +25,16 @@ export class DungeonKeyRingUpdateMessage extends NetworkMessage implements INetw
         return DungeonKeyRingUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DungeonKeyRingUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DungeonKeyRingUpdateMessage.endpointServer;
+    }
+
     public initDungeonKeyRingUpdateMessage(dungeonId: number = 0, available: boolean = false): DungeonKeyRingUpdateMessage
     {
         this.dungeonId = dungeonId;
@@ -33,7 +46,7 @@ export class DungeonKeyRingUpdateMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

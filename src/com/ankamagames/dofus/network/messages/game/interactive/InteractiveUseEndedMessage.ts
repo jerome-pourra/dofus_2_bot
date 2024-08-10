@@ -9,6 +9,9 @@ export class InteractiveUseEndedMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 2897;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public elemId: number = 0;
 	public skillId: number = 0;
 
@@ -22,6 +25,16 @@ export class InteractiveUseEndedMessage extends NetworkMessage implements INetwo
         return InteractiveUseEndedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return InteractiveUseEndedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InteractiveUseEndedMessage.endpointServer;
+    }
+
     public initInteractiveUseEndedMessage(elemId: number = 0, skillId: number = 0): InteractiveUseEndedMessage
     {
         this.elemId = elemId;
@@ -33,7 +46,7 @@ export class InteractiveUseEndedMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

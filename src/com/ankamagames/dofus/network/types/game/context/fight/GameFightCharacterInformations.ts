@@ -14,6 +14,9 @@ export class GameFightCharacterInformations extends GameFightFighterNamedInforma
 
 	public static readonly protocolId: number = 3578;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public level: number = 0;
 	public alignmentInfos: ActorAlignmentInformations;
 	public breed: number = 0;
@@ -28,6 +31,16 @@ export class GameFightCharacterInformations extends GameFightFighterNamedInforma
     public getTypeId()
     {
         return GameFightCharacterInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightCharacterInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightCharacterInformations.endpointServer;
     }
 
     public initGameFightCharacterInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, spawnInfo: GameContextBasicSpawnInformation = null, wave: number = 0, stats: GameFightCharacteristics = null, previousPositions: Array<number> = null, name: string = "", status: PlayerStatus = null, leagueId: number = 0, ladderPosition: number = 0, hiddenInPrefight: boolean = false, level: number = 0, alignmentInfos: ActorAlignmentInformations = null, breed: number = 0, sex: boolean = false): GameFightCharacterInformations

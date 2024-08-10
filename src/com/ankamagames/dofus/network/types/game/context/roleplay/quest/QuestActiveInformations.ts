@@ -7,6 +7,9 @@ export class QuestActiveInformations implements INetworkType
 
 	public static readonly protocolId: number = 7048;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public questId: number = 0;
 
     public constructor()
@@ -17,6 +20,16 @@ export class QuestActiveInformations implements INetworkType
     public getTypeId()
     {
         return QuestActiveInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return QuestActiveInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return QuestActiveInformations.endpointServer;
     }
 
     public initQuestActiveInformations(questId: number = 0): QuestActiveInformations

@@ -9,6 +9,9 @@ export class PortalDialogCreationMessage extends NpcDialogCreationMessage implem
 
 	public static readonly protocolId: number = 6302;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public type: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PortalDialogCreationMessage extends NpcDialogCreationMessage implem
     public getMessageId()
     {
         return PortalDialogCreationMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PortalDialogCreationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PortalDialogCreationMessage.endpointServer;
     }
 
     public initPortalDialogCreationMessage(mapId: number = 0, npcId: number = 0, type: number = 0): PortalDialogCreationMessage
@@ -32,7 +45,7 @@ export class PortalDialogCreationMessage extends NpcDialogCreationMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

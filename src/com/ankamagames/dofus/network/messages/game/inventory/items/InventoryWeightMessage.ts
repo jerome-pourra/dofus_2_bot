@@ -9,6 +9,9 @@ export class InventoryWeightMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 9677;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public inventoryWeight: number = 0;
 	public weightMax: number = 0;
 
@@ -22,6 +25,16 @@ export class InventoryWeightMessage extends NetworkMessage implements INetworkMe
         return InventoryWeightMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return InventoryWeightMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InventoryWeightMessage.endpointServer;
+    }
+
     public initInventoryWeightMessage(inventoryWeight: number = 0, weightMax: number = 0): InventoryWeightMessage
     {
         this.inventoryWeight = inventoryWeight;
@@ -33,7 +46,7 @@ export class InventoryWeightMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

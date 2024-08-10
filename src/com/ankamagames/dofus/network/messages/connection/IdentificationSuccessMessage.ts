@@ -11,6 +11,9 @@ export class IdentificationSuccessMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 6104;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public login: string = "";
 	public accountTag: AccountTagInformation;
 	public accountId: number = 0;
@@ -34,6 +37,16 @@ export class IdentificationSuccessMessage extends NetworkMessage implements INet
         return IdentificationSuccessMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return IdentificationSuccessMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IdentificationSuccessMessage.endpointServer;
+    }
+
     public initIdentificationSuccessMessage(login: string = "", accountTag: AccountTagInformation = null, accountId: number = 0, communityId: number = 0, hasRights: boolean = false, hasReportRight: boolean = false, hasForceRight: boolean = false, accountCreation: number = 0, subscriptionEndDate: number = 0, wasAlreadyConnected: boolean = false, havenbagAvailableRoom: number = 0): IdentificationSuccessMessage
     {
         this.login = login;
@@ -54,7 +67,7 @@ export class IdentificationSuccessMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

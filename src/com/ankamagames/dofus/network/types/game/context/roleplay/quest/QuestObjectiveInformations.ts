@@ -7,6 +7,9 @@ export class QuestObjectiveInformations implements INetworkType
 
 	public static readonly protocolId: number = 7248;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objectiveId: number = 0;
 	public objectiveStatus: boolean = false;
 	public dialogParams: Array<string>;
@@ -19,6 +22,16 @@ export class QuestObjectiveInformations implements INetworkType
     public getTypeId()
     {
         return QuestObjectiveInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return QuestObjectiveInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return QuestObjectiveInformations.endpointServer;
     }
 
     public initQuestObjectiveInformations(objectiveId: number = 0, objectiveStatus: boolean = false, dialogParams: Array<string> = null): QuestObjectiveInformations

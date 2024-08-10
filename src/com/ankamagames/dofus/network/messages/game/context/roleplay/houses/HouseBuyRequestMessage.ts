@@ -9,6 +9,9 @@ export class HouseBuyRequestMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 5849;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public proposedPrice: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class HouseBuyRequestMessage extends NetworkMessage implements INetworkMe
         return HouseBuyRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HouseBuyRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseBuyRequestMessage.endpointServer;
+    }
+
     public initHouseBuyRequestMessage(proposedPrice: number = 0): HouseBuyRequestMessage
     {
         this.proposedPrice = proposedPrice;
@@ -31,7 +44,7 @@ export class HouseBuyRequestMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

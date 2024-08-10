@@ -9,6 +9,9 @@ export class ObjectEffects implements INetworkType
 
 	public static readonly protocolId: number = 6602;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public effects: Array<ObjectEffect>;
 
     public constructor()
@@ -19,6 +22,16 @@ export class ObjectEffects implements INetworkType
     public getTypeId()
     {
         return ObjectEffects.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectEffects.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectEffects.endpointServer;
     }
 
     public initObjectEffects(effects: Array<ObjectEffect> = null): ObjectEffects

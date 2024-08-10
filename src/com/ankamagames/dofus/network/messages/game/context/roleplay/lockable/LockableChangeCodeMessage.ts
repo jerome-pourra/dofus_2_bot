@@ -9,6 +9,9 @@ export class LockableChangeCodeMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 9751;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public code: string = "";
 
     public constructor()
@@ -21,6 +24,16 @@ export class LockableChangeCodeMessage extends NetworkMessage implements INetwor
         return LockableChangeCodeMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return LockableChangeCodeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return LockableChangeCodeMessage.endpointServer;
+    }
+
     public initLockableChangeCodeMessage(code: string = ""): LockableChangeCodeMessage
     {
         this.code = code;
@@ -31,7 +44,7 @@ export class LockableChangeCodeMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

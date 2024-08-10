@@ -8,6 +8,9 @@ export class FightTriggeredEffect extends AbstractFightDispellableEffect impleme
 
 	public static readonly protocolId: number = 5487;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public param1: number = 0;
 	public param2: number = 0;
 	public param3: number = 0;
@@ -21,6 +24,16 @@ export class FightTriggeredEffect extends AbstractFightDispellableEffect impleme
     public getTypeId()
     {
         return FightTriggeredEffect.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightTriggeredEffect.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightTriggeredEffect.endpointServer;
     }
 
     public initFightTriggeredEffect(uid: number = 0, targetId: number = 0, turnDuration: number = 0, dispelable: number = 1, spellId: number = 0, effectId: number = 0, parentBoostUid: number = 0, param1: number = 0, param2: number = 0, param3: number = 0, delay: number = 0): FightTriggeredEffect

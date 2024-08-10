@@ -9,6 +9,9 @@ export class ChatSmileyMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 7020;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public entityId: number = 0;
 	public smileyId: number = 0;
 	public accountId: number = 0;
@@ -23,6 +26,16 @@ export class ChatSmileyMessage extends NetworkMessage implements INetworkMessage
         return ChatSmileyMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChatSmileyMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChatSmileyMessage.endpointServer;
+    }
+
     public initChatSmileyMessage(entityId: number = 0, smileyId: number = 0, accountId: number = 0): ChatSmileyMessage
     {
         this.entityId = entityId;
@@ -35,7 +48,7 @@ export class ChatSmileyMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

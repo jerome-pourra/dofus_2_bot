@@ -8,6 +8,9 @@ export class ActorRestrictionsInformations implements INetworkType
 
 	public static readonly protocolId: number = 9953;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public cantBeAggressed: boolean = false;
 	public cantBeChallenged: boolean = false;
 	public cantTrade: boolean = false;
@@ -36,6 +39,16 @@ export class ActorRestrictionsInformations implements INetworkType
     public getTypeId()
     {
         return ActorRestrictionsInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ActorRestrictionsInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ActorRestrictionsInformations.endpointServer;
     }
 
     public initActorRestrictionsInformations(cantBeAggressed: boolean = false, cantBeChallenged: boolean = false, cantTrade: boolean = false, cantBeAttackedByMutant: boolean = false, cantRun: boolean = false, forceSlowWalk: boolean = false, cantMinimize: boolean = false, cantMove: boolean = false, cantAggress: boolean = false, cantChallenge: boolean = false, cantExchange: boolean = false, cantAttack: boolean = false, cantChat: boolean = false, cantUseObject: boolean = false, cantUseTaxCollector: boolean = false, cantUseInteractive: boolean = false, cantSpeakToNPC: boolean = false, cantChangeZone: boolean = false, cantAttackMonster: boolean = false): ActorRestrictionsInformations

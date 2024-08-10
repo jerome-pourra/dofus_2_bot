@@ -8,6 +8,9 @@ export class AchievementStartedObjective extends AchievementObjective implements
 
 	public static readonly protocolId: number = 5360;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public value: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class AchievementStartedObjective extends AchievementObjective implements
     public getTypeId()
     {
         return AchievementStartedObjective.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AchievementStartedObjective.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementStartedObjective.endpointServer;
     }
 
     public initAchievementStartedObjective(id: number = 0, maxValue: number = 0, value: number = 0): AchievementStartedObjective

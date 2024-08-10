@@ -9,6 +9,9 @@ export class ObjectSetPositionMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 5569;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectUID: number = 0;
 	public position: number = 63;
 	public quantity: number = 0;
@@ -23,6 +26,16 @@ export class ObjectSetPositionMessage extends NetworkMessage implements INetwork
         return ObjectSetPositionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectSetPositionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectSetPositionMessage.endpointServer;
+    }
+
     public initObjectSetPositionMessage(objectUID: number = 0, position: number = 63, quantity: number = 0): ObjectSetPositionMessage
     {
         this.objectUID = objectUID;
@@ -35,7 +48,7 @@ export class ObjectSetPositionMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

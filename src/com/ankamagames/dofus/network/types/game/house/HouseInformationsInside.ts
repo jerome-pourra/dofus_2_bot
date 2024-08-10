@@ -10,6 +10,9 @@ export class HouseInformationsInside extends HouseInformations implements INetwo
 
 	public static readonly protocolId: number = 2801;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public houseInfos: HouseInstanceInformations;
 	public worldX: number = 0;
 	public worldY: number = 0;
@@ -23,6 +26,16 @@ export class HouseInformationsInside extends HouseInformations implements INetwo
     public getTypeId()
     {
         return HouseInformationsInside.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HouseInformationsInside.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseInformationsInside.endpointServer;
     }
 
     public initHouseInformationsInside(houseId: number = 0, modelId: number = 0, houseInfos: HouseInstanceInformations = null, worldX: number = 0, worldY: number = 0): HouseInformationsInside

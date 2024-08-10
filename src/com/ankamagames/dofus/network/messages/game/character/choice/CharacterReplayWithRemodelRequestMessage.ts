@@ -10,6 +10,9 @@ export class CharacterReplayWithRemodelRequestMessage extends CharacterReplayReq
 
 	public static readonly protocolId: number = 338;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public remodel: RemodelingInformation;
 
     public constructor()
@@ -23,6 +26,16 @@ export class CharacterReplayWithRemodelRequestMessage extends CharacterReplayReq
         return CharacterReplayWithRemodelRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterReplayWithRemodelRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterReplayWithRemodelRequestMessage.endpointServer;
+    }
+
     public initCharacterReplayWithRemodelRequestMessage(characterId: number = 0, remodel: RemodelingInformation = null): CharacterReplayWithRemodelRequestMessage
     {
         super.initCharacterReplayRequestMessage(characterId);
@@ -34,7 +47,7 @@ export class CharacterReplayWithRemodelRequestMessage extends CharacterReplayReq
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -11,6 +11,9 @@ export class AllianceFightPhaseUpdateMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 1193;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceFightInfo: SocialFightInfo;
 	public newPhase: FightPhase;
 
@@ -26,6 +29,16 @@ export class AllianceFightPhaseUpdateMessage extends NetworkMessage implements I
         return AllianceFightPhaseUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceFightPhaseUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceFightPhaseUpdateMessage.endpointServer;
+    }
+
     public initAllianceFightPhaseUpdateMessage(allianceFightInfo: SocialFightInfo = null, newPhase: FightPhase = null): AllianceFightPhaseUpdateMessage
     {
         this.allianceFightInfo = allianceFightInfo;
@@ -37,7 +50,7 @@ export class AllianceFightPhaseUpdateMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

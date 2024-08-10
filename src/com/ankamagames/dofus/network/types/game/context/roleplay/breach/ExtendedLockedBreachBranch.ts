@@ -10,6 +10,9 @@ export class ExtendedLockedBreachBranch extends ExtendedBreachBranch implements 
 
 	public static readonly protocolId: number = 4080;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public unlockPrice: number = 0;
 
     public constructor()
@@ -20,6 +23,16 @@ export class ExtendedLockedBreachBranch extends ExtendedBreachBranch implements 
     public getTypeId()
     {
         return ExtendedLockedBreachBranch.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExtendedLockedBreachBranch.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExtendedLockedBreachBranch.endpointServer;
     }
 
     public initExtendedLockedBreachBranch(room: number = 0, element: number = 0, bosses: Array<MonsterInGroupLightInformations> = null, map: number = 0, score: number = 0, relativeScore: number = 0, monsters: Array<MonsterInGroupLightInformations> = null, rewards: Array<BreachReward> = null, modifier: number = 0, prize: number = 0, unlockPrice: number = 0): ExtendedLockedBreachBranch

@@ -9,6 +9,9 @@ export class ExchangeStartedWithPodsMessage extends ExchangeStartedMessage imple
 
 	public static readonly protocolId: number = 5028;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public firstCharacterId: number = 0;
 	public firstCharacterCurrentWeight: number = 0;
 	public firstCharacterMaxWeight: number = 0;
@@ -24,6 +27,16 @@ export class ExchangeStartedWithPodsMessage extends ExchangeStartedMessage imple
     public getMessageId()
     {
         return ExchangeStartedWithPodsMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeStartedWithPodsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartedWithPodsMessage.endpointServer;
     }
 
     public initExchangeStartedWithPodsMessage(exchangeType: number = 0, firstCharacterId: number = 0, firstCharacterCurrentWeight: number = 0, firstCharacterMaxWeight: number = 0, secondCharacterId: number = 0, secondCharacterCurrentWeight: number = 0, secondCharacterMaxWeight: number = 0): ExchangeStartedWithPodsMessage
@@ -42,7 +55,7 @@ export class ExchangeStartedWithPodsMessage extends ExchangeStartedMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

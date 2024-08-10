@@ -10,6 +10,9 @@ export class ItemsPreset extends Preset implements INetworkType
 
 	public static readonly protocolId: number = 4783;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public items: Array<ItemForPreset>;
 	public mountEquipped: boolean = false;
 	public look: EntityLook;
@@ -24,6 +27,16 @@ export class ItemsPreset extends Preset implements INetworkType
     public getTypeId()
     {
         return ItemsPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ItemsPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ItemsPreset.endpointServer;
     }
 
     public initItemsPreset(id: number = 0, items: Array<ItemForPreset> = null, mountEquipped: boolean = false, look: EntityLook = null): ItemsPreset

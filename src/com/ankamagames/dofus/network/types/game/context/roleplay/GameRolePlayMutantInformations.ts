@@ -11,6 +11,9 @@ export class GameRolePlayMutantInformations extends GameRolePlayHumanoidInformat
 
 	public static readonly protocolId: number = 2574;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public monsterId: number = 0;
 	public powerLevel: number = 0;
 
@@ -22,6 +25,16 @@ export class GameRolePlayMutantInformations extends GameRolePlayHumanoidInformat
     public getTypeId()
     {
         return GameRolePlayMutantInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayMutantInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayMutantInformations.endpointServer;
     }
 
     public initGameRolePlayMutantInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, name: string = "", humanoidInfo: HumanInformations = null, accountId: number = 0, monsterId: number = 0, powerLevel: number = 0): GameRolePlayMutantInformations

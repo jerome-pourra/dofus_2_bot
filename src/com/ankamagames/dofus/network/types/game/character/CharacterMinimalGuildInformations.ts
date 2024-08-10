@@ -10,6 +10,9 @@ export class CharacterMinimalGuildInformations extends CharacterMinimalPlusLookI
 
 	public static readonly protocolId: number = 2143;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public guild: BasicGuildInformations;
 
     public constructor()
@@ -21,6 +24,16 @@ export class CharacterMinimalGuildInformations extends CharacterMinimalPlusLookI
     public getTypeId()
     {
         return CharacterMinimalGuildInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterMinimalGuildInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterMinimalGuildInformations.endpointServer;
     }
 
     public initCharacterMinimalGuildInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0, guild: BasicGuildInformations = null): CharacterMinimalGuildInformations

@@ -11,6 +11,9 @@ export class InteractiveMapUpdateMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 9493;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public interactiveElements: Array<InteractiveElement>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class InteractiveMapUpdateMessage extends NetworkMessage implements INetw
         return InteractiveMapUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return InteractiveMapUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InteractiveMapUpdateMessage.endpointServer;
+    }
+
     public initInteractiveMapUpdateMessage(interactiveElements: Array<InteractiveElement> = null): InteractiveMapUpdateMessage
     {
         this.interactiveElements = interactiveElements;
@@ -34,7 +47,7 @@ export class InteractiveMapUpdateMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

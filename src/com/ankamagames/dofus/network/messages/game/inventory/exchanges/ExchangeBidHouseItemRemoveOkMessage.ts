@@ -9,6 +9,9 @@ export class ExchangeBidHouseItemRemoveOkMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 8101;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public sellerId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ExchangeBidHouseItemRemoveOkMessage extends NetworkMessage implemen
         return ExchangeBidHouseItemRemoveOkMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeBidHouseItemRemoveOkMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeBidHouseItemRemoveOkMessage.endpointServer;
+    }
+
     public initExchangeBidHouseItemRemoveOkMessage(sellerId: number = 0): ExchangeBidHouseItemRemoveOkMessage
     {
         this.sellerId = sellerId;
@@ -31,7 +44,7 @@ export class ExchangeBidHouseItemRemoveOkMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

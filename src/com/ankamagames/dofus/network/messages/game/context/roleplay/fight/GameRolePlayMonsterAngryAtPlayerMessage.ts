@@ -9,6 +9,9 @@ export class GameRolePlayMonsterAngryAtPlayerMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 9879;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerId: number = 0;
 	public monsterGroupId: number = 0;
 	public angryStartTime: number = 0;
@@ -24,6 +27,16 @@ export class GameRolePlayMonsterAngryAtPlayerMessage extends NetworkMessage impl
         return GameRolePlayMonsterAngryAtPlayerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayMonsterAngryAtPlayerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayMonsterAngryAtPlayerMessage.endpointServer;
+    }
+
     public initGameRolePlayMonsterAngryAtPlayerMessage(playerId: number = 0, monsterGroupId: number = 0, angryStartTime: number = 0, attackTime: number = 0): GameRolePlayMonsterAngryAtPlayerMessage
     {
         this.playerId = playerId;
@@ -37,7 +50,7 @@ export class GameRolePlayMonsterAngryAtPlayerMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

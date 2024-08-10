@@ -10,6 +10,9 @@ export class DecraftResultMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 3985;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public results: Array<DecraftedItemStackInfo>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class DecraftResultMessage extends NetworkMessage implements INetworkMess
         return DecraftResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DecraftResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DecraftResultMessage.endpointServer;
+    }
+
     public initDecraftResultMessage(results: Array<DecraftedItemStackInfo> = null): DecraftResultMessage
     {
         this.results = results;
@@ -33,7 +46,7 @@ export class DecraftResultMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

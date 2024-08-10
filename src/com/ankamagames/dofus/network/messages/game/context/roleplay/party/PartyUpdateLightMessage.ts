@@ -9,6 +9,9 @@ export class PartyUpdateLightMessage extends AbstractPartyEventMessage implement
 
 	public static readonly protocolId: number = 4231;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 	public lifePoints: number = 0;
 	public maxLifePoints: number = 0;
@@ -23,6 +26,16 @@ export class PartyUpdateLightMessage extends AbstractPartyEventMessage implement
     public getMessageId()
     {
         return PartyUpdateLightMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyUpdateLightMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyUpdateLightMessage.endpointServer;
     }
 
     public initPartyUpdateLightMessage(partyId: number = 0, id: number = 0, lifePoints: number = 0, maxLifePoints: number = 0, prospecting: number = 0, regenRate: number = 0): PartyUpdateLightMessage
@@ -40,7 +53,7 @@ export class PartyUpdateLightMessage extends AbstractPartyEventMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

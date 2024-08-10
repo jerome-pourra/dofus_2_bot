@@ -8,6 +8,9 @@ export class GuildUnlockNewTabActivity extends GuildLogbookEntryBasicInformation
 
 	public static readonly protocolId: number = 7681;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -16,6 +19,16 @@ export class GuildUnlockNewTabActivity extends GuildLogbookEntryBasicInformation
     public getTypeId()
     {
         return GuildUnlockNewTabActivity.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildUnlockNewTabActivity.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildUnlockNewTabActivity.endpointServer;
     }
 
     public initGuildUnlockNewTabActivity(id: number = 0, date: number = 0): GuildUnlockNewTabActivity

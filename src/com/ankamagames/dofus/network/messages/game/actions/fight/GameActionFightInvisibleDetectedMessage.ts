@@ -9,6 +9,9 @@ export class GameActionFightInvisibleDetectedMessage extends AbstractGameActionM
 
 	public static readonly protocolId: number = 7285;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public targetId: number = 0;
 	public cellId: number = 0;
 
@@ -20,6 +23,16 @@ export class GameActionFightInvisibleDetectedMessage extends AbstractGameActionM
     public getMessageId()
     {
         return GameActionFightInvisibleDetectedMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionFightInvisibleDetectedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightInvisibleDetectedMessage.endpointServer;
     }
 
     public initGameActionFightInvisibleDetectedMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, cellId: number = 0): GameActionFightInvisibleDetectedMessage
@@ -34,7 +47,7 @@ export class GameActionFightInvisibleDetectedMessage extends AbstractGameActionM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

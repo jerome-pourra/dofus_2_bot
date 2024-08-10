@@ -9,6 +9,9 @@ export class CharacterExperienceGainMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 9701;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public experienceCharacter: number = 0;
 	public experienceMount: number = 0;
 	public experienceGuild: number = 0;
@@ -24,6 +27,16 @@ export class CharacterExperienceGainMessage extends NetworkMessage implements IN
         return CharacterExperienceGainMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterExperienceGainMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterExperienceGainMessage.endpointServer;
+    }
+
     public initCharacterExperienceGainMessage(experienceCharacter: number = 0, experienceMount: number = 0, experienceGuild: number = 0, experienceIncarnation: number = 0): CharacterExperienceGainMessage
     {
         this.experienceCharacter = experienceCharacter;
@@ -37,7 +50,7 @@ export class CharacterExperienceGainMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

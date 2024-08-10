@@ -9,6 +9,9 @@ export class FriendSetStatusShareMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 5816;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public share: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class FriendSetStatusShareMessage extends NetworkMessage implements INetw
         return FriendSetStatusShareMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FriendSetStatusShareMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendSetStatusShareMessage.endpointServer;
+    }
+
     public initFriendSetStatusShareMessage(share: boolean = false): FriendSetStatusShareMessage
     {
         this.share = share;
@@ -31,7 +44,7 @@ export class FriendSetStatusShareMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class IgnoredDeleteRequestMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 7645;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public accountId: number = 0;
 	public session: boolean = false;
 
@@ -22,6 +25,16 @@ export class IgnoredDeleteRequestMessage extends NetworkMessage implements INetw
         return IgnoredDeleteRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return IgnoredDeleteRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IgnoredDeleteRequestMessage.endpointServer;
+    }
+
     public initIgnoredDeleteRequestMessage(accountId: number = 0, session: boolean = false): IgnoredDeleteRequestMessage
     {
         this.accountId = accountId;
@@ -33,7 +46,7 @@ export class IgnoredDeleteRequestMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

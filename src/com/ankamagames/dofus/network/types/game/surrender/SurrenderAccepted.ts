@@ -8,6 +8,9 @@ export class SurrenderAccepted extends SurrenderResponse implements INetworkType
 
 	public static readonly protocolId: number = 8859;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -16,6 +19,16 @@ export class SurrenderAccepted extends SurrenderResponse implements INetworkType
     public getTypeId()
     {
         return SurrenderAccepted.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SurrenderAccepted.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SurrenderAccepted.endpointServer;
     }
 
     public initSurrenderAccepted(): SurrenderAccepted

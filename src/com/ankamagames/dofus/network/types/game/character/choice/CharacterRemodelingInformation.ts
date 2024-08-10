@@ -8,6 +8,9 @@ export class CharacterRemodelingInformation extends AbstractCharacterInformation
 
 	public static readonly protocolId: number = 5105;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public name: string = "";
 	public breed: number = 0;
 	public sex: boolean = false;
@@ -23,6 +26,16 @@ export class CharacterRemodelingInformation extends AbstractCharacterInformation
     public getTypeId()
     {
         return CharacterRemodelingInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterRemodelingInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterRemodelingInformation.endpointServer;
     }
 
     public initCharacterRemodelingInformation(id: number = 0, name: string = "", breed: number = 0, sex: boolean = false, cosmeticId: number = 0, colors: Array<number> = null): CharacterRemodelingInformation

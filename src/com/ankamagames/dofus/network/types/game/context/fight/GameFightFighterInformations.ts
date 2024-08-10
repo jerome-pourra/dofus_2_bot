@@ -13,6 +13,9 @@ export class GameFightFighterInformations extends GameContextActorInformations i
 
 	public static readonly protocolId: number = 5601;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spawnInfo: GameContextBasicSpawnInformation;
 	public wave: number = 0;
 	public stats: GameFightCharacteristics;
@@ -29,6 +32,16 @@ export class GameFightFighterInformations extends GameContextActorInformations i
     public getTypeId()
     {
         return GameFightFighterInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightFighterInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightFighterInformations.endpointServer;
     }
 
     public initGameFightFighterInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, spawnInfo: GameContextBasicSpawnInformation = null, wave: number = 0, stats: GameFightCharacteristics = null, previousPositions: Array<number> = null): GameFightFighterInformations

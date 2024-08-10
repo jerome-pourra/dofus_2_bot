@@ -10,6 +10,9 @@ export class GameRefreshMonsterBoostsMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 3997;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public monsterBoosts: Array<MonsterBoosts>;
 	public familyBoosts: Array<MonsterBoosts>;
 
@@ -25,6 +28,16 @@ export class GameRefreshMonsterBoostsMessage extends NetworkMessage implements I
         return GameRefreshMonsterBoostsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRefreshMonsterBoostsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRefreshMonsterBoostsMessage.endpointServer;
+    }
+
     public initGameRefreshMonsterBoostsMessage(monsterBoosts: Array<MonsterBoosts> = null, familyBoosts: Array<MonsterBoosts> = null): GameRefreshMonsterBoostsMessage
     {
         this.monsterBoosts = monsterBoosts;
@@ -36,7 +49,7 @@ export class GameRefreshMonsterBoostsMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

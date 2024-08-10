@@ -8,6 +8,9 @@ export class IndexedEntityLook implements INetworkType
 
 	public static readonly protocolId: number = 5735;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public look: EntityLook;
 	public index: number = 0;
 
@@ -19,6 +22,16 @@ export class IndexedEntityLook implements INetworkType
     public getTypeId()
     {
         return IndexedEntityLook.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return IndexedEntityLook.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IndexedEntityLook.endpointServer;
     }
 
     public initIndexedEntityLook(look: EntityLook = null, index: number = 0): IndexedEntityLook

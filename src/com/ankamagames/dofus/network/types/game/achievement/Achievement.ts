@@ -9,6 +9,9 @@ export class Achievement implements INetworkType
 
 	public static readonly protocolId: number = 2764;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public finishedObjective: Array<AchievementObjective>;
 	public startedObjectives: Array<AchievementStartedObjective>;
@@ -22,6 +25,16 @@ export class Achievement implements INetworkType
     public getTypeId()
     {
         return Achievement.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return Achievement.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return Achievement.endpointServer;
     }
 
     public initAchievement(id: number = 0, finishedObjective: Array<AchievementObjective> = null, startedObjectives: Array<AchievementStartedObjective> = null): Achievement

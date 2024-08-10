@@ -10,6 +10,9 @@ export class IdentificationFailedForBadVersionMessage extends IdentificationFail
 
 	public static readonly protocolId: number = 4124;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public requiredVersion: Version;
 
     public constructor()
@@ -23,6 +26,16 @@ export class IdentificationFailedForBadVersionMessage extends IdentificationFail
         return IdentificationFailedForBadVersionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return IdentificationFailedForBadVersionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IdentificationFailedForBadVersionMessage.endpointServer;
+    }
+
     public initIdentificationFailedForBadVersionMessage(reason: number = 99, requiredVersion: Version = null): IdentificationFailedForBadVersionMessage
     {
         super.initIdentificationFailedMessage(reason);
@@ -34,7 +47,7 @@ export class IdentificationFailedForBadVersionMessage extends IdentificationFail
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

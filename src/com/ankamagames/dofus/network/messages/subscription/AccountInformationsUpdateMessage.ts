@@ -9,6 +9,9 @@ export class AccountInformationsUpdateMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 4545;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public subscriptionEndDate: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AccountInformationsUpdateMessage extends NetworkMessage implements 
         return AccountInformationsUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AccountInformationsUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AccountInformationsUpdateMessage.endpointServer;
+    }
+
     public initAccountInformationsUpdateMessage(subscriptionEndDate: number = 0): AccountInformationsUpdateMessage
     {
         this.subscriptionEndDate = subscriptionEndDate;
@@ -31,7 +44,7 @@ export class AccountInformationsUpdateMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

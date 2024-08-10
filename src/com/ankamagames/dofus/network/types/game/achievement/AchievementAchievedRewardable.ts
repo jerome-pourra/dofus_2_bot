@@ -8,6 +8,9 @@ export class AchievementAchievedRewardable extends AchievementAchieved implement
 
 	public static readonly protocolId: number = 9874;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public finishedLevel: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class AchievementAchievedRewardable extends AchievementAchieved implement
     public getTypeId()
     {
         return AchievementAchievedRewardable.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AchievementAchievedRewardable.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementAchievedRewardable.endpointServer;
     }
 
     public initAchievementAchievedRewardable(id: number = 0, achievedBy: number = 0, achievedPioneerRank: number = 0, finishedLevel: number = 0): AchievementAchievedRewardable

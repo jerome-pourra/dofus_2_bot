@@ -9,6 +9,9 @@ export class ArenaFightAnswerAcknowledgementMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 2033;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public acknowledged: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ArenaFightAnswerAcknowledgementMessage extends NetworkMessage imple
         return ArenaFightAnswerAcknowledgementMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ArenaFightAnswerAcknowledgementMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ArenaFightAnswerAcknowledgementMessage.endpointServer;
+    }
+
     public initArenaFightAnswerAcknowledgementMessage(acknowledged: boolean = false): ArenaFightAnswerAcknowledgementMessage
     {
         this.acknowledged = acknowledged;
@@ -31,7 +44,7 @@ export class ArenaFightAnswerAcknowledgementMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

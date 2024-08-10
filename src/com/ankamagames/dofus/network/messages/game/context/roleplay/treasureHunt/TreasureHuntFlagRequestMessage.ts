@@ -9,6 +9,9 @@ export class TreasureHuntFlagRequestMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 6775;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public questType: number = 0;
 	public index: number = 0;
 
@@ -22,6 +25,16 @@ export class TreasureHuntFlagRequestMessage extends NetworkMessage implements IN
         return TreasureHuntFlagRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TreasureHuntFlagRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntFlagRequestMessage.endpointServer;
+    }
+
     public initTreasureHuntFlagRequestMessage(questType: number = 0, index: number = 0): TreasureHuntFlagRequestMessage
     {
         this.questType = questType;
@@ -33,7 +46,7 @@ export class TreasureHuntFlagRequestMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

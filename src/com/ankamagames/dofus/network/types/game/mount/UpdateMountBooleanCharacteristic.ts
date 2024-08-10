@@ -8,6 +8,9 @@ export class UpdateMountBooleanCharacteristic extends UpdateMountCharacteristic 
 
 	public static readonly protocolId: number = 2137;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public value: boolean = false;
 
     public constructor()
@@ -18,6 +21,16 @@ export class UpdateMountBooleanCharacteristic extends UpdateMountCharacteristic 
     public getTypeId()
     {
         return UpdateMountBooleanCharacteristic.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return UpdateMountBooleanCharacteristic.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return UpdateMountBooleanCharacteristic.endpointServer;
     }
 
     public initUpdateMountBooleanCharacteristic(type: number = 0, value: boolean = false): UpdateMountBooleanCharacteristic

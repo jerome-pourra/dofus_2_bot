@@ -9,6 +9,9 @@ export class ExchangeBidHouseBuyMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 3820;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public uid: number = 0;
 	public qty: number = 0;
 	public price: number = 0;
@@ -23,6 +26,16 @@ export class ExchangeBidHouseBuyMessage extends NetworkMessage implements INetwo
         return ExchangeBidHouseBuyMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeBidHouseBuyMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeBidHouseBuyMessage.endpointServer;
+    }
+
     public initExchangeBidHouseBuyMessage(uid: number = 0, qty: number = 0, price: number = 0): ExchangeBidHouseBuyMessage
     {
         this.uid = uid;
@@ -35,7 +48,7 @@ export class ExchangeBidHouseBuyMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

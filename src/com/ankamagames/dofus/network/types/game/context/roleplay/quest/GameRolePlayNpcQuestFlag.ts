@@ -7,6 +7,9 @@ export class GameRolePlayNpcQuestFlag implements INetworkType
 
 	public static readonly protocolId: number = 6478;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public questsToValidId: Array<number>;
 	public questsToStartId: Array<number>;
 
@@ -19,6 +22,16 @@ export class GameRolePlayNpcQuestFlag implements INetworkType
     public getTypeId()
     {
         return GameRolePlayNpcQuestFlag.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayNpcQuestFlag.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayNpcQuestFlag.endpointServer;
     }
 
     public initGameRolePlayNpcQuestFlag(questsToValidId: Array<number> = null, questsToStartId: Array<number> = null): GameRolePlayNpcQuestFlag

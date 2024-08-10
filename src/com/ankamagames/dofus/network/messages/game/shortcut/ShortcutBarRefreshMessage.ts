@@ -11,6 +11,9 @@ export class ShortcutBarRefreshMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 5972;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public barType: number = 0;
 	public shortcut: Shortcut;
 
@@ -25,6 +28,16 @@ export class ShortcutBarRefreshMessage extends NetworkMessage implements INetwor
         return ShortcutBarRefreshMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ShortcutBarRefreshMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShortcutBarRefreshMessage.endpointServer;
+    }
+
     public initShortcutBarRefreshMessage(barType: number = 0, shortcut: Shortcut = null): ShortcutBarRefreshMessage
     {
         this.barType = barType;
@@ -36,7 +49,7 @@ export class ShortcutBarRefreshMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

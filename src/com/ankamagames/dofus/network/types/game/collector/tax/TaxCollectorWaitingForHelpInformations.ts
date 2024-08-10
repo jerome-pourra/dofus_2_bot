@@ -9,6 +9,9 @@ export class TaxCollectorWaitingForHelpInformations extends TaxCollectorCompleme
 
 	public static readonly protocolId: number = 5931;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public waitingForHelpInfo: ProtectedEntityWaitingForHelpInfo;
 
     public constructor()
@@ -20,6 +23,16 @@ export class TaxCollectorWaitingForHelpInformations extends TaxCollectorCompleme
     public getTypeId()
     {
         return TaxCollectorWaitingForHelpInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TaxCollectorWaitingForHelpInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorWaitingForHelpInformations.endpointServer;
     }
 
     public initTaxCollectorWaitingForHelpInformations(waitingForHelpInfo: ProtectedEntityWaitingForHelpInfo = null): TaxCollectorWaitingForHelpInformations

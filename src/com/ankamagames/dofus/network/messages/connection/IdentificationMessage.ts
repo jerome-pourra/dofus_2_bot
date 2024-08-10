@@ -11,6 +11,9 @@ export class IdentificationMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 9262;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public version: Version;
 	public lang: string = "";
 	public credentials: Array<number>;
@@ -34,6 +37,16 @@ export class IdentificationMessage extends NetworkMessage implements INetworkMes
         return IdentificationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return IdentificationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IdentificationMessage.endpointServer;
+    }
+
     public initIdentificationMessage(version: Version = null, lang: string = "", credentials: Array<number> = null, serverId: number = 0, autoconnect: boolean = false, useCertificate: boolean = false, useLoginToken: boolean = false, sessionOptionalSalt: number = 0, failedAttempts: Array<number> = null): IdentificationMessage
     {
         this.version = version;
@@ -52,7 +65,7 @@ export class IdentificationMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

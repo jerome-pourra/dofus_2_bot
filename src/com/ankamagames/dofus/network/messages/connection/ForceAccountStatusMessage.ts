@@ -9,6 +9,9 @@ export class ForceAccountStatusMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 25;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public force: boolean = false;
 	public forcedAccountId: number = 0;
 	public forcedNickname: string = "";
@@ -24,6 +27,16 @@ export class ForceAccountStatusMessage extends NetworkMessage implements INetwor
         return ForceAccountStatusMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ForceAccountStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ForceAccountStatusMessage.endpointServer;
+    }
+
     public initForceAccountStatusMessage(force: boolean = false, forcedAccountId: number = 0, forcedNickname: string = "", forcedTag: string = ""): ForceAccountStatusMessage
     {
         this.force = force;
@@ -37,7 +50,7 @@ export class ForceAccountStatusMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

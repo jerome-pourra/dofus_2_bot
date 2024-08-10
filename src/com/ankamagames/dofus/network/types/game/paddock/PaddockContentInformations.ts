@@ -9,6 +9,9 @@ export class PaddockContentInformations extends PaddockInformations implements I
 
 	public static readonly protocolId: number = 6426;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public paddockId: number = 0;
 	public worldX: number = 0;
 	public worldY: number = 0;
@@ -26,6 +29,16 @@ export class PaddockContentInformations extends PaddockInformations implements I
     public getTypeId()
     {
         return PaddockContentInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PaddockContentInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaddockContentInformations.endpointServer;
     }
 
     public initPaddockContentInformations(maxOutdoorMount: number = 0, maxItems: number = 0, paddockId: number = 0, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, abandonned: boolean = false, mountsInformations: Array<MountInformationsForPaddock> = null): PaddockContentInformations

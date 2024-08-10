@@ -9,6 +9,9 @@ export class AllianceInvitationMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 5856;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public targetId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AllianceInvitationMessage extends NetworkMessage implements INetwor
         return AllianceInvitationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceInvitationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceInvitationMessage.endpointServer;
+    }
+
     public initAllianceInvitationMessage(targetId: number = 0): AllianceInvitationMessage
     {
         this.targetId = targetId;
@@ -31,7 +44,7 @@ export class AllianceInvitationMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

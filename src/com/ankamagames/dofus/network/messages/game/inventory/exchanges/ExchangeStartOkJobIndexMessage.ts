@@ -9,6 +9,9 @@ export class ExchangeStartOkJobIndexMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 1248;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public jobs: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class ExchangeStartOkJobIndexMessage extends NetworkMessage implements IN
         return ExchangeStartOkJobIndexMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeStartOkJobIndexMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartOkJobIndexMessage.endpointServer;
+    }
+
     public initExchangeStartOkJobIndexMessage(jobs: Array<number> = null): ExchangeStartOkJobIndexMessage
     {
         this.jobs = jobs;
@@ -32,7 +45,7 @@ export class ExchangeStartOkJobIndexMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

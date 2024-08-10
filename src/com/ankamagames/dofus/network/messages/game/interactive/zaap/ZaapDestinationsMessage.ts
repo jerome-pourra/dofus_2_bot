@@ -10,6 +10,9 @@ export class ZaapDestinationsMessage extends TeleportDestinationsMessage impleme
 
 	public static readonly protocolId: number = 9132;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spawnMapId: number = 0;
 
     public constructor()
@@ -20,6 +23,16 @@ export class ZaapDestinationsMessage extends TeleportDestinationsMessage impleme
     public getMessageId()
     {
         return ZaapDestinationsMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ZaapDestinationsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ZaapDestinationsMessage.endpointServer;
     }
 
     public initZaapDestinationsMessage(type: number = 0, destinations: Array<TeleportDestination> = null, spawnMapId: number = 0): ZaapDestinationsMessage
@@ -33,7 +46,7 @@ export class ZaapDestinationsMessage extends TeleportDestinationsMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

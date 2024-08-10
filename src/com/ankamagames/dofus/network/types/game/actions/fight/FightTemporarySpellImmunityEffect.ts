@@ -8,6 +8,9 @@ export class FightTemporarySpellImmunityEffect extends AbstractFightDispellableE
 
 	public static readonly protocolId: number = 3450;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public immuneSpellId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class FightTemporarySpellImmunityEffect extends AbstractFightDispellableE
     public getTypeId()
     {
         return FightTemporarySpellImmunityEffect.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightTemporarySpellImmunityEffect.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightTemporarySpellImmunityEffect.endpointServer;
     }
 
     public initFightTemporarySpellImmunityEffect(uid: number = 0, targetId: number = 0, turnDuration: number = 0, dispelable: number = 1, spellId: number = 0, effectId: number = 0, parentBoostUid: number = 0, immuneSpellId: number = 0): FightTemporarySpellImmunityEffect

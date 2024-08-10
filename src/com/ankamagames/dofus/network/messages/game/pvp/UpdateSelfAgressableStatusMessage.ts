@@ -9,6 +9,9 @@ export class UpdateSelfAgressableStatusMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 5808;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public status: number = 0;
 	public probationTime: number = 0;
 	public roleAvAId: number = 0;
@@ -24,6 +27,16 @@ export class UpdateSelfAgressableStatusMessage extends NetworkMessage implements
         return UpdateSelfAgressableStatusMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return UpdateSelfAgressableStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return UpdateSelfAgressableStatusMessage.endpointServer;
+    }
+
     public initUpdateSelfAgressableStatusMessage(status: number = 0, probationTime: number = 0, roleAvAId: number = 0, pictoScore: number = 0): UpdateSelfAgressableStatusMessage
     {
         this.status = status;
@@ -37,7 +50,7 @@ export class UpdateSelfAgressableStatusMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

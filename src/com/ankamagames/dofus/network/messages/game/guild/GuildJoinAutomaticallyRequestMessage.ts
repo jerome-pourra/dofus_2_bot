@@ -9,6 +9,9 @@ export class GuildJoinAutomaticallyRequestMessage extends NetworkMessage impleme
 
 	public static readonly protocolId: number = 2737;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public guildId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuildJoinAutomaticallyRequestMessage extends NetworkMessage impleme
         return GuildJoinAutomaticallyRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildJoinAutomaticallyRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildJoinAutomaticallyRequestMessage.endpointServer;
+    }
+
     public initGuildJoinAutomaticallyRequestMessage(guildId: number = 0): GuildJoinAutomaticallyRequestMessage
     {
         this.guildId = guildId;
@@ -31,7 +44,7 @@ export class GuildJoinAutomaticallyRequestMessage extends NetworkMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

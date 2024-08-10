@@ -9,6 +9,9 @@ export class GameFightTurnStartMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 217;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 	public waitTime: number = 0;
 
@@ -22,6 +25,16 @@ export class GameFightTurnStartMessage extends NetworkMessage implements INetwor
         return GameFightTurnStartMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightTurnStartMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightTurnStartMessage.endpointServer;
+    }
+
     public initGameFightTurnStartMessage(id: number = 0, waitTime: number = 0): GameFightTurnStartMessage
     {
         this.id = id;
@@ -33,7 +46,7 @@ export class GameFightTurnStartMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

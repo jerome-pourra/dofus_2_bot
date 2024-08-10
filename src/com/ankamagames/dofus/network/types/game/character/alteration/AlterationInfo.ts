@@ -9,6 +9,9 @@ export class AlterationInfo implements INetworkType
 
 	public static readonly protocolId: number = 2959;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public alterationId: number = 0;
 	public creationTime: number = 0;
 	public expirationType: number = 1;
@@ -23,6 +26,16 @@ export class AlterationInfo implements INetworkType
     public getTypeId()
     {
         return AlterationInfo.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AlterationInfo.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AlterationInfo.endpointServer;
     }
 
     public initAlterationInfo(alterationId: number = 0, creationTime: number = 0, expirationType: number = 1, expirationValue: number = 0, effects: Array<ObjectEffect> = null): AlterationInfo

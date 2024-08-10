@@ -10,6 +10,9 @@ export class InviteInHavenBagClosedMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 8001;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public hostInformations: CharacterMinimalInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class InviteInHavenBagClosedMessage extends NetworkMessage implements INe
         return InviteInHavenBagClosedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return InviteInHavenBagClosedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InviteInHavenBagClosedMessage.endpointServer;
+    }
+
     public initInviteInHavenBagClosedMessage(hostInformations: CharacterMinimalInformations = null): InviteInHavenBagClosedMessage
     {
         this.hostInformations = hostInformations;
@@ -33,7 +46,7 @@ export class InviteInHavenBagClosedMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

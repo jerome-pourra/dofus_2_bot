@@ -8,6 +8,9 @@ export class TreasureHuntStepDig extends TreasureHuntStep implements INetworkTyp
 
 	public static readonly protocolId: number = 5858;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -16,6 +19,16 @@ export class TreasureHuntStepDig extends TreasureHuntStep implements INetworkTyp
     public getTypeId()
     {
         return TreasureHuntStepDig.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TreasureHuntStepDig.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntStepDig.endpointServer;
     }
 
     public initTreasureHuntStepDig(): TreasureHuntStepDig

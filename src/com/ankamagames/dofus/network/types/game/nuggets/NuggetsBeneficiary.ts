@@ -7,6 +7,9 @@ export class NuggetsBeneficiary implements INetworkType
 
 	public static readonly protocolId: number = 7825;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public beneficiaryPlayerId: number = 0;
 	public nuggetsQuantity: number = 0;
 
@@ -18,6 +21,16 @@ export class NuggetsBeneficiary implements INetworkType
     public getTypeId()
     {
         return NuggetsBeneficiary.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return NuggetsBeneficiary.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return NuggetsBeneficiary.endpointServer;
     }
 
     public initNuggetsBeneficiary(beneficiaryPlayerId: number = 0, nuggetsQuantity: number = 0): NuggetsBeneficiary

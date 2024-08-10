@@ -7,6 +7,9 @@ export class Item implements INetworkType
 
 	public static readonly protocolId: number = 8235;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
 
@@ -15,6 +18,16 @@ export class Item implements INetworkType
     public getTypeId()
     {
         return Item.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return Item.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return Item.endpointServer;
     }
 
     public initItem(): Item

@@ -8,6 +8,9 @@ export class AlternativeMonstersInGroupLightInformations implements INetworkType
 
 	public static readonly protocolId: number = 6089;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerCount: number = 0;
 	public monsters: Array<MonsterInGroupLightInformations>;
 
@@ -19,6 +22,16 @@ export class AlternativeMonstersInGroupLightInformations implements INetworkType
     public getTypeId()
     {
         return AlternativeMonstersInGroupLightInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AlternativeMonstersInGroupLightInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AlternativeMonstersInGroupLightInformations.endpointServer;
     }
 
     public initAlternativeMonstersInGroupLightInformations(playerCount: number = 0, monsters: Array<MonsterInGroupLightInformations> = null): AlternativeMonstersInGroupLightInformations

@@ -9,6 +9,9 @@ export class NotificationListMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 7443;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public flags: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class NotificationListMessage extends NetworkMessage implements INetworkM
         return NotificationListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return NotificationListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return NotificationListMessage.endpointServer;
+    }
+
     public initNotificationListMessage(flags: Array<number> = null): NotificationListMessage
     {
         this.flags = flags;
@@ -32,7 +45,7 @@ export class NotificationListMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

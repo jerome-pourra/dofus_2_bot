@@ -10,6 +10,9 @@ export class StorageObjectsUpdateMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 5323;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objectList: Array<ObjectItem>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class StorageObjectsUpdateMessage extends NetworkMessage implements INetw
         return StorageObjectsUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return StorageObjectsUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StorageObjectsUpdateMessage.endpointServer;
+    }
+
     public initStorageObjectsUpdateMessage(objectList: Array<ObjectItem> = null): StorageObjectsUpdateMessage
     {
         this.objectList = objectList;
@@ -33,7 +46,7 @@ export class StorageObjectsUpdateMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

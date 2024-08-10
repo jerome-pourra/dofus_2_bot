@@ -7,6 +7,9 @@ export class NamedPartyTeam implements INetworkType
 
 	public static readonly protocolId: number = 9179;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public teamId: number = 2;
 	public partyName: string = "";
 
@@ -18,6 +21,16 @@ export class NamedPartyTeam implements INetworkType
     public getTypeId()
     {
         return NamedPartyTeam.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return NamedPartyTeam.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return NamedPartyTeam.endpointServer;
     }
 
     public initNamedPartyTeam(teamId: number = 2, partyName: string = ""): NamedPartyTeam

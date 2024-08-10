@@ -10,6 +10,9 @@ export class AllianceCreationValidMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 5413;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public allianceName: string = "";
 	public allianceTag: string = "";
 	public allianceEmblem: SocialEmblem;
@@ -25,6 +28,16 @@ export class AllianceCreationValidMessage extends NetworkMessage implements INet
         return AllianceCreationValidMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceCreationValidMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceCreationValidMessage.endpointServer;
+    }
+
     public initAllianceCreationValidMessage(allianceName: string = "", allianceTag: string = "", allianceEmblem: SocialEmblem = null): AllianceCreationValidMessage
     {
         this.allianceName = allianceName;
@@ -37,7 +50,7 @@ export class AllianceCreationValidMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

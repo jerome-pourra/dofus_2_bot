@@ -7,6 +7,9 @@ export class AbstractFightTeamInformations implements INetworkType
 
 	public static readonly protocolId: number = 8432;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public teamId: number = 2;
 	public leaderId: number = 0;
 	public teamSide: number = 0;
@@ -21,6 +24,16 @@ export class AbstractFightTeamInformations implements INetworkType
     public getTypeId()
     {
         return AbstractFightTeamInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AbstractFightTeamInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AbstractFightTeamInformations.endpointServer;
     }
 
     public initAbstractFightTeamInformations(teamId: number = 2, leaderId: number = 0, teamSide: number = 0, teamTypeId: number = 0, nbWaves: number = 0): AbstractFightTeamInformations

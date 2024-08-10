@@ -9,6 +9,9 @@ export class AbstractGameActionMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 9631;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public actionId: number = 0;
 	public sourceId: number = 0;
 
@@ -22,6 +25,16 @@ export class AbstractGameActionMessage extends NetworkMessage implements INetwor
         return AbstractGameActionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AbstractGameActionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AbstractGameActionMessage.endpointServer;
+    }
+
     public initAbstractGameActionMessage(actionId: number = 0, sourceId: number = 0): AbstractGameActionMessage
     {
         this.actionId = actionId;
@@ -33,7 +46,7 @@ export class AbstractGameActionMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

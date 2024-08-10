@@ -10,6 +10,9 @@ export class ExchangeStartOkMountWithOutPaddockMessage extends NetworkMessage im
 
 	public static readonly protocolId: number = 1232;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public stabledMountsDescription: Array<MountClientData>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ExchangeStartOkMountWithOutPaddockMessage extends NetworkMessage im
         return ExchangeStartOkMountWithOutPaddockMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeStartOkMountWithOutPaddockMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartOkMountWithOutPaddockMessage.endpointServer;
+    }
+
     public initExchangeStartOkMountWithOutPaddockMessage(stabledMountsDescription: Array<MountClientData> = null): ExchangeStartOkMountWithOutPaddockMessage
     {
         this.stabledMountsDescription = stabledMountsDescription;
@@ -33,7 +46,7 @@ export class ExchangeStartOkMountWithOutPaddockMessage extends NetworkMessage im
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

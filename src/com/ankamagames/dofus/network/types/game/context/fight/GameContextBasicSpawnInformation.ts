@@ -9,6 +9,9 @@ export class GameContextBasicSpawnInformation implements INetworkType
 
 	public static readonly protocolId: number = 1891;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public teamId: number = 2;
 	public alive: boolean = false;
 	public informations: GameContextActorPositionInformations;
@@ -21,6 +24,16 @@ export class GameContextBasicSpawnInformation implements INetworkType
     public getTypeId()
     {
         return GameContextBasicSpawnInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameContextBasicSpawnInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameContextBasicSpawnInformation.endpointServer;
     }
 
     public initGameContextBasicSpawnInformation(teamId: number = 2, alive: boolean = false, informations: GameContextActorPositionInformations = null): GameContextBasicSpawnInformation

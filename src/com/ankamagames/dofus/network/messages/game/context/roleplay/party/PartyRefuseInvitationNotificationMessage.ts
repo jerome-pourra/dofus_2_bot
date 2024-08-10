@@ -9,6 +9,9 @@ export class PartyRefuseInvitationNotificationMessage extends AbstractPartyEvent
 
 	public static readonly protocolId: number = 1724;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guestId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyRefuseInvitationNotificationMessage extends AbstractPartyEvent
     public getMessageId()
     {
         return PartyRefuseInvitationNotificationMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyRefuseInvitationNotificationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyRefuseInvitationNotificationMessage.endpointServer;
     }
 
     public initPartyRefuseInvitationNotificationMessage(partyId: number = 0, guestId: number = 0): PartyRefuseInvitationNotificationMessage
@@ -32,7 +45,7 @@ export class PartyRefuseInvitationNotificationMessage extends AbstractPartyEvent
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

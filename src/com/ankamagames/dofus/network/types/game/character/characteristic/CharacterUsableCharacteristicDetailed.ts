@@ -8,6 +8,9 @@ export class CharacterUsableCharacteristicDetailed extends CharacterCharacterist
 
 	public static readonly protocolId: number = 1943;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public used: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class CharacterUsableCharacteristicDetailed extends CharacterCharacterist
     public getTypeId()
     {
         return CharacterUsableCharacteristicDetailed.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterUsableCharacteristicDetailed.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterUsableCharacteristicDetailed.endpointServer;
     }
 
     public initCharacterUsableCharacteristicDetailed(characteristicId: number = 0, base: number = 0, additional: number = 0, objectsAndMountBonus: number = 0, alignGiftBonus: number = 0, contextModif: number = 0, used: number = 0): CharacterUsableCharacteristicDetailed

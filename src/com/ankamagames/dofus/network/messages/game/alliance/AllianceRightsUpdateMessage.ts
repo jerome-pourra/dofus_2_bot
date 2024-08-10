@@ -9,6 +9,9 @@ export class AllianceRightsUpdateMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 5154;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public rankId: number = 0;
 	public rights: Array<number>;
 
@@ -23,6 +26,16 @@ export class AllianceRightsUpdateMessage extends NetworkMessage implements INetw
         return AllianceRightsUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceRightsUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceRightsUpdateMessage.endpointServer;
+    }
+
     public initAllianceRightsUpdateMessage(rankId: number = 0, rights: Array<number> = null): AllianceRightsUpdateMessage
     {
         this.rankId = rankId;
@@ -34,7 +47,7 @@ export class AllianceRightsUpdateMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

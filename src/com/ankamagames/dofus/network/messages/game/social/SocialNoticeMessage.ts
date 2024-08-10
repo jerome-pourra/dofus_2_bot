@@ -9,6 +9,9 @@ export class SocialNoticeMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 4859;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public content: string = "";
 	public timestamp: number = 0;
 	public memberId: number = 0;
@@ -24,6 +27,16 @@ export class SocialNoticeMessage extends NetworkMessage implements INetworkMessa
         return SocialNoticeMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SocialNoticeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SocialNoticeMessage.endpointServer;
+    }
+
     public initSocialNoticeMessage(content: string = "", timestamp: number = 0, memberId: number = 0, memberName: string = ""): SocialNoticeMessage
     {
         this.content = content;
@@ -37,7 +50,7 @@ export class SocialNoticeMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

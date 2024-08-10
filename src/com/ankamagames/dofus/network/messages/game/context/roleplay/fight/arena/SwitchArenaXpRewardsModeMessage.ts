@@ -9,6 +9,9 @@ export class SwitchArenaXpRewardsModeMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 4870;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public xpRewards: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class SwitchArenaXpRewardsModeMessage extends NetworkMessage implements I
         return SwitchArenaXpRewardsModeMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SwitchArenaXpRewardsModeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SwitchArenaXpRewardsModeMessage.endpointServer;
+    }
+
     public initSwitchArenaXpRewardsModeMessage(xpRewards: boolean = false): SwitchArenaXpRewardsModeMessage
     {
         this.xpRewards = xpRewards;
@@ -31,7 +44,7 @@ export class SwitchArenaXpRewardsModeMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

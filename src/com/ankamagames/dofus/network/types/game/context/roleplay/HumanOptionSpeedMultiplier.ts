@@ -8,6 +8,9 @@ export class HumanOptionSpeedMultiplier extends HumanOption implements INetworkT
 
 	public static readonly protocolId: number = 4364;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public speedMultiplier: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class HumanOptionSpeedMultiplier extends HumanOption implements INetworkT
     public getTypeId()
     {
         return HumanOptionSpeedMultiplier.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HumanOptionSpeedMultiplier.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HumanOptionSpeedMultiplier.endpointServer;
     }
 
     public initHumanOptionSpeedMultiplier(speedMultiplier: number = 0): HumanOptionSpeedMultiplier

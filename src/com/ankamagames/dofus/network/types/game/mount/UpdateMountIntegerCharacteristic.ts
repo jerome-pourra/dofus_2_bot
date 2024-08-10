@@ -8,6 +8,9 @@ export class UpdateMountIntegerCharacteristic extends UpdateMountCharacteristic 
 
 	public static readonly protocolId: number = 5600;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public value: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class UpdateMountIntegerCharacteristic extends UpdateMountCharacteristic 
     public getTypeId()
     {
         return UpdateMountIntegerCharacteristic.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return UpdateMountIntegerCharacteristic.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return UpdateMountIntegerCharacteristic.endpointServer;
     }
 
     public initUpdateMountIntegerCharacteristic(type: number = 0, value: number = 0): UpdateMountIntegerCharacteristic

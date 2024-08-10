@@ -9,6 +9,9 @@ export class GameActionFightDispellSpellMessage extends GameActionFightDispellMe
 
 	public static readonly protocolId: number = 4714;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spellId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class GameActionFightDispellSpellMessage extends GameActionFightDispellMe
     public getMessageId()
     {
         return GameActionFightDispellSpellMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionFightDispellSpellMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightDispellSpellMessage.endpointServer;
     }
 
     public initGameActionFightDispellSpellMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, verboseCast: boolean = false, spellId: number = 0): GameActionFightDispellSpellMessage
@@ -32,7 +45,7 @@ export class GameActionFightDispellSpellMessage extends GameActionFightDispellMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class WrapperObjectErrorMessage extends SymbioticObjectErrorMessage imple
 
 	public static readonly protocolId: number = 5215;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class WrapperObjectErrorMessage extends SymbioticObjectErrorMessage imple
     public getMessageId()
     {
         return WrapperObjectErrorMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return WrapperObjectErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return WrapperObjectErrorMessage.endpointServer;
     }
 
     public initWrapperObjectErrorMessage(reason: number = 0, errorCode: number = 0): WrapperObjectErrorMessage
@@ -29,7 +42,7 @@ export class WrapperObjectErrorMessage extends SymbioticObjectErrorMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

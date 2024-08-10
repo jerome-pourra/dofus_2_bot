@@ -7,6 +7,9 @@ export class Contribution implements INetworkType
 
 	public static readonly protocolId: number = 7492;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public contributorId: number = 0;
 	public contributorName: string = "";
 	public amount: number = 0;
@@ -19,6 +22,16 @@ export class Contribution implements INetworkType
     public getTypeId()
     {
         return Contribution.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return Contribution.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return Contribution.endpointServer;
     }
 
     public initContribution(contributorId: number = 0, contributorName: string = "", amount: number = 0): Contribution

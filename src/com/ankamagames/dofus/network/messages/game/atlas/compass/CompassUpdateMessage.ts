@@ -11,6 +11,9 @@ export class CompassUpdateMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 872;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public type: number = 0;
 	public coords: MapCoordinates;
 
@@ -25,6 +28,16 @@ export class CompassUpdateMessage extends NetworkMessage implements INetworkMess
         return CompassUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CompassUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CompassUpdateMessage.endpointServer;
+    }
+
     public initCompassUpdateMessage(type: number = 0, coords: MapCoordinates = null): CompassUpdateMessage
     {
         this.type = type;
@@ -36,7 +49,7 @@ export class CompassUpdateMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

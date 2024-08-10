@@ -9,6 +9,9 @@ export class GuildMemberLeavingMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 7246;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public kicked: boolean = false;
 	public memberId: number = 0;
 
@@ -22,6 +25,16 @@ export class GuildMemberLeavingMessage extends NetworkMessage implements INetwor
         return GuildMemberLeavingMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildMemberLeavingMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildMemberLeavingMessage.endpointServer;
+    }
+
     public initGuildMemberLeavingMessage(kicked: boolean = false, memberId: number = 0): GuildMemberLeavingMessage
     {
         this.kicked = kicked;
@@ -33,7 +46,7 @@ export class GuildMemberLeavingMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

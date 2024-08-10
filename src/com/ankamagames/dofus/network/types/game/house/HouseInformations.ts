@@ -7,6 +7,9 @@ export class HouseInformations implements INetworkType
 
 	public static readonly protocolId: number = 2374;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public houseId: number = 0;
 	public modelId: number = 0;
 
@@ -18,6 +21,16 @@ export class HouseInformations implements INetworkType
     public getTypeId()
     {
         return HouseInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HouseInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseInformations.endpointServer;
     }
 
     public initHouseInformations(houseId: number = 0, modelId: number = 0): HouseInformations

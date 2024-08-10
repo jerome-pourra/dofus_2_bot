@@ -9,6 +9,9 @@ export class ForgettableSpellClientActionMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 5459;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public spellId: number = 0;
 	public action: number = 0;
 
@@ -22,6 +25,16 @@ export class ForgettableSpellClientActionMessage extends NetworkMessage implemen
         return ForgettableSpellClientActionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ForgettableSpellClientActionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ForgettableSpellClientActionMessage.endpointServer;
+    }
+
     public initForgettableSpellClientActionMessage(spellId: number = 0, action: number = 0): ForgettableSpellClientActionMessage
     {
         this.spellId = spellId;
@@ -33,7 +46,7 @@ export class ForgettableSpellClientActionMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

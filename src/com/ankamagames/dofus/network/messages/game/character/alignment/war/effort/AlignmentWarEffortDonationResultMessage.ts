@@ -9,6 +9,9 @@ export class AlignmentWarEffortDonationResultMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 1517;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public result: number = 4;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AlignmentWarEffortDonationResultMessage extends NetworkMessage impl
         return AlignmentWarEffortDonationResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AlignmentWarEffortDonationResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AlignmentWarEffortDonationResultMessage.endpointServer;
+    }
+
     public initAlignmentWarEffortDonationResultMessage(result: number = 4): AlignmentWarEffortDonationResultMessage
     {
         this.result = result;
@@ -31,7 +44,7 @@ export class AlignmentWarEffortDonationResultMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

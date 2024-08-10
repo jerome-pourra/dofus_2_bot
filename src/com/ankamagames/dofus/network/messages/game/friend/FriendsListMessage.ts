@@ -11,6 +11,9 @@ export class FriendsListMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 4172;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public friendsList: Array<FriendInformations>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class FriendsListMessage extends NetworkMessage implements INetworkMessag
         return FriendsListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FriendsListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendsListMessage.endpointServer;
+    }
+
     public initFriendsListMessage(friendsList: Array<FriendInformations> = null): FriendsListMessage
     {
         this.friendsList = friendsList;
@@ -34,7 +47,7 @@ export class FriendsListMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

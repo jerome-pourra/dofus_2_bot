@@ -10,6 +10,9 @@ export class ExchangeStartedBidBuyerMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 4280;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public buyerDescriptor: SellerBuyerDescriptor;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ExchangeStartedBidBuyerMessage extends NetworkMessage implements IN
         return ExchangeStartedBidBuyerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeStartedBidBuyerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartedBidBuyerMessage.endpointServer;
+    }
+
     public initExchangeStartedBidBuyerMessage(buyerDescriptor: SellerBuyerDescriptor = null): ExchangeStartedBidBuyerMessage
     {
         this.buyerDescriptor = buyerDescriptor;
@@ -33,7 +46,7 @@ export class ExchangeStartedBidBuyerMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

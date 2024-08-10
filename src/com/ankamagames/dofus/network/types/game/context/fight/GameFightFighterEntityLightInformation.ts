@@ -8,6 +8,9 @@ export class GameFightFighterEntityLightInformation extends GameFightFighterLigh
 
 	public static readonly protocolId: number = 3181;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public entityModelId: number = 0;
 	public masterId: number = 0;
 
@@ -19,6 +22,16 @@ export class GameFightFighterEntityLightInformation extends GameFightFighterLigh
     public getTypeId()
     {
         return GameFightFighterEntityLightInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightFighterEntityLightInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightFighterEntityLightInformation.endpointServer;
     }
 
     public initGameFightFighterEntityLightInformation(id: number = 0, wave: number = 0, level: number = 0, breed: number = 0, sex: boolean = false, alive: boolean = false, entityModelId: number = 0, masterId: number = 0): GameFightFighterEntityLightInformation

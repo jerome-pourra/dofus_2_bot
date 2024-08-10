@@ -7,6 +7,9 @@ export class TaxCollectorBasicInformations implements INetworkType
 
 	public static readonly protocolId: number = 4890;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public firstNameId: number = 0;
 	public lastNameId: number = 0;
 	public worldX: number = 0;
@@ -22,6 +25,16 @@ export class TaxCollectorBasicInformations implements INetworkType
     public getTypeId()
     {
         return TaxCollectorBasicInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TaxCollectorBasicInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorBasicInformations.endpointServer;
     }
 
     public initTaxCollectorBasicInformations(firstNameId: number = 0, lastNameId: number = 0, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0): TaxCollectorBasicInformations

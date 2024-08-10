@@ -10,6 +10,9 @@ export class JobCrafterDirectoryDefineSettingsMessage extends NetworkMessage imp
 
 	public static readonly protocolId: number = 5859;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public settings: JobCrafterDirectorySettings;
 
     public constructor()
@@ -23,6 +26,16 @@ export class JobCrafterDirectoryDefineSettingsMessage extends NetworkMessage imp
         return JobCrafterDirectoryDefineSettingsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return JobCrafterDirectoryDefineSettingsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobCrafterDirectoryDefineSettingsMessage.endpointServer;
+    }
+
     public initJobCrafterDirectoryDefineSettingsMessage(settings: JobCrafterDirectorySettings = null): JobCrafterDirectoryDefineSettingsMessage
     {
         this.settings = settings;
@@ -33,7 +46,7 @@ export class JobCrafterDirectoryDefineSettingsMessage extends NetworkMessage imp
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

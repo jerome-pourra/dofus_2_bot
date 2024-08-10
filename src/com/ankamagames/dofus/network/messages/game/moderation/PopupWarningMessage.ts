@@ -9,6 +9,9 @@ export class PopupWarningMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 1024;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public lockDuration: number = 0;
 	public author: string = "";
 	public content: string = "";
@@ -23,6 +26,16 @@ export class PopupWarningMessage extends NetworkMessage implements INetworkMessa
         return PopupWarningMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PopupWarningMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PopupWarningMessage.endpointServer;
+    }
+
     public initPopupWarningMessage(lockDuration: number = 0, author: string = "", content: string = ""): PopupWarningMessage
     {
         this.lockDuration = lockDuration;
@@ -35,7 +48,7 @@ export class PopupWarningMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

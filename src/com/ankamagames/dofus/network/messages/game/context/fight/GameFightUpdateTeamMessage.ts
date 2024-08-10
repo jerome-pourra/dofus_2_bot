@@ -10,6 +10,9 @@ export class GameFightUpdateTeamMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 3874;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public fightId: number = 0;
 	public team: FightTeamInformations;
 
@@ -24,6 +27,16 @@ export class GameFightUpdateTeamMessage extends NetworkMessage implements INetwo
         return GameFightUpdateTeamMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightUpdateTeamMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightUpdateTeamMessage.endpointServer;
+    }
+
     public initGameFightUpdateTeamMessage(fightId: number = 0, team: FightTeamInformations = null): GameFightUpdateTeamMessage
     {
         this.fightId = fightId;
@@ -35,7 +48,7 @@ export class GameFightUpdateTeamMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

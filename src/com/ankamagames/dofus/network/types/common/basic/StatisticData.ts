@@ -7,6 +7,9 @@ export class StatisticData implements INetworkType
 
 	public static readonly protocolId: number = 1815;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
 
@@ -15,6 +18,16 @@ export class StatisticData implements INetworkType
     public getTypeId()
     {
         return StatisticData.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return StatisticData.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StatisticData.endpointServer;
     }
 
     public initStatisticData(): StatisticData

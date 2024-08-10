@@ -10,6 +10,9 @@ export class SocialFightJoinRequestMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 335;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public socialFightInfo: SocialFightInfo;
 
     public constructor()
@@ -23,6 +26,16 @@ export class SocialFightJoinRequestMessage extends NetworkMessage implements INe
         return SocialFightJoinRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SocialFightJoinRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SocialFightJoinRequestMessage.endpointServer;
+    }
+
     public initSocialFightJoinRequestMessage(socialFightInfo: SocialFightInfo = null): SocialFightJoinRequestMessage
     {
         this.socialFightInfo = socialFightInfo;
@@ -33,7 +46,7 @@ export class SocialFightJoinRequestMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class SimpleCharacterCharacteristicForPreset implements INetworkType
 
 	public static readonly protocolId: number = 361;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public keyword: string = "";
 	public base: number = 0;
 	public additionnal: number = 0;
@@ -19,6 +22,16 @@ export class SimpleCharacterCharacteristicForPreset implements INetworkType
     public getTypeId()
     {
         return SimpleCharacterCharacteristicForPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SimpleCharacterCharacteristicForPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SimpleCharacterCharacteristicForPreset.endpointServer;
     }
 
     public initSimpleCharacterCharacteristicForPreset(keyword: string = "", base: number = 0, additionnal: number = 0): SimpleCharacterCharacteristicForPreset

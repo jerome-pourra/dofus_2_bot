@@ -11,6 +11,9 @@ export class MapRunningFightDetailsExtendedMessage extends MapRunningFightDetail
 
 	public static readonly protocolId: number = 8895;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public namedPartyTeams: Array<NamedPartyTeam>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class MapRunningFightDetailsExtendedMessage extends MapRunningFightDetail
         return MapRunningFightDetailsExtendedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MapRunningFightDetailsExtendedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapRunningFightDetailsExtendedMessage.endpointServer;
+    }
+
     public initMapRunningFightDetailsExtendedMessage(fightId: number = 0, attackers: Array<GameFightFighterLightInformations> = null, defenders: Array<GameFightFighterLightInformations> = null, namedPartyTeams: Array<NamedPartyTeam> = null): MapRunningFightDetailsExtendedMessage
     {
         super.initMapRunningFightDetailsMessage(fightId,attackers,defenders);
@@ -35,7 +48,7 @@ export class MapRunningFightDetailsExtendedMessage extends MapRunningFightDetail
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class TeleportToBuddyCloseMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 4968;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dungeonId: number = 0;
 	public buddyId: number = 0;
 
@@ -22,6 +25,16 @@ export class TeleportToBuddyCloseMessage extends NetworkMessage implements INetw
         return TeleportToBuddyCloseMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TeleportToBuddyCloseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TeleportToBuddyCloseMessage.endpointServer;
+    }
+
     public initTeleportToBuddyCloseMessage(dungeonId: number = 0, buddyId: number = 0): TeleportToBuddyCloseMessage
     {
         this.dungeonId = dungeonId;
@@ -33,7 +46,7 @@ export class TeleportToBuddyCloseMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

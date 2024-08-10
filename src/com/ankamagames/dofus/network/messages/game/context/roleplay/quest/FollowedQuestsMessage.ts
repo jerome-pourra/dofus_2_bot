@@ -10,6 +10,9 @@ export class FollowedQuestsMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 6589;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public quests: Array<QuestActiveDetailedInformations>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class FollowedQuestsMessage extends NetworkMessage implements INetworkMes
         return FollowedQuestsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FollowedQuestsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FollowedQuestsMessage.endpointServer;
+    }
+
     public initFollowedQuestsMessage(quests: Array<QuestActiveDetailedInformations> = null): FollowedQuestsMessage
     {
         this.quests = quests;
@@ -33,7 +46,7 @@ export class FollowedQuestsMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

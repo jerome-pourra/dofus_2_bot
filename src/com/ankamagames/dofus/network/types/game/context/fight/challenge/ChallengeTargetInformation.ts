@@ -7,6 +7,9 @@ export class ChallengeTargetInformation implements INetworkType
 
 	public static readonly protocolId: number = 4052;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public targetId: number = 0;
 	public targetCell: number = 0;
 
@@ -18,6 +21,16 @@ export class ChallengeTargetInformation implements INetworkType
     public getTypeId()
     {
         return ChallengeTargetInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ChallengeTargetInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChallengeTargetInformation.endpointServer;
     }
 
     public initChallengeTargetInformation(targetId: number = 0, targetCell: number = 0): ChallengeTargetInformation

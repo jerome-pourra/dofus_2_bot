@@ -9,6 +9,9 @@ export class GameFightNewRoundMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 8261;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public roundNumber: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameFightNewRoundMessage extends NetworkMessage implements INetwork
         return GameFightNewRoundMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightNewRoundMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightNewRoundMessage.endpointServer;
+    }
+
     public initGameFightNewRoundMessage(roundNumber: number = 0): GameFightNewRoundMessage
     {
         this.roundNumber = roundNumber;
@@ -31,7 +44,7 @@ export class GameFightNewRoundMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

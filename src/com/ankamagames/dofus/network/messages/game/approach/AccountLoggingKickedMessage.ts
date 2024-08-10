@@ -9,6 +9,9 @@ export class AccountLoggingKickedMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 2295;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public days: number = 0;
 	public hours: number = 0;
 	public minutes: number = 0;
@@ -23,6 +26,16 @@ export class AccountLoggingKickedMessage extends NetworkMessage implements INetw
         return AccountLoggingKickedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AccountLoggingKickedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AccountLoggingKickedMessage.endpointServer;
+    }
+
     public initAccountLoggingKickedMessage(days: number = 0, hours: number = 0, minutes: number = 0): AccountLoggingKickedMessage
     {
         this.days = days;
@@ -35,7 +48,7 @@ export class AccountLoggingKickedMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

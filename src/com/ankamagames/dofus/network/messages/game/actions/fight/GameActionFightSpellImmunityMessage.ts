@@ -9,6 +9,9 @@ export class GameActionFightSpellImmunityMessage extends AbstractGameActionMessa
 
 	public static readonly protocolId: number = 276;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public targetId: number = 0;
 	public spellId: number = 0;
 
@@ -20,6 +23,16 @@ export class GameActionFightSpellImmunityMessage extends AbstractGameActionMessa
     public getMessageId()
     {
         return GameActionFightSpellImmunityMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionFightSpellImmunityMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightSpellImmunityMessage.endpointServer;
     }
 
     public initGameActionFightSpellImmunityMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, spellId: number = 0): GameActionFightSpellImmunityMessage
@@ -34,7 +47,7 @@ export class GameActionFightSpellImmunityMessage extends AbstractGameActionMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

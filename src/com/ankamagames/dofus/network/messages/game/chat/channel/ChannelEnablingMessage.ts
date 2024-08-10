@@ -9,6 +9,9 @@ export class ChannelEnablingMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 4965;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public channel: number = 0;
 	public enable: boolean = false;
 
@@ -22,6 +25,16 @@ export class ChannelEnablingMessage extends NetworkMessage implements INetworkMe
         return ChannelEnablingMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChannelEnablingMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChannelEnablingMessage.endpointServer;
+    }
+
     public initChannelEnablingMessage(channel: number = 0, enable: boolean = false): ChannelEnablingMessage
     {
         this.channel = channel;
@@ -33,7 +46,7 @@ export class ChannelEnablingMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

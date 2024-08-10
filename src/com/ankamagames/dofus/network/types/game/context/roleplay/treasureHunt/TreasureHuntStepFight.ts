@@ -8,6 +8,9 @@ export class TreasureHuntStepFight extends TreasureHuntStep implements INetworkT
 
 	public static readonly protocolId: number = 9719;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -16,6 +19,16 @@ export class TreasureHuntStepFight extends TreasureHuntStep implements INetworkT
     public getTypeId()
     {
         return TreasureHuntStepFight.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TreasureHuntStepFight.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntStepFight.endpointServer;
     }
 
     public initTreasureHuntStepFight(): TreasureHuntStepFight

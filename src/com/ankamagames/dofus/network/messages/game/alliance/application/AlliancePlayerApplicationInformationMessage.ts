@@ -11,6 +11,9 @@ export class AlliancePlayerApplicationInformationMessage extends AlliancePlayerA
 
 	public static readonly protocolId: number = 9706;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceInformation: AllianceInformation;
 	public apply: SocialApplicationInformation;
 
@@ -26,6 +29,16 @@ export class AlliancePlayerApplicationInformationMessage extends AlliancePlayerA
         return AlliancePlayerApplicationInformationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AlliancePlayerApplicationInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AlliancePlayerApplicationInformationMessage.endpointServer;
+    }
+
     public initAlliancePlayerApplicationInformationMessage(allianceInformation: AllianceInformation = null, apply: SocialApplicationInformation = null): AlliancePlayerApplicationInformationMessage
     {
         this.allianceInformation = allianceInformation;
@@ -37,7 +50,7 @@ export class AlliancePlayerApplicationInformationMessage extends AlliancePlayerA
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

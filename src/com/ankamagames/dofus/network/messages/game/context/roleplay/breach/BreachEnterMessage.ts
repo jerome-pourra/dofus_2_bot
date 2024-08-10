@@ -9,6 +9,9 @@ export class BreachEnterMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 9138;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public owner: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class BreachEnterMessage extends NetworkMessage implements INetworkMessag
         return BreachEnterMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachEnterMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachEnterMessage.endpointServer;
+    }
+
     public initBreachEnterMessage(owner: number = 0): BreachEnterMessage
     {
         this.owner = owner;
@@ -31,7 +44,7 @@ export class BreachEnterMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

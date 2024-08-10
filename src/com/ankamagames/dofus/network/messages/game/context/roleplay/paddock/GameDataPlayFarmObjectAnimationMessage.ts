@@ -9,6 +9,9 @@ export class GameDataPlayFarmObjectAnimationMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 8213;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public cellId: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class GameDataPlayFarmObjectAnimationMessage extends NetworkMessage imple
         return GameDataPlayFarmObjectAnimationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameDataPlayFarmObjectAnimationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameDataPlayFarmObjectAnimationMessage.endpointServer;
+    }
+
     public initGameDataPlayFarmObjectAnimationMessage(cellId: Array<number> = null): GameDataPlayFarmObjectAnimationMessage
     {
         this.cellId = cellId;
@@ -32,7 +45,7 @@ export class GameDataPlayFarmObjectAnimationMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

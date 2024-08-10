@@ -12,6 +12,9 @@ export class GameFightEndMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 2386;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public duration: number = 0;
 	public rewardRate: number = 0;
 	public lootShareLimitMalus: number = 0;
@@ -30,6 +33,16 @@ export class GameFightEndMessage extends NetworkMessage implements INetworkMessa
         return GameFightEndMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightEndMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightEndMessage.endpointServer;
+    }
+
     public initGameFightEndMessage(duration: number = 0, rewardRate: number = 0, lootShareLimitMalus: number = 0, results: Array<FightResultListEntry> = null, namedPartyTeamsOutcomes: Array<NamedPartyTeamWithOutcome> = null): GameFightEndMessage
     {
         this.duration = duration;
@@ -44,7 +57,7 @@ export class GameFightEndMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

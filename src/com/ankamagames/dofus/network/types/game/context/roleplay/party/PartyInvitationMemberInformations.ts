@@ -10,6 +10,9 @@ export class PartyInvitationMemberInformations extends CharacterBaseInformations
 
 	public static readonly protocolId: number = 3577;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public worldX: number = 0;
 	public worldY: number = 0;
 	public mapId: number = 0;
@@ -25,6 +28,16 @@ export class PartyInvitationMemberInformations extends CharacterBaseInformations
     public getTypeId()
     {
         return PartyInvitationMemberInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyInvitationMemberInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyInvitationMemberInformations.endpointServer;
     }
 
     public initPartyInvitationMemberInformations(id: number = 0, name: string = "", level: number = 0, entityLook: EntityLook = null, breed: number = 0, sex: boolean = false, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, entities: Array<PartyEntityBaseInformation> = null): PartyInvitationMemberInformations

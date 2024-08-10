@@ -11,6 +11,9 @@ export class FriendAddedMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 3185;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public friendAdded: FriendInformations;
 
     public constructor()
@@ -24,6 +27,16 @@ export class FriendAddedMessage extends NetworkMessage implements INetworkMessag
         return FriendAddedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FriendAddedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendAddedMessage.endpointServer;
+    }
+
     public initFriendAddedMessage(friendAdded: FriendInformations = null): FriendAddedMessage
     {
         this.friendAdded = friendAdded;
@@ -34,7 +47,7 @@ export class FriendAddedMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

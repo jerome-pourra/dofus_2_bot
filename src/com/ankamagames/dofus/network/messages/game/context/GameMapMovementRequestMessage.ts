@@ -9,6 +9,9 @@ export class GameMapMovementRequestMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 4548;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public keyMovements: Array<number>;
 	public mapId: number = 0;
 
@@ -23,6 +26,16 @@ export class GameMapMovementRequestMessage extends NetworkMessage implements INe
         return GameMapMovementRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameMapMovementRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameMapMovementRequestMessage.endpointServer;
+    }
+
     public initGameMapMovementRequestMessage(keyMovements: Array<number> = null, mapId: number = 0): GameMapMovementRequestMessage
     {
         this.keyMovements = keyMovements;
@@ -34,7 +47,7 @@ export class GameMapMovementRequestMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

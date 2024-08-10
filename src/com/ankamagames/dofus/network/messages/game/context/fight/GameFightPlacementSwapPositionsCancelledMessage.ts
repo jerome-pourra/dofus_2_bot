@@ -9,6 +9,9 @@ export class GameFightPlacementSwapPositionsCancelledMessage extends NetworkMess
 
 	public static readonly protocolId: number = 1579;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public requestId: number = 0;
 	public cancellerId: number = 0;
 
@@ -22,6 +25,16 @@ export class GameFightPlacementSwapPositionsCancelledMessage extends NetworkMess
         return GameFightPlacementSwapPositionsCancelledMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightPlacementSwapPositionsCancelledMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightPlacementSwapPositionsCancelledMessage.endpointServer;
+    }
+
     public initGameFightPlacementSwapPositionsCancelledMessage(requestId: number = 0, cancellerId: number = 0): GameFightPlacementSwapPositionsCancelledMessage
     {
         this.requestId = requestId;
@@ -33,7 +46,7 @@ export class GameFightPlacementSwapPositionsCancelledMessage extends NetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

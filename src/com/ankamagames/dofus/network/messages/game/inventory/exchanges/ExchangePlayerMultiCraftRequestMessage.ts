@@ -9,6 +9,9 @@ export class ExchangePlayerMultiCraftRequestMessage extends ExchangeRequestMessa
 
 	public static readonly protocolId: number = 2028;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public target: number = 0;
 	public skillId: number = 0;
 
@@ -20,6 +23,16 @@ export class ExchangePlayerMultiCraftRequestMessage extends ExchangeRequestMessa
     public getMessageId()
     {
         return ExchangePlayerMultiCraftRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangePlayerMultiCraftRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangePlayerMultiCraftRequestMessage.endpointServer;
     }
 
     public initExchangePlayerMultiCraftRequestMessage(exchangeType: number = 0, target: number = 0, skillId: number = 0): ExchangePlayerMultiCraftRequestMessage
@@ -34,7 +47,7 @@ export class ExchangePlayerMultiCraftRequestMessage extends ExchangeRequestMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

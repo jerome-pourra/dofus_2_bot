@@ -9,6 +9,9 @@ export class EmoteRemoveMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 4524;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public emoteId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class EmoteRemoveMessage extends NetworkMessage implements INetworkMessag
         return EmoteRemoveMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return EmoteRemoveMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EmoteRemoveMessage.endpointServer;
+    }
+
     public initEmoteRemoveMessage(emoteId: number = 0): EmoteRemoveMessage
     {
         this.emoteId = emoteId;
@@ -31,7 +44,7 @@ export class EmoteRemoveMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class ClientUIOpenedMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 1039;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public type: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ClientUIOpenedMessage extends NetworkMessage implements INetworkMes
         return ClientUIOpenedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ClientUIOpenedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ClientUIOpenedMessage.endpointServer;
+    }
+
     public initClientUIOpenedMessage(type: number = 0): ClientUIOpenedMessage
     {
         this.type = type;
@@ -31,7 +44,7 @@ export class ClientUIOpenedMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

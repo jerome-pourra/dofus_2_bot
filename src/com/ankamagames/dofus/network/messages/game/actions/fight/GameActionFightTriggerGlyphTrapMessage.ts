@@ -9,6 +9,9 @@ export class GameActionFightTriggerGlyphTrapMessage extends AbstractGameActionMe
 
 	public static readonly protocolId: number = 6199;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public markId: number = 0;
 	public markImpactCell: number = 0;
 	public triggeringCharacterId: number = 0;
@@ -22,6 +25,16 @@ export class GameActionFightTriggerGlyphTrapMessage extends AbstractGameActionMe
     public getMessageId()
     {
         return GameActionFightTriggerGlyphTrapMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionFightTriggerGlyphTrapMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightTriggerGlyphTrapMessage.endpointServer;
     }
 
     public initGameActionFightTriggerGlyphTrapMessage(actionId: number = 0, sourceId: number = 0, markId: number = 0, markImpactCell: number = 0, triggeringCharacterId: number = 0, triggeredSpellId: number = 0): GameActionFightTriggerGlyphTrapMessage
@@ -38,7 +51,7 @@ export class GameActionFightTriggerGlyphTrapMessage extends AbstractGameActionMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

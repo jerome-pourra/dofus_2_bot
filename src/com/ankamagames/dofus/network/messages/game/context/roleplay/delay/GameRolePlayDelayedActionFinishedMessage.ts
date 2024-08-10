@@ -9,6 +9,9 @@ export class GameRolePlayDelayedActionFinishedMessage extends NetworkMessage imp
 
 	public static readonly protocolId: number = 7896;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public delayedCharacterId: number = 0;
 	public delayTypeId: number = 0;
 
@@ -22,6 +25,16 @@ export class GameRolePlayDelayedActionFinishedMessage extends NetworkMessage imp
         return GameRolePlayDelayedActionFinishedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayDelayedActionFinishedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayDelayedActionFinishedMessage.endpointServer;
+    }
+
     public initGameRolePlayDelayedActionFinishedMessage(delayedCharacterId: number = 0, delayTypeId: number = 0): GameRolePlayDelayedActionFinishedMessage
     {
         this.delayedCharacterId = delayedCharacterId;
@@ -33,7 +46,7 @@ export class GameRolePlayDelayedActionFinishedMessage extends NetworkMessage imp
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

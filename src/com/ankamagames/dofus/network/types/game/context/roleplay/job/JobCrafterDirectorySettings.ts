@@ -7,6 +7,9 @@ export class JobCrafterDirectorySettings implements INetworkType
 
 	public static readonly protocolId: number = 7939;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public jobId: number = 0;
 	public minLevel: number = 0;
 	public free: boolean = false;
@@ -19,6 +22,16 @@ export class JobCrafterDirectorySettings implements INetworkType
     public getTypeId()
     {
         return JobCrafterDirectorySettings.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return JobCrafterDirectorySettings.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobCrafterDirectorySettings.endpointServer;
     }
 
     public initJobCrafterDirectorySettings(jobId: number = 0, minLevel: number = 0, free: boolean = false): JobCrafterDirectorySettings

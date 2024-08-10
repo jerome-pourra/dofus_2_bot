@@ -12,6 +12,9 @@ export class PartyJoinMessage extends AbstractPartyMessage implements INetworkMe
 
 	public static readonly protocolId: number = 6577;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public partyType: number = 0;
 	public partyLeaderId: number = 0;
 	public maxParticipants: number = 0;
@@ -32,6 +35,16 @@ export class PartyJoinMessage extends AbstractPartyMessage implements INetworkMe
         return PartyJoinMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PartyJoinMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyJoinMessage.endpointServer;
+    }
+
     public initPartyJoinMessage(partyId: number = 0, partyType: number = 0, partyLeaderId: number = 0, maxParticipants: number = 0, members: Array<PartyMemberInformations> = null, guests: Array<PartyGuestInformations> = null, restricted: boolean = false, partyName: string = ""): PartyJoinMessage
     {
         super.initAbstractPartyMessage(partyId);
@@ -49,7 +62,7 @@ export class PartyJoinMessage extends AbstractPartyMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

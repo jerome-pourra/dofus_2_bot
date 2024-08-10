@@ -7,6 +7,9 @@ export class ArenaLeagueRanking implements INetworkType
 
 	public static readonly protocolId: number = 3976;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public rating: number = 0;
 	public leagueId: number = 0;
 	public ladderPosition: number = 0;
@@ -19,6 +22,16 @@ export class ArenaLeagueRanking implements INetworkType
     public getTypeId()
     {
         return ArenaLeagueRanking.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ArenaLeagueRanking.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ArenaLeagueRanking.endpointServer;
     }
 
     public initArenaLeagueRanking(rating: number = 0, leagueId: number = 0, ladderPosition: number = 0): ArenaLeagueRanking

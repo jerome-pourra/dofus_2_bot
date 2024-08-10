@@ -9,6 +9,9 @@ export class PartyMemberEjectedMessage extends PartyMemberRemoveMessage implemen
 
 	public static readonly protocolId: number = 9438;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public kickerId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyMemberEjectedMessage extends PartyMemberRemoveMessage implemen
     public getMessageId()
     {
         return PartyMemberEjectedMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyMemberEjectedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyMemberEjectedMessage.endpointServer;
     }
 
     public initPartyMemberEjectedMessage(partyId: number = 0, leavingPlayerId: number = 0, kickerId: number = 0): PartyMemberEjectedMessage
@@ -32,7 +45,7 @@ export class PartyMemberEjectedMessage extends PartyMemberRemoveMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

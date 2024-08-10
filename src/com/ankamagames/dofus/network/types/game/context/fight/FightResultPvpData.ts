@@ -8,6 +8,9 @@ export class FightResultPvpData extends FightResultAdditionalData implements INe
 
 	public static readonly protocolId: number = 7233;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public grade: number = 0;
 	public minHonorForGrade: number = 0;
 	public maxHonorForGrade: number = 0;
@@ -22,6 +25,16 @@ export class FightResultPvpData extends FightResultAdditionalData implements INe
     public getTypeId()
     {
         return FightResultPvpData.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightResultPvpData.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightResultPvpData.endpointServer;
     }
 
     public initFightResultPvpData(grade: number = 0, minHonorForGrade: number = 0, maxHonorForGrade: number = 0, honor: number = 0, honorDelta: number = 0): FightResultPvpData

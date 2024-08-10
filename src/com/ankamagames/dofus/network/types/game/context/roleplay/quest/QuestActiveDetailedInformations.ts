@@ -10,6 +10,9 @@ export class QuestActiveDetailedInformations extends QuestActiveInformations imp
 
 	public static readonly protocolId: number = 7451;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public stepId: number = 0;
 	public objectives: Array<QuestObjectiveInformations>;
 
@@ -22,6 +25,16 @@ export class QuestActiveDetailedInformations extends QuestActiveInformations imp
     public getTypeId()
     {
         return QuestActiveDetailedInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return QuestActiveDetailedInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return QuestActiveDetailedInformations.endpointServer;
     }
 
     public initQuestActiveDetailedInformations(questId: number = 0, stepId: number = 0, objectives: Array<QuestObjectiveInformations> = null): QuestActiveDetailedInformations

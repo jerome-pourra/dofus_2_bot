@@ -9,6 +9,9 @@ export class IconNamedPreset extends PresetsContainerPreset implements INetworkT
 
 	public static readonly protocolId: number = 2553;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public iconId: number = 0;
 	public name: string = "";
 
@@ -20,6 +23,16 @@ export class IconNamedPreset extends PresetsContainerPreset implements INetworkT
     public getTypeId()
     {
         return IconNamedPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return IconNamedPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IconNamedPreset.endpointServer;
     }
 
     public initIconNamedPreset(id: number = 0, presets: Array<Preset> = null, iconId: number = 0, name: string = ""): IconNamedPreset

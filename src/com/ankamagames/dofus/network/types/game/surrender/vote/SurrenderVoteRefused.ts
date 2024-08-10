@@ -8,6 +8,9 @@ export class SurrenderVoteRefused extends SurrenderVoteResponse implements INetw
 
 	public static readonly protocolId: number = 1140;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -16,6 +19,16 @@ export class SurrenderVoteRefused extends SurrenderVoteResponse implements INetw
     public getTypeId()
     {
         return SurrenderVoteRefused.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SurrenderVoteRefused.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SurrenderVoteRefused.endpointServer;
     }
 
     public initSurrenderVoteRefused(): SurrenderVoteRefused

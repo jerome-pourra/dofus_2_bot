@@ -8,6 +8,9 @@ export class ServerSessionConstantInteger extends ServerSessionConstant implemen
 
 	public static readonly protocolId: number = 2867;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public value: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class ServerSessionConstantInteger extends ServerSessionConstant implemen
     public getTypeId()
     {
         return ServerSessionConstantInteger.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ServerSessionConstantInteger.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ServerSessionConstantInteger.endpointServer;
     }
 
     public initServerSessionConstantInteger(id: number = 0, value: number = 0): ServerSessionConstantInteger

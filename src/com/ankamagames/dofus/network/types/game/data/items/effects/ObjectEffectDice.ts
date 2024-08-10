@@ -8,6 +8,9 @@ export class ObjectEffectDice extends ObjectEffect implements INetworkType
 
 	public static readonly protocolId: number = 670;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public diceNum: number = 0;
 	public diceSide: number = 0;
 	public diceConst: number = 0;
@@ -20,6 +23,16 @@ export class ObjectEffectDice extends ObjectEffect implements INetworkType
     public getTypeId()
     {
         return ObjectEffectDice.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectEffectDice.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectEffectDice.endpointServer;
     }
 
     public initObjectEffectDice(actionId: number = 0, diceNum: number = 0, diceSide: number = 0, diceConst: number = 0): ObjectEffectDice

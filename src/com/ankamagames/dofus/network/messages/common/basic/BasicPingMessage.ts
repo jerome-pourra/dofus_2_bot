@@ -9,6 +9,9 @@ export class BasicPingMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 7461;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public quiet: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class BasicPingMessage extends NetworkMessage implements INetworkMessage
         return BasicPingMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BasicPingMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicPingMessage.endpointServer;
+    }
+
     public initBasicPingMessage(quiet: boolean = false): BasicPingMessage
     {
         this.quiet = quiet;
@@ -31,7 +44,7 @@ export class BasicPingMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

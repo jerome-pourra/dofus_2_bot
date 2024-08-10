@@ -7,6 +7,9 @@ export class AccountTagInformation implements INetworkType
 
 	public static readonly protocolId: number = 3196;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public nickname: string = "";
 	public tagNumber: string = "";
 
@@ -18,6 +21,16 @@ export class AccountTagInformation implements INetworkType
     public getTypeId()
     {
         return AccountTagInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AccountTagInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AccountTagInformation.endpointServer;
     }
 
     public initAccountTagInformation(nickname: string = "", tagNumber: string = ""): AccountTagInformation

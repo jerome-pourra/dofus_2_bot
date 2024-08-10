@@ -9,6 +9,9 @@ export class TeleportHavenBagRequestMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 8587;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public guestId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class TeleportHavenBagRequestMessage extends NetworkMessage implements IN
         return TeleportHavenBagRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TeleportHavenBagRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TeleportHavenBagRequestMessage.endpointServer;
+    }
+
     public initTeleportHavenBagRequestMessage(guestId: number = 0): TeleportHavenBagRequestMessage
     {
         this.guestId = guestId;
@@ -31,7 +44,7 @@ export class TeleportHavenBagRequestMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

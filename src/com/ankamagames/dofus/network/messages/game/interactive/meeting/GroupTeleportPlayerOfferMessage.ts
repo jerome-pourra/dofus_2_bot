@@ -9,6 +9,9 @@ export class GroupTeleportPlayerOfferMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 3076;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mapId: number = 0;
 	public worldX: number = 0;
 	public worldY: number = 0;
@@ -26,6 +29,16 @@ export class GroupTeleportPlayerOfferMessage extends NetworkMessage implements I
         return GroupTeleportPlayerOfferMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GroupTeleportPlayerOfferMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GroupTeleportPlayerOfferMessage.endpointServer;
+    }
+
     public initGroupTeleportPlayerOfferMessage(mapId: number = 0, worldX: number = 0, worldY: number = 0, timeLeft: number = 0, requesterId: number = 0, requesterName: string = ""): GroupTeleportPlayerOfferMessage
     {
         this.mapId = mapId;
@@ -41,7 +54,7 @@ export class GroupTeleportPlayerOfferMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

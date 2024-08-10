@@ -9,6 +9,9 @@ export class BasicTimeMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 4945;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public timestamp: number = 0;
 	public timezoneOffset: number = 0;
 
@@ -22,6 +25,16 @@ export class BasicTimeMessage extends NetworkMessage implements INetworkMessage
         return BasicTimeMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BasicTimeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicTimeMessage.endpointServer;
+    }
+
     public initBasicTimeMessage(timestamp: number = 0, timezoneOffset: number = 0): BasicTimeMessage
     {
         this.timestamp = timestamp;
@@ -33,7 +46,7 @@ export class BasicTimeMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class SelectedServerDataExtendedMessage extends SelectedServerDataMessage
 
 	public static readonly protocolId: number = 7269;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public servers: Array<GameServerInformations>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class SelectedServerDataExtendedMessage extends SelectedServerDataMessage
         return SelectedServerDataExtendedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SelectedServerDataExtendedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SelectedServerDataExtendedMessage.endpointServer;
+    }
+
     public initSelectedServerDataExtendedMessage(serverId: number = 0, address: string = "", ports: Array<number> = null, canCreateNewCharacter: boolean = false, ticket: Array<number> = null, servers: Array<GameServerInformations> = null): SelectedServerDataExtendedMessage
     {
         super.initSelectedServerDataMessage(serverId,address,ports,canCreateNewCharacter,ticket);
@@ -34,7 +47,7 @@ export class SelectedServerDataExtendedMessage extends SelectedServerDataMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

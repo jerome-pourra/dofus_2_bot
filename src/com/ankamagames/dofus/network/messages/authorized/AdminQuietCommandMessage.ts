@@ -10,6 +10,9 @@ export class AdminQuietCommandMessage extends AdminCommandMessage implements INe
 
 	public static readonly protocolId: number = 8282;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -18,6 +21,16 @@ export class AdminQuietCommandMessage extends AdminCommandMessage implements INe
     public getMessageId()
     {
         return AdminQuietCommandMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AdminQuietCommandMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AdminQuietCommandMessage.endpointServer;
     }
 
     public initAdminQuietCommandMessage(messageUuid: Uuid = null, content: string = ""): AdminQuietCommandMessage
@@ -30,7 +43,7 @@ export class AdminQuietCommandMessage extends AdminCommandMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

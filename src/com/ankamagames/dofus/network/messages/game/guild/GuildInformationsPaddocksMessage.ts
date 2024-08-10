@@ -10,6 +10,9 @@ export class GuildInformationsPaddocksMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 7168;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public nbPaddockMax: number = 0;
 	public paddocksInformations: Array<PaddockContentInformations>;
 
@@ -24,6 +27,16 @@ export class GuildInformationsPaddocksMessage extends NetworkMessage implements 
         return GuildInformationsPaddocksMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildInformationsPaddocksMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildInformationsPaddocksMessage.endpointServer;
+    }
+
     public initGuildInformationsPaddocksMessage(nbPaddockMax: number = 0, paddocksInformations: Array<PaddockContentInformations> = null): GuildInformationsPaddocksMessage
     {
         this.nbPaddockMax = nbPaddockMax;
@@ -35,7 +48,7 @@ export class GuildInformationsPaddocksMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

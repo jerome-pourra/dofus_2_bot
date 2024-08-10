@@ -9,6 +9,9 @@ export class HouseToSellFilterMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 9188;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public areaId: number = 0;
 	public atLeastNbRoom: number = 0;
 	public atLeastNbChest: number = 0;
@@ -26,6 +29,16 @@ export class HouseToSellFilterMessage extends NetworkMessage implements INetwork
         return HouseToSellFilterMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HouseToSellFilterMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseToSellFilterMessage.endpointServer;
+    }
+
     public initHouseToSellFilterMessage(areaId: number = 0, atLeastNbRoom: number = 0, atLeastNbChest: number = 0, skillRequested: number = 0, maxPrice: number = 0, orderBy: number = 0): HouseToSellFilterMessage
     {
         this.areaId = areaId;
@@ -41,7 +54,7 @@ export class HouseToSellFilterMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

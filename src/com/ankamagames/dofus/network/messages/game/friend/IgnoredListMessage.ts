@@ -11,6 +11,9 @@ export class IgnoredListMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 8123;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public ignoredList: Array<IgnoredInformations>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class IgnoredListMessage extends NetworkMessage implements INetworkMessag
         return IgnoredListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return IgnoredListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IgnoredListMessage.endpointServer;
+    }
+
     public initIgnoredListMessage(ignoredList: Array<IgnoredInformations> = null): IgnoredListMessage
     {
         this.ignoredList = ignoredList;
@@ -34,7 +47,7 @@ export class IgnoredListMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

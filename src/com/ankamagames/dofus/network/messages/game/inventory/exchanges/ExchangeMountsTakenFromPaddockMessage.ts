@@ -9,6 +9,9 @@ export class ExchangeMountsTakenFromPaddockMessage extends NetworkMessage implem
 
 	public static readonly protocolId: number = 3055;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public name: string = "";
 	public worldX: number = 0;
 	public worldY: number = 0;
@@ -24,6 +27,16 @@ export class ExchangeMountsTakenFromPaddockMessage extends NetworkMessage implem
         return ExchangeMountsTakenFromPaddockMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeMountsTakenFromPaddockMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeMountsTakenFromPaddockMessage.endpointServer;
+    }
+
     public initExchangeMountsTakenFromPaddockMessage(name: string = "", worldX: number = 0, worldY: number = 0, ownername: string = ""): ExchangeMountsTakenFromPaddockMessage
     {
         this.name = name;
@@ -37,7 +50,7 @@ export class ExchangeMountsTakenFromPaddockMessage extends NetworkMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

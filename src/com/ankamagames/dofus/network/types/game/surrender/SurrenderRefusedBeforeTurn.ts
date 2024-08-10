@@ -8,6 +8,9 @@ export class SurrenderRefusedBeforeTurn extends SurrenderRefused implements INet
 
 	public static readonly protocolId: number = 9548;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public minTurnForSurrender: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class SurrenderRefusedBeforeTurn extends SurrenderRefused implements INet
     public getTypeId()
     {
         return SurrenderRefusedBeforeTurn.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SurrenderRefusedBeforeTurn.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SurrenderRefusedBeforeTurn.endpointServer;
     }
 
     public initSurrenderRefusedBeforeTurn(minTurnForSurrender: number = 0): SurrenderRefusedBeforeTurn

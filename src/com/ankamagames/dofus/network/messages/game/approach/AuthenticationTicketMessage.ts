@@ -9,6 +9,9 @@ export class AuthenticationTicketMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 6808;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public lang: string = "";
 	public ticket: string = "";
 
@@ -22,6 +25,16 @@ export class AuthenticationTicketMessage extends NetworkMessage implements INetw
         return AuthenticationTicketMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AuthenticationTicketMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AuthenticationTicketMessage.endpointServer;
+    }
+
     public initAuthenticationTicketMessage(lang: string = "", ticket: string = ""): AuthenticationTicketMessage
     {
         this.lang = lang;
@@ -33,7 +46,7 @@ export class AuthenticationTicketMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

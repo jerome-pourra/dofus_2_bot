@@ -9,6 +9,9 @@ export class AnomalyOpenedMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 1124;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public subAreaId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AnomalyOpenedMessage extends NetworkMessage implements INetworkMess
         return AnomalyOpenedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AnomalyOpenedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AnomalyOpenedMessage.endpointServer;
+    }
+
     public initAnomalyOpenedMessage(subAreaId: number = 0): AnomalyOpenedMessage
     {
         this.subAreaId = subAreaId;
@@ -31,7 +44,7 @@ export class AnomalyOpenedMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

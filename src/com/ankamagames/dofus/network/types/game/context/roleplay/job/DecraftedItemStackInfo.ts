@@ -7,6 +7,9 @@ export class DecraftedItemStackInfo implements INetworkType
 
 	public static readonly protocolId: number = 2478;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectUID: number = 0;
 	public bonusMin: number = 0;
 	public bonusMax: number = 0;
@@ -22,6 +25,16 @@ export class DecraftedItemStackInfo implements INetworkType
     public getTypeId()
     {
         return DecraftedItemStackInfo.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return DecraftedItemStackInfo.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DecraftedItemStackInfo.endpointServer;
     }
 
     public initDecraftedItemStackInfo(objectUID: number = 0, bonusMin: number = 0, bonusMax: number = 0, runesId: Array<number> = null, runesQty: Array<number> = null): DecraftedItemStackInfo

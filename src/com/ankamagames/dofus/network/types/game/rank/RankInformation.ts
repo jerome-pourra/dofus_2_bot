@@ -8,6 +8,9 @@ export class RankInformation extends RankMinimalInformation implements INetworkT
 
 	public static readonly protocolId: number = 3538;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public order: number = 0;
 	public gfxId: number = 0;
 	public modifiable: boolean = false;
@@ -22,6 +25,16 @@ export class RankInformation extends RankMinimalInformation implements INetworkT
     public getTypeId()
     {
         return RankInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return RankInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return RankInformation.endpointServer;
     }
 
     public initRankInformation(id: number = 0, name: string = "", order: number = 0, gfxId: number = 0, modifiable: boolean = false, rights: Array<number> = null): RankInformation

@@ -9,6 +9,9 @@ export class GameContextRemoveMultipleElementsMessage extends NetworkMessage imp
 
 	public static readonly protocolId: number = 5405;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public elementsIds: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class GameContextRemoveMultipleElementsMessage extends NetworkMessage imp
         return GameContextRemoveMultipleElementsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameContextRemoveMultipleElementsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameContextRemoveMultipleElementsMessage.endpointServer;
+    }
+
     public initGameContextRemoveMultipleElementsMessage(elementsIds: Array<number> = null): GameContextRemoveMultipleElementsMessage
     {
         this.elementsIds = elementsIds;
@@ -32,7 +45,7 @@ export class GameContextRemoveMultipleElementsMessage extends NetworkMessage imp
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

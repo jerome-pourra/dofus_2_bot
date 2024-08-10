@@ -9,6 +9,9 @@ export class NpcDialogCreationMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 3289;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mapId: number = 0;
 	public npcId: number = 0;
 
@@ -22,6 +25,16 @@ export class NpcDialogCreationMessage extends NetworkMessage implements INetwork
         return NpcDialogCreationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return NpcDialogCreationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return NpcDialogCreationMessage.endpointServer;
+    }
+
     public initNpcDialogCreationMessage(mapId: number = 0, npcId: number = 0): NpcDialogCreationMessage
     {
         this.mapId = mapId;
@@ -33,7 +46,7 @@ export class NpcDialogCreationMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

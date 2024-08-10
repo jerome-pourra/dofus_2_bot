@@ -8,6 +8,9 @@ export class GameActionItem implements INetworkType
 
 	public static readonly protocolId: number = 7527;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public uid: number = 0;
 	public title: string = "";
 	public text: string = "";
@@ -23,6 +26,16 @@ export class GameActionItem implements INetworkType
     public getTypeId()
     {
         return GameActionItem.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionItem.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionItem.endpointServer;
     }
 
     public initGameActionItem(uid: number = 0, title: string = "", text: string = "", descUrl: string = "", pictureUrl: string = "", items: Array<ObjectItemInformationWithQuantity> = null): GameActionItem

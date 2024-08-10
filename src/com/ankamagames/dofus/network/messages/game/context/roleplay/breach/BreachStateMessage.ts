@@ -11,6 +11,9 @@ export class BreachStateMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 8989;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public owner: CharacterMinimalInformations;
 	public bonuses: Array<ObjectEffectInteger>;
 	public bugdet: number = 0;
@@ -28,6 +31,16 @@ export class BreachStateMessage extends NetworkMessage implements INetworkMessag
         return BreachStateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachStateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachStateMessage.endpointServer;
+    }
+
     public initBreachStateMessage(owner: CharacterMinimalInformations = null, bonuses: Array<ObjectEffectInteger> = null, bugdet: number = 0, saved: boolean = false): BreachStateMessage
     {
         this.owner = owner;
@@ -41,7 +54,7 @@ export class BreachStateMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

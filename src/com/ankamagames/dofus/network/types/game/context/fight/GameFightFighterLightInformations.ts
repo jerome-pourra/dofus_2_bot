@@ -8,6 +8,9 @@ export class GameFightFighterLightInformations implements INetworkType
 
 	public static readonly protocolId: number = 4794;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 	public wave: number = 0;
 	public level: number = 0;
@@ -23,6 +26,16 @@ export class GameFightFighterLightInformations implements INetworkType
     public getTypeId()
     {
         return GameFightFighterLightInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightFighterLightInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightFighterLightInformations.endpointServer;
     }
 
     public initGameFightFighterLightInformations(id: number = 0, wave: number = 0, level: number = 0, breed: number = 0, sex: boolean = false, alive: boolean = false): GameFightFighterLightInformations

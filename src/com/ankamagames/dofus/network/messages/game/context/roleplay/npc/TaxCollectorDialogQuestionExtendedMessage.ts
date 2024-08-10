@@ -11,6 +11,9 @@ export class TaxCollectorDialogQuestionExtendedMessage extends TaxCollectorDialo
 
 	public static readonly protocolId: number = 8713;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public maxPods: number = 0;
 	public prospecting: number = 0;
 	public alliance: BasicNamedAllianceInformations;
@@ -30,6 +33,16 @@ export class TaxCollectorDialogQuestionExtendedMessage extends TaxCollectorDialo
         return TaxCollectorDialogQuestionExtendedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TaxCollectorDialogQuestionExtendedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorDialogQuestionExtendedMessage.endpointServer;
+    }
+
     public initTaxCollectorDialogQuestionExtendedMessage(allianceInfo: BasicAllianceInformations = null, maxPods: number = 0, prospecting: number = 0, alliance: BasicNamedAllianceInformations = null, taxCollectorsCount: number = 0, taxCollectorAttack: number = 0, pods: number = 0, itemsValue: number = 0): TaxCollectorDialogQuestionExtendedMessage
     {
         super.initTaxCollectorDialogQuestionBasicMessage(allianceInfo);
@@ -47,7 +60,7 @@ export class TaxCollectorDialogQuestionExtendedMessage extends TaxCollectorDialo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

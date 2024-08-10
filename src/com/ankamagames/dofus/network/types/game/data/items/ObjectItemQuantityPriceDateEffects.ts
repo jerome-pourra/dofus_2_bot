@@ -9,6 +9,9 @@ export class ObjectItemQuantityPriceDateEffects extends ObjectItemGenericQuantit
 
 	public static readonly protocolId: number = 3552;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public price: number = 0;
 	public effects: ObjectEffects;
 	public date: number = 0;
@@ -22,6 +25,16 @@ export class ObjectItemQuantityPriceDateEffects extends ObjectItemGenericQuantit
     public getTypeId()
     {
         return ObjectItemQuantityPriceDateEffects.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectItemQuantityPriceDateEffects.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectItemQuantityPriceDateEffects.endpointServer;
     }
 
     public initObjectItemQuantityPriceDateEffects(objectGID: number = 0, quantity: number = 0, price: number = 0, effects: ObjectEffects = null, date: number = 0): ObjectItemQuantityPriceDateEffects

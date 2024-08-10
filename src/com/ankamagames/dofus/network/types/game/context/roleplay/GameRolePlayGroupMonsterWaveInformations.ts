@@ -12,6 +12,9 @@ export class GameRolePlayGroupMonsterWaveInformations extends GameRolePlayGroupM
 
 	public static readonly protocolId: number = 6822;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public nbWaves: number = 0;
 	public alternatives: Array<GroupMonsterStaticInformations>;
 
@@ -24,6 +27,16 @@ export class GameRolePlayGroupMonsterWaveInformations extends GameRolePlayGroupM
     public getTypeId()
     {
         return GameRolePlayGroupMonsterWaveInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayGroupMonsterWaveInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayGroupMonsterWaveInformations.endpointServer;
     }
 
     public initGameRolePlayGroupMonsterWaveInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, staticInfos: GroupMonsterStaticInformations = null, lootShare: number = 0, alignmentSide: number = 0, hasHardcoreDrop: boolean = false, nbWaves: number = 0, alternatives: Array<GroupMonsterStaticInformations> = null): GameRolePlayGroupMonsterWaveInformations

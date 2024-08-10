@@ -9,6 +9,9 @@ export class PartyPledgeLoyaltyRequestMessage extends AbstractPartyMessage imple
 
 	public static readonly protocolId: number = 7730;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public loyal: boolean = false;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyPledgeLoyaltyRequestMessage extends AbstractPartyMessage imple
     public getMessageId()
     {
         return PartyPledgeLoyaltyRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyPledgeLoyaltyRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyPledgeLoyaltyRequestMessage.endpointServer;
     }
 
     public initPartyPledgeLoyaltyRequestMessage(partyId: number = 0, loyal: boolean = false): PartyPledgeLoyaltyRequestMessage
@@ -32,7 +45,7 @@ export class PartyPledgeLoyaltyRequestMessage extends AbstractPartyMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

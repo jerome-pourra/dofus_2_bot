@@ -10,6 +10,9 @@ export class AtlasPointInformationsMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 5424;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public type: AtlasPointsInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AtlasPointInformationsMessage extends NetworkMessage implements INe
         return AtlasPointInformationsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AtlasPointInformationsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AtlasPointInformationsMessage.endpointServer;
+    }
+
     public initAtlasPointInformationsMessage(type: AtlasPointsInformations = null): AtlasPointInformationsMessage
     {
         this.type = type;
@@ -33,7 +46,7 @@ export class AtlasPointInformationsMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

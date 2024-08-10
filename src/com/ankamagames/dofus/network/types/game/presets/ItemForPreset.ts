@@ -7,6 +7,9 @@ export class ItemForPreset implements INetworkType
 
 	public static readonly protocolId: number = 5291;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public position: number = 63;
 	public objGid: number = 0;
 	public objUid: number = 0;
@@ -19,6 +22,16 @@ export class ItemForPreset implements INetworkType
     public getTypeId()
     {
         return ItemForPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ItemForPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ItemForPreset.endpointServer;
     }
 
     public initItemForPreset(position: number = 63, objGid: number = 0, objUid: number = 0): ItemForPreset

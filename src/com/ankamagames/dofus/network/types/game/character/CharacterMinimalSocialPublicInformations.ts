@@ -9,6 +9,9 @@ export class CharacterMinimalSocialPublicInformations extends CharacterMinimalIn
 
 	public static readonly protocolId: number = 5126;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public rank: RankPublicInformation;
 
     public constructor()
@@ -20,6 +23,16 @@ export class CharacterMinimalSocialPublicInformations extends CharacterMinimalIn
     public getTypeId()
     {
         return CharacterMinimalSocialPublicInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterMinimalSocialPublicInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterMinimalSocialPublicInformations.endpointServer;
     }
 
     public initCharacterMinimalSocialPublicInformations(id: number = 0, name: string = "", level: number = 0, rank: RankPublicInformation = null): CharacterMinimalSocialPublicInformations

@@ -9,6 +9,9 @@ export class PartyStopFollowRequestMessage extends AbstractPartyMessage implemen
 
 	public static readonly protocolId: number = 8393;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyStopFollowRequestMessage extends AbstractPartyMessage implemen
     public getMessageId()
     {
         return PartyStopFollowRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyStopFollowRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyStopFollowRequestMessage.endpointServer;
     }
 
     public initPartyStopFollowRequestMessage(partyId: number = 0, playerId: number = 0): PartyStopFollowRequestMessage
@@ -32,7 +45,7 @@ export class PartyStopFollowRequestMessage extends AbstractPartyMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

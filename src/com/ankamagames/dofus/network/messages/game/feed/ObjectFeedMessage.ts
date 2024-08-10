@@ -10,6 +10,9 @@ export class ObjectFeedMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 8727;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectUID: number = 0;
 	public meal: Array<ObjectItemQuantity>;
 
@@ -24,6 +27,16 @@ export class ObjectFeedMessage extends NetworkMessage implements INetworkMessage
         return ObjectFeedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectFeedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectFeedMessage.endpointServer;
+    }
+
     public initObjectFeedMessage(objectUID: number = 0, meal: Array<ObjectItemQuantity> = null): ObjectFeedMessage
     {
         this.objectUID = objectUID;
@@ -35,7 +48,7 @@ export class ObjectFeedMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class TeleportBuddiesRequestedMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 2454;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dungeonId: number = 0;
 	public inviterId: number = 0;
 	public invalidBuddiesIds: Array<number>;
@@ -24,6 +27,16 @@ export class TeleportBuddiesRequestedMessage extends NetworkMessage implements I
         return TeleportBuddiesRequestedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TeleportBuddiesRequestedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TeleportBuddiesRequestedMessage.endpointServer;
+    }
+
     public initTeleportBuddiesRequestedMessage(dungeonId: number = 0, inviterId: number = 0, invalidBuddiesIds: Array<number> = null): TeleportBuddiesRequestedMessage
     {
         this.dungeonId = dungeonId;
@@ -36,7 +49,7 @@ export class TeleportBuddiesRequestedMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

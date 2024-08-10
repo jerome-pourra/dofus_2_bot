@@ -9,6 +9,9 @@ export class MountEquipedErrorMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 5171;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public errorType: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class MountEquipedErrorMessage extends NetworkMessage implements INetwork
         return MountEquipedErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MountEquipedErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountEquipedErrorMessage.endpointServer;
+    }
+
     public initMountEquipedErrorMessage(errorType: number = 0): MountEquipedErrorMessage
     {
         this.errorType = errorType;
@@ -31,7 +44,7 @@ export class MountEquipedErrorMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

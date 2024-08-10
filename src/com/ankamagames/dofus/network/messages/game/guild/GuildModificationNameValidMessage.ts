@@ -9,6 +9,9 @@ export class GuildModificationNameValidMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 5733;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public guildName: string = "";
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuildModificationNameValidMessage extends NetworkMessage implements
         return GuildModificationNameValidMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildModificationNameValidMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildModificationNameValidMessage.endpointServer;
+    }
+
     public initGuildModificationNameValidMessage(guildName: string = ""): GuildModificationNameValidMessage
     {
         this.guildName = guildName;
@@ -31,7 +44,7 @@ export class GuildModificationNameValidMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

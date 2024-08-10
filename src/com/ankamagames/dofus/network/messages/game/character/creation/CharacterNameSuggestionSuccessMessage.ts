@@ -9,6 +9,9 @@ export class CharacterNameSuggestionSuccessMessage extends NetworkMessage implem
 
 	public static readonly protocolId: number = 2208;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public suggestion: string = "";
 
     public constructor()
@@ -21,6 +24,16 @@ export class CharacterNameSuggestionSuccessMessage extends NetworkMessage implem
         return CharacterNameSuggestionSuccessMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterNameSuggestionSuccessMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterNameSuggestionSuccessMessage.endpointServer;
+    }
+
     public initCharacterNameSuggestionSuccessMessage(suggestion: string = ""): CharacterNameSuggestionSuccessMessage
     {
         this.suggestion = suggestion;
@@ -31,7 +44,7 @@ export class CharacterNameSuggestionSuccessMessage extends NetworkMessage implem
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

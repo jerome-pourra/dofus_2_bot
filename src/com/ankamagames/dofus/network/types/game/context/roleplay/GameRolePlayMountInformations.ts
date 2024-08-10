@@ -10,6 +10,9 @@ export class GameRolePlayMountInformations extends GameRolePlayNamedActorInforma
 
 	public static readonly protocolId: number = 9212;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public ownerName: string = "";
 	public level: number = 0;
 
@@ -21,6 +24,16 @@ export class GameRolePlayMountInformations extends GameRolePlayNamedActorInforma
     public getTypeId()
     {
         return GameRolePlayMountInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayMountInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayMountInformations.endpointServer;
     }
 
     public initGameRolePlayMountInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, name: string = "", ownerName: string = "", level: number = 0): GameRolePlayMountInformations

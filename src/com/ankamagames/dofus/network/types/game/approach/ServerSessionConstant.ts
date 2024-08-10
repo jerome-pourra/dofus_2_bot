@@ -7,6 +7,9 @@ export class ServerSessionConstant implements INetworkType
 
 	public static readonly protocolId: number = 9977;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 
     public constructor()
@@ -17,6 +20,16 @@ export class ServerSessionConstant implements INetworkType
     public getTypeId()
     {
         return ServerSessionConstant.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ServerSessionConstant.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ServerSessionConstant.endpointServer;
     }
 
     public initServerSessionConstant(id: number = 0): ServerSessionConstant

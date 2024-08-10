@@ -9,6 +9,9 @@ export class SymbioticObjectAssociatedMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 7196;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public hostUID: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class SymbioticObjectAssociatedMessage extends NetworkMessage implements 
         return SymbioticObjectAssociatedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SymbioticObjectAssociatedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SymbioticObjectAssociatedMessage.endpointServer;
+    }
+
     public initSymbioticObjectAssociatedMessage(hostUID: number = 0): SymbioticObjectAssociatedMessage
     {
         this.hostUID = hostUID;
@@ -31,7 +44,7 @@ export class SymbioticObjectAssociatedMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class WatchQuestStepInfoRequestMessage extends QuestStepInfoRequestMessag
 
 	public static readonly protocolId: number = 4330;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class WatchQuestStepInfoRequestMessage extends QuestStepInfoRequestMessag
     public getMessageId()
     {
         return WatchQuestStepInfoRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return WatchQuestStepInfoRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return WatchQuestStepInfoRequestMessage.endpointServer;
     }
 
     public initWatchQuestStepInfoRequestMessage(questId: number = 0, playerId: number = 0): WatchQuestStepInfoRequestMessage
@@ -32,7 +45,7 @@ export class WatchQuestStepInfoRequestMessage extends QuestStepInfoRequestMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

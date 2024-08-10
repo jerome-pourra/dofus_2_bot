@@ -9,6 +9,9 @@ export class BreachCharactersMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 6556;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public characters: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class BreachCharactersMessage extends NetworkMessage implements INetworkM
         return BreachCharactersMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachCharactersMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachCharactersMessage.endpointServer;
+    }
+
     public initBreachCharactersMessage(characters: Array<number> = null): BreachCharactersMessage
     {
         this.characters = characters;
@@ -32,7 +45,7 @@ export class BreachCharactersMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

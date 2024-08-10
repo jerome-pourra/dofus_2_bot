@@ -9,6 +9,9 @@ export class ExchangeStartOkRecycleTradeMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 1067;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public percentToPrism: number = 0;
 	public percentToPlayer: number = 0;
 	public adjacentSubareaPossessed: Array<number>;
@@ -26,6 +29,16 @@ export class ExchangeStartOkRecycleTradeMessage extends NetworkMessage implement
         return ExchangeStartOkRecycleTradeMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeStartOkRecycleTradeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartOkRecycleTradeMessage.endpointServer;
+    }
+
     public initExchangeStartOkRecycleTradeMessage(percentToPrism: number = 0, percentToPlayer: number = 0, adjacentSubareaPossessed: Array<number> = null, adjacentSubareaUnpossessed: Array<number> = null): ExchangeStartOkRecycleTradeMessage
     {
         this.percentToPrism = percentToPrism;
@@ -39,7 +52,7 @@ export class ExchangeStartOkRecycleTradeMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class CharacterCanBeCreatedRequestMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 4275;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class CharacterCanBeCreatedRequestMessage extends NetworkMessage implemen
     public getMessageId()
     {
         return CharacterCanBeCreatedRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterCanBeCreatedRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterCanBeCreatedRequestMessage.endpointServer;
     }
 
     public initCharacterCanBeCreatedRequestMessage(): CharacterCanBeCreatedRequestMessage
@@ -28,7 +41,7 @@ export class CharacterCanBeCreatedRequestMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

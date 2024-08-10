@@ -8,6 +8,9 @@ export class ObjectEffectString extends ObjectEffect implements INetworkType
 
 	public static readonly protocolId: number = 3424;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public value: string = "";
 
     public constructor()
@@ -18,6 +21,16 @@ export class ObjectEffectString extends ObjectEffect implements INetworkType
     public getTypeId()
     {
         return ObjectEffectString.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectEffectString.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectEffectString.endpointServer;
     }
 
     public initObjectEffectString(actionId: number = 0, value: string = ""): ObjectEffectString

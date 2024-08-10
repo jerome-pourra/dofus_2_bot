@@ -9,6 +9,9 @@ export class PortalUseRequestMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 6790;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public portalId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class PortalUseRequestMessage extends NetworkMessage implements INetworkM
         return PortalUseRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PortalUseRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PortalUseRequestMessage.endpointServer;
+    }
+
     public initPortalUseRequestMessage(portalId: number = 0): PortalUseRequestMessage
     {
         this.portalId = portalId;
@@ -31,7 +44,7 @@ export class PortalUseRequestMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

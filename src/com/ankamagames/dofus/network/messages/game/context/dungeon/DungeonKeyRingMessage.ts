@@ -9,6 +9,9 @@ export class DungeonKeyRingMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 6819;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public availables: Array<number>;
 	public unavailables: Array<number>;
 
@@ -24,6 +27,16 @@ export class DungeonKeyRingMessage extends NetworkMessage implements INetworkMes
         return DungeonKeyRingMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DungeonKeyRingMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DungeonKeyRingMessage.endpointServer;
+    }
+
     public initDungeonKeyRingMessage(availables: Array<number> = null, unavailables: Array<number> = null): DungeonKeyRingMessage
     {
         this.availables = availables;
@@ -35,7 +48,7 @@ export class DungeonKeyRingMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class AchievementAlmostFinishedDetailedListMessage extends NetworkMessage
 
 	public static readonly protocolId: number = 1205;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public almostFinishedAchievements: Array<Achievement>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AchievementAlmostFinishedDetailedListMessage extends NetworkMessage
         return AchievementAlmostFinishedDetailedListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AchievementAlmostFinishedDetailedListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementAlmostFinishedDetailedListMessage.endpointServer;
+    }
+
     public initAchievementAlmostFinishedDetailedListMessage(almostFinishedAchievements: Array<Achievement> = null): AchievementAlmostFinishedDetailedListMessage
     {
         this.almostFinishedAchievements = almostFinishedAchievements;
@@ -33,7 +46,7 @@ export class AchievementAlmostFinishedDetailedListMessage extends NetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

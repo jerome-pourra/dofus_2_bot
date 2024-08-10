@@ -10,6 +10,9 @@ export class TaxCollectorMovementsOfflineMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 4833;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public movements: Array<TaxCollectorMovement>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class TaxCollectorMovementsOfflineMessage extends NetworkMessage implemen
         return TaxCollectorMovementsOfflineMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TaxCollectorMovementsOfflineMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorMovementsOfflineMessage.endpointServer;
+    }
+
     public initTaxCollectorMovementsOfflineMessage(movements: Array<TaxCollectorMovement> = null): TaxCollectorMovementsOfflineMessage
     {
         this.movements = movements;
@@ -33,7 +46,7 @@ export class TaxCollectorMovementsOfflineMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

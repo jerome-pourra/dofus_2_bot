@@ -9,6 +9,9 @@ export class ChannelEnablingChangeMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 7739;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public channel: number = 0;
 	public enable: boolean = false;
 
@@ -22,6 +25,16 @@ export class ChannelEnablingChangeMessage extends NetworkMessage implements INet
         return ChannelEnablingChangeMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChannelEnablingChangeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChannelEnablingChangeMessage.endpointServer;
+    }
+
     public initChannelEnablingChangeMessage(channel: number = 0, enable: boolean = false): ChannelEnablingChangeMessage
     {
         this.channel = channel;
@@ -33,7 +46,7 @@ export class ChannelEnablingChangeMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

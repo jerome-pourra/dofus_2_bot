@@ -7,6 +7,9 @@ export class AbstractFightDispellableEffect implements INetworkType
 
 	public static readonly protocolId: number = 4079;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public uid: number = 0;
 	public targetId: number = 0;
 	public turnDuration: number = 0;
@@ -23,6 +26,16 @@ export class AbstractFightDispellableEffect implements INetworkType
     public getTypeId()
     {
         return AbstractFightDispellableEffect.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AbstractFightDispellableEffect.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AbstractFightDispellableEffect.endpointServer;
     }
 
     public initAbstractFightDispellableEffect(uid: number = 0, targetId: number = 0, turnDuration: number = 0, dispelable: number = 1, spellId: number = 0, effectId: number = 0, parentBoostUid: number = 0): AbstractFightDispellableEffect

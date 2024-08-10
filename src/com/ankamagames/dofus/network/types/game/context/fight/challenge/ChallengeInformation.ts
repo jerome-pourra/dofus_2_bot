@@ -9,6 +9,9 @@ export class ChallengeInformation implements INetworkType
 
 	public static readonly protocolId: number = 1494;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public challengeId: number = 0;
 	public targetsList: Array<ChallengeTargetInformation>;
 	public dropBonus: number = 0;
@@ -23,6 +26,16 @@ export class ChallengeInformation implements INetworkType
     public getTypeId()
     {
         return ChallengeInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ChallengeInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChallengeInformation.endpointServer;
     }
 
     public initChallengeInformation(challengeId: number = 0, targetsList: Array<ChallengeTargetInformation> = null, dropBonus: number = 0, xpBonus: number = 0, state: number = 2): ChallengeInformation

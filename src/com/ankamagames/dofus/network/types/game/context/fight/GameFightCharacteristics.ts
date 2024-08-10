@@ -8,6 +8,9 @@ export class GameFightCharacteristics implements INetworkType
 
 	public static readonly protocolId: number = 714;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public characteristics: CharacterCharacteristics;
 	public summoner: number = 0;
 	public summoned: boolean = false;
@@ -21,6 +24,16 @@ export class GameFightCharacteristics implements INetworkType
     public getTypeId()
     {
         return GameFightCharacteristics.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightCharacteristics.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightCharacteristics.endpointServer;
     }
 
     public initGameFightCharacteristics(characteristics: CharacterCharacteristics = null, summoner: number = 0, summoned: boolean = false, invisibilityState: number = 0): GameFightCharacteristics

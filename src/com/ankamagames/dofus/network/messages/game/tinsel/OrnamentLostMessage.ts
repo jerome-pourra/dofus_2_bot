@@ -9,6 +9,9 @@ export class OrnamentLostMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 2799;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public ornamentId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class OrnamentLostMessage extends NetworkMessage implements INetworkMessa
         return OrnamentLostMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return OrnamentLostMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return OrnamentLostMessage.endpointServer;
+    }
+
     public initOrnamentLostMessage(ornamentId: number = 0): OrnamentLostMessage
     {
         this.ornamentId = ornamentId;
@@ -31,7 +44,7 @@ export class OrnamentLostMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

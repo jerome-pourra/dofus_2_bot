@@ -10,6 +10,9 @@ export class ContactLookMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 4925;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public requestId: number = 0;
 	public playerName: string = "";
 	public playerId: number = 0;
@@ -26,6 +29,16 @@ export class ContactLookMessage extends NetworkMessage implements INetworkMessag
         return ContactLookMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ContactLookMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ContactLookMessage.endpointServer;
+    }
+
     public initContactLookMessage(requestId: number = 0, playerName: string = "", playerId: number = 0, look: EntityLook = null): ContactLookMessage
     {
         this.requestId = requestId;
@@ -39,7 +52,7 @@ export class ContactLookMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

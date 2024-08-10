@@ -8,6 +8,9 @@ export class ObjectEffectInteger extends ObjectEffect implements INetworkType
 
 	public static readonly protocolId: number = 3930;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public value: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class ObjectEffectInteger extends ObjectEffect implements INetworkType
     public getTypeId()
     {
         return ObjectEffectInteger.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectEffectInteger.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectEffectInteger.endpointServer;
     }
 
     public initObjectEffectInteger(actionId: number = 0, value: number = 0): ObjectEffectInteger

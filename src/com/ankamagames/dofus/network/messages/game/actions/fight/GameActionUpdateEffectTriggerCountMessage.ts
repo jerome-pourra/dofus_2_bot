@@ -10,6 +10,9 @@ export class GameActionUpdateEffectTriggerCountMessage extends NetworkMessage im
 
 	public static readonly protocolId: number = 6014;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public targetIds: Array<GameFightEffectTriggerCount>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameActionUpdateEffectTriggerCountMessage extends NetworkMessage im
         return GameActionUpdateEffectTriggerCountMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameActionUpdateEffectTriggerCountMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionUpdateEffectTriggerCountMessage.endpointServer;
+    }
+
     public initGameActionUpdateEffectTriggerCountMessage(targetIds: Array<GameFightEffectTriggerCount> = null): GameActionUpdateEffectTriggerCountMessage
     {
         this.targetIds = targetIds;
@@ -33,7 +46,7 @@ export class GameActionUpdateEffectTriggerCountMessage extends NetworkMessage im
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

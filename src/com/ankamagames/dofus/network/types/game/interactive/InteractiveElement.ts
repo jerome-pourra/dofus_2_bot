@@ -9,6 +9,9 @@ export class InteractiveElement implements INetworkType
 
 	public static readonly protocolId: number = 6065;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public elementId: number = 0;
 	public elementTypeId: number = 0;
 	public enabledSkills: Array<InteractiveElementSkill>;
@@ -24,6 +27,16 @@ export class InteractiveElement implements INetworkType
     public getTypeId()
     {
         return InteractiveElement.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return InteractiveElement.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InteractiveElement.endpointServer;
     }
 
     public initInteractiveElement(elementId: number = 0, elementTypeId: number = 0, enabledSkills: Array<InteractiveElementSkill> = null, disabledSkills: Array<InteractiveElementSkill> = null, onCurrentMap: boolean = false): InteractiveElement

@@ -11,6 +11,9 @@ export class QuestStepInfoMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 830;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public infos: QuestActiveInformations;
 
     public constructor()
@@ -24,6 +27,16 @@ export class QuestStepInfoMessage extends NetworkMessage implements INetworkMess
         return QuestStepInfoMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return QuestStepInfoMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return QuestStepInfoMessage.endpointServer;
+    }
+
     public initQuestStepInfoMessage(infos: QuestActiveInformations = null): QuestStepInfoMessage
     {
         this.infos = infos;
@@ -34,7 +47,7 @@ export class QuestStepInfoMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

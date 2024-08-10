@@ -11,6 +11,9 @@ export class PartyGuestInformations implements INetworkType
 
 	public static readonly protocolId: number = 3127;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public guestId: number = 0;
 	public hostId: number = 0;
 	public name: string = "";
@@ -30,6 +33,16 @@ export class PartyGuestInformations implements INetworkType
     public getTypeId()
     {
         return PartyGuestInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyGuestInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyGuestInformations.endpointServer;
     }
 
     public initPartyGuestInformations(guestId: number = 0, hostId: number = 0, name: string = "", guestLook: EntityLook = null, breed: number = 0, sex: boolean = false, status: PlayerStatus = null, entities: Array<PartyEntityBaseInformation> = null): PartyGuestInformations

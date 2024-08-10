@@ -10,6 +10,9 @@ export class GameFightJoinMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 8166;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public isTeamPhase: boolean = false;
 	public canBeCancelled: boolean = false;
 	public canSayReady: boolean = false;
@@ -27,6 +30,16 @@ export class GameFightJoinMessage extends NetworkMessage implements INetworkMess
         return GameFightJoinMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightJoinMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightJoinMessage.endpointServer;
+    }
+
     public initGameFightJoinMessage(isTeamPhase: boolean = false, canBeCancelled: boolean = false, canSayReady: boolean = false, isFightStarted: boolean = false, timeMaxBeforeFightStart: number = 0, fightType: number = 0): GameFightJoinMessage
     {
         this.isTeamPhase = isTeamPhase;
@@ -42,7 +55,7 @@ export class GameFightJoinMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

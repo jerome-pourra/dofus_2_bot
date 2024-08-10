@@ -11,6 +11,9 @@ export class ChatClientPrivateWithObjectMessage extends ChatClientPrivateMessage
 
 	public static readonly protocolId: number = 9502;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objects: Array<ObjectItem>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class ChatClientPrivateWithObjectMessage extends ChatClientPrivateMessage
         return ChatClientPrivateWithObjectMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChatClientPrivateWithObjectMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChatClientPrivateWithObjectMessage.endpointServer;
+    }
+
     public initChatClientPrivateWithObjectMessage(content: string = "", receiver: AbstractPlayerSearchInformation = null, objects: Array<ObjectItem> = null): ChatClientPrivateWithObjectMessage
     {
         super.initChatClientPrivateMessage(content,receiver);
@@ -35,7 +48,7 @@ export class ChatClientPrivateWithObjectMessage extends ChatClientPrivateMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class TitlesAndOrnamentsListMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 3749;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public titles: Array<number>;
 	public ornaments: Array<number>;
 	public activeTitle: number = 0;
@@ -26,6 +29,16 @@ export class TitlesAndOrnamentsListMessage extends NetworkMessage implements INe
         return TitlesAndOrnamentsListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TitlesAndOrnamentsListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TitlesAndOrnamentsListMessage.endpointServer;
+    }
+
     public initTitlesAndOrnamentsListMessage(titles: Array<number> = null, ornaments: Array<number> = null, activeTitle: number = 0, activeOrnament: number = 0): TitlesAndOrnamentsListMessage
     {
         this.titles = titles;
@@ -39,7 +52,7 @@ export class TitlesAndOrnamentsListMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

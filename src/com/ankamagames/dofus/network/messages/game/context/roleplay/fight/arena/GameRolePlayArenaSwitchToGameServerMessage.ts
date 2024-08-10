@@ -9,6 +9,9 @@ export class GameRolePlayArenaSwitchToGameServerMessage extends NetworkMessage i
 
 	public static readonly protocolId: number = 6763;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public validToken: boolean = false;
 	public token: string = "";
 	public homeServerId: number = 0;
@@ -23,6 +26,16 @@ export class GameRolePlayArenaSwitchToGameServerMessage extends NetworkMessage i
         return GameRolePlayArenaSwitchToGameServerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayArenaSwitchToGameServerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayArenaSwitchToGameServerMessage.endpointServer;
+    }
+
     public initGameRolePlayArenaSwitchToGameServerMessage(validToken: boolean = false, token: string = "", homeServerId: number = 0): GameRolePlayArenaSwitchToGameServerMessage
     {
         this.validToken = validToken;
@@ -35,7 +48,7 @@ export class GameRolePlayArenaSwitchToGameServerMessage extends NetworkMessage i
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

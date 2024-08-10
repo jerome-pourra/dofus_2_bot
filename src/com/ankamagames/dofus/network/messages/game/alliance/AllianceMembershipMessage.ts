@@ -10,6 +10,9 @@ export class AllianceMembershipMessage extends AllianceJoinedMessage implements 
 
 	public static readonly protocolId: number = 3547;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -18,6 +21,16 @@ export class AllianceMembershipMessage extends AllianceJoinedMessage implements 
     public getMessageId()
     {
         return AllianceMembershipMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceMembershipMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceMembershipMessage.endpointServer;
     }
 
     public initAllianceMembershipMessage(allianceInfo: AllianceInformation = null, rankId: number = 0): AllianceMembershipMessage
@@ -30,7 +43,7 @@ export class AllianceMembershipMessage extends AllianceJoinedMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

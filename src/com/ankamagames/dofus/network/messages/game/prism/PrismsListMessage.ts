@@ -11,6 +11,9 @@ export class PrismsListMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 7733;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public prisms: Array<PrismGeolocalizedInformation>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class PrismsListMessage extends NetworkMessage implements INetworkMessage
         return PrismsListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PrismsListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PrismsListMessage.endpointServer;
+    }
+
     public initPrismsListMessage(prisms: Array<PrismGeolocalizedInformation> = null): PrismsListMessage
     {
         this.prisms = prisms;
@@ -34,7 +47,7 @@ export class PrismsListMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

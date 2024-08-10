@@ -7,6 +7,9 @@ export class SocialEmblem implements INetworkType
 
 	public static readonly protocolId: number = 6817;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public symbolShape: number = 0;
 	public symbolColor: number = 0;
 	public backgroundShape: number = 0;
@@ -20,6 +23,16 @@ export class SocialEmblem implements INetworkType
     public getTypeId()
     {
         return SocialEmblem.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SocialEmblem.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SocialEmblem.endpointServer;
     }
 
     public initSocialEmblem(symbolShape: number = 0, symbolColor: number = 0, backgroundShape: number = 0, backgroundColor: number = 0): SocialEmblem

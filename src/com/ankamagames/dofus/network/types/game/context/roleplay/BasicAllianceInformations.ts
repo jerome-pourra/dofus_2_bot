@@ -8,6 +8,9 @@ export class BasicAllianceInformations extends AbstractSocialGroupInfos implemen
 
 	public static readonly protocolId: number = 2995;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceId: number = 0;
 	public allianceTag: string = "";
 
@@ -19,6 +22,16 @@ export class BasicAllianceInformations extends AbstractSocialGroupInfos implemen
     public getTypeId()
     {
         return BasicAllianceInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return BasicAllianceInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicAllianceInformations.endpointServer;
     }
 
     public initBasicAllianceInformations(allianceId: number = 0, allianceTag: string = ""): BasicAllianceInformations

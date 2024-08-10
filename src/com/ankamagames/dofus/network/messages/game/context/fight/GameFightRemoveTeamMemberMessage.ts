@@ -9,6 +9,9 @@ export class GameFightRemoveTeamMemberMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 7301;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public fightId: number = 0;
 	public teamId: number = 2;
 	public charId: number = 0;
@@ -23,6 +26,16 @@ export class GameFightRemoveTeamMemberMessage extends NetworkMessage implements 
         return GameFightRemoveTeamMemberMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightRemoveTeamMemberMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightRemoveTeamMemberMessage.endpointServer;
+    }
+
     public initGameFightRemoveTeamMemberMessage(fightId: number = 0, teamId: number = 2, charId: number = 0): GameFightRemoveTeamMemberMessage
     {
         this.fightId = fightId;
@@ -35,7 +48,7 @@ export class GameFightRemoveTeamMemberMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class GameRolePlayArenaSwitchToFightServerMessage extends NetworkMessage 
 
 	public static readonly protocolId: number = 4751;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public address: string = "";
 	public ports: Array<number>;
 	public token: string = "";
@@ -24,6 +27,16 @@ export class GameRolePlayArenaSwitchToFightServerMessage extends NetworkMessage 
         return GameRolePlayArenaSwitchToFightServerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayArenaSwitchToFightServerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayArenaSwitchToFightServerMessage.endpointServer;
+    }
+
     public initGameRolePlayArenaSwitchToFightServerMessage(address: string = "", ports: Array<number> = null, token: string = ""): GameRolePlayArenaSwitchToFightServerMessage
     {
         this.address = address;
@@ -36,7 +49,7 @@ export class GameRolePlayArenaSwitchToFightServerMessage extends NetworkMessage 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

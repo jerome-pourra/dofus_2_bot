@@ -10,6 +10,9 @@ export class PaddockInstancesInformations extends PaddockInformations implements
 
 	public static readonly protocolId: number = 4571;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public paddocks: Array<PaddockBuyableInformations>;
 
     public constructor()
@@ -21,6 +24,16 @@ export class PaddockInstancesInformations extends PaddockInformations implements
     public getTypeId()
     {
         return PaddockInstancesInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PaddockInstancesInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaddockInstancesInformations.endpointServer;
     }
 
     public initPaddockInstancesInformations(maxOutdoorMount: number = 0, maxItems: number = 0, paddocks: Array<PaddockBuyableInformations> = null): PaddockInstancesInformations

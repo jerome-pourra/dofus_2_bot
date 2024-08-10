@@ -11,6 +11,9 @@ export class ServerSessionConstantsMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 9337;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public variables: Array<ServerSessionConstant>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class ServerSessionConstantsMessage extends NetworkMessage implements INe
         return ServerSessionConstantsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ServerSessionConstantsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ServerSessionConstantsMessage.endpointServer;
+    }
+
     public initServerSessionConstantsMessage(variables: Array<ServerSessionConstant> = null): ServerSessionConstantsMessage
     {
         this.variables = variables;
@@ -34,7 +47,7 @@ export class ServerSessionConstantsMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

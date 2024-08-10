@@ -9,6 +9,9 @@ export class TeleportPlayerCloseMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 4378;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mapId: number = 0;
 	public requesterId: number = 0;
 
@@ -22,6 +25,16 @@ export class TeleportPlayerCloseMessage extends NetworkMessage implements INetwo
         return TeleportPlayerCloseMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TeleportPlayerCloseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TeleportPlayerCloseMessage.endpointServer;
+    }
+
     public initTeleportPlayerCloseMessage(mapId: number = 0, requesterId: number = 0): TeleportPlayerCloseMessage
     {
         this.mapId = mapId;
@@ -33,7 +46,7 @@ export class TeleportPlayerCloseMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

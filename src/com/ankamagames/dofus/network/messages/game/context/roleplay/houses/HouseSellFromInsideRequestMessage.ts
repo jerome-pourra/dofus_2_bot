@@ -9,6 +9,9 @@ export class HouseSellFromInsideRequestMessage extends HouseSellRequestMessage i
 
 	public static readonly protocolId: number = 6061;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class HouseSellFromInsideRequestMessage extends HouseSellRequestMessage i
     public getMessageId()
     {
         return HouseSellFromInsideRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HouseSellFromInsideRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseSellFromInsideRequestMessage.endpointServer;
     }
 
     public initHouseSellFromInsideRequestMessage(instanceId: number = 0, amount: number = 0, forSale: boolean = false): HouseSellFromInsideRequestMessage
@@ -29,7 +42,7 @@ export class HouseSellFromInsideRequestMessage extends HouseSellRequestMessage i
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

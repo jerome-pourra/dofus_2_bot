@@ -10,6 +10,9 @@ export class GuildInformationsMembersMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 6362;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public members: Array<GuildMemberInfo>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GuildInformationsMembersMessage extends NetworkMessage implements I
         return GuildInformationsMembersMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildInformationsMembersMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildInformationsMembersMessage.endpointServer;
+    }
+
     public initGuildInformationsMembersMessage(members: Array<GuildMemberInfo> = null): GuildInformationsMembersMessage
     {
         this.members = members;
@@ -33,7 +46,7 @@ export class GuildInformationsMembersMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

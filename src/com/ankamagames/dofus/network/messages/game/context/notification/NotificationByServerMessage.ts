@@ -9,6 +9,9 @@ export class NotificationByServerMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 3884;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 	public parameters: Array<string>;
 	public forceOpen: boolean = false;
@@ -24,6 +27,16 @@ export class NotificationByServerMessage extends NetworkMessage implements INetw
         return NotificationByServerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return NotificationByServerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return NotificationByServerMessage.endpointServer;
+    }
+
     public initNotificationByServerMessage(id: number = 0, parameters: Array<string> = null, forceOpen: boolean = false): NotificationByServerMessage
     {
         this.id = id;
@@ -36,7 +49,7 @@ export class NotificationByServerMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

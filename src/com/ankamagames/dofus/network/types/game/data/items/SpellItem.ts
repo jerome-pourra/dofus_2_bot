@@ -8,6 +8,9 @@ export class SpellItem extends Item implements INetworkType
 
 	public static readonly protocolId: number = 8615;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public spellId: number = 0;
 	public spellLevel: number = 0;
 
@@ -19,6 +22,16 @@ export class SpellItem extends Item implements INetworkType
     public getTypeId()
     {
         return SpellItem.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SpellItem.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpellItem.endpointServer;
     }
 
     public initSpellItem(spellId: number = 0, spellLevel: number = 0): SpellItem

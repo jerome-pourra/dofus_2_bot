@@ -10,6 +10,9 @@ export class AllianceApplicationIsAnsweredMessage extends NetworkMessage impleme
 
 	public static readonly protocolId: number = 4844;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public accepted: boolean = false;
 	public allianceInformation: AllianceInformation;
 
@@ -24,6 +27,16 @@ export class AllianceApplicationIsAnsweredMessage extends NetworkMessage impleme
         return AllianceApplicationIsAnsweredMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceApplicationIsAnsweredMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceApplicationIsAnsweredMessage.endpointServer;
+    }
+
     public initAllianceApplicationIsAnsweredMessage(accepted: boolean = false, allianceInformation: AllianceInformation = null): AllianceApplicationIsAnsweredMessage
     {
         this.accepted = accepted;
@@ -35,7 +48,7 @@ export class AllianceApplicationIsAnsweredMessage extends NetworkMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

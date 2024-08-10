@@ -8,6 +8,9 @@ export class PartyEntityBaseInformation implements INetworkType
 
 	public static readonly protocolId: number = 5790;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public indexId: number = 0;
 	public entityModelId: number = 0;
 	public entityLook: EntityLook;
@@ -20,6 +23,16 @@ export class PartyEntityBaseInformation implements INetworkType
     public getTypeId()
     {
         return PartyEntityBaseInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyEntityBaseInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyEntityBaseInformation.endpointServer;
     }
 
     public initPartyEntityBaseInformation(indexId: number = 0, entityModelId: number = 0, entityLook: EntityLook = null): PartyEntityBaseInformation

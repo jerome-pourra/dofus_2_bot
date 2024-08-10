@@ -9,6 +9,9 @@ export class HouseGuildNoneMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 7676;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public houseId: number = 0;
 	public instanceId: number = 0;
 	public secondHand: boolean = false;
@@ -23,6 +26,16 @@ export class HouseGuildNoneMessage extends NetworkMessage implements INetworkMes
         return HouseGuildNoneMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HouseGuildNoneMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseGuildNoneMessage.endpointServer;
+    }
+
     public initHouseGuildNoneMessage(houseId: number = 0, instanceId: number = 0, secondHand: boolean = false): HouseGuildNoneMessage
     {
         this.houseId = houseId;
@@ -35,7 +48,7 @@ export class HouseGuildNoneMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

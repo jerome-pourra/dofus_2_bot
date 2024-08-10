@@ -9,6 +9,9 @@ export class CharacterDeletionPrepareMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 5348;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public characterId: number = 0;
 	public characterName: string = "";
 	public secretQuestion: string = "";
@@ -24,6 +27,16 @@ export class CharacterDeletionPrepareMessage extends NetworkMessage implements I
         return CharacterDeletionPrepareMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterDeletionPrepareMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterDeletionPrepareMessage.endpointServer;
+    }
+
     public initCharacterDeletionPrepareMessage(characterId: number = 0, characterName: string = "", secretQuestion: string = "", needSecretAnswer: boolean = false): CharacterDeletionPrepareMessage
     {
         this.characterId = characterId;
@@ -37,7 +50,7 @@ export class CharacterDeletionPrepareMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

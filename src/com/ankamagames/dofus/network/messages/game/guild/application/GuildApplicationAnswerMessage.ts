@@ -9,6 +9,9 @@ export class GuildApplicationAnswerMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 3927;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public accepted: boolean = false;
 	public playerId: number = 0;
 
@@ -22,6 +25,16 @@ export class GuildApplicationAnswerMessage extends NetworkMessage implements INe
         return GuildApplicationAnswerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildApplicationAnswerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildApplicationAnswerMessage.endpointServer;
+    }
+
     public initGuildApplicationAnswerMessage(accepted: boolean = false, playerId: number = 0): GuildApplicationAnswerMessage
     {
         this.accepted = accepted;
@@ -33,7 +46,7 @@ export class GuildApplicationAnswerMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

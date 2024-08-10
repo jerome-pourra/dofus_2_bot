@@ -8,6 +8,9 @@ export class TaxCollectorStaticInformations implements INetworkType
 
 	public static readonly protocolId: number = 1672;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public firstNameId: number = 0;
 	public lastNameId: number = 0;
 	public allianceIdentity: AllianceInformation;
@@ -22,6 +25,16 @@ export class TaxCollectorStaticInformations implements INetworkType
     public getTypeId()
     {
         return TaxCollectorStaticInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TaxCollectorStaticInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorStaticInformations.endpointServer;
     }
 
     public initTaxCollectorStaticInformations(firstNameId: number = 0, lastNameId: number = 0, allianceIdentity: AllianceInformation = null, callerId: number = 0, uid: string = ""): TaxCollectorStaticInformations

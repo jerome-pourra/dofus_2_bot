@@ -11,6 +11,9 @@ export class ShortcutBarAddRequestMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 6013;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public barType: number = 0;
 	public shortcut: Shortcut;
 
@@ -25,6 +28,16 @@ export class ShortcutBarAddRequestMessage extends NetworkMessage implements INet
         return ShortcutBarAddRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ShortcutBarAddRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShortcutBarAddRequestMessage.endpointServer;
+    }
+
     public initShortcutBarAddRequestMessage(barType: number = 0, shortcut: Shortcut = null): ShortcutBarAddRequestMessage
     {
         this.barType = barType;
@@ -36,7 +49,7 @@ export class ShortcutBarAddRequestMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

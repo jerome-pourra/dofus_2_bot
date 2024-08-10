@@ -9,6 +9,9 @@ export class SpellsPreset extends Preset implements INetworkType
 
 	public static readonly protocolId: number = 7774;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public spells: Array<SpellForPreset>;
 
     public constructor()
@@ -20,6 +23,16 @@ export class SpellsPreset extends Preset implements INetworkType
     public getTypeId()
     {
         return SpellsPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SpellsPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpellsPreset.endpointServer;
     }
 
     public initSpellsPreset(id: number = 0, spells: Array<SpellForPreset> = null): SpellsPreset

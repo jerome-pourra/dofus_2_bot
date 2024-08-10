@@ -9,6 +9,9 @@ export class ExchangeWeightMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 1630;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public currentWeight: number = 0;
 	public maxWeight: number = 0;
 
@@ -22,6 +25,16 @@ export class ExchangeWeightMessage extends NetworkMessage implements INetworkMes
         return ExchangeWeightMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeWeightMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeWeightMessage.endpointServer;
+    }
+
     public initExchangeWeightMessage(currentWeight: number = 0, maxWeight: number = 0): ExchangeWeightMessage
     {
         this.currentWeight = currentWeight;
@@ -33,7 +46,7 @@ export class ExchangeWeightMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

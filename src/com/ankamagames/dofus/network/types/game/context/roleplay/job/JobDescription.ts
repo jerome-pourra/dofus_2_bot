@@ -9,6 +9,9 @@ export class JobDescription implements INetworkType
 
 	public static readonly protocolId: number = 4698;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public jobId: number = 0;
 	public skills: Array<SkillActionDescription>;
 
@@ -20,6 +23,16 @@ export class JobDescription implements INetworkType
     public getTypeId()
     {
         return JobDescription.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return JobDescription.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobDescription.endpointServer;
     }
 
     public initJobDescription(jobId: number = 0, skills: Array<SkillActionDescription> = null): JobDescription

@@ -7,6 +7,9 @@ export class Preset implements INetworkType
 
 	public static readonly protocolId: number = 3628;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 
     public constructor()
@@ -17,6 +20,16 @@ export class Preset implements INetworkType
     public getTypeId()
     {
         return Preset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return Preset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return Preset.endpointServer;
     }
 
     public initPreset(id: number = 0): Preset

@@ -9,6 +9,9 @@ export class GameFightNewWaveMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 4448;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 	public teamId: number = 2;
 	public nbTurnBeforeNextWave: number = 0;
@@ -23,6 +26,16 @@ export class GameFightNewWaveMessage extends NetworkMessage implements INetworkM
         return GameFightNewWaveMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightNewWaveMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightNewWaveMessage.endpointServer;
+    }
+
     public initGameFightNewWaveMessage(id: number = 0, teamId: number = 2, nbTurnBeforeNextWave: number = 0): GameFightNewWaveMessage
     {
         this.id = id;
@@ -35,7 +48,7 @@ export class GameFightNewWaveMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

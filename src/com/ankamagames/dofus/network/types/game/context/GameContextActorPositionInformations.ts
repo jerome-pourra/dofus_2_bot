@@ -9,6 +9,9 @@ export class GameContextActorPositionInformations implements INetworkType
 
 	public static readonly protocolId: number = 3056;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public contextualId: number = 0;
 	public disposition: EntityDispositionInformations;
 
@@ -20,6 +23,16 @@ export class GameContextActorPositionInformations implements INetworkType
     public getTypeId()
     {
         return GameContextActorPositionInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameContextActorPositionInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameContextActorPositionInformations.endpointServer;
     }
 
     public initGameContextActorPositionInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null): GameContextActorPositionInformations

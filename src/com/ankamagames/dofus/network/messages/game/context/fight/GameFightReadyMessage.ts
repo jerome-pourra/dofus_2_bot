@@ -9,6 +9,9 @@ export class GameFightReadyMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 4840;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public isReady: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameFightReadyMessage extends NetworkMessage implements INetworkMes
         return GameFightReadyMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightReadyMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightReadyMessage.endpointServer;
+    }
+
     public initGameFightReadyMessage(isReady: boolean = false): GameFightReadyMessage
     {
         this.isReady = isReady;
@@ -31,7 +44,7 @@ export class GameFightReadyMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

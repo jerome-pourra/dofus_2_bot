@@ -10,6 +10,9 @@ export class GuildRanksMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 3908;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public ranks: Array<RankInformation>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GuildRanksMessage extends NetworkMessage implements INetworkMessage
         return GuildRanksMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildRanksMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildRanksMessage.endpointServer;
+    }
+
     public initGuildRanksMessage(ranks: Array<RankInformation> = null): GuildRanksMessage
     {
         this.ranks = ranks;
@@ -33,7 +46,7 @@ export class GuildRanksMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

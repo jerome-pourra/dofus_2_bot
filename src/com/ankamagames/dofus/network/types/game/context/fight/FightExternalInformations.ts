@@ -9,6 +9,9 @@ export class FightExternalInformations implements INetworkType
 
 	public static readonly protocolId: number = 3630;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public fightId: number = 0;
 	public fightType: number = 0;
 	public fightStart: number = 0;
@@ -25,6 +28,16 @@ export class FightExternalInformations implements INetworkType
     public getTypeId()
     {
         return FightExternalInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightExternalInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightExternalInformations.endpointServer;
     }
 
     public initFightExternalInformations(fightId: number = 0, fightType: number = 0, fightStart: number = 0, fightSpectatorLocked: boolean = false, fightTeams: Array<FightTeamLightInformations> = null, fightTeamsOptions: Array<FightOptionsInformations> = null): FightExternalInformations

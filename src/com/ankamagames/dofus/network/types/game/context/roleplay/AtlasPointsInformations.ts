@@ -8,6 +8,9 @@ export class AtlasPointsInformations implements INetworkType
 
 	public static readonly protocolId: number = 6167;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public type: number = 0;
 	public coords: Array<MapCoordinatesExtended>;
 
@@ -19,6 +22,16 @@ export class AtlasPointsInformations implements INetworkType
     public getTypeId()
     {
         return AtlasPointsInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AtlasPointsInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AtlasPointsInformations.endpointServer;
     }
 
     public initAtlasPointsInformations(type: number = 0, coords: Array<MapCoordinatesExtended> = null): AtlasPointsInformations

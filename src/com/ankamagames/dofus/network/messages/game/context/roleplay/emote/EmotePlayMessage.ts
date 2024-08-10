@@ -9,6 +9,9 @@ export class EmotePlayMessage extends EmotePlayAbstractMessage implements INetwo
 
 	public static readonly protocolId: number = 3198;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public actorId: number = 0;
 	public accountId: number = 0;
 
@@ -20,6 +23,16 @@ export class EmotePlayMessage extends EmotePlayAbstractMessage implements INetwo
     public getMessageId()
     {
         return EmotePlayMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return EmotePlayMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EmotePlayMessage.endpointServer;
     }
 
     public initEmotePlayMessage(emoteId: number = 0, emoteStartTime: number = 0, actorId: number = 0, accountId: number = 0): EmotePlayMessage
@@ -34,7 +47,7 @@ export class EmotePlayMessage extends EmotePlayAbstractMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

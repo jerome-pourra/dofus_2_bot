@@ -7,6 +7,9 @@ export class AchievementAchieved implements INetworkType
 
 	public static readonly protocolId: number = 6607;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 	public achievedBy: number = 0;
 	public achievedPioneerRank: number = 0;
@@ -19,6 +22,16 @@ export class AchievementAchieved implements INetworkType
     public getTypeId()
     {
         return AchievementAchieved.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AchievementAchieved.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementAchieved.endpointServer;
     }
 
     public initAchievementAchieved(id: number = 0, achievedBy: number = 0, achievedPioneerRank: number = 0): AchievementAchieved

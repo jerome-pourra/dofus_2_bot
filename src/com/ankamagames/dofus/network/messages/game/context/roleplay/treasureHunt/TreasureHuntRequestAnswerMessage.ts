@@ -9,6 +9,9 @@ export class TreasureHuntRequestAnswerMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 7470;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public questType: number = 0;
 	public result: number = 0;
 
@@ -22,6 +25,16 @@ export class TreasureHuntRequestAnswerMessage extends NetworkMessage implements 
         return TreasureHuntRequestAnswerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TreasureHuntRequestAnswerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntRequestAnswerMessage.endpointServer;
+    }
+
     public initTreasureHuntRequestAnswerMessage(questType: number = 0, result: number = 0): TreasureHuntRequestAnswerMessage
     {
         this.questType = questType;
@@ -33,7 +46,7 @@ export class TreasureHuntRequestAnswerMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

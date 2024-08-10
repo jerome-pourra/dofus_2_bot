@@ -10,6 +10,9 @@ export class DungeonPartyFinderRoomContentUpdateMessage extends NetworkMessage i
 
 	public static readonly protocolId: number = 5056;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public dungeonId: number = 0;
 	public addedPlayers: Array<DungeonPartyFinderPlayer>;
 	public removedPlayersIds: Array<number>;
@@ -26,6 +29,16 @@ export class DungeonPartyFinderRoomContentUpdateMessage extends NetworkMessage i
         return DungeonPartyFinderRoomContentUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DungeonPartyFinderRoomContentUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DungeonPartyFinderRoomContentUpdateMessage.endpointServer;
+    }
+
     public initDungeonPartyFinderRoomContentUpdateMessage(dungeonId: number = 0, addedPlayers: Array<DungeonPartyFinderPlayer> = null, removedPlayersIds: Array<number> = null): DungeonPartyFinderRoomContentUpdateMessage
     {
         this.dungeonId = dungeonId;
@@ -38,7 +51,7 @@ export class DungeonPartyFinderRoomContentUpdateMessage extends NetworkMessage i
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

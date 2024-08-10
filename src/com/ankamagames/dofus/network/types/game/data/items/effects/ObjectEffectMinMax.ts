@@ -8,6 +8,9 @@ export class ObjectEffectMinMax extends ObjectEffect implements INetworkType
 
 	public static readonly protocolId: number = 843;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public min: number = 0;
 	public max: number = 0;
 
@@ -19,6 +22,16 @@ export class ObjectEffectMinMax extends ObjectEffect implements INetworkType
     public getTypeId()
     {
         return ObjectEffectMinMax.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectEffectMinMax.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectEffectMinMax.endpointServer;
     }
 
     public initObjectEffectMinMax(actionId: number = 0, min: number = 0, max: number = 0): ObjectEffectMinMax

@@ -7,6 +7,9 @@ export class SpawnInformation implements INetworkType
 
 	public static readonly protocolId: number = 339;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
 
@@ -15,6 +18,16 @@ export class SpawnInformation implements INetworkType
     public getTypeId()
     {
         return SpawnInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SpawnInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpawnInformation.endpointServer;
     }
 
     public initSpawnInformation(): SpawnInformation

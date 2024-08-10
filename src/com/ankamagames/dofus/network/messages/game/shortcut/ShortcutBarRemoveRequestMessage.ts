@@ -9,6 +9,9 @@ export class ShortcutBarRemoveRequestMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 2126;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public barType: number = 0;
 	public slot: number = 0;
 
@@ -22,6 +25,16 @@ export class ShortcutBarRemoveRequestMessage extends NetworkMessage implements I
         return ShortcutBarRemoveRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ShortcutBarRemoveRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShortcutBarRemoveRequestMessage.endpointServer;
+    }
+
     public initShortcutBarRemoveRequestMessage(barType: number = 0, slot: number = 0): ShortcutBarRemoveRequestMessage
     {
         this.barType = barType;
@@ -33,7 +46,7 @@ export class ShortcutBarRemoveRequestMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

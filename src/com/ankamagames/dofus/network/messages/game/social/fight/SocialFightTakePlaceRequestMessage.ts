@@ -10,6 +10,9 @@ export class SocialFightTakePlaceRequestMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 7755;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public socialFightInfo: SocialFightInfo;
 	public replacedCharacterId: number = 0;
 
@@ -24,6 +27,16 @@ export class SocialFightTakePlaceRequestMessage extends NetworkMessage implement
         return SocialFightTakePlaceRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SocialFightTakePlaceRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SocialFightTakePlaceRequestMessage.endpointServer;
+    }
+
     public initSocialFightTakePlaceRequestMessage(socialFightInfo: SocialFightInfo = null, replacedCharacterId: number = 0): SocialFightTakePlaceRequestMessage
     {
         this.socialFightInfo = socialFightInfo;
@@ -35,7 +48,7 @@ export class SocialFightTakePlaceRequestMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

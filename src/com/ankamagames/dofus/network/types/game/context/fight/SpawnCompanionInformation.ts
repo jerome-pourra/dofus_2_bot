@@ -8,6 +8,9 @@ export class SpawnCompanionInformation extends SpawnInformation implements INetw
 
 	public static readonly protocolId: number = 4847;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public modelId: number = 0;
 	public level: number = 0;
 	public summonerId: number = 0;
@@ -21,6 +24,16 @@ export class SpawnCompanionInformation extends SpawnInformation implements INetw
     public getTypeId()
     {
         return SpawnCompanionInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SpawnCompanionInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpawnCompanionInformation.endpointServer;
     }
 
     public initSpawnCompanionInformation(modelId: number = 0, level: number = 0, summonerId: number = 0, ownerId: number = 0): SpawnCompanionInformation

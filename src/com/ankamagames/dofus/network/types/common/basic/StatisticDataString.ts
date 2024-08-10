@@ -8,6 +8,9 @@ export class StatisticDataString extends StatisticData implements INetworkType
 
 	public static readonly protocolId: number = 4102;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public value: string = "";
 
     public constructor()
@@ -18,6 +21,16 @@ export class StatisticDataString extends StatisticData implements INetworkType
     public getTypeId()
     {
         return StatisticDataString.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return StatisticDataString.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return StatisticDataString.endpointServer;
     }
 
     public initStatisticDataString(value: string = ""): StatisticDataString

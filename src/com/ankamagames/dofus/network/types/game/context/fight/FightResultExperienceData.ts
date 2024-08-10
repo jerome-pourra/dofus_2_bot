@@ -9,6 +9,9 @@ export class FightResultExperienceData extends FightResultAdditionalData impleme
 
 	public static readonly protocolId: number = 5571;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public experience: number = 0;
 	public showExperience: boolean = false;
 	public experienceLevelFloor: number = 0;
@@ -32,6 +35,16 @@ export class FightResultExperienceData extends FightResultAdditionalData impleme
     public getTypeId()
     {
         return FightResultExperienceData.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightResultExperienceData.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightResultExperienceData.endpointServer;
     }
 
     public initFightResultExperienceData(experience: number = 0, showExperience: boolean = false, experienceLevelFloor: number = 0, showExperienceLevelFloor: boolean = false, experienceNextLevelFloor: number = 0, showExperienceNextLevelFloor: boolean = false, experienceFightDelta: number = 0, showExperienceFightDelta: boolean = false, experienceForGuild: number = 0, showExperienceForGuild: boolean = false, experienceForMount: number = 0, showExperienceForMount: boolean = false, isIncarnationExperience: boolean = false, rerollExperienceMul: number = 0): FightResultExperienceData

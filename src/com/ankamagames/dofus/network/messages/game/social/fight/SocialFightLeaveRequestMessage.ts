@@ -10,6 +10,9 @@ export class SocialFightLeaveRequestMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 995;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public socialFightInfo: SocialFightInfo;
 
     public constructor()
@@ -23,6 +26,16 @@ export class SocialFightLeaveRequestMessage extends NetworkMessage implements IN
         return SocialFightLeaveRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SocialFightLeaveRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SocialFightLeaveRequestMessage.endpointServer;
+    }
+
     public initSocialFightLeaveRequestMessage(socialFightInfo: SocialFightInfo = null): SocialFightLeaveRequestMessage
     {
         this.socialFightInfo = socialFightInfo;
@@ -33,7 +46,7 @@ export class SocialFightLeaveRequestMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class GameContextMoveElementMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 5362;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public movement: EntityMovementInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameContextMoveElementMessage extends NetworkMessage implements INe
         return GameContextMoveElementMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameContextMoveElementMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameContextMoveElementMessage.endpointServer;
+    }
+
     public initGameContextMoveElementMessage(movement: EntityMovementInformations = null): GameContextMoveElementMessage
     {
         this.movement = movement;
@@ -33,7 +46,7 @@ export class GameContextMoveElementMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

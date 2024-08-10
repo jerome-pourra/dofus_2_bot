@@ -9,6 +9,9 @@ export class JobBookSubscribeRequestMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 7221;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public jobIds: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class JobBookSubscribeRequestMessage extends NetworkMessage implements IN
         return JobBookSubscribeRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return JobBookSubscribeRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobBookSubscribeRequestMessage.endpointServer;
+    }
+
     public initJobBookSubscribeRequestMessage(jobIds: Array<number> = null): JobBookSubscribeRequestMessage
     {
         this.jobIds = jobIds;
@@ -32,7 +45,7 @@ export class JobBookSubscribeRequestMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class ShortcutEmote extends Shortcut implements INetworkType
 
 	public static readonly protocolId: number = 1189;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public emoteId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class ShortcutEmote extends Shortcut implements INetworkType
     public getTypeId()
     {
         return ShortcutEmote.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ShortcutEmote.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShortcutEmote.endpointServer;
     }
 
     public initShortcutEmote(slot: number = 0, emoteId: number = 0): ShortcutEmote

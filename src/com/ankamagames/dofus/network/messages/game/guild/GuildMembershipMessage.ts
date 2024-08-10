@@ -10,6 +10,9 @@ export class GuildMembershipMessage extends GuildJoinedMessage implements INetwo
 
 	public static readonly protocolId: number = 2644;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -18,6 +21,16 @@ export class GuildMembershipMessage extends GuildJoinedMessage implements INetwo
     public getMessageId()
     {
         return GuildMembershipMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildMembershipMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildMembershipMessage.endpointServer;
     }
 
     public initGuildMembershipMessage(guildInfo: GuildInformations = null, rankId: number = 0): GuildMembershipMessage
@@ -30,7 +43,7 @@ export class GuildMembershipMessage extends GuildJoinedMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

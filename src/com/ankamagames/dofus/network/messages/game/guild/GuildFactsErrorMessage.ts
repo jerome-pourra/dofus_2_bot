@@ -9,6 +9,9 @@ export class GuildFactsErrorMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 7863;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guildId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuildFactsErrorMessage extends NetworkMessage implements INetworkMe
         return GuildFactsErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildFactsErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildFactsErrorMessage.endpointServer;
+    }
+
     public initGuildFactsErrorMessage(guildId: number = 0): GuildFactsErrorMessage
     {
         this.guildId = guildId;
@@ -31,7 +44,7 @@ export class GuildFactsErrorMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

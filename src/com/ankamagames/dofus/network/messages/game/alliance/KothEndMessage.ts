@@ -10,6 +10,9 @@ export class KothEndMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 506;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public winner: KothWinner;
 
     public constructor()
@@ -23,6 +26,16 @@ export class KothEndMessage extends NetworkMessage implements INetworkMessage
         return KothEndMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return KothEndMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return KothEndMessage.endpointServer;
+    }
+
     public initKothEndMessage(winner: KothWinner = null): KothEndMessage
     {
         this.winner = winner;
@@ -33,7 +46,7 @@ export class KothEndMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

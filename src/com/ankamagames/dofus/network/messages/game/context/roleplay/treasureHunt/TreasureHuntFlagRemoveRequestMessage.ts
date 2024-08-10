@@ -9,6 +9,9 @@ export class TreasureHuntFlagRemoveRequestMessage extends NetworkMessage impleme
 
 	public static readonly protocolId: number = 2928;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public questType: number = 0;
 	public index: number = 0;
 
@@ -22,6 +25,16 @@ export class TreasureHuntFlagRemoveRequestMessage extends NetworkMessage impleme
         return TreasureHuntFlagRemoveRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TreasureHuntFlagRemoveRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntFlagRemoveRequestMessage.endpointServer;
+    }
+
     public initTreasureHuntFlagRemoveRequestMessage(questType: number = 0, index: number = 0): TreasureHuntFlagRemoveRequestMessage
     {
         this.questType = questType;
@@ -33,7 +46,7 @@ export class TreasureHuntFlagRemoveRequestMessage extends NetworkMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

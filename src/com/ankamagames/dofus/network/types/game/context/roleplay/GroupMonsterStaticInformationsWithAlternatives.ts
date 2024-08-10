@@ -11,6 +11,9 @@ export class GroupMonsterStaticInformationsWithAlternatives extends GroupMonster
 
 	public static readonly protocolId: number = 4829;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public alternatives: Array<AlternativeMonstersInGroupLightInformations>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class GroupMonsterStaticInformationsWithAlternatives extends GroupMonster
     public getTypeId()
     {
         return GroupMonsterStaticInformationsWithAlternatives.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GroupMonsterStaticInformationsWithAlternatives.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GroupMonsterStaticInformationsWithAlternatives.endpointServer;
     }
 
     public initGroupMonsterStaticInformationsWithAlternatives(mainCreatureLightInfos: MonsterInGroupLightInformations = null, underlings: Array<MonsterInGroupInformations> = null, alternatives: Array<AlternativeMonstersInGroupLightInformations> = null): GroupMonsterStaticInformationsWithAlternatives

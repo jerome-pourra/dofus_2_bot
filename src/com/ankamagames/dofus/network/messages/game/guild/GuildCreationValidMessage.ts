@@ -10,6 +10,9 @@ export class GuildCreationValidMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 1720;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public guildName: string = "";
 	public guildEmblem: SocialEmblem;
 
@@ -24,6 +27,16 @@ export class GuildCreationValidMessage extends NetworkMessage implements INetwor
         return GuildCreationValidMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildCreationValidMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildCreationValidMessage.endpointServer;
+    }
+
     public initGuildCreationValidMessage(guildName: string = "", guildEmblem: SocialEmblem = null): GuildCreationValidMessage
     {
         this.guildName = guildName;
@@ -35,7 +48,7 @@ export class GuildCreationValidMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

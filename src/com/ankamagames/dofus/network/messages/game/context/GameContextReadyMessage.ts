@@ -9,6 +9,9 @@ export class GameContextReadyMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 9237;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public mapId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameContextReadyMessage extends NetworkMessage implements INetworkM
         return GameContextReadyMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameContextReadyMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameContextReadyMessage.endpointServer;
+    }
+
     public initGameContextReadyMessage(mapId: number = 0): GameContextReadyMessage
     {
         this.mapId = mapId;
@@ -31,7 +44,7 @@ export class GameContextReadyMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

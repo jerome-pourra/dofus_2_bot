@@ -7,6 +7,9 @@ export class AgressableStatusMessage implements INetworkType
 
 	public static readonly protocolId: number = 6140;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerId: number = 0;
 	public enable: number = 0;
 	public roleAvAId: number = 0;
@@ -20,6 +23,16 @@ export class AgressableStatusMessage implements INetworkType
     public getTypeId()
     {
         return AgressableStatusMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AgressableStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AgressableStatusMessage.endpointServer;
     }
 
     public initAgressableStatusMessage(playerId: number = 0, enable: number = 0, roleAvAId: number = 0, pictoScore: number = 0): AgressableStatusMessage

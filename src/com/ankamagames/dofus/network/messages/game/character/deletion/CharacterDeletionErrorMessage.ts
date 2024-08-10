@@ -9,6 +9,9 @@ export class CharacterDeletionErrorMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 4351;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 1;
 
     public constructor()
@@ -21,6 +24,16 @@ export class CharacterDeletionErrorMessage extends NetworkMessage implements INe
         return CharacterDeletionErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return CharacterDeletionErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterDeletionErrorMessage.endpointServer;
+    }
+
     public initCharacterDeletionErrorMessage(reason: number = 1): CharacterDeletionErrorMessage
     {
         this.reason = reason;
@@ -31,7 +44,7 @@ export class CharacterDeletionErrorMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class IdentifiedEntityDispositionInformations extends EntityDispositionIn
 
 	public static readonly protocolId: number = 619;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class IdentifiedEntityDispositionInformations extends EntityDispositionIn
     public getTypeId()
     {
         return IdentifiedEntityDispositionInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return IdentifiedEntityDispositionInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return IdentifiedEntityDispositionInformations.endpointServer;
     }
 
     public initIdentifiedEntityDispositionInformations(cellId: number = 0, direction: number = 1, id: number = 0): IdentifiedEntityDispositionInformations

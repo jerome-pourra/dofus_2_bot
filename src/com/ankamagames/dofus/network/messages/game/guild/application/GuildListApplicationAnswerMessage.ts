@@ -10,6 +10,9 @@ export class GuildListApplicationAnswerMessage extends PaginationAnswerAbstractM
 
 	public static readonly protocolId: number = 948;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public applies: Array<SocialApplicationInformation>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GuildListApplicationAnswerMessage extends PaginationAnswerAbstractM
         return GuildListApplicationAnswerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildListApplicationAnswerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildListApplicationAnswerMessage.endpointServer;
+    }
+
     public initGuildListApplicationAnswerMessage(offset: number = 0, count: number = 0, total: number = 0, applies: Array<SocialApplicationInformation> = null): GuildListApplicationAnswerMessage
     {
         super.initPaginationAnswerAbstractMessage(offset,count,total);
@@ -34,7 +47,7 @@ export class GuildListApplicationAnswerMessage extends PaginationAnswerAbstractM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

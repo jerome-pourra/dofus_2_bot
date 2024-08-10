@@ -9,6 +9,9 @@ export class MapFightCountMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 2838;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public fightCount: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class MapFightCountMessage extends NetworkMessage implements INetworkMess
         return MapFightCountMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MapFightCountMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapFightCountMessage.endpointServer;
+    }
+
     public initMapFightCountMessage(fightCount: number = 0): MapFightCountMessage
     {
         this.fightCount = fightCount;
@@ -31,7 +44,7 @@ export class MapFightCountMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

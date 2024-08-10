@@ -10,6 +10,9 @@ export class GameContextRefreshEntityLookMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 7865;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 	public look: EntityLook;
 
@@ -24,6 +27,16 @@ export class GameContextRefreshEntityLookMessage extends NetworkMessage implemen
         return GameContextRefreshEntityLookMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameContextRefreshEntityLookMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameContextRefreshEntityLookMessage.endpointServer;
+    }
+
     public initGameContextRefreshEntityLookMessage(id: number = 0, look: EntityLook = null): GameContextRefreshEntityLookMessage
     {
         this.id = id;
@@ -35,7 +48,7 @@ export class GameContextRefreshEntityLookMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

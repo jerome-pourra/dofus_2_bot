@@ -9,6 +9,9 @@ export class HouseGuildRightsViewMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 9956;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public houseId: number = 0;
 	public instanceId: number = 0;
 
@@ -22,6 +25,16 @@ export class HouseGuildRightsViewMessage extends NetworkMessage implements INetw
         return HouseGuildRightsViewMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HouseGuildRightsViewMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseGuildRightsViewMessage.endpointServer;
+    }
+
     public initHouseGuildRightsViewMessage(houseId: number = 0, instanceId: number = 0): HouseGuildRightsViewMessage
     {
         this.houseId = houseId;
@@ -33,7 +46,7 @@ export class HouseGuildRightsViewMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

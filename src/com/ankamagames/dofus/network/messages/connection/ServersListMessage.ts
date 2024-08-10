@@ -10,6 +10,9 @@ export class ServersListMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 9500;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public servers: Array<GameServerInformations>;
 	public canCreateNewCharacter: boolean = false;
 
@@ -24,6 +27,16 @@ export class ServersListMessage extends NetworkMessage implements INetworkMessag
         return ServersListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ServersListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ServersListMessage.endpointServer;
+    }
+
     public initServersListMessage(servers: Array<GameServerInformations> = null, canCreateNewCharacter: boolean = false): ServersListMessage
     {
         this.servers = servers;
@@ -35,7 +48,7 @@ export class ServersListMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

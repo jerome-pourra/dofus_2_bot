@@ -10,6 +10,9 @@ export class ObjectModifiedMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 7821;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public object: ObjectItem;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ObjectModifiedMessage extends NetworkMessage implements INetworkMes
         return ObjectModifiedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectModifiedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectModifiedMessage.endpointServer;
+    }
+
     public initObjectModifiedMessage(object: ObjectItem = null): ObjectModifiedMessage
     {
         this.object = object;
@@ -33,7 +46,7 @@ export class ObjectModifiedMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

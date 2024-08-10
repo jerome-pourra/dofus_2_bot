@@ -7,6 +7,9 @@ export class FinishMoveInformations implements INetworkType
 
 	public static readonly protocolId: number = 8829;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public finishMoveId: number = 0;
 	public finishMoveState: boolean = false;
 
@@ -18,6 +21,16 @@ export class FinishMoveInformations implements INetworkType
     public getTypeId()
     {
         return FinishMoveInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FinishMoveInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FinishMoveInformations.endpointServer;
     }
 
     public initFinishMoveInformations(finishMoveId: number = 0, finishMoveState: boolean = false): FinishMoveInformations

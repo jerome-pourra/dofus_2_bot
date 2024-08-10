@@ -8,6 +8,9 @@ export class MapCoordinatesAndId extends MapCoordinates implements INetworkType
 
 	public static readonly protocolId: number = 7010;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mapId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class MapCoordinatesAndId extends MapCoordinates implements INetworkType
     public getTypeId()
     {
         return MapCoordinatesAndId.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MapCoordinatesAndId.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapCoordinatesAndId.endpointServer;
     }
 
     public initMapCoordinatesAndId(worldX: number = 0, worldY: number = 0, mapId: number = 0): MapCoordinatesAndId

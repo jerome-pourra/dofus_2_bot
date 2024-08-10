@@ -9,6 +9,9 @@ export class BreachRewardBuyMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 3872;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class BreachRewardBuyMessage extends NetworkMessage implements INetworkMe
         return BreachRewardBuyMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachRewardBuyMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachRewardBuyMessage.endpointServer;
+    }
+
     public initBreachRewardBuyMessage(id: number = 0): BreachRewardBuyMessage
     {
         this.id = id;
@@ -31,7 +44,7 @@ export class BreachRewardBuyMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

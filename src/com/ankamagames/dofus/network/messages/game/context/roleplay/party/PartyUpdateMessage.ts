@@ -11,6 +11,9 @@ export class PartyUpdateMessage extends AbstractPartyEventMessage implements INe
 
 	public static readonly protocolId: number = 5707;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public memberInformations: PartyMemberInformations;
 
     public constructor()
@@ -24,6 +27,16 @@ export class PartyUpdateMessage extends AbstractPartyEventMessage implements INe
         return PartyUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PartyUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyUpdateMessage.endpointServer;
+    }
+
     public initPartyUpdateMessage(partyId: number = 0, memberInformations: PartyMemberInformations = null): PartyUpdateMessage
     {
         super.initAbstractPartyEventMessage(partyId);
@@ -35,7 +48,7 @@ export class PartyUpdateMessage extends AbstractPartyEventMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

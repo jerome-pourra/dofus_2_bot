@@ -9,6 +9,9 @@ export class ExchangeSetCraftRecipeMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 3981;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectGID: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ExchangeSetCraftRecipeMessage extends NetworkMessage implements INe
         return ExchangeSetCraftRecipeMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeSetCraftRecipeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeSetCraftRecipeMessage.endpointServer;
+    }
+
     public initExchangeSetCraftRecipeMessage(objectGID: number = 0): ExchangeSetCraftRecipeMessage
     {
         this.objectGID = objectGID;
@@ -31,7 +44,7 @@ export class ExchangeSetCraftRecipeMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

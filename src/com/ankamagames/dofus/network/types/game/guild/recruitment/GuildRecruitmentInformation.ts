@@ -8,6 +8,9 @@ export class GuildRecruitmentInformation extends SocialRecruitmentInformation im
 
 	public static readonly protocolId: number = 5578;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public minSuccess: number = 0;
 	public minSuccessFacultative: boolean = false;
 
@@ -19,6 +22,16 @@ export class GuildRecruitmentInformation extends SocialRecruitmentInformation im
     public getTypeId()
     {
         return GuildRecruitmentInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildRecruitmentInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildRecruitmentInformation.endpointServer;
     }
 
     public initGuildRecruitmentInformation(socialId: number = 0, recruitmentType: number = 0, recruitmentTitle: string = "", recruitmentText: string = "", selectedLanguages: Array<number> = null, selectedCriterion: Array<number> = null, minLevel: number = 0, minLevelFacultative: boolean = false, invalidatedByModeration: boolean = false, lastEditPlayerName: string = "", lastEditDate: number = 0, recruitmentAutoLocked: boolean = false, minSuccess: number = 0, minSuccessFacultative: boolean = false): GuildRecruitmentInformation

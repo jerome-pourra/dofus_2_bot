@@ -9,6 +9,9 @@ export class ExchangeBuyMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 4582;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectToBuyId: number = 0;
 	public quantity: number = 0;
 
@@ -22,6 +25,16 @@ export class ExchangeBuyMessage extends NetworkMessage implements INetworkMessag
         return ExchangeBuyMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeBuyMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeBuyMessage.endpointServer;
+    }
+
     public initExchangeBuyMessage(objectToBuyId: number = 0, quantity: number = 0): ExchangeBuyMessage
     {
         this.objectToBuyId = objectToBuyId;
@@ -33,7 +46,7 @@ export class ExchangeBuyMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

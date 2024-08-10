@@ -7,6 +7,9 @@ export class FightPhase implements INetworkType
 
 	public static readonly protocolId: number = 2770;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public phase: number = 0;
 	public phaseEndTimeStamp: number = 0;
 
@@ -18,6 +21,16 @@ export class FightPhase implements INetworkType
     public getTypeId()
     {
         return FightPhase.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightPhase.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightPhase.endpointServer;
     }
 
     public initFightPhase(phase: number = 0, phaseEndTimeStamp: number = 0): FightPhase

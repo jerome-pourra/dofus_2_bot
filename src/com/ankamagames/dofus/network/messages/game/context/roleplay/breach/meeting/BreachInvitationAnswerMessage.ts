@@ -9,6 +9,9 @@ export class BreachInvitationAnswerMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 2262;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public accept: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class BreachInvitationAnswerMessage extends NetworkMessage implements INe
         return BreachInvitationAnswerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachInvitationAnswerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachInvitationAnswerMessage.endpointServer;
+    }
+
     public initBreachInvitationAnswerMessage(accept: boolean = false): BreachInvitationAnswerMessage
     {
         this.accept = accept;
@@ -31,7 +44,7 @@ export class BreachInvitationAnswerMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

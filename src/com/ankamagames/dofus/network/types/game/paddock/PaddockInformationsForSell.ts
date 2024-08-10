@@ -7,6 +7,9 @@ export class PaddockInformationsForSell implements INetworkType
 
 	public static readonly protocolId: number = 5311;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public guildOwner: string = "";
 	public worldX: number = 0;
 	public worldY: number = 0;
@@ -23,6 +26,16 @@ export class PaddockInformationsForSell implements INetworkType
     public getTypeId()
     {
         return PaddockInformationsForSell.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PaddockInformationsForSell.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaddockInformationsForSell.endpointServer;
     }
 
     public initPaddockInformationsForSell(guildOwner: string = "", worldX: number = 0, worldY: number = 0, subAreaId: number = 0, nbMount: number = 0, nbObject: number = 0, price: number = 0): PaddockInformationsForSell

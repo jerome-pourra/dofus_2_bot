@@ -9,6 +9,9 @@ export class PartyCannotJoinErrorMessage extends AbstractPartyMessage implements
 
 	public static readonly protocolId: number = 6016;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyCannotJoinErrorMessage extends AbstractPartyMessage implements
     public getMessageId()
     {
         return PartyCannotJoinErrorMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyCannotJoinErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyCannotJoinErrorMessage.endpointServer;
     }
 
     public initPartyCannotJoinErrorMessage(partyId: number = 0, reason: number = 0): PartyCannotJoinErrorMessage
@@ -32,7 +45,7 @@ export class PartyCannotJoinErrorMessage extends AbstractPartyMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

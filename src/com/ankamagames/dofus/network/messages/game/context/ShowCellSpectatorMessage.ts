@@ -9,6 +9,9 @@ export class ShowCellSpectatorMessage extends ShowCellMessage implements INetwor
 
 	public static readonly protocolId: number = 4927;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerName: string = "";
 
     public constructor()
@@ -19,6 +22,16 @@ export class ShowCellSpectatorMessage extends ShowCellMessage implements INetwor
     public getMessageId()
     {
         return ShowCellSpectatorMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ShowCellSpectatorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShowCellSpectatorMessage.endpointServer;
     }
 
     public initShowCellSpectatorMessage(sourceId: number = 0, cellId: number = 0, playerName: string = ""): ShowCellSpectatorMessage
@@ -32,7 +45,7 @@ export class ShowCellSpectatorMessage extends ShowCellMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

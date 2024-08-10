@@ -11,6 +11,9 @@ export class PresetSavedMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 889;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public presetId: number = 0;
 	public preset: Preset;
 
@@ -25,6 +28,16 @@ export class PresetSavedMessage extends NetworkMessage implements INetworkMessag
         return PresetSavedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PresetSavedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PresetSavedMessage.endpointServer;
+    }
+
     public initPresetSavedMessage(presetId: number = 0, preset: Preset = null): PresetSavedMessage
     {
         this.presetId = presetId;
@@ -36,7 +49,7 @@ export class PresetSavedMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

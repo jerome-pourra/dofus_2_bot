@@ -9,6 +9,9 @@ export class ExchangePodsModifiedMessage extends ExchangeObjectMessage implement
 
 	public static readonly protocolId: number = 7160;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public currentWeight: number = 0;
 	public maxWeight: number = 0;
 
@@ -20,6 +23,16 @@ export class ExchangePodsModifiedMessage extends ExchangeObjectMessage implement
     public getMessageId()
     {
         return ExchangePodsModifiedMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangePodsModifiedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangePodsModifiedMessage.endpointServer;
     }
 
     public initExchangePodsModifiedMessage(remote: boolean = false, currentWeight: number = 0, maxWeight: number = 0): ExchangePodsModifiedMessage
@@ -34,7 +47,7 @@ export class ExchangePodsModifiedMessage extends ExchangeObjectMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

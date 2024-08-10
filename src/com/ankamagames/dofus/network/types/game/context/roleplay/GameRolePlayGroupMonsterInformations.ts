@@ -12,6 +12,9 @@ export class GameRolePlayGroupMonsterInformations extends GameRolePlayActorInfor
 
 	public static readonly protocolId: number = 7360;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public staticInfos: GroupMonsterStaticInformations;
 	public lootShare: number = 0;
 	public alignmentSide: number = 0;
@@ -26,6 +29,16 @@ export class GameRolePlayGroupMonsterInformations extends GameRolePlayActorInfor
     public getTypeId()
     {
         return GameRolePlayGroupMonsterInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayGroupMonsterInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayGroupMonsterInformations.endpointServer;
     }
 
     public initGameRolePlayGroupMonsterInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, staticInfos: GroupMonsterStaticInformations = null, lootShare: number = 0, alignmentSide: number = 0, hasHardcoreDrop: boolean = false): GameRolePlayGroupMonsterInformations

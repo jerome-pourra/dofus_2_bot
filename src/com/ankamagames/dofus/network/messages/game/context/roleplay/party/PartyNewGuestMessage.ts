@@ -10,6 +10,9 @@ export class PartyNewGuestMessage extends AbstractPartyEventMessage implements I
 
 	public static readonly protocolId: number = 7060;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guest: PartyGuestInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class PartyNewGuestMessage extends AbstractPartyEventMessage implements I
         return PartyNewGuestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PartyNewGuestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyNewGuestMessage.endpointServer;
+    }
+
     public initPartyNewGuestMessage(partyId: number = 0, guest: PartyGuestInformations = null): PartyNewGuestMessage
     {
         super.initAbstractPartyEventMessage(partyId);
@@ -34,7 +47,7 @@ export class PartyNewGuestMessage extends AbstractPartyEventMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -13,6 +13,9 @@ export class GameFightMonsterWithAlignmentInformations extends GameFightMonsterI
 
 	public static readonly protocolId: number = 7656;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public alignmentInfos: ActorAlignmentInformations;
 
     public constructor()
@@ -24,6 +27,16 @@ export class GameFightMonsterWithAlignmentInformations extends GameFightMonsterI
     public getTypeId()
     {
         return GameFightMonsterWithAlignmentInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightMonsterWithAlignmentInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightMonsterWithAlignmentInformations.endpointServer;
     }
 
     public initGameFightMonsterWithAlignmentInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, spawnInfo: GameContextBasicSpawnInformation = null, wave: number = 0, stats: GameFightCharacteristics = null, previousPositions: Array<number> = null, creatureGenericId: number = 0, creatureGrade: number = 0, creatureLevel: number = 0, alignmentInfos: ActorAlignmentInformations = null): GameFightMonsterWithAlignmentInformations

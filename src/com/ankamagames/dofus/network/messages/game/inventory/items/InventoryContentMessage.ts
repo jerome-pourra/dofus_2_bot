@@ -10,6 +10,9 @@ export class InventoryContentMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 8042;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objects: Array<ObjectItem>;
 	public kamas: number = 0;
 
@@ -24,6 +27,16 @@ export class InventoryContentMessage extends NetworkMessage implements INetworkM
         return InventoryContentMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return InventoryContentMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InventoryContentMessage.endpointServer;
+    }
+
     public initInventoryContentMessage(objects: Array<ObjectItem> = null, kamas: number = 0): InventoryContentMessage
     {
         this.objects = objects;
@@ -35,7 +48,7 @@ export class InventoryContentMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

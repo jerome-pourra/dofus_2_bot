@@ -9,6 +9,9 @@ export class GameRolePlayArenaRegistrationStatusMessage extends NetworkMessage i
 
 	public static readonly protocolId: number = 4586;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public registered: boolean = false;
 	public step: number = 0;
 	public battleMode: number = 3;
@@ -23,6 +26,16 @@ export class GameRolePlayArenaRegistrationStatusMessage extends NetworkMessage i
         return GameRolePlayArenaRegistrationStatusMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayArenaRegistrationStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayArenaRegistrationStatusMessage.endpointServer;
+    }
+
     public initGameRolePlayArenaRegistrationStatusMessage(registered: boolean = false, step: number = 0, battleMode: number = 3): GameRolePlayArenaRegistrationStatusMessage
     {
         this.registered = registered;
@@ -35,7 +48,7 @@ export class GameRolePlayArenaRegistrationStatusMessage extends NetworkMessage i
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

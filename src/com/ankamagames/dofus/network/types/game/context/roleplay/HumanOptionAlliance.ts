@@ -9,6 +9,9 @@ export class HumanOptionAlliance extends HumanOption implements INetworkType
 
 	public static readonly protocolId: number = 7953;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceInformation: AllianceInformation;
 	public aggressable: number = 0;
 
@@ -21,6 +24,16 @@ export class HumanOptionAlliance extends HumanOption implements INetworkType
     public getTypeId()
     {
         return HumanOptionAlliance.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HumanOptionAlliance.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HumanOptionAlliance.endpointServer;
     }
 
     public initHumanOptionAlliance(allianceInformation: AllianceInformation = null, aggressable: number = 0): HumanOptionAlliance

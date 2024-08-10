@@ -9,6 +9,9 @@ export class GuildChestTabLastContributionMessage extends NetworkMessage impleme
 
 	public static readonly protocolId: number = 683;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public lastContributionDate: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuildChestTabLastContributionMessage extends NetworkMessage impleme
         return GuildChestTabLastContributionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildChestTabLastContributionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildChestTabLastContributionMessage.endpointServer;
+    }
+
     public initGuildChestTabLastContributionMessage(lastContributionDate: number = 0): GuildChestTabLastContributionMessage
     {
         this.lastContributionDate = lastContributionDate;
@@ -31,7 +44,7 @@ export class GuildChestTabLastContributionMessage extends NetworkMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

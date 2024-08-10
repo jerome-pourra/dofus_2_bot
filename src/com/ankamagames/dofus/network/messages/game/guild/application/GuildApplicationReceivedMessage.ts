@@ -9,6 +9,9 @@ export class GuildApplicationReceivedMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 8148;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerName: string = "";
 	public playerId: number = 0;
 
@@ -22,6 +25,16 @@ export class GuildApplicationReceivedMessage extends NetworkMessage implements I
         return GuildApplicationReceivedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildApplicationReceivedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildApplicationReceivedMessage.endpointServer;
+    }
+
     public initGuildApplicationReceivedMessage(playerName: string = "", playerId: number = 0): GuildApplicationReceivedMessage
     {
         this.playerName = playerName;
@@ -33,7 +46,7 @@ export class GuildApplicationReceivedMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class BreachRoomUnlockRequestMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 5483;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public roomId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class BreachRoomUnlockRequestMessage extends NetworkMessage implements IN
         return BreachRoomUnlockRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachRoomUnlockRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachRoomUnlockRequestMessage.endpointServer;
+    }
+
     public initBreachRoomUnlockRequestMessage(roomId: number = 0): BreachRoomUnlockRequestMessage
     {
         this.roomId = roomId;
@@ -31,7 +44,7 @@ export class BreachRoomUnlockRequestMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

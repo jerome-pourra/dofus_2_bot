@@ -9,6 +9,9 @@ export class LifePointsRegenEndMessage extends UpdateLifePointsMessage implement
 
 	public static readonly protocolId: number = 6833;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public lifePointsGained: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class LifePointsRegenEndMessage extends UpdateLifePointsMessage implement
     public getMessageId()
     {
         return LifePointsRegenEndMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return LifePointsRegenEndMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return LifePointsRegenEndMessage.endpointServer;
     }
 
     public initLifePointsRegenEndMessage(lifePoints: number = 0, maxLifePoints: number = 0, lifePointsGained: number = 0): LifePointsRegenEndMessage
@@ -32,7 +45,7 @@ export class LifePointsRegenEndMessage extends UpdateLifePointsMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

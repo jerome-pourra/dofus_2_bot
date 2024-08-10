@@ -9,6 +9,9 @@ export class MountClientData implements INetworkType
 
 	public static readonly protocolId: number = 4446;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public model: number = 0;
 	public ancestor: Array<number>;
@@ -54,6 +57,16 @@ export class MountClientData implements INetworkType
     public getTypeId()
     {
         return MountClientData.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MountClientData.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountClientData.endpointServer;
     }
 
     public initMountClientData(id: number = 0, model: number = 0, ancestor: Array<number> = null, behaviors: Array<number> = null, name: string = "", sex: boolean = false, ownerId: number = 0, experience: number = 0, experienceForLevel: number = 0, experienceForNextLevel: number = 0, level: number = 0, isRideable: boolean = false, maxPods: number = 0, isWild: boolean = false, stamina: number = 0, staminaMax: number = 0, maturity: number = 0, maturityForAdult: number = 0, energy: number = 0, energyMax: number = 0, serenity: number = 0, aggressivityMax: number = 0, serenityMax: number = 0, love: number = 0, loveMax: number = 0, fecondationTime: number = 0, isFecondationReady: boolean = false, boostLimiter: number = 0, boostMax: number = 0, reproductionCount: number = 0, reproductionCountMax: number = 0, harnessGID: number = 0, useHarnessColors: boolean = false, effectList: Array<ObjectEffectInteger> = null): MountClientData

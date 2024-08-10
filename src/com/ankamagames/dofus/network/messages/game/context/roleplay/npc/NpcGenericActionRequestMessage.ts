@@ -9,6 +9,9 @@ export class NpcGenericActionRequestMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 6670;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public npcId: number = 0;
 	public npcActionId: number = 0;
 	public npcMapId: number = 0;
@@ -23,6 +26,16 @@ export class NpcGenericActionRequestMessage extends NetworkMessage implements IN
         return NpcGenericActionRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return NpcGenericActionRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return NpcGenericActionRequestMessage.endpointServer;
+    }
+
     public initNpcGenericActionRequestMessage(npcId: number = 0, npcActionId: number = 0, npcMapId: number = 0): NpcGenericActionRequestMessage
     {
         this.npcId = npcId;
@@ -35,7 +48,7 @@ export class NpcGenericActionRequestMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

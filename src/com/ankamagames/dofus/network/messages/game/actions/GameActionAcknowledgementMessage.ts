@@ -9,6 +9,9 @@ export class GameActionAcknowledgementMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 5751;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public valid: boolean = false;
 	public actionId: number = 0;
 
@@ -22,6 +25,16 @@ export class GameActionAcknowledgementMessage extends NetworkMessage implements 
         return GameActionAcknowledgementMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameActionAcknowledgementMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionAcknowledgementMessage.endpointServer;
+    }
+
     public initGameActionAcknowledgementMessage(valid: boolean = false, actionId: number = 0): GameActionAcknowledgementMessage
     {
         this.valid = valid;
@@ -33,7 +46,7 @@ export class GameActionAcknowledgementMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class GameFightFighterNamedLightInformations extends GameFightFighterLigh
 
 	public static readonly protocolId: number = 5195;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public name: string = "";
 
     public constructor()
@@ -18,6 +21,16 @@ export class GameFightFighterNamedLightInformations extends GameFightFighterLigh
     public getTypeId()
     {
         return GameFightFighterNamedLightInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightFighterNamedLightInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightFighterNamedLightInformations.endpointServer;
     }
 
     public initGameFightFighterNamedLightInformations(id: number = 0, wave: number = 0, level: number = 0, breed: number = 0, sex: boolean = false, alive: boolean = false, name: string = ""): GameFightFighterNamedLightInformations

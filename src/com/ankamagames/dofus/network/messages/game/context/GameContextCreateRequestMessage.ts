@@ -9,6 +9,9 @@ export class GameContextCreateRequestMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 5527;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class GameContextCreateRequestMessage extends NetworkMessage implements I
     public getMessageId()
     {
         return GameContextCreateRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameContextCreateRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameContextCreateRequestMessage.endpointServer;
     }
 
     public initGameContextCreateRequestMessage(): GameContextCreateRequestMessage
@@ -28,7 +41,7 @@ export class GameContextCreateRequestMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

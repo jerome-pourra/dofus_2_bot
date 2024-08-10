@@ -10,6 +10,9 @@ export class ExchangeStartedTaxCollectorShopMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 9791;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objects: Array<ObjectItem>;
 	public kamas: number = 0;
 
@@ -24,6 +27,16 @@ export class ExchangeStartedTaxCollectorShopMessage extends NetworkMessage imple
         return ExchangeStartedTaxCollectorShopMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeStartedTaxCollectorShopMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartedTaxCollectorShopMessage.endpointServer;
+    }
+
     public initExchangeStartedTaxCollectorShopMessage(objects: Array<ObjectItem> = null, kamas: number = 0): ExchangeStartedTaxCollectorShopMessage
     {
         this.objects = objects;
@@ -35,7 +48,7 @@ export class ExchangeStartedTaxCollectorShopMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

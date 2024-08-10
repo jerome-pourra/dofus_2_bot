@@ -10,6 +10,9 @@ export class HumanInformations implements INetworkType
 
 	public static readonly protocolId: number = 495;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public restrictions: ActorRestrictionsInformations;
 	public sex: boolean = false;
 	public options: Array<HumanOption>;
@@ -23,6 +26,16 @@ export class HumanInformations implements INetworkType
     public getTypeId()
     {
         return HumanInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HumanInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HumanInformations.endpointServer;
     }
 
     public initHumanInformations(restrictions: ActorRestrictionsInformations = null, sex: boolean = false, options: Array<HumanOption> = null): HumanInformations

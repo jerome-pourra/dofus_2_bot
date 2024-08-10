@@ -9,6 +9,9 @@ export class GuildRecruitmentInvalidateMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 5184;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class GuildRecruitmentInvalidateMessage extends NetworkMessage implements
     public getMessageId()
     {
         return GuildRecruitmentInvalidateMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GuildRecruitmentInvalidateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildRecruitmentInvalidateMessage.endpointServer;
     }
 
     public initGuildRecruitmentInvalidateMessage(): GuildRecruitmentInvalidateMessage
@@ -28,7 +41,7 @@ export class GuildRecruitmentInvalidateMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

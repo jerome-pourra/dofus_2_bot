@@ -9,6 +9,9 @@ export class ZaapRespawnUpdatedMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 9315;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mapId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ZaapRespawnUpdatedMessage extends NetworkMessage implements INetwor
         return ZaapRespawnUpdatedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ZaapRespawnUpdatedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ZaapRespawnUpdatedMessage.endpointServer;
+    }
+
     public initZaapRespawnUpdatedMessage(mapId: number = 0): ZaapRespawnUpdatedMessage
     {
         this.mapId = mapId;
@@ -31,7 +44,7 @@ export class ZaapRespawnUpdatedMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class PurchasableDialogMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 100;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public buyOrSell: boolean = false;
 	public purchasableId: number = 0;
 	public purchasableInstanceId: number = 0;
@@ -26,6 +29,16 @@ export class PurchasableDialogMessage extends NetworkMessage implements INetwork
         return PurchasableDialogMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PurchasableDialogMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PurchasableDialogMessage.endpointServer;
+    }
+
     public initPurchasableDialogMessage(buyOrSell: boolean = false, purchasableId: number = 0, purchasableInstanceId: number = 0, secondHand: boolean = false, price: number = 0): PurchasableDialogMessage
     {
         this.buyOrSell = buyOrSell;
@@ -40,7 +53,7 @@ export class PurchasableDialogMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -16,6 +16,9 @@ export class MapComplementaryInformationsAnomalyMessage extends MapComplementary
 
 	public static readonly protocolId: number = 7688;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public level: number = 0;
 	public closingTime: number = 0;
 
@@ -27,6 +30,16 @@ export class MapComplementaryInformationsAnomalyMessage extends MapComplementary
     public getMessageId()
     {
         return MapComplementaryInformationsAnomalyMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MapComplementaryInformationsAnomalyMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapComplementaryInformationsAnomalyMessage.endpointServer;
     }
 
     public initMapComplementaryInformationsAnomalyMessage(subAreaId: number = 0, mapId: number = 0, houses: Array<HouseInformations> = null, actors: Array<GameRolePlayActorInformations> = null, interactiveElements: Array<InteractiveElement> = null, statedElements: Array<StatedElement> = null, obstacles: Array<MapObstacle> = null, fights: Array<FightCommonInformations> = null, hasAggressiveMonsters: boolean = false, fightStartPositions: FightStartingPositions = null, level: number = 0, closingTime: number = 0): MapComplementaryInformationsAnomalyMessage
@@ -41,7 +54,7 @@ export class MapComplementaryInformationsAnomalyMessage extends MapComplementary
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

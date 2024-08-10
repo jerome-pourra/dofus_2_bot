@@ -10,6 +10,9 @@ export class HouseBuyResultMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 4284;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public houseId: number = 0;
 	public instanceId: number = 0;
 	public secondHand: boolean = false;
@@ -26,6 +29,16 @@ export class HouseBuyResultMessage extends NetworkMessage implements INetworkMes
         return HouseBuyResultMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HouseBuyResultMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseBuyResultMessage.endpointServer;
+    }
+
     public initHouseBuyResultMessage(houseId: number = 0, instanceId: number = 0, secondHand: boolean = false, bought: boolean = false, realPrice: number = 0): HouseBuyResultMessage
     {
         this.houseId = houseId;
@@ -40,7 +53,7 @@ export class HouseBuyResultMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

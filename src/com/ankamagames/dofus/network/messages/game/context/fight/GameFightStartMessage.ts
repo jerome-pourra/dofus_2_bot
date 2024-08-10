@@ -9,6 +9,9 @@ export class GameFightStartMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 9783;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class GameFightStartMessage extends NetworkMessage implements INetworkMes
     public getMessageId()
     {
         return GameFightStartMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightStartMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightStartMessage.endpointServer;
     }
 
     public initGameFightStartMessage(): GameFightStartMessage
@@ -28,7 +41,7 @@ export class GameFightStartMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

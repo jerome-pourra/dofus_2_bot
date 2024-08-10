@@ -9,6 +9,9 @@ export class QuestObjectiveValidatedMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 3508;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public questId: number = 0;
 	public objectiveId: number = 0;
 
@@ -22,6 +25,16 @@ export class QuestObjectiveValidatedMessage extends NetworkMessage implements IN
         return QuestObjectiveValidatedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return QuestObjectiveValidatedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return QuestObjectiveValidatedMessage.endpointServer;
+    }
+
     public initQuestObjectiveValidatedMessage(questId: number = 0, objectiveId: number = 0): QuestObjectiveValidatedMessage
     {
         this.questId = questId;
@@ -33,7 +46,7 @@ export class QuestObjectiveValidatedMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

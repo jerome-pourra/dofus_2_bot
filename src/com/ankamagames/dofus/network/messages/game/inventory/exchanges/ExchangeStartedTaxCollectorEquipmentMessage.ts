@@ -10,6 +10,9 @@ export class ExchangeStartedTaxCollectorEquipmentMessage extends NetworkMessage 
 
 	public static readonly protocolId: number = 9293;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public information: TaxCollectorInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ExchangeStartedTaxCollectorEquipmentMessage extends NetworkMessage 
         return ExchangeStartedTaxCollectorEquipmentMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeStartedTaxCollectorEquipmentMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartedTaxCollectorEquipmentMessage.endpointServer;
+    }
+
     public initExchangeStartedTaxCollectorEquipmentMessage(information: TaxCollectorInformations = null): ExchangeStartedTaxCollectorEquipmentMessage
     {
         this.information = information;
@@ -33,7 +46,7 @@ export class ExchangeStartedTaxCollectorEquipmentMessage extends NetworkMessage 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

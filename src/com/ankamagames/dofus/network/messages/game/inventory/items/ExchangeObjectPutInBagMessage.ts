@@ -10,6 +10,9 @@ export class ExchangeObjectPutInBagMessage extends ExchangeObjectMessage impleme
 
 	public static readonly protocolId: number = 5697;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public object: ObjectItem;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ExchangeObjectPutInBagMessage extends ExchangeObjectMessage impleme
         return ExchangeObjectPutInBagMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeObjectPutInBagMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeObjectPutInBagMessage.endpointServer;
+    }
+
     public initExchangeObjectPutInBagMessage(remote: boolean = false, object: ObjectItem = null): ExchangeObjectPutInBagMessage
     {
         super.initExchangeObjectMessage(remote);
@@ -34,7 +47,7 @@ export class ExchangeObjectPutInBagMessage extends ExchangeObjectMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

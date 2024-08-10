@@ -9,6 +9,9 @@ export class ObtainedItemMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 9678;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public genericId: number = 0;
 	public baseQuantity: number = 0;
 
@@ -22,6 +25,16 @@ export class ObtainedItemMessage extends NetworkMessage implements INetworkMessa
         return ObtainedItemMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObtainedItemMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObtainedItemMessage.endpointServer;
+    }
+
     public initObtainedItemMessage(genericId: number = 0, baseQuantity: number = 0): ObtainedItemMessage
     {
         this.genericId = genericId;
@@ -33,7 +46,7 @@ export class ObtainedItemMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

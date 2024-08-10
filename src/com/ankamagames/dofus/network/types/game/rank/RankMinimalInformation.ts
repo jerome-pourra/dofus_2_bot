@@ -7,6 +7,9 @@ export class RankMinimalInformation implements INetworkType
 
 	public static readonly protocolId: number = 1831;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public name: string = "";
 
@@ -18,6 +21,16 @@ export class RankMinimalInformation implements INetworkType
     public getTypeId()
     {
         return RankMinimalInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return RankMinimalInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return RankMinimalInformation.endpointServer;
     }
 
     public initRankMinimalInformation(id: number = 0, name: string = ""): RankMinimalInformation

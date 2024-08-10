@@ -10,6 +10,9 @@ export class BreachRewardsMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 1741;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public rewards: Array<BreachReward>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class BreachRewardsMessage extends NetworkMessage implements INetworkMess
         return BreachRewardsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachRewardsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachRewardsMessage.endpointServer;
+    }
+
     public initBreachRewardsMessage(rewards: Array<BreachReward> = null): BreachRewardsMessage
     {
         this.rewards = rewards;
@@ -33,7 +46,7 @@ export class BreachRewardsMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

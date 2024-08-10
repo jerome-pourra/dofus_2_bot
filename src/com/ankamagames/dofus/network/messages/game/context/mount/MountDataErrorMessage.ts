@@ -9,6 +9,9 @@ export class MountDataErrorMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 2483;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class MountDataErrorMessage extends NetworkMessage implements INetworkMes
         return MountDataErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MountDataErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountDataErrorMessage.endpointServer;
+    }
+
     public initMountDataErrorMessage(reason: number = 0): MountDataErrorMessage
     {
         this.reason = reason;
@@ -31,7 +44,7 @@ export class MountDataErrorMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

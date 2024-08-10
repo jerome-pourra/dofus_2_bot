@@ -9,6 +9,9 @@ export class MountInformationRequestMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 826;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public time: number = 0;
 
@@ -22,6 +25,16 @@ export class MountInformationRequestMessage extends NetworkMessage implements IN
         return MountInformationRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MountInformationRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountInformationRequestMessage.endpointServer;
+    }
+
     public initMountInformationRequestMessage(id: number = 0, time: number = 0): MountInformationRequestMessage
     {
         this.id = id;
@@ -33,7 +46,7 @@ export class MountInformationRequestMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

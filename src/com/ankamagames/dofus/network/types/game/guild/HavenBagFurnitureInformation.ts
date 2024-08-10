@@ -7,6 +7,9 @@ export class HavenBagFurnitureInformation implements INetworkType
 
 	public static readonly protocolId: number = 3250;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public cellId: number = 0;
 	public funitureId: number = 0;
 	public orientation: number = 0;
@@ -19,6 +22,16 @@ export class HavenBagFurnitureInformation implements INetworkType
     public getTypeId()
     {
         return HavenBagFurnitureInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HavenBagFurnitureInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HavenBagFurnitureInformation.endpointServer;
     }
 
     public initHavenBagFurnitureInformation(cellId: number = 0, funitureId: number = 0, orientation: number = 0): HavenBagFurnitureInformation

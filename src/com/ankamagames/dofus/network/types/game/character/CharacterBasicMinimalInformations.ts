@@ -8,6 +8,9 @@ export class CharacterBasicMinimalInformations extends AbstractCharacterInformat
 
 	public static readonly protocolId: number = 6994;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public name: string = "";
 
     public constructor()
@@ -18,6 +21,16 @@ export class CharacterBasicMinimalInformations extends AbstractCharacterInformat
     public getTypeId()
     {
         return CharacterBasicMinimalInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterBasicMinimalInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterBasicMinimalInformations.endpointServer;
     }
 
     public initCharacterBasicMinimalInformations(id: number = 0, name: string = ""): CharacterBasicMinimalInformations

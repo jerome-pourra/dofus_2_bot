@@ -10,6 +10,9 @@ export class GuildSummaryMessage extends PaginationAnswerAbstractMessage impleme
 
 	public static readonly protocolId: number = 156;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guilds: Array<GuildFactSheetInformations>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GuildSummaryMessage extends PaginationAnswerAbstractMessage impleme
         return GuildSummaryMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildSummaryMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildSummaryMessage.endpointServer;
+    }
+
     public initGuildSummaryMessage(offset: number = 0, count: number = 0, total: number = 0, guilds: Array<GuildFactSheetInformations> = null): GuildSummaryMessage
     {
         super.initPaginationAnswerAbstractMessage(offset,count,total);
@@ -34,7 +47,7 @@ export class GuildSummaryMessage extends PaginationAnswerAbstractMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

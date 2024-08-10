@@ -9,6 +9,9 @@ export class MountEmoteIconUsedOkMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 3490;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mountId: number = 0;
 	public reactionType: number = 0;
 
@@ -22,6 +25,16 @@ export class MountEmoteIconUsedOkMessage extends NetworkMessage implements INetw
         return MountEmoteIconUsedOkMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MountEmoteIconUsedOkMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MountEmoteIconUsedOkMessage.endpointServer;
+    }
+
     public initMountEmoteIconUsedOkMessage(mountId: number = 0, reactionType: number = 0): MountEmoteIconUsedOkMessage
     {
         this.mountId = mountId;
@@ -33,7 +46,7 @@ export class MountEmoteIconUsedOkMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

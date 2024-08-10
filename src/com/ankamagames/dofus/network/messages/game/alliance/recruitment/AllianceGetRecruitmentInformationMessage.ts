@@ -9,6 +9,9 @@ export class AllianceGetRecruitmentInformationMessage extends NetworkMessage imp
 
 	public static readonly protocolId: number = 1212;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class AllianceGetRecruitmentInformationMessage extends NetworkMessage imp
     public getMessageId()
     {
         return AllianceGetRecruitmentInformationMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceGetRecruitmentInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceGetRecruitmentInformationMessage.endpointServer;
     }
 
     public initAllianceGetRecruitmentInformationMessage(): AllianceGetRecruitmentInformationMessage
@@ -28,7 +41,7 @@ export class AllianceGetRecruitmentInformationMessage extends NetworkMessage imp
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

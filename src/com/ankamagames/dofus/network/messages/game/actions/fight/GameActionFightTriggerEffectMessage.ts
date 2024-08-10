@@ -9,6 +9,9 @@ export class GameActionFightTriggerEffectMessage extends GameActionFightDispellE
 
 	public static readonly protocolId: number = 8838;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class GameActionFightTriggerEffectMessage extends GameActionFightDispellE
     public getMessageId()
     {
         return GameActionFightTriggerEffectMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionFightTriggerEffectMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightTriggerEffectMessage.endpointServer;
     }
 
     public initGameActionFightTriggerEffectMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, verboseCast: boolean = false, boostUID: number = 0): GameActionFightTriggerEffectMessage
@@ -29,7 +42,7 @@ export class GameActionFightTriggerEffectMessage extends GameActionFightDispellE
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

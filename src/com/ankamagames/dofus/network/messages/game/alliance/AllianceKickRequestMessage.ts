@@ -9,6 +9,9 @@ export class AllianceKickRequestMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 4578;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public kickedId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AllianceKickRequestMessage extends NetworkMessage implements INetwo
         return AllianceKickRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceKickRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceKickRequestMessage.endpointServer;
+    }
+
     public initAllianceKickRequestMessage(kickedId: number = 0): AllianceKickRequestMessage
     {
         this.kickedId = kickedId;
@@ -31,7 +44,7 @@ export class AllianceKickRequestMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

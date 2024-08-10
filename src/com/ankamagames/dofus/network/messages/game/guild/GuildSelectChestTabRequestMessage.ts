@@ -9,6 +9,9 @@ export class GuildSelectChestTabRequestMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 7367;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public tabNumber: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuildSelectChestTabRequestMessage extends NetworkMessage implements
         return GuildSelectChestTabRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildSelectChestTabRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildSelectChestTabRequestMessage.endpointServer;
+    }
+
     public initGuildSelectChestTabRequestMessage(tabNumber: number = 0): GuildSelectChestTabRequestMessage
     {
         this.tabNumber = tabNumber;
@@ -31,7 +44,7 @@ export class GuildSelectChestTabRequestMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class RefreshCharacterStatsMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 2710;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public fighterId: number = 0;
 	public stats: GameFightCharacteristics;
 
@@ -24,6 +27,16 @@ export class RefreshCharacterStatsMessage extends NetworkMessage implements INet
         return RefreshCharacterStatsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return RefreshCharacterStatsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return RefreshCharacterStatsMessage.endpointServer;
+    }
+
     public initRefreshCharacterStatsMessage(fighterId: number = 0, stats: GameFightCharacteristics = null): RefreshCharacterStatsMessage
     {
         this.fighterId = fighterId;
@@ -35,7 +48,7 @@ export class RefreshCharacterStatsMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

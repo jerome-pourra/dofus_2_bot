@@ -9,6 +9,9 @@ export class LockableStateUpdateStorageMessage extends LockableStateUpdateAbstra
 
 	public static readonly protocolId: number = 569;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mapId: number = 0;
 	public elementId: number = 0;
 
@@ -20,6 +23,16 @@ export class LockableStateUpdateStorageMessage extends LockableStateUpdateAbstra
     public getMessageId()
     {
         return LockableStateUpdateStorageMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return LockableStateUpdateStorageMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return LockableStateUpdateStorageMessage.endpointServer;
     }
 
     public initLockableStateUpdateStorageMessage(locked: boolean = false, mapId: number = 0, elementId: number = 0): LockableStateUpdateStorageMessage
@@ -34,7 +47,7 @@ export class LockableStateUpdateStorageMessage extends LockableStateUpdateAbstra
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class BaseSpawnMonsterInformation extends SpawnInformation implements INe
 
 	public static readonly protocolId: number = 5062;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public creatureGenericId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class BaseSpawnMonsterInformation extends SpawnInformation implements INe
     public getTypeId()
     {
         return BaseSpawnMonsterInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return BaseSpawnMonsterInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BaseSpawnMonsterInformation.endpointServer;
     }
 
     public initBaseSpawnMonsterInformation(creatureGenericId: number = 0): BaseSpawnMonsterInformation

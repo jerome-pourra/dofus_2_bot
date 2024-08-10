@@ -8,6 +8,9 @@ export class GameFightFighterTaxCollectorLightInformations extends GameFightFigh
 
 	public static readonly protocolId: number = 3310;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public firstNameId: number = 0;
 	public lastNameId: number = 0;
 
@@ -19,6 +22,16 @@ export class GameFightFighterTaxCollectorLightInformations extends GameFightFigh
     public getTypeId()
     {
         return GameFightFighterTaxCollectorLightInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightFighterTaxCollectorLightInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightFighterTaxCollectorLightInformations.endpointServer;
     }
 
     public initGameFightFighterTaxCollectorLightInformations(id: number = 0, wave: number = 0, level: number = 0, breed: number = 0, sex: boolean = false, alive: boolean = false, firstNameId: number = 0, lastNameId: number = 0): GameFightFighterTaxCollectorLightInformations

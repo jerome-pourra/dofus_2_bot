@@ -10,6 +10,9 @@ export class HaapiBufferListMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 3;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public buffers: Array<BufferInformation>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class HaapiBufferListMessage extends NetworkMessage implements INetworkMe
         return HaapiBufferListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HaapiBufferListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HaapiBufferListMessage.endpointServer;
+    }
+
     public initHaapiBufferListMessage(buffers: Array<BufferInformation> = null): HaapiBufferListMessage
     {
         this.buffers = buffers;
@@ -33,7 +46,7 @@ export class HaapiBufferListMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

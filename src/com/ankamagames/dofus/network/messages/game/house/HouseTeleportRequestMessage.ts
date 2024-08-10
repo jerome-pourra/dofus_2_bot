@@ -9,6 +9,9 @@ export class HouseTeleportRequestMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 3189;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public houseId: number = 0;
 	public houseInstanceId: number = 0;
 
@@ -22,6 +25,16 @@ export class HouseTeleportRequestMessage extends NetworkMessage implements INetw
         return HouseTeleportRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return HouseTeleportRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HouseTeleportRequestMessage.endpointServer;
+    }
+
     public initHouseTeleportRequestMessage(houseId: number = 0, houseInstanceId: number = 0): HouseTeleportRequestMessage
     {
         this.houseId = houseId;
@@ -33,7 +46,7 @@ export class HouseTeleportRequestMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

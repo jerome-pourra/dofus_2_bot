@@ -9,6 +9,9 @@ export class ObtainedItemWithBonusMessage extends ObtainedItemMessage implements
 
 	public static readonly protocolId: number = 7133;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public bonusQuantity: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class ObtainedItemWithBonusMessage extends ObtainedItemMessage implements
     public getMessageId()
     {
         return ObtainedItemWithBonusMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObtainedItemWithBonusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObtainedItemWithBonusMessage.endpointServer;
     }
 
     public initObtainedItemWithBonusMessage(genericId: number = 0, baseQuantity: number = 0, bonusQuantity: number = 0): ObtainedItemWithBonusMessage
@@ -32,7 +45,7 @@ export class ObtainedItemWithBonusMessage extends ObtainedItemMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

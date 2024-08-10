@@ -9,6 +9,9 @@ export class ServerSelectionMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 4134;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public serverId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ServerSelectionMessage extends NetworkMessage implements INetworkMe
         return ServerSelectionMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ServerSelectionMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ServerSelectionMessage.endpointServer;
+    }
+
     public initServerSelectionMessage(serverId: number = 0): ServerSelectionMessage
     {
         this.serverId = serverId;
@@ -31,7 +44,7 @@ export class ServerSelectionMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class Shortcut implements INetworkType
 
 	public static readonly protocolId: number = 5117;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public slot: number = 0;
 
     public constructor()
@@ -17,6 +20,16 @@ export class Shortcut implements INetworkType
     public getTypeId()
     {
         return Shortcut.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return Shortcut.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return Shortcut.endpointServer;
     }
 
     public initShortcut(slot: number = 0): Shortcut

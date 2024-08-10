@@ -9,6 +9,9 @@ export class OnConnectionEventMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 999;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public eventType: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class OnConnectionEventMessage extends NetworkMessage implements INetwork
         return OnConnectionEventMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return OnConnectionEventMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return OnConnectionEventMessage.endpointServer;
+    }
+
     public initOnConnectionEventMessage(eventType: number = 0): OnConnectionEventMessage
     {
         this.eventType = eventType;
@@ -31,7 +44,7 @@ export class OnConnectionEventMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

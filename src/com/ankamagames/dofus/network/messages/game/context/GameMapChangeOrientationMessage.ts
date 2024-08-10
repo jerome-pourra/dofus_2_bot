@@ -10,6 +10,9 @@ export class GameMapChangeOrientationMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 8741;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public orientation: ActorOrientation;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameMapChangeOrientationMessage extends NetworkMessage implements I
         return GameMapChangeOrientationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameMapChangeOrientationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameMapChangeOrientationMessage.endpointServer;
+    }
+
     public initGameMapChangeOrientationMessage(orientation: ActorOrientation = null): GameMapChangeOrientationMessage
     {
         this.orientation = orientation;
@@ -33,7 +46,7 @@ export class GameMapChangeOrientationMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

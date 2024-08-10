@@ -8,6 +8,9 @@ export class BreachBranch implements INetworkType
 
 	public static readonly protocolId: number = 7507;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public room: number = 0;
 	public element: number = 0;
 	public bosses: Array<MonsterInGroupLightInformations>;
@@ -25,6 +28,16 @@ export class BreachBranch implements INetworkType
     public getTypeId()
     {
         return BreachBranch.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return BreachBranch.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachBranch.endpointServer;
     }
 
     public initBreachBranch(room: number = 0, element: number = 0, bosses: Array<MonsterInGroupLightInformations> = null, map: number = 0, score: number = 0, relativeScore: number = 0, monsters: Array<MonsterInGroupLightInformations> = null): BreachBranch

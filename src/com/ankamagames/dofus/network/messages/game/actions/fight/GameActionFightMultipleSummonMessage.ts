@@ -11,6 +11,9 @@ export class GameActionFightMultipleSummonMessage extends AbstractGameActionMess
 
 	public static readonly protocolId: number = 8549;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public summons: Array<GameContextSummonsInformation>;
 
     public constructor()
@@ -24,6 +27,16 @@ export class GameActionFightMultipleSummonMessage extends AbstractGameActionMess
         return GameActionFightMultipleSummonMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameActionFightMultipleSummonMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightMultipleSummonMessage.endpointServer;
+    }
+
     public initGameActionFightMultipleSummonMessage(actionId: number = 0, sourceId: number = 0, summons: Array<GameContextSummonsInformation> = null): GameActionFightMultipleSummonMessage
     {
         super.initAbstractGameActionMessage(actionId,sourceId);
@@ -35,7 +48,7 @@ export class GameActionFightMultipleSummonMessage extends AbstractGameActionMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

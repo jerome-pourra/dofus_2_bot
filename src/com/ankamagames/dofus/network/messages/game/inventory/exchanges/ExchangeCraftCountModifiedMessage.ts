@@ -9,6 +9,9 @@ export class ExchangeCraftCountModifiedMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 7440;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public count: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ExchangeCraftCountModifiedMessage extends NetworkMessage implements
         return ExchangeCraftCountModifiedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeCraftCountModifiedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeCraftCountModifiedMessage.endpointServer;
+    }
+
     public initExchangeCraftCountModifiedMessage(count: number = 0): ExchangeCraftCountModifiedMessage
     {
         this.count = count;
@@ -31,7 +44,7 @@ export class ExchangeCraftCountModifiedMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

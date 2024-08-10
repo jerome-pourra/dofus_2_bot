@@ -10,6 +10,9 @@ export class MapFightStartPositionsUpdateMessage extends NetworkMessage implemen
 
 	public static readonly protocolId: number = 9437;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public mapId: number = 0;
 	public fightStartPositions: FightStartingPositions;
 
@@ -24,6 +27,16 @@ export class MapFightStartPositionsUpdateMessage extends NetworkMessage implemen
         return MapFightStartPositionsUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MapFightStartPositionsUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapFightStartPositionsUpdateMessage.endpointServer;
+    }
+
     public initMapFightStartPositionsUpdateMessage(mapId: number = 0, fightStartPositions: FightStartingPositions = null): MapFightStartPositionsUpdateMessage
     {
         this.mapId = mapId;
@@ -35,7 +48,7 @@ export class MapFightStartPositionsUpdateMessage extends NetworkMessage implemen
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

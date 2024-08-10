@@ -9,6 +9,9 @@ export class ExchangeStartOkRunesTradeMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 1662;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class ExchangeStartOkRunesTradeMessage extends NetworkMessage implements 
     public getMessageId()
     {
         return ExchangeStartOkRunesTradeMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeStartOkRunesTradeMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartOkRunesTradeMessage.endpointServer;
     }
 
     public initExchangeStartOkRunesTradeMessage(): ExchangeStartOkRunesTradeMessage
@@ -28,7 +41,7 @@ export class ExchangeStartOkRunesTradeMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

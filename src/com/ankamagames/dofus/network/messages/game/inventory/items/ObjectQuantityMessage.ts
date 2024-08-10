@@ -9,6 +9,9 @@ export class ObjectQuantityMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 204;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objectUID: number = 0;
 	public quantity: number = 0;
 	public origin: number = 0;
@@ -23,6 +26,16 @@ export class ObjectQuantityMessage extends NetworkMessage implements INetworkMes
         return ObjectQuantityMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectQuantityMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectQuantityMessage.endpointServer;
+    }
+
     public initObjectQuantityMessage(objectUID: number = 0, quantity: number = 0, origin: number = 0): ObjectQuantityMessage
     {
         this.objectUID = objectUID;
@@ -35,7 +48,7 @@ export class ObjectQuantityMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class ConsoleEndMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 9802;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public consoleUuid: Uuid;
 	public isSuccess: boolean = false;
 
@@ -24,6 +27,16 @@ export class ConsoleEndMessage extends NetworkMessage implements INetworkMessage
         return ConsoleEndMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ConsoleEndMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ConsoleEndMessage.endpointServer;
+    }
+
     public initConsoleEndMessage(consoleUuid: Uuid = null, isSuccess: boolean = false): ConsoleEndMessage
     {
         this.consoleUuid = consoleUuid;
@@ -35,7 +48,7 @@ export class ConsoleEndMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

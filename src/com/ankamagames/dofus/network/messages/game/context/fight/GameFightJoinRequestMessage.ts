@@ -9,6 +9,9 @@ export class GameFightJoinRequestMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 4010;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public fighterId: number = 0;
 	public fightId: number = 0;
 
@@ -22,6 +25,16 @@ export class GameFightJoinRequestMessage extends NetworkMessage implements INetw
         return GameFightJoinRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameFightJoinRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightJoinRequestMessage.endpointServer;
+    }
+
     public initGameFightJoinRequestMessage(fighterId: number = 0, fightId: number = 0): GameFightJoinRequestMessage
     {
         this.fighterId = fighterId;
@@ -33,7 +46,7 @@ export class GameFightJoinRequestMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class PartyKickedByMessage extends AbstractPartyMessage implements INetwo
 
 	public static readonly protocolId: number = 4958;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public kickerId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class PartyKickedByMessage extends AbstractPartyMessage implements INetwo
     public getMessageId()
     {
         return PartyKickedByMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyKickedByMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyKickedByMessage.endpointServer;
     }
 
     public initPartyKickedByMessage(partyId: number = 0, kickerId: number = 0): PartyKickedByMessage
@@ -32,7 +45,7 @@ export class PartyKickedByMessage extends AbstractPartyMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

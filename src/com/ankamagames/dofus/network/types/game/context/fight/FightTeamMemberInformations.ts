@@ -7,6 +7,9 @@ export class FightTeamMemberInformations implements INetworkType
 
 	public static readonly protocolId: number = 9810;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public id: number = 0;
 
     public constructor()
@@ -17,6 +20,16 @@ export class FightTeamMemberInformations implements INetworkType
     public getTypeId()
     {
         return FightTeamMemberInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightTeamMemberInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightTeamMemberInformations.endpointServer;
     }
 
     public initFightTeamMemberInformations(id: number = 0): FightTeamMemberInformations

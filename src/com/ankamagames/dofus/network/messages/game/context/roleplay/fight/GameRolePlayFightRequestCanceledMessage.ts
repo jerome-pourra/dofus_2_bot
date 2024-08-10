@@ -9,6 +9,9 @@ export class GameRolePlayFightRequestCanceledMessage extends NetworkMessage impl
 
 	public static readonly protocolId: number = 5826;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public fightId: number = 0;
 	public sourceId: number = 0;
 	public targetId: number = 0;
@@ -23,6 +26,16 @@ export class GameRolePlayFightRequestCanceledMessage extends NetworkMessage impl
         return GameRolePlayFightRequestCanceledMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayFightRequestCanceledMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayFightRequestCanceledMessage.endpointServer;
+    }
+
     public initGameRolePlayFightRequestCanceledMessage(fightId: number = 0, sourceId: number = 0, targetId: number = 0): GameRolePlayFightRequestCanceledMessage
     {
         this.fightId = fightId;
@@ -35,7 +48,7 @@ export class GameRolePlayFightRequestCanceledMessage extends NetworkMessage impl
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -11,6 +11,9 @@ export class MapRunningFightDetailsMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 2005;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public fightId: number = 0;
 	public attackers: Array<GameFightFighterLightInformations>;
 	public defenders: Array<GameFightFighterLightInformations>;
@@ -27,6 +30,16 @@ export class MapRunningFightDetailsMessage extends NetworkMessage implements INe
         return MapRunningFightDetailsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return MapRunningFightDetailsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapRunningFightDetailsMessage.endpointServer;
+    }
+
     public initMapRunningFightDetailsMessage(fightId: number = 0, attackers: Array<GameFightFighterLightInformations> = null, defenders: Array<GameFightFighterLightInformations> = null): MapRunningFightDetailsMessage
     {
         this.fightId = fightId;
@@ -39,7 +52,7 @@ export class MapRunningFightDetailsMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

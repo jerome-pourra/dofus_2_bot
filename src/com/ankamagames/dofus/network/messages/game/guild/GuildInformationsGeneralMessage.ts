@@ -9,6 +9,9 @@ export class GuildInformationsGeneralMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 4406;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public abandonnedPaddock: boolean = false;
 	public level: number = 0;
 	public expLevelFloor: number = 0;
@@ -27,6 +30,16 @@ export class GuildInformationsGeneralMessage extends NetworkMessage implements I
         return GuildInformationsGeneralMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildInformationsGeneralMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildInformationsGeneralMessage.endpointServer;
+    }
+
     public initGuildInformationsGeneralMessage(abandonnedPaddock: boolean = false, level: number = 0, expLevelFloor: number = 0, experience: number = 0, expNextLevelFloor: number = 0, creationDate: number = 0, score: number = 0): GuildInformationsGeneralMessage
     {
         this.abandonnedPaddock = abandonnedPaddock;
@@ -43,7 +56,7 @@ export class GuildInformationsGeneralMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

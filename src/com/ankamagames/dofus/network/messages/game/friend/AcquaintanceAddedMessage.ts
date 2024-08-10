@@ -11,6 +11,9 @@ export class AcquaintanceAddedMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 2270;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public acquaintanceAdded: AcquaintanceInformation;
 
     public constructor()
@@ -24,6 +27,16 @@ export class AcquaintanceAddedMessage extends NetworkMessage implements INetwork
         return AcquaintanceAddedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AcquaintanceAddedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AcquaintanceAddedMessage.endpointServer;
+    }
+
     public initAcquaintanceAddedMessage(acquaintanceAdded: AcquaintanceInformation = null): AcquaintanceAddedMessage
     {
         this.acquaintanceAdded = acquaintanceAdded;
@@ -34,7 +47,7 @@ export class AcquaintanceAddedMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

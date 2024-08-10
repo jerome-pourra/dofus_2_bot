@@ -10,6 +10,9 @@ export class ExtendedBreachBranch extends BreachBranch implements INetworkType
 
 	public static readonly protocolId: number = 8307;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public rewards: Array<BreachReward>;
 	public modifier: number = 0;
 	public prize: number = 0;
@@ -23,6 +26,16 @@ export class ExtendedBreachBranch extends BreachBranch implements INetworkType
     public getTypeId()
     {
         return ExtendedBreachBranch.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExtendedBreachBranch.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExtendedBreachBranch.endpointServer;
     }
 
     public initExtendedBreachBranch(room: number = 0, element: number = 0, bosses: Array<MonsterInGroupLightInformations> = null, map: number = 0, score: number = 0, relativeScore: number = 0, monsters: Array<MonsterInGroupLightInformations> = null, rewards: Array<BreachReward> = null, modifier: number = 0, prize: number = 0): ExtendedBreachBranch

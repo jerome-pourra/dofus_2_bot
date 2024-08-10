@@ -9,6 +9,9 @@ export class PaginationAnswerAbstractMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 1468;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public offset: number = 0;
 	public count: number = 0;
 	public total: number = 0;
@@ -23,6 +26,16 @@ export class PaginationAnswerAbstractMessage extends NetworkMessage implements I
         return PaginationAnswerAbstractMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PaginationAnswerAbstractMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaginationAnswerAbstractMessage.endpointServer;
+    }
+
     public initPaginationAnswerAbstractMessage(offset: number = 0, count: number = 0, total: number = 0): PaginationAnswerAbstractMessage
     {
         this.offset = offset;
@@ -35,7 +48,7 @@ export class PaginationAnswerAbstractMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

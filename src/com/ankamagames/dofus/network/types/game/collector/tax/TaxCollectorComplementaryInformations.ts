@@ -7,6 +7,9 @@ export class TaxCollectorComplementaryInformations implements INetworkType
 
 	public static readonly protocolId: number = 1982;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
 
@@ -15,6 +18,16 @@ export class TaxCollectorComplementaryInformations implements INetworkType
     public getTypeId()
     {
         return TaxCollectorComplementaryInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return TaxCollectorComplementaryInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorComplementaryInformations.endpointServer;
     }
 
     public initTaxCollectorComplementaryInformations(): TaxCollectorComplementaryInformations

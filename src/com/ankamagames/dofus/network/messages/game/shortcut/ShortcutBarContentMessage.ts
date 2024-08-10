@@ -11,6 +11,9 @@ export class ShortcutBarContentMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 9158;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public barType: number = 0;
 	public shortcuts: Array<Shortcut>;
 
@@ -25,6 +28,16 @@ export class ShortcutBarContentMessage extends NetworkMessage implements INetwor
         return ShortcutBarContentMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ShortcutBarContentMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShortcutBarContentMessage.endpointServer;
+    }
+
     public initShortcutBarContentMessage(barType: number = 0, shortcuts: Array<Shortcut> = null): ShortcutBarContentMessage
     {
         this.barType = barType;
@@ -36,7 +49,7 @@ export class ShortcutBarContentMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

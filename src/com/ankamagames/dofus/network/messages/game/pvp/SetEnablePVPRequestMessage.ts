@@ -9,6 +9,9 @@ export class SetEnablePVPRequestMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 3251;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public enable: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class SetEnablePVPRequestMessage extends NetworkMessage implements INetwo
         return SetEnablePVPRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SetEnablePVPRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SetEnablePVPRequestMessage.endpointServer;
+    }
+
     public initSetEnablePVPRequestMessage(enable: boolean = false): SetEnablePVPRequestMessage
     {
         this.enable = enable;
@@ -31,7 +44,7 @@ export class SetEnablePVPRequestMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

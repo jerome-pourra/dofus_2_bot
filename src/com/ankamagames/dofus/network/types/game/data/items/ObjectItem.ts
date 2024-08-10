@@ -10,6 +10,9 @@ export class ObjectItem extends Item implements INetworkType
 
 	public static readonly protocolId: number = 1685;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public position: number = 63;
 	public objectGID: number = 0;
 	public effects: Array<ObjectEffect>;
@@ -26,6 +29,16 @@ export class ObjectItem extends Item implements INetworkType
     public getTypeId()
     {
         return ObjectItem.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectItem.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectItem.endpointServer;
     }
 
     public initObjectItem(position: number = 63, objectGID: number = 0, effects: Array<ObjectEffect> = null, objectUID: number = 0, quantity: number = 0, favorite: boolean = false): ObjectItem

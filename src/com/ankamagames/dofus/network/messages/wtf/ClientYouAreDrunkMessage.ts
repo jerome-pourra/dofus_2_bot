@@ -9,6 +9,9 @@ export class ClientYouAreDrunkMessage extends DebugInClientMessage implements IN
 
 	public static readonly protocolId: number = 3498;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class ClientYouAreDrunkMessage extends DebugInClientMessage implements IN
     public getMessageId()
     {
         return ClientYouAreDrunkMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ClientYouAreDrunkMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ClientYouAreDrunkMessage.endpointServer;
     }
 
     public initClientYouAreDrunkMessage(level: number = 0, message: string = ""): ClientYouAreDrunkMessage
@@ -29,7 +42,7 @@ export class ClientYouAreDrunkMessage extends DebugInClientMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

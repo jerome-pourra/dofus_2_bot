@@ -9,6 +9,9 @@ export class ObjectItemToSellInNpcShop extends ObjectItemMinimalInformation impl
 
 	public static readonly protocolId: number = 5301;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectPrice: number = 0;
 	public buyCriterion: string = "";
 
@@ -20,6 +23,16 @@ export class ObjectItemToSellInNpcShop extends ObjectItemMinimalInformation impl
     public getTypeId()
     {
         return ObjectItemToSellInNpcShop.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ObjectItemToSellInNpcShop.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectItemToSellInNpcShop.endpointServer;
     }
 
     public initObjectItemToSellInNpcShop(objectGID: number = 0, effects: Array<ObjectEffect> = null, objectPrice: number = 0, buyCriterion: string = ""): ObjectItemToSellInNpcShop

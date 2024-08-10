@@ -9,6 +9,9 @@ export class ActivitySuggestionsMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 5717;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public lockedActivitiesIds: Array<number>;
 	public unlockedActivitiesIds: Array<number>;
 
@@ -24,6 +27,16 @@ export class ActivitySuggestionsMessage extends NetworkMessage implements INetwo
         return ActivitySuggestionsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ActivitySuggestionsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ActivitySuggestionsMessage.endpointServer;
+    }
+
     public initActivitySuggestionsMessage(lockedActivitiesIds: Array<number> = null, unlockedActivitiesIds: Array<number> = null): ActivitySuggestionsMessage
     {
         this.lockedActivitiesIds = lockedActivitiesIds;
@@ -35,7 +48,7 @@ export class ActivitySuggestionsMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

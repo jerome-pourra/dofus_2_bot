@@ -7,6 +7,9 @@ export class ItemDurability implements INetworkType
 
 	public static readonly protocolId: number = 5929;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public durability: number = 0;
 	public durabilityMax: number = 0;
 
@@ -18,6 +21,16 @@ export class ItemDurability implements INetworkType
     public getTypeId()
     {
         return ItemDurability.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ItemDurability.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ItemDurability.endpointServer;
     }
 
     public initItemDurability(durability: number = 0, durabilityMax: number = 0): ItemDurability

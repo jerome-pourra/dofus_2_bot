@@ -11,6 +11,9 @@ export class TaxCollectorEquipmentUpdateMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 2451;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public uniqueId: number = 0;
 	public object: ObjectItem;
 	public added: boolean = false;
@@ -28,6 +31,16 @@ export class TaxCollectorEquipmentUpdateMessage extends NetworkMessage implement
         return TaxCollectorEquipmentUpdateMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TaxCollectorEquipmentUpdateMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorEquipmentUpdateMessage.endpointServer;
+    }
+
     public initTaxCollectorEquipmentUpdateMessage(uniqueId: number = 0, object: ObjectItem = null, added: boolean = false, characteristics: CharacterCharacteristics = null): TaxCollectorEquipmentUpdateMessage
     {
         this.uniqueId = uniqueId;
@@ -41,7 +54,7 @@ export class TaxCollectorEquipmentUpdateMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

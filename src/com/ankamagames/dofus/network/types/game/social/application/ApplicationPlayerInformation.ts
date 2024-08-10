@@ -9,6 +9,9 @@ export class ApplicationPlayerInformation implements INetworkType
 
 	public static readonly protocolId: number = 9959;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerId: number = 0;
 	public playerName: string = "";
 	public breed: number = 0;
@@ -27,6 +30,16 @@ export class ApplicationPlayerInformation implements INetworkType
     public getTypeId()
     {
         return ApplicationPlayerInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ApplicationPlayerInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ApplicationPlayerInformation.endpointServer;
     }
 
     public initApplicationPlayerInformation(playerId: number = 0, playerName: string = "", breed: number = 0, sex: boolean = false, level: number = 0, accountId: number = 0, accountTag: string = "", accountNickname: string = "", status: PlayerStatus = null): ApplicationPlayerInformation

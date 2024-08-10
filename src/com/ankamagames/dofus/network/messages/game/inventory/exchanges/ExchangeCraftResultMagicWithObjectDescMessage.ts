@@ -10,6 +10,9 @@ export class ExchangeCraftResultMagicWithObjectDescMessage extends ExchangeCraft
 
 	public static readonly protocolId: number = 95;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public magicPoolStatus: number = 0;
 
     public constructor()
@@ -20,6 +23,16 @@ export class ExchangeCraftResultMagicWithObjectDescMessage extends ExchangeCraft
     public getMessageId()
     {
         return ExchangeCraftResultMagicWithObjectDescMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeCraftResultMagicWithObjectDescMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeCraftResultMagicWithObjectDescMessage.endpointServer;
     }
 
     public initExchangeCraftResultMagicWithObjectDescMessage(craftResult: number = 0, objectInfo: ObjectItemNotInContainer = null, magicPoolStatus: number = 0): ExchangeCraftResultMagicWithObjectDescMessage
@@ -33,7 +46,7 @@ export class ExchangeCraftResultMagicWithObjectDescMessage extends ExchangeCraft
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

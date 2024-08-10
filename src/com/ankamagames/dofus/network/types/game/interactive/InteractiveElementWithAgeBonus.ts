@@ -9,6 +9,9 @@ export class InteractiveElementWithAgeBonus extends InteractiveElement implement
 
 	public static readonly protocolId: number = 2952;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public ageBonus: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class InteractiveElementWithAgeBonus extends InteractiveElement implement
     public getTypeId()
     {
         return InteractiveElementWithAgeBonus.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return InteractiveElementWithAgeBonus.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InteractiveElementWithAgeBonus.endpointServer;
     }
 
     public initInteractiveElementWithAgeBonus(elementId: number = 0, elementTypeId: number = 0, enabledSkills: Array<InteractiveElementSkill> = null, disabledSkills: Array<InteractiveElementSkill> = null, onCurrentMap: boolean = false, ageBonus: number = 0): InteractiveElementWithAgeBonus

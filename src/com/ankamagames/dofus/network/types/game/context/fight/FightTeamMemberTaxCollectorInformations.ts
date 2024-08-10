@@ -8,6 +8,9 @@ export class FightTeamMemberTaxCollectorInformations extends FightTeamMemberInfo
 
 	public static readonly protocolId: number = 4832;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public firstNameId: number = 0;
 	public lastNameId: number = 0;
 	public groupId: number = 0;
@@ -21,6 +24,16 @@ export class FightTeamMemberTaxCollectorInformations extends FightTeamMemberInfo
     public getTypeId()
     {
         return FightTeamMemberTaxCollectorInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightTeamMemberTaxCollectorInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightTeamMemberTaxCollectorInformations.endpointServer;
     }
 
     public initFightTeamMemberTaxCollectorInformations(id: number = 0, firstNameId: number = 0, lastNameId: number = 0, groupId: number = 0, uid: number = 0): FightTeamMemberTaxCollectorInformations

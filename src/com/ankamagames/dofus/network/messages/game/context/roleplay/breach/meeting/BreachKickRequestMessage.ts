@@ -9,6 +9,9 @@ export class BreachKickRequestMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 4588;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public target: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class BreachKickRequestMessage extends NetworkMessage implements INetwork
         return BreachKickRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachKickRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachKickRequestMessage.endpointServer;
+    }
+
     public initBreachKickRequestMessage(target: number = 0): BreachKickRequestMessage
     {
         this.target = target;
@@ -31,7 +44,7 @@ export class BreachKickRequestMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

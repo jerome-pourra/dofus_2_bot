@@ -9,6 +9,9 @@ export class PresetSaveErrorMessage extends NetworkMessage implements INetworkMe
 
 	public static readonly protocolId: number = 7630;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public presetId: number = 0;
 	public code: number = 2;
 
@@ -22,6 +25,16 @@ export class PresetSaveErrorMessage extends NetworkMessage implements INetworkMe
         return PresetSaveErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PresetSaveErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PresetSaveErrorMessage.endpointServer;
+    }
+
     public initPresetSaveErrorMessage(presetId: number = 0, code: number = 2): PresetSaveErrorMessage
     {
         this.presetId = presetId;
@@ -33,7 +46,7 @@ export class PresetSaveErrorMessage extends NetworkMessage implements INetworkMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

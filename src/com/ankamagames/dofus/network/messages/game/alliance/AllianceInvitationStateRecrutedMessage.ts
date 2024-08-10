@@ -9,6 +9,9 @@ export class AllianceInvitationStateRecrutedMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 7264;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public invitationState: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class AllianceInvitationStateRecrutedMessage extends NetworkMessage imple
         return AllianceInvitationStateRecrutedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceInvitationStateRecrutedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceInvitationStateRecrutedMessage.endpointServer;
+    }
+
     public initAllianceInvitationStateRecrutedMessage(invitationState: number = 0): AllianceInvitationStateRecrutedMessage
     {
         this.invitationState = invitationState;
@@ -31,7 +44,7 @@ export class AllianceInvitationStateRecrutedMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

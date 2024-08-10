@@ -9,6 +9,9 @@ export class AlliancePrismInformation extends PrismInformation implements INetwo
 
 	public static readonly protocolId: number = 4594;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public alliance: AllianceInformation;
 
     public constructor()
@@ -20,6 +23,16 @@ export class AlliancePrismInformation extends PrismInformation implements INetwo
     public getTypeId()
     {
         return AlliancePrismInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AlliancePrismInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AlliancePrismInformation.endpointServer;
     }
 
     public initAlliancePrismInformation(state: number = 1, placementDate: number = 0, nuggetsCount: number = 0, durability: number = 0, nextEvolutionDate: number = 0, alliance: AllianceInformation = null): AlliancePrismInformation

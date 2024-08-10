@@ -9,6 +9,9 @@ export class AllianceInsiderInfoRequestMessage extends NetworkMessage implements
 
 	public static readonly protocolId: number = 2763;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class AllianceInsiderInfoRequestMessage extends NetworkMessage implements
     public getMessageId()
     {
         return AllianceInsiderInfoRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceInsiderInfoRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceInsiderInfoRequestMessage.endpointServer;
     }
 
     public initAllianceInsiderInfoRequestMessage(): AllianceInsiderInfoRequestMessage
@@ -28,7 +41,7 @@ export class AllianceInsiderInfoRequestMessage extends NetworkMessage implements
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

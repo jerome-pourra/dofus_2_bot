@@ -9,6 +9,9 @@ export class NuggetsInformationMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 5214;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public nuggetsQuantity: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class NuggetsInformationMessage extends NetworkMessage implements INetwor
         return NuggetsInformationMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return NuggetsInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return NuggetsInformationMessage.endpointServer;
+    }
+
     public initNuggetsInformationMessage(nuggetsQuantity: number = 0): NuggetsInformationMessage
     {
         this.nuggetsQuantity = nuggetsQuantity;
@@ -31,7 +44,7 @@ export class NuggetsInformationMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

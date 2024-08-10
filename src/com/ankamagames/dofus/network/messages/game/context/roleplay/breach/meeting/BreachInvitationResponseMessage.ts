@@ -10,6 +10,9 @@ export class BreachInvitationResponseMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 9260;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guest: CharacterMinimalInformations;
 	public accept: boolean = false;
 
@@ -24,6 +27,16 @@ export class BreachInvitationResponseMessage extends NetworkMessage implements I
         return BreachInvitationResponseMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BreachInvitationResponseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BreachInvitationResponseMessage.endpointServer;
+    }
+
     public initBreachInvitationResponseMessage(guest: CharacterMinimalInformations = null, accept: boolean = false): BreachInvitationResponseMessage
     {
         this.guest = guest;
@@ -35,7 +48,7 @@ export class BreachInvitationResponseMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

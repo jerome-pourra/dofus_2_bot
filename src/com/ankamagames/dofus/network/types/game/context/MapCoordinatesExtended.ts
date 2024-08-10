@@ -8,6 +8,9 @@ export class MapCoordinatesExtended extends MapCoordinatesAndId implements INetw
 
 	public static readonly protocolId: number = 1599;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public subAreaId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class MapCoordinatesExtended extends MapCoordinatesAndId implements INetw
     public getTypeId()
     {
         return MapCoordinatesExtended.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return MapCoordinatesExtended.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return MapCoordinatesExtended.endpointServer;
     }
 
     public initMapCoordinatesExtended(worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0): MapCoordinatesExtended

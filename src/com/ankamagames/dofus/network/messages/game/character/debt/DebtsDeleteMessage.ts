@@ -9,6 +9,9 @@ export class DebtsDeleteMessage extends NetworkMessage implements INetworkMessag
 
 	public static readonly protocolId: number = 7828;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public reason: number = 0;
 	public debts: Array<number>;
 
@@ -23,6 +26,16 @@ export class DebtsDeleteMessage extends NetworkMessage implements INetworkMessag
         return DebtsDeleteMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DebtsDeleteMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DebtsDeleteMessage.endpointServer;
+    }
+
     public initDebtsDeleteMessage(reason: number = 0, debts: Array<number> = null): DebtsDeleteMessage
     {
         this.reason = reason;
@@ -34,7 +47,7 @@ export class DebtsDeleteMessage extends NetworkMessage implements INetworkMessag
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

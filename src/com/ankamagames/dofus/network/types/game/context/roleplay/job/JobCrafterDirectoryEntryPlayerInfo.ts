@@ -10,6 +10,9 @@ export class JobCrafterDirectoryEntryPlayerInfo implements INetworkType
 
 	public static readonly protocolId: number = 9204;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerId: number = 0;
 	public playerName: string = "";
 	public alignmentSide: number = 0;
@@ -31,6 +34,16 @@ export class JobCrafterDirectoryEntryPlayerInfo implements INetworkType
     public getTypeId()
     {
         return JobCrafterDirectoryEntryPlayerInfo.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return JobCrafterDirectoryEntryPlayerInfo.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobCrafterDirectoryEntryPlayerInfo.endpointServer;
     }
 
     public initJobCrafterDirectoryEntryPlayerInfo(playerId: number = 0, playerName: string = "", alignmentSide: number = 0, breed: number = 0, sex: boolean = false, isInWorkshop: boolean = false, worldX: number = 0, worldY: number = 0, mapId: number = 0, subAreaId: number = 0, canCraftLegendary: boolean = false, status: PlayerStatus = null): JobCrafterDirectoryEntryPlayerInfo

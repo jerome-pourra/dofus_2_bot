@@ -10,6 +10,9 @@ export class AllianceListApplicationAnswerMessage extends PaginationAnswerAbstra
 
 	public static readonly protocolId: number = 3610;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public applies: Array<SocialApplicationInformation>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AllianceListApplicationAnswerMessage extends PaginationAnswerAbstra
         return AllianceListApplicationAnswerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceListApplicationAnswerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceListApplicationAnswerMessage.endpointServer;
+    }
+
     public initAllianceListApplicationAnswerMessage(offset: number = 0, count: number = 0, total: number = 0, applies: Array<SocialApplicationInformation> = null): AllianceListApplicationAnswerMessage
     {
         super.initPaginationAnswerAbstractMessage(offset,count,total);
@@ -34,7 +47,7 @@ export class AllianceListApplicationAnswerMessage extends PaginationAnswerAbstra
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

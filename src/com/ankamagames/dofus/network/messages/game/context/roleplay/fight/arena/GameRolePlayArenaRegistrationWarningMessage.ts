@@ -9,6 +9,9 @@ export class GameRolePlayArenaRegistrationWarningMessage extends NetworkMessage 
 
 	public static readonly protocolId: number = 8542;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public battleMode: number = 3;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameRolePlayArenaRegistrationWarningMessage extends NetworkMessage 
         return GameRolePlayArenaRegistrationWarningMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GameRolePlayArenaRegistrationWarningMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayArenaRegistrationWarningMessage.endpointServer;
+    }
+
     public initGameRolePlayArenaRegistrationWarningMessage(battleMode: number = 3): GameRolePlayArenaRegistrationWarningMessage
     {
         this.battleMode = battleMode;
@@ -31,7 +44,7 @@ export class GameRolePlayArenaRegistrationWarningMessage extends NetworkMessage 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

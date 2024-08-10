@@ -9,6 +9,9 @@ export class ExchangeMultiCraftCrafterCanUseHisRessourcesMessage extends Network
 
 	public static readonly protocolId: number = 4154;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allowed: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ExchangeMultiCraftCrafterCanUseHisRessourcesMessage extends Network
         return ExchangeMultiCraftCrafterCanUseHisRessourcesMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeMultiCraftCrafterCanUseHisRessourcesMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeMultiCraftCrafterCanUseHisRessourcesMessage.endpointServer;
+    }
+
     public initExchangeMultiCraftCrafterCanUseHisRessourcesMessage(allowed: boolean = false): ExchangeMultiCraftCrafterCanUseHisRessourcesMessage
     {
         this.allowed = allowed;
@@ -31,7 +44,7 @@ export class ExchangeMultiCraftCrafterCanUseHisRessourcesMessage extends Network
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

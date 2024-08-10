@@ -8,6 +8,9 @@ export class FightDetailedTemporaryBoostEffect extends FightTemporaryBoostEffect
 
 	public static readonly protocolId: number = 2061;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public param1: number = 0;
 	public param2: number = 0;
 	public param3: number = 0;
@@ -20,6 +23,16 @@ export class FightDetailedTemporaryBoostEffect extends FightTemporaryBoostEffect
     public getTypeId()
     {
         return FightDetailedTemporaryBoostEffect.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightDetailedTemporaryBoostEffect.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightDetailedTemporaryBoostEffect.endpointServer;
     }
 
     public initFightDetailedTemporaryBoostEffect(uid: number = 0, targetId: number = 0, turnDuration: number = 0, dispelable: number = 1, spellId: number = 0, effectId: number = 0, parentBoostUid: number = 0, delta: number = 0, param1: number = 0, param2: number = 0, param3: number = 0): FightDetailedTemporaryBoostEffect

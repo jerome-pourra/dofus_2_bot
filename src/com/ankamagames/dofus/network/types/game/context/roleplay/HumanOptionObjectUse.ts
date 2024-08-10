@@ -8,6 +8,9 @@ export class HumanOptionObjectUse extends HumanOption implements INetworkType
 
 	public static readonly protocolId: number = 446;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public delayTypeId: number = 0;
 	public delayEndTime: number = 0;
 	public objectGID: number = 0;
@@ -20,6 +23,16 @@ export class HumanOptionObjectUse extends HumanOption implements INetworkType
     public getTypeId()
     {
         return HumanOptionObjectUse.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HumanOptionObjectUse.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HumanOptionObjectUse.endpointServer;
     }
 
     public initHumanOptionObjectUse(delayTypeId: number = 0, delayEndTime: number = 0, objectGID: number = 0): HumanOptionObjectUse

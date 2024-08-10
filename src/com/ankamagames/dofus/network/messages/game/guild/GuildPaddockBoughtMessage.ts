@@ -10,6 +10,9 @@ export class GuildPaddockBoughtMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 4625;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public paddockInfo: PaddockContentInformations;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GuildPaddockBoughtMessage extends NetworkMessage implements INetwor
         return GuildPaddockBoughtMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildPaddockBoughtMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildPaddockBoughtMessage.endpointServer;
+    }
+
     public initGuildPaddockBoughtMessage(paddockInfo: PaddockContentInformations = null): GuildPaddockBoughtMessage
     {
         this.paddockInfo = paddockInfo;
@@ -33,7 +46,7 @@ export class GuildPaddockBoughtMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

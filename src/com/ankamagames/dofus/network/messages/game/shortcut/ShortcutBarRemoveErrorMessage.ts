@@ -9,6 +9,9 @@ export class ShortcutBarRemoveErrorMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 4981;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public error: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ShortcutBarRemoveErrorMessage extends NetworkMessage implements INe
         return ShortcutBarRemoveErrorMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ShortcutBarRemoveErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShortcutBarRemoveErrorMessage.endpointServer;
+    }
+
     public initShortcutBarRemoveErrorMessage(error: number = 0): ShortcutBarRemoveErrorMessage
     {
         this.error = error;
@@ -31,7 +44,7 @@ export class ShortcutBarRemoveErrorMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

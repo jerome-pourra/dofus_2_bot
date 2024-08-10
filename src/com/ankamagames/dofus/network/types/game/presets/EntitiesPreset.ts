@@ -8,6 +8,9 @@ export class EntitiesPreset extends Preset implements INetworkType
 
 	public static readonly protocolId: number = 6250;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public iconId: number = 0;
 	public entityIds: Array<number>;
 
@@ -20,6 +23,16 @@ export class EntitiesPreset extends Preset implements INetworkType
     public getTypeId()
     {
         return EntitiesPreset.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return EntitiesPreset.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EntitiesPreset.endpointServer;
     }
 
     public initEntitiesPreset(id: number = 0, iconId: number = 0, entityIds: Array<number> = null): EntitiesPreset

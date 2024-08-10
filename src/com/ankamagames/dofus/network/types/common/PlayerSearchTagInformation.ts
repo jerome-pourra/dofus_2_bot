@@ -9,6 +9,9 @@ export class PlayerSearchTagInformation extends AbstractPlayerSearchInformation 
 
 	public static readonly protocolId: number = 3389;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public tag: AccountTagInformation;
 
     public constructor()
@@ -20,6 +23,16 @@ export class PlayerSearchTagInformation extends AbstractPlayerSearchInformation 
     public getTypeId()
     {
         return PlayerSearchTagInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PlayerSearchTagInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PlayerSearchTagInformation.endpointServer;
     }
 
     public initPlayerSearchTagInformation(tag: AccountTagInformation = null): PlayerSearchTagInformation

@@ -10,6 +10,9 @@ export class PrismAttackedMessage extends NetworkMessage implements INetworkMess
 
 	public static readonly protocolId: number = 48;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public prism: PrismGeolocalizedInformation;
 
     public constructor()
@@ -23,6 +26,16 @@ export class PrismAttackedMessage extends NetworkMessage implements INetworkMess
         return PrismAttackedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PrismAttackedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PrismAttackedMessage.endpointServer;
+    }
+
     public initPrismAttackedMessage(prism: PrismGeolocalizedInformation = null): PrismAttackedMessage
     {
         this.prism = prism;
@@ -33,7 +46,7 @@ export class PrismAttackedMessage extends NetworkMessage implements INetworkMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

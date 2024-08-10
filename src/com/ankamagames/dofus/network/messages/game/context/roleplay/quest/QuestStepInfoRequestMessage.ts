@@ -9,6 +9,9 @@ export class QuestStepInfoRequestMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 5778;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public questId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class QuestStepInfoRequestMessage extends NetworkMessage implements INetw
         return QuestStepInfoRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return QuestStepInfoRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return QuestStepInfoRequestMessage.endpointServer;
+    }
+
     public initQuestStepInfoRequestMessage(questId: number = 0): QuestStepInfoRequestMessage
     {
         this.questId = questId;
@@ -31,7 +44,7 @@ export class QuestStepInfoRequestMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

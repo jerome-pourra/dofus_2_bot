@@ -9,6 +9,9 @@ export class PresetDeleteRequestMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 7052;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public presetId: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class PresetDeleteRequestMessage extends NetworkMessage implements INetwo
         return PresetDeleteRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return PresetDeleteRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PresetDeleteRequestMessage.endpointServer;
+    }
+
     public initPresetDeleteRequestMessage(presetId: number = 0): PresetDeleteRequestMessage
     {
         this.presetId = presetId;
@@ -31,7 +44,7 @@ export class PresetDeleteRequestMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

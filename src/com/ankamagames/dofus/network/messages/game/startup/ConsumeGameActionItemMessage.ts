@@ -9,6 +9,9 @@ export class ConsumeGameActionItemMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 2113;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public actionId: number = 0;
 	public characterId: number = 0;
 
@@ -22,6 +25,16 @@ export class ConsumeGameActionItemMessage extends NetworkMessage implements INet
         return ConsumeGameActionItemMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ConsumeGameActionItemMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ConsumeGameActionItemMessage.endpointServer;
+    }
+
     public initConsumeGameActionItemMessage(actionId: number = 0, characterId: number = 0): ConsumeGameActionItemMessage
     {
         this.actionId = actionId;
@@ -33,7 +46,7 @@ export class ConsumeGameActionItemMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class CharacterLevelUpInformationMessage extends CharacterLevelUpMessage 
 
 	public static readonly protocolId: number = 3031;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public name: string = "";
 	public id: number = 0;
 
@@ -20,6 +23,16 @@ export class CharacterLevelUpInformationMessage extends CharacterLevelUpMessage 
     public getMessageId()
     {
         return CharacterLevelUpInformationMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterLevelUpInformationMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterLevelUpInformationMessage.endpointServer;
     }
 
     public initCharacterLevelUpInformationMessage(newLevel: number = 0, name: string = "", id: number = 0): CharacterLevelUpInformationMessage
@@ -34,7 +47,7 @@ export class CharacterLevelUpInformationMessage extends CharacterLevelUpMessage 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class FightLootObject implements INetworkType
 
 	public static readonly protocolId: number = 5840;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public objectId: number = 0;
 	public quantity: number = 0;
 	public priorityHint: number = 0;
@@ -19,6 +22,16 @@ export class FightLootObject implements INetworkType
     public getTypeId()
     {
         return FightLootObject.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightLootObject.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightLootObject.endpointServer;
     }
 
     public initFightLootObject(objectId: number = 0, quantity: number = 0, priorityHint: number = 0): FightLootObject

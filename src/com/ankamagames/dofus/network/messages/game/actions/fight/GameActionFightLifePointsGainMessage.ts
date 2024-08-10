@@ -9,6 +9,9 @@ export class GameActionFightLifePointsGainMessage extends AbstractGameActionMess
 
 	public static readonly protocolId: number = 6590;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public targetId: number = 0;
 	public delta: number = 0;
 
@@ -20,6 +23,16 @@ export class GameActionFightLifePointsGainMessage extends AbstractGameActionMess
     public getMessageId()
     {
         return GameActionFightLifePointsGainMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionFightLifePointsGainMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightLifePointsGainMessage.endpointServer;
     }
 
     public initGameActionFightLifePointsGainMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, delta: number = 0): GameActionFightLifePointsGainMessage
@@ -34,7 +47,7 @@ export class GameActionFightLifePointsGainMessage extends AbstractGameActionMess
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

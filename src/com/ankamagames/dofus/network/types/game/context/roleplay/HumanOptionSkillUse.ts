@@ -8,6 +8,9 @@ export class HumanOptionSkillUse extends HumanOption implements INetworkType
 
 	public static readonly protocolId: number = 2036;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public elementId: number = 0;
 	public skillId: number = 0;
 	public skillEndTime: number = 0;
@@ -20,6 +23,16 @@ export class HumanOptionSkillUse extends HumanOption implements INetworkType
     public getTypeId()
     {
         return HumanOptionSkillUse.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HumanOptionSkillUse.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HumanOptionSkillUse.endpointServer;
     }
 
     public initHumanOptionSkillUse(elementId: number = 0, skillId: number = 0, skillEndTime: number = 0): HumanOptionSkillUse

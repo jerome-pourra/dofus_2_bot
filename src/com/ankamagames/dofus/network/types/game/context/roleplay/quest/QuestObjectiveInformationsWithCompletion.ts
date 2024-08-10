@@ -8,6 +8,9 @@ export class QuestObjectiveInformationsWithCompletion extends QuestObjectiveInfo
 
 	public static readonly protocolId: number = 8731;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public curCompletion: number = 0;
 	public maxCompletion: number = 0;
 
@@ -19,6 +22,16 @@ export class QuestObjectiveInformationsWithCompletion extends QuestObjectiveInfo
     public getTypeId()
     {
         return QuestObjectiveInformationsWithCompletion.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return QuestObjectiveInformationsWithCompletion.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return QuestObjectiveInformationsWithCompletion.endpointServer;
     }
 
     public initQuestObjectiveInformationsWithCompletion(objectiveId: number = 0, objectiveStatus: boolean = false, dialogParams: Array<string> = null, curCompletion: number = 0, maxCompletion: number = 0): QuestObjectiveInformationsWithCompletion

@@ -7,6 +7,9 @@ export class EntityDispositionInformations implements INetworkType
 
 	public static readonly protocolId: number = 2447;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public cellId: number = 0;
 	public direction: number = 1;
 
@@ -18,6 +21,16 @@ export class EntityDispositionInformations implements INetworkType
     public getTypeId()
     {
         return EntityDispositionInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return EntityDispositionInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EntityDispositionInformations.endpointServer;
     }
 
     public initEntityDispositionInformations(cellId: number = 0, direction: number = 1): EntityDispositionInformations

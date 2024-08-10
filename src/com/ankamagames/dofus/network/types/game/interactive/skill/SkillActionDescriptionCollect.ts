@@ -8,6 +8,9 @@ export class SkillActionDescriptionCollect extends SkillActionDescriptionTimed i
 
 	public static readonly protocolId: number = 5684;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public min: number = 0;
 	public max: number = 0;
 
@@ -19,6 +22,16 @@ export class SkillActionDescriptionCollect extends SkillActionDescriptionTimed i
     public getTypeId()
     {
         return SkillActionDescriptionCollect.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SkillActionDescriptionCollect.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SkillActionDescriptionCollect.endpointServer;
     }
 
     public initSkillActionDescriptionCollect(skillId: number = 0, time: number = 0, min: number = 0, max: number = 0): SkillActionDescriptionCollect

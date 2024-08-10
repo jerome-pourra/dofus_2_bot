@@ -7,6 +7,9 @@ export class RecycledItem implements INetworkType
 
 	public static readonly protocolId: number = 2736;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public qty: number = 0;
 
@@ -18,6 +21,16 @@ export class RecycledItem implements INetworkType
     public getTypeId()
     {
         return RecycledItem.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return RecycledItem.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return RecycledItem.endpointServer;
     }
 
     public initRecycledItem(id: number = 0, qty: number = 0): RecycledItem

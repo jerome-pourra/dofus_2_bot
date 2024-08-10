@@ -10,6 +10,9 @@ export class AllianceFactSheetInformation extends AllianceInformation implements
 
 	public static readonly protocolId: number = 6340;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public creationDate: number = 0;
 	public nbMembers: number = 0;
 	public nbSubarea: number = 0;
@@ -25,6 +28,16 @@ export class AllianceFactSheetInformation extends AllianceInformation implements
     public getTypeId()
     {
         return AllianceFactSheetInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceFactSheetInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceFactSheetInformation.endpointServer;
     }
 
     public initAllianceFactSheetInformation(allianceId: number = 0, allianceTag: string = "", allianceName: string = "", allianceEmblem: SocialEmblem = null, creationDate: number = 0, nbMembers: number = 0, nbSubarea: number = 0, nbTaxCollectors: number = 0, recruitment: AllianceRecruitmentInformation = null): AllianceFactSheetInformation

@@ -9,6 +9,9 @@ export class GameRolePlayGameOverMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 3824;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class GameRolePlayGameOverMessage extends NetworkMessage implements INetw
     public getMessageId()
     {
         return GameRolePlayGameOverMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayGameOverMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayGameOverMessage.endpointServer;
     }
 
     public initGameRolePlayGameOverMessage(): GameRolePlayGameOverMessage
@@ -28,7 +41,7 @@ export class GameRolePlayGameOverMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

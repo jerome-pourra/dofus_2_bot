@@ -10,6 +10,9 @@ export class ObjectsAddedMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 1527;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public object: Array<ObjectItem>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ObjectsAddedMessage extends NetworkMessage implements INetworkMessa
         return ObjectsAddedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ObjectsAddedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ObjectsAddedMessage.endpointServer;
+    }
+
     public initObjectsAddedMessage(object: Array<ObjectItem> = null): ObjectsAddedMessage
     {
         this.object = object;
@@ -33,7 +46,7 @@ export class ObjectsAddedMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

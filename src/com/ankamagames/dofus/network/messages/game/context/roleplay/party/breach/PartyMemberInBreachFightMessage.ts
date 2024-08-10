@@ -9,6 +9,9 @@ export class PartyMemberInBreachFightMessage extends AbstractPartyMemberInFightM
 
 	public static readonly protocolId: number = 2380;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public floor: number = 0;
 	public room: number = 0;
 
@@ -20,6 +23,16 @@ export class PartyMemberInBreachFightMessage extends AbstractPartyMemberInFightM
     public getMessageId()
     {
         return PartyMemberInBreachFightMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyMemberInBreachFightMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyMemberInBreachFightMessage.endpointServer;
     }
 
     public initPartyMemberInBreachFightMessage(partyId: number = 0, reason: number = 0, memberId: number = 0, memberAccountId: number = 0, memberName: string = "", fightId: number = 0, timeBeforeFightStart: number = 0, floor: number = 0, room: number = 0): PartyMemberInBreachFightMessage
@@ -34,7 +47,7 @@ export class PartyMemberInBreachFightMessage extends AbstractPartyMemberInFightM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

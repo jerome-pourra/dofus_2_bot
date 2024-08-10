@@ -9,6 +9,9 @@ export class InteractiveUseWithParamRequestMessage extends InteractiveUseRequest
 
 	public static readonly protocolId: number = 8117;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class InteractiveUseWithParamRequestMessage extends InteractiveUseRequest
     public getMessageId()
     {
         return InteractiveUseWithParamRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return InteractiveUseWithParamRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InteractiveUseWithParamRequestMessage.endpointServer;
     }
 
     public initInteractiveUseWithParamRequestMessage(elemId: number = 0, skillInstanceUid: number = 0, id: number = 0): InteractiveUseWithParamRequestMessage
@@ -32,7 +45,7 @@ export class InteractiveUseWithParamRequestMessage extends InteractiveUseRequest
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

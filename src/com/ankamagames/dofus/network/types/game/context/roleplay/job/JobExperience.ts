@@ -7,6 +7,9 @@ export class JobExperience implements INetworkType
 
 	public static readonly protocolId: number = 1492;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public jobId: number = 0;
 	public jobLevel: number = 0;
 	public jobXP: number = 0;
@@ -21,6 +24,16 @@ export class JobExperience implements INetworkType
     public getTypeId()
     {
         return JobExperience.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return JobExperience.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobExperience.endpointServer;
     }
 
     public initJobExperience(jobId: number = 0, jobLevel: number = 0, jobXP: number = 0, jobXpLevelFloor: number = 0, jobXpNextLevelFloor: number = 0): JobExperience

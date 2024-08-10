@@ -9,6 +9,9 @@ export class PartyLocateMembersRequestMessage extends AbstractPartyMessage imple
 
 	public static readonly protocolId: number = 4987;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class PartyLocateMembersRequestMessage extends AbstractPartyMessage imple
     public getMessageId()
     {
         return PartyLocateMembersRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PartyLocateMembersRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PartyLocateMembersRequestMessage.endpointServer;
     }
 
     public initPartyLocateMembersRequestMessage(partyId: number = 0): PartyLocateMembersRequestMessage
@@ -29,7 +42,7 @@ export class PartyLocateMembersRequestMessage extends AbstractPartyMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

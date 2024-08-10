@@ -9,6 +9,9 @@ export class ChatKolizeumServerMessage extends ChatServerMessage implements INet
 
 	public static readonly protocolId: number = 942;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public originServerId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class ChatKolizeumServerMessage extends ChatServerMessage implements INet
     public getMessageId()
     {
         return ChatKolizeumServerMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ChatKolizeumServerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChatKolizeumServerMessage.endpointServer;
     }
 
     public initChatKolizeumServerMessage(channel: number = 0, content: string = "", timestamp: number = 0, fingerprint: string = "", senderId: number = 0, senderName: string = "", prefix: string = "", senderAccountId: number = 0, originServerId: number = 0): ChatKolizeumServerMessage
@@ -32,7 +45,7 @@ export class ChatKolizeumServerMessage extends ChatServerMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

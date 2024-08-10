@@ -9,6 +9,9 @@ export class ExchangeHandleMountsMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 3319;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public actionType: number = 0;
 	public ridesId: Array<number>;
 
@@ -23,6 +26,16 @@ export class ExchangeHandleMountsMessage extends NetworkMessage implements INetw
         return ExchangeHandleMountsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeHandleMountsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeHandleMountsMessage.endpointServer;
+    }
+
     public initExchangeHandleMountsMessage(actionType: number = 0, ridesId: Array<number> = null): ExchangeHandleMountsMessage
     {
         this.actionType = actionType;
@@ -34,7 +47,7 @@ export class ExchangeHandleMountsMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class AchievementsPioneerRanksMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 3443;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public achievementsPioneerRanks: Array<AchievementPioneerRank>;
 
     public constructor()
@@ -23,6 +26,16 @@ export class AchievementsPioneerRanksMessage extends NetworkMessage implements I
         return AchievementsPioneerRanksMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AchievementsPioneerRanksMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementsPioneerRanksMessage.endpointServer;
+    }
+
     public initAchievementsPioneerRanksMessage(achievementsPioneerRanks: Array<AchievementPioneerRank> = null): AchievementsPioneerRanksMessage
     {
         this.achievementsPioneerRanks = achievementsPioneerRanks;
@@ -33,7 +46,7 @@ export class AchievementsPioneerRanksMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

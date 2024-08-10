@@ -9,6 +9,9 @@ export class JobMultiCraftAvailableSkillsMessage extends JobAllowMultiCraftReque
 
 	public static readonly protocolId: number = 8902;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerId: number = 0;
 	public skills: Array<number>;
 
@@ -23,6 +26,16 @@ export class JobMultiCraftAvailableSkillsMessage extends JobAllowMultiCraftReque
         return JobMultiCraftAvailableSkillsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return JobMultiCraftAvailableSkillsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobMultiCraftAvailableSkillsMessage.endpointServer;
+    }
+
     public initJobMultiCraftAvailableSkillsMessage(enabled: boolean = false, playerId: number = 0, skills: Array<number> = null): JobMultiCraftAvailableSkillsMessage
     {
         super.initJobAllowMultiCraftRequestMessage(enabled);
@@ -35,7 +48,7 @@ export class JobMultiCraftAvailableSkillsMessage extends JobAllowMultiCraftReque
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

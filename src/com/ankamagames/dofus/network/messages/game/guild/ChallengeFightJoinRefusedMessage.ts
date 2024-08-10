@@ -9,6 +9,9 @@ export class ChallengeFightJoinRefusedMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 2072;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerId: number = 0;
 	public reason: number = 0;
 
@@ -22,6 +25,16 @@ export class ChallengeFightJoinRefusedMessage extends NetworkMessage implements 
         return ChallengeFightJoinRefusedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ChallengeFightJoinRefusedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ChallengeFightJoinRefusedMessage.endpointServer;
+    }
+
     public initChallengeFightJoinRefusedMessage(playerId: number = 0, reason: number = 0): ChallengeFightJoinRefusedMessage
     {
         this.playerId = playerId;
@@ -33,7 +46,7 @@ export class ChallengeFightJoinRefusedMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -11,6 +11,9 @@ export class CharacterCharacteristicsInformations implements INetworkType
 
 	public static readonly protocolId: number = 4504;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public experience: number = 0;
 	public experienceLevelFloor: number = 0;
 	public experienceNextLevelFloor: number = 0;
@@ -32,6 +35,16 @@ export class CharacterCharacteristicsInformations implements INetworkType
     public getTypeId()
     {
         return CharacterCharacteristicsInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterCharacteristicsInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterCharacteristicsInformations.endpointServer;
     }
 
     public initCharacterCharacteristicsInformations(experience: number = 0, experienceLevelFloor: number = 0, experienceNextLevelFloor: number = 0, experienceBonusLimit: number = 0, kamas: number = 0, alignmentInfos: ActorExtendedAlignmentInformations = null, criticalHitWeapon: number = 0, characteristics: Array<CharacterCharacteristic> = null, spellModifiers: Array<SpellModifierMessage> = null, probationTime: number = 0): CharacterCharacteristicsInformations

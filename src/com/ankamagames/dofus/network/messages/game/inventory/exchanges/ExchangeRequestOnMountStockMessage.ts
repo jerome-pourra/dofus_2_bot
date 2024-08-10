@@ -9,6 +9,9 @@ export class ExchangeRequestOnMountStockMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 5627;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class ExchangeRequestOnMountStockMessage extends NetworkMessage implement
     public getMessageId()
     {
         return ExchangeRequestOnMountStockMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeRequestOnMountStockMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeRequestOnMountStockMessage.endpointServer;
     }
 
     public initExchangeRequestOnMountStockMessage(): ExchangeRequestOnMountStockMessage
@@ -28,7 +41,7 @@ export class ExchangeRequestOnMountStockMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

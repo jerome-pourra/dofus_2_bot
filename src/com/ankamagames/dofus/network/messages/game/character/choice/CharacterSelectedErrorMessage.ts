@@ -9,6 +9,9 @@ export class CharacterSelectedErrorMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 1596;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class CharacterSelectedErrorMessage extends NetworkMessage implements INe
     public getMessageId()
     {
         return CharacterSelectedErrorMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return CharacterSelectedErrorMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return CharacterSelectedErrorMessage.endpointServer;
     }
 
     public initCharacterSelectedErrorMessage(): CharacterSelectedErrorMessage
@@ -28,7 +41,7 @@ export class CharacterSelectedErrorMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

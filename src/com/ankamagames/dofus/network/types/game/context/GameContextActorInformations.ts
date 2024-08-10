@@ -10,6 +10,9 @@ export class GameContextActorInformations extends GameContextActorPositionInform
 
 	public static readonly protocolId: number = 9060;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public look: EntityLook;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GameContextActorInformations extends GameContextActorPositionInform
     public getTypeId()
     {
         return GameContextActorInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameContextActorInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameContextActorInformations.endpointServer;
     }
 
     public initGameContextActorInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null): GameContextActorInformations

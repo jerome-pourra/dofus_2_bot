@@ -9,6 +9,9 @@ export class ReportResponseMessage extends NetworkMessage implements INetworkMes
 
 	public static readonly protocolId: number = 8138;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public success: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class ReportResponseMessage extends NetworkMessage implements INetworkMes
         return ReportResponseMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ReportResponseMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ReportResponseMessage.endpointServer;
+    }
+
     public initReportResponseMessage(success: boolean = false): ReportResponseMessage
     {
         this.success = success;
@@ -31,7 +44,7 @@ export class ReportResponseMessage extends NetworkMessage implements INetworkMes
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

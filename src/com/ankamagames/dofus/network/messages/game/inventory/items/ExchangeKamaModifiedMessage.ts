@@ -9,6 +9,9 @@ export class ExchangeKamaModifiedMessage extends ExchangeObjectMessage implement
 
 	public static readonly protocolId: number = 4910;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public quantity: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class ExchangeKamaModifiedMessage extends ExchangeObjectMessage implement
     public getMessageId()
     {
         return ExchangeKamaModifiedMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeKamaModifiedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeKamaModifiedMessage.endpointServer;
     }
 
     public initExchangeKamaModifiedMessage(remote: boolean = false, quantity: number = 0): ExchangeKamaModifiedMessage
@@ -32,7 +45,7 @@ export class ExchangeKamaModifiedMessage extends ExchangeObjectMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

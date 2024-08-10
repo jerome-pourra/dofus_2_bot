@@ -9,6 +9,9 @@ export class ClientUIOpenedByObjectMessage extends ClientUIOpenedMessage impleme
 
 	public static readonly protocolId: number = 2467;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public uid: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class ClientUIOpenedByObjectMessage extends ClientUIOpenedMessage impleme
     public getMessageId()
     {
         return ClientUIOpenedByObjectMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ClientUIOpenedByObjectMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ClientUIOpenedByObjectMessage.endpointServer;
     }
 
     public initClientUIOpenedByObjectMessage(type: number = 0, uid: number = 0): ClientUIOpenedByObjectMessage
@@ -32,7 +45,7 @@ export class ClientUIOpenedByObjectMessage extends ClientUIOpenedMessage impleme
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class EntityMovementInformations implements INetworkType
 
 	public static readonly protocolId: number = 4990;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public id: number = 0;
 	public steps: Array<number>;
 
@@ -18,6 +21,16 @@ export class EntityMovementInformations implements INetworkType
     public getTypeId()
     {
         return EntityMovementInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return EntityMovementInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EntityMovementInformations.endpointServer;
     }
 
     public initEntityMovementInformations(id: number = 0, steps: Array<number> = null): EntityMovementInformations

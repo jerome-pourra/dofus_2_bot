@@ -13,6 +13,9 @@ export class SlaveSwitchContextMessage extends NetworkMessage implements INetwor
 
 	public static readonly protocolId: number = 974;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public masterId: number = 0;
 	public slaveId: number = 0;
 	public slaveTurn: number = 0;
@@ -33,6 +36,16 @@ export class SlaveSwitchContextMessage extends NetworkMessage implements INetwor
         return SlaveSwitchContextMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SlaveSwitchContextMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SlaveSwitchContextMessage.endpointServer;
+    }
+
     public initSlaveSwitchContextMessage(masterId: number = 0, slaveId: number = 0, slaveTurn: number = 0, slaveSpells: Array<SpellItem> = null, slaveStats: CharacterCharacteristicsInformations = null, shortcuts: Array<Shortcut> = null): SlaveSwitchContextMessage
     {
         this.masterId = masterId;
@@ -48,7 +61,7 @@ export class SlaveSwitchContextMessage extends NetworkMessage implements INetwor
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

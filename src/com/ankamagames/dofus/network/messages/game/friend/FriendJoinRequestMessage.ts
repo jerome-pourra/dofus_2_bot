@@ -11,6 +11,9 @@ export class FriendJoinRequestMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 5530;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public target: AbstractPlayerSearchInformation;
 
     public constructor()
@@ -24,6 +27,16 @@ export class FriendJoinRequestMessage extends NetworkMessage implements INetwork
         return FriendJoinRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return FriendJoinRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendJoinRequestMessage.endpointServer;
+    }
+
     public initFriendJoinRequestMessage(target: AbstractPlayerSearchInformation = null): FriendJoinRequestMessage
     {
         this.target = target;
@@ -34,7 +47,7 @@ export class FriendJoinRequestMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

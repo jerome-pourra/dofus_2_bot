@@ -14,6 +14,9 @@ export class FriendOnlineInformations extends FriendInformations implements INet
 
 	public static readonly protocolId: number = 9348;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerId: number = 0;
 	public playerName: string = "";
 	public level: number = 0;
@@ -35,6 +38,16 @@ export class FriendOnlineInformations extends FriendInformations implements INet
     public getTypeId()
     {
         return FriendOnlineInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FriendOnlineInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FriendOnlineInformations.endpointServer;
     }
 
     public initFriendOnlineInformations(accountId: number = 0, accountTag: AccountTagInformation = null, playerState: number = 99, lastConnection: number = 0, achievementPoints: number = 0, leagueId: number = 0, ladderPosition: number = 0, playerId: number = 0, playerName: string = "", level: number = 0, alignmentSide: number = 0, breed: number = 0, sex: boolean = false, guildInfo: GuildInformations = null, moodSmileyId: number = 0, status: PlayerStatus = null, havenBagShared: boolean = false): FriendOnlineInformations

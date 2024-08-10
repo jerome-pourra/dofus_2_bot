@@ -9,6 +9,9 @@ export class EditHavenBagRequestMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 6707;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class EditHavenBagRequestMessage extends NetworkMessage implements INetwo
     public getMessageId()
     {
         return EditHavenBagRequestMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return EditHavenBagRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return EditHavenBagRequestMessage.endpointServer;
     }
 
     public initEditHavenBagRequestMessage(): EditHavenBagRequestMessage
@@ -28,7 +41,7 @@ export class EditHavenBagRequestMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

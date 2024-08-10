@@ -9,6 +9,9 @@ export class SpouseStatusMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 8361;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public hasSpouse: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class SpouseStatusMessage extends NetworkMessage implements INetworkMessa
         return SpouseStatusMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SpouseStatusMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpouseStatusMessage.endpointServer;
+    }
+
     public initSpouseStatusMessage(hasSpouse: boolean = false): SpouseStatusMessage
     {
         this.hasSpouse = hasSpouse;
@@ -31,7 +44,7 @@ export class SpouseStatusMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

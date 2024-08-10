@@ -9,6 +9,9 @@ export class GuildApplicationPresenceMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 9885;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public isApplication: boolean = false;
 
     public constructor()
@@ -21,6 +24,16 @@ export class GuildApplicationPresenceMessage extends NetworkMessage implements I
         return GuildApplicationPresenceMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return GuildApplicationPresenceMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GuildApplicationPresenceMessage.endpointServer;
+    }
+
     public initGuildApplicationPresenceMessage(isApplication: boolean = false): GuildApplicationPresenceMessage
     {
         this.isApplication = isApplication;
@@ -31,7 +44,7 @@ export class GuildApplicationPresenceMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

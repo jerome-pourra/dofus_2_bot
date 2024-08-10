@@ -9,6 +9,9 @@ export class AllianceLeftMessage extends NetworkMessage implements INetworkMessa
 
 	public static readonly protocolId: number = 6490;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class AllianceLeftMessage extends NetworkMessage implements INetworkMessa
     public getMessageId()
     {
         return AllianceLeftMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceLeftMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceLeftMessage.endpointServer;
     }
 
     public initAllianceLeftMessage(): AllianceLeftMessage
@@ -28,7 +41,7 @@ export class AllianceLeftMessage extends NetworkMessage implements INetworkMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

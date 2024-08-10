@@ -8,6 +8,9 @@ export class AllianceRecruitmentInformation extends SocialRecruitmentInformation
 
 	public static readonly protocolId: number = 4753;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
     public constructor()
     {
         super();
@@ -16,6 +19,16 @@ export class AllianceRecruitmentInformation extends SocialRecruitmentInformation
     public getTypeId()
     {
         return AllianceRecruitmentInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AllianceRecruitmentInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceRecruitmentInformation.endpointServer;
     }
 
     public initAllianceRecruitmentInformation(socialId: number = 0, recruitmentType: number = 0, recruitmentTitle: string = "", recruitmentText: string = "", selectedLanguages: Array<number> = null, selectedCriterion: Array<number> = null, minLevel: number = 0, minLevelFacultative: boolean = false, invalidatedByModeration: boolean = false, lastEditPlayerName: string = "", lastEditDate: number = 0, recruitmentAutoLocked: boolean = false): AllianceRecruitmentInformation

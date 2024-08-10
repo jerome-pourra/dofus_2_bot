@@ -13,6 +13,9 @@ export class GameFightFighterNamedInformations extends GameFightFighterInformati
 
 	public static readonly protocolId: number = 4176;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public name: string = "";
 	public status: PlayerStatus;
 	public leagueId: number = 0;
@@ -28,6 +31,16 @@ export class GameFightFighterNamedInformations extends GameFightFighterInformati
     public getTypeId()
     {
         return GameFightFighterNamedInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameFightFighterNamedInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameFightFighterNamedInformations.endpointServer;
     }
 
     public initGameFightFighterNamedInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, spawnInfo: GameContextBasicSpawnInformation = null, wave: number = 0, stats: GameFightCharacteristics = null, previousPositions: Array<number> = null, name: string = "", status: PlayerStatus = null, leagueId: number = 0, ladderPosition: number = 0, hiddenInPrefight: boolean = false): GameFightFighterNamedInformations

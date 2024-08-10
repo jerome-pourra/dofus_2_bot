@@ -9,6 +9,9 @@ export class ExchangeStartedWithMultiTabStorageMessage extends ExchangeStartedMe
 
 	public static readonly protocolId: number = 4135;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public storageMaxSlot: number = 0;
 	public tabNumber: number = 0;
 
@@ -20,6 +23,16 @@ export class ExchangeStartedWithMultiTabStorageMessage extends ExchangeStartedMe
     public getMessageId()
     {
         return ExchangeStartedWithMultiTabStorageMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ExchangeStartedWithMultiTabStorageMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeStartedWithMultiTabStorageMessage.endpointServer;
     }
 
     public initExchangeStartedWithMultiTabStorageMessage(exchangeType: number = 0, storageMaxSlot: number = 0, tabNumber: number = 0): ExchangeStartedWithMultiTabStorageMessage
@@ -34,7 +47,7 @@ export class ExchangeStartedWithMultiTabStorageMessage extends ExchangeStartedMe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

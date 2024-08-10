@@ -7,6 +7,9 @@ export class PaddockBuyableInformations implements INetworkType
 
 	public static readonly protocolId: number = 5612;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public price: number = 0;
 	public locked: boolean = false;
 
@@ -18,6 +21,16 @@ export class PaddockBuyableInformations implements INetworkType
     public getTypeId()
     {
         return PaddockBuyableInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return PaddockBuyableInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return PaddockBuyableInformations.endpointServer;
     }
 
     public initPaddockBuyableInformations(price: number = 0, locked: boolean = false): PaddockBuyableInformations

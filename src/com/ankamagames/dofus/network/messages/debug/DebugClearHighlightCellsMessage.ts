@@ -9,6 +9,9 @@ export class DebugClearHighlightCellsMessage extends NetworkMessage implements I
 
 	public static readonly protocolId: number = 3737;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
     public constructor()
     {
         super();
@@ -17,6 +20,16 @@ export class DebugClearHighlightCellsMessage extends NetworkMessage implements I
     public getMessageId()
     {
         return DebugClearHighlightCellsMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return DebugClearHighlightCellsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DebugClearHighlightCellsMessage.endpointServer;
     }
 
     public initDebugClearHighlightCellsMessage(): DebugClearHighlightCellsMessage
@@ -28,7 +41,7 @@ export class DebugClearHighlightCellsMessage extends NetworkMessage implements I
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -7,6 +7,9 @@ export class Uuid implements INetworkType
 
 	public static readonly protocolId: number = 8662;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public uuidString: string = "";
 
     public constructor()
@@ -17,6 +20,16 @@ export class Uuid implements INetworkType
     public getTypeId()
     {
         return Uuid.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return Uuid.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return Uuid.endpointServer;
     }
 
     public initUuid(uuidString: string = ""): Uuid

@@ -9,6 +9,9 @@ export class AllianceRankCreateRequestMessage extends NetworkMessage implements 
 
 	public static readonly protocolId: number = 9486;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public parentRankId: number = 0;
 	public gfxId: number = 0;
 	public name: string = "";
@@ -23,6 +26,16 @@ export class AllianceRankCreateRequestMessage extends NetworkMessage implements 
         return AllianceRankCreateRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceRankCreateRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceRankCreateRequestMessage.endpointServer;
+    }
+
     public initAllianceRankCreateRequestMessage(parentRankId: number = 0, gfxId: number = 0, name: string = ""): AllianceRankCreateRequestMessage
     {
         this.parentRankId = parentRankId;
@@ -35,7 +48,7 @@ export class AllianceRankCreateRequestMessage extends NetworkMessage implements 
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

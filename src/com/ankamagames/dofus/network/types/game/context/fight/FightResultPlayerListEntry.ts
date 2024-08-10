@@ -11,6 +11,9 @@ export class FightResultPlayerListEntry extends FightResultFighterListEntry impl
 
 	public static readonly protocolId: number = 6813;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public level: number = 0;
 	public additional: Array<FightResultAdditionalData>;
 
@@ -23,6 +26,16 @@ export class FightResultPlayerListEntry extends FightResultFighterListEntry impl
     public getTypeId()
     {
         return FightResultPlayerListEntry.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return FightResultPlayerListEntry.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return FightResultPlayerListEntry.endpointServer;
     }
 
     public initFightResultPlayerListEntry(outcome: number = 0, wave: number = 0, rewards: FightLoot = null, id: number = 0, alive: boolean = false, level: number = 0, additional: Array<FightResultAdditionalData> = null): FightResultPlayerListEntry

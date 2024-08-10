@@ -10,6 +10,9 @@ export class ExchangeCraftResultWithObjectDescMessage extends ExchangeCraftResul
 
 	public static readonly protocolId: number = 4819;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public objectInfo: ObjectItemNotInContainer;
 
     public constructor()
@@ -23,6 +26,16 @@ export class ExchangeCraftResultWithObjectDescMessage extends ExchangeCraftResul
         return ExchangeCraftResultWithObjectDescMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeCraftResultWithObjectDescMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeCraftResultWithObjectDescMessage.endpointServer;
+    }
+
     public initExchangeCraftResultWithObjectDescMessage(craftResult: number = 0, objectInfo: ObjectItemNotInContainer = null): ExchangeCraftResultWithObjectDescMessage
     {
         super.initExchangeCraftResultMessage(craftResult);
@@ -34,7 +47,7 @@ export class ExchangeCraftResultWithObjectDescMessage extends ExchangeCraftResul
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

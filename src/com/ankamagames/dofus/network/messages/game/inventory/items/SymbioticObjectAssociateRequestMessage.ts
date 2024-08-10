@@ -9,6 +9,9 @@ export class SymbioticObjectAssociateRequestMessage extends NetworkMessage imple
 
 	public static readonly protocolId: number = 9614;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public symbioteUID: number = 0;
 	public symbiotePos: number = 0;
 	public hostUID: number = 0;
@@ -24,6 +27,16 @@ export class SymbioticObjectAssociateRequestMessage extends NetworkMessage imple
         return SymbioticObjectAssociateRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return SymbioticObjectAssociateRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SymbioticObjectAssociateRequestMessage.endpointServer;
+    }
+
     public initSymbioticObjectAssociateRequestMessage(symbioteUID: number = 0, symbiotePos: number = 0, hostUID: number = 0, hostPos: number = 0): SymbioticObjectAssociateRequestMessage
     {
         this.symbioteUID = symbioteUID;
@@ -37,7 +50,7 @@ export class SymbioticObjectAssociateRequestMessage extends NetworkMessage imple
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class SkillActionDescriptionCraft extends SkillActionDescription implemen
 
 	public static readonly protocolId: number = 5905;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public probability: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class SkillActionDescriptionCraft extends SkillActionDescription implemen
     public getTypeId()
     {
         return SkillActionDescriptionCraft.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SkillActionDescriptionCraft.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SkillActionDescriptionCraft.endpointServer;
     }
 
     public initSkillActionDescriptionCraft(skillId: number = 0, probability: number = 0): SkillActionDescriptionCraft

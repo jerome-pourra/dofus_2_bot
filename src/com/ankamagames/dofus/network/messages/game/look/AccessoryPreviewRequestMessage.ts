@@ -9,6 +9,9 @@ export class AccessoryPreviewRequestMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 375;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public genericId: Array<number>;
 
     public constructor()
@@ -22,6 +25,16 @@ export class AccessoryPreviewRequestMessage extends NetworkMessage implements IN
         return AccessoryPreviewRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AccessoryPreviewRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AccessoryPreviewRequestMessage.endpointServer;
+    }
+
     public initAccessoryPreviewRequestMessage(genericId: Array<number> = null): AccessoryPreviewRequestMessage
     {
         this.genericId = genericId;
@@ -32,7 +45,7 @@ export class AccessoryPreviewRequestMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -10,6 +10,9 @@ export class DumpedEntityStatsMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 2370;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public actorId: number = 0;
 	public stats: CharacterCharacteristics;
 
@@ -24,6 +27,16 @@ export class DumpedEntityStatsMessage extends NetworkMessage implements INetwork
         return DumpedEntityStatsMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return DumpedEntityStatsMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return DumpedEntityStatsMessage.endpointServer;
+    }
+
     public initDumpedEntityStatsMessage(actorId: number = 0, stats: CharacterCharacteristics = null): DumpedEntityStatsMessage
     {
         this.actorId = actorId;
@@ -35,7 +48,7 @@ export class DumpedEntityStatsMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

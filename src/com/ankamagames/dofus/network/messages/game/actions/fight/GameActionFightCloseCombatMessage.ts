@@ -9,6 +9,9 @@ export class GameActionFightCloseCombatMessage extends AbstractGameActionFightTa
 
 	public static readonly protocolId: number = 2405;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public weaponGenericId: number = 0;
 
     public constructor()
@@ -19,6 +22,16 @@ export class GameActionFightCloseCombatMessage extends AbstractGameActionFightTa
     public getMessageId()
     {
         return GameActionFightCloseCombatMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionFightCloseCombatMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightCloseCombatMessage.endpointServer;
     }
 
     public initGameActionFightCloseCombatMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, destinationCellId: number = 0, critical: number = 1, silentCast: boolean = false, verboseCast: boolean = false, weaponGenericId: number = 0): GameActionFightCloseCombatMessage
@@ -32,7 +45,7 @@ export class GameActionFightCloseCombatMessage extends AbstractGameActionFightTa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -11,6 +11,9 @@ export class BasicWhoIsNoMatchMessage extends NetworkMessage implements INetwork
 
 	public static readonly protocolId: number = 4629;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public target: AbstractPlayerSearchInformation;
 
     public constructor()
@@ -24,6 +27,16 @@ export class BasicWhoIsNoMatchMessage extends NetworkMessage implements INetwork
         return BasicWhoIsNoMatchMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BasicWhoIsNoMatchMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicWhoIsNoMatchMessage.endpointServer;
+    }
+
     public initBasicWhoIsNoMatchMessage(target: AbstractPlayerSearchInformation = null): BasicWhoIsNoMatchMessage
     {
         this.target = target;
@@ -34,7 +47,7 @@ export class BasicWhoIsNoMatchMessage extends NetworkMessage implements INetwork
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

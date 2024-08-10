@@ -10,6 +10,9 @@ export class KohAllianceInfo implements INetworkType
 
 	public static readonly protocolId: number = 7195;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public alliance: AllianceInformation;
 	public memberCount: number = 0;
 	public kohAllianceRoleMembers: Array<KohAllianceRoleMembers>;
@@ -26,6 +29,16 @@ export class KohAllianceInfo implements INetworkType
     public getTypeId()
     {
         return KohAllianceInfo.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return KohAllianceInfo.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return KohAllianceInfo.endpointServer;
     }
 
     public initKohAllianceInfo(alliance: AllianceInformation = null, memberCount: number = 0, kohAllianceRoleMembers: Array<KohAllianceRoleMembers> = null, scores: Array<KohScore> = null, matchDominationScores: number = 0): KohAllianceInfo

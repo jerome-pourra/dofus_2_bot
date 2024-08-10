@@ -9,6 +9,9 @@ export class ExchangeBidPriceForSellerMessage extends ExchangeBidPriceMessage im
 
 	public static readonly protocolId: number = 7209;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allIdentical: boolean = false;
 	public minimalPrices: Array<number>;
 
@@ -23,6 +26,16 @@ export class ExchangeBidPriceForSellerMessage extends ExchangeBidPriceMessage im
         return ExchangeBidPriceForSellerMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return ExchangeBidPriceForSellerMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ExchangeBidPriceForSellerMessage.endpointServer;
+    }
+
     public initExchangeBidPriceForSellerMessage(genericId: number = 0, averagePrice: number = 0, allIdentical: boolean = false, minimalPrices: Array<number> = null): ExchangeBidPriceForSellerMessage
     {
         super.initExchangeBidPriceMessage(genericId,averagePrice);
@@ -35,7 +48,7 @@ export class ExchangeBidPriceForSellerMessage extends ExchangeBidPriceMessage im
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

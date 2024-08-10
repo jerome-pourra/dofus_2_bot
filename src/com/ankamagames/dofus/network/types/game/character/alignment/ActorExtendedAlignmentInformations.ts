@@ -8,6 +8,9 @@ export class ActorExtendedAlignmentInformations extends ActorAlignmentInformatio
 
 	public static readonly protocolId: number = 4048;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public honor: number = 0;
 	public honorGradeFloor: number = 0;
 	public honorNextGradeFloor: number = 0;
@@ -21,6 +24,16 @@ export class ActorExtendedAlignmentInformations extends ActorAlignmentInformatio
     public getTypeId()
     {
         return ActorExtendedAlignmentInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ActorExtendedAlignmentInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ActorExtendedAlignmentInformations.endpointServer;
     }
 
     public initActorExtendedAlignmentInformations(alignmentSide: number = 0, alignmentValue: number = 0, alignmentGrade: number = 0, characterPower: number = 0, honor: number = 0, honorGradeFloor: number = 0, honorNextGradeFloor: number = 0, aggressable: number = 0): ActorExtendedAlignmentInformations

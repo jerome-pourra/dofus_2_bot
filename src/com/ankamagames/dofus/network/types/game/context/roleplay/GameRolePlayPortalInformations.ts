@@ -12,6 +12,9 @@ export class GameRolePlayPortalInformations extends GameRolePlayActorInformation
 
 	public static readonly protocolId: number = 9999;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public portal: PortalInformation;
 
     public constructor()
@@ -23,6 +26,16 @@ export class GameRolePlayPortalInformations extends GameRolePlayActorInformation
     public getTypeId()
     {
         return GameRolePlayPortalInformations.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameRolePlayPortalInformations.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameRolePlayPortalInformations.endpointServer;
     }
 
     public initGameRolePlayPortalInformations(contextualId: number = 0, disposition: EntityDispositionInformations = null, look: EntityLook = null, portal: PortalInformation = null): GameRolePlayPortalInformations

@@ -9,6 +9,9 @@ export class BasicStatMessage extends NetworkMessage implements INetworkMessage
 
 	public static readonly protocolId: number = 2233;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public timeSpent: number = 0;
 	public statId: number = 0;
 
@@ -22,6 +25,16 @@ export class BasicStatMessage extends NetworkMessage implements INetworkMessage
         return BasicStatMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return BasicStatMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return BasicStatMessage.endpointServer;
+    }
+
     public initBasicStatMessage(timeSpent: number = 0, statId: number = 0): BasicStatMessage
     {
         this.timeSpent = timeSpent;
@@ -33,7 +46,7 @@ export class BasicStatMessage extends NetworkMessage implements INetworkMessage
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -9,6 +9,9 @@ export class GameActionFightDropCharacterMessage extends AbstractGameActionMessa
 
 	public static readonly protocolId: number = 8009;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public targetId: number = 0;
 	public cellId: number = 0;
 
@@ -20,6 +23,16 @@ export class GameActionFightDropCharacterMessage extends AbstractGameActionMessa
     public getMessageId()
     {
         return GameActionFightDropCharacterMessage.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return GameActionFightDropCharacterMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return GameActionFightDropCharacterMessage.endpointServer;
     }
 
     public initGameActionFightDropCharacterMessage(actionId: number = 0, sourceId: number = 0, targetId: number = 0, cellId: number = 0): GameActionFightDropCharacterMessage
@@ -34,7 +47,7 @@ export class GameActionFightDropCharacterMessage extends AbstractGameActionMessa
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class ShortcutSmiley extends Shortcut implements INetworkType
 
 	public static readonly protocolId: number = 4118;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public smileyId: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class ShortcutSmiley extends Shortcut implements INetworkType
     public getTypeId()
     {
         return ShortcutSmiley.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return ShortcutSmiley.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return ShortcutSmiley.endpointServer;
     }
 
     public initShortcutSmiley(slot: number = 0, smileyId: number = 0): ShortcutSmiley

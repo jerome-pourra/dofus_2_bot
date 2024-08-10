@@ -11,6 +11,9 @@ export class AcquaintanceOnlineInformation extends AcquaintanceInformation imple
 
 	public static readonly protocolId: number = 251;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public playerId: number = 0;
 	public playerName: string = "";
 	public moodSmileyId: number = 0;
@@ -25,6 +28,16 @@ export class AcquaintanceOnlineInformation extends AcquaintanceInformation imple
     public getTypeId()
     {
         return AcquaintanceOnlineInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return AcquaintanceOnlineInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AcquaintanceOnlineInformation.endpointServer;
     }
 
     public initAcquaintanceOnlineInformation(accountId: number = 0, accountTag: AccountTagInformation = null, playerState: number = 99, playerId: number = 0, playerName: string = "", moodSmileyId: number = 0, status: PlayerStatus = null): AcquaintanceOnlineInformation

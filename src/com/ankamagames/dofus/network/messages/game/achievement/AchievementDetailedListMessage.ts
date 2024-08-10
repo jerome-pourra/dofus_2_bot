@@ -10,6 +10,9 @@ export class AchievementDetailedListMessage extends NetworkMessage implements IN
 
 	public static readonly protocolId: number = 2020;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public startedAchievements: Array<Achievement>;
 	public finishedAchievements: Array<Achievement>;
 
@@ -25,6 +28,16 @@ export class AchievementDetailedListMessage extends NetworkMessage implements IN
         return AchievementDetailedListMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AchievementDetailedListMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AchievementDetailedListMessage.endpointServer;
+    }
+
     public initAchievementDetailedListMessage(startedAchievements: Array<Achievement> = null, finishedAchievements: Array<Achievement> = null): AchievementDetailedListMessage
     {
         this.startedAchievements = startedAchievements;
@@ -36,7 +49,7 @@ export class AchievementDetailedListMessage extends NetworkMessage implements IN
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

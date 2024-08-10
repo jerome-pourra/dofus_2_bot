@@ -10,6 +10,9 @@ export class AllianceFightFighterRemovedMessage extends NetworkMessage implement
 
 	public static readonly protocolId: number = 944;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceFightInfo: SocialFightInfo;
 	public fighterId: number = 0;
 
@@ -24,6 +27,16 @@ export class AllianceFightFighterRemovedMessage extends NetworkMessage implement
         return AllianceFightFighterRemovedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceFightFighterRemovedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceFightFighterRemovedMessage.endpointServer;
+    }
+
     public initAllianceFightFighterRemovedMessage(allianceFightInfo: SocialFightInfo = null, fighterId: number = 0): AllianceFightFighterRemovedMessage
     {
         this.allianceFightInfo = allianceFightInfo;
@@ -35,7 +48,7 @@ export class AllianceFightFighterRemovedMessage extends NetworkMessage implement
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

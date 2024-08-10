@@ -9,6 +9,9 @@ export class TaxCollectorHarvestedMessage extends NetworkMessage implements INet
 
 	public static readonly protocolId: number = 3704;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public taxCollectorId: number = 0;
 	public harvesterId: number = 0;
 	public harvesterName: string = "";
@@ -23,6 +26,16 @@ export class TaxCollectorHarvestedMessage extends NetworkMessage implements INet
         return TaxCollectorHarvestedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TaxCollectorHarvestedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TaxCollectorHarvestedMessage.endpointServer;
+    }
+
     public initTaxCollectorHarvestedMessage(taxCollectorId: number = 0, harvesterId: number = 0, harvesterName: string = ""): TaxCollectorHarvestedMessage
     {
         this.taxCollectorId = taxCollectorId;
@@ -35,7 +48,7 @@ export class TaxCollectorHarvestedMessage extends NetworkMessage implements INet
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

@@ -8,6 +8,9 @@ export class SpawnScaledMonsterInformation extends BaseSpawnMonsterInformation i
 
 	public static readonly protocolId: number = 8568;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public creatureLevel: number = 0;
 
     public constructor()
@@ -18,6 +21,16 @@ export class SpawnScaledMonsterInformation extends BaseSpawnMonsterInformation i
     public getTypeId()
     {
         return SpawnScaledMonsterInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SpawnScaledMonsterInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SpawnScaledMonsterInformation.endpointServer;
     }
 
     public initSpawnScaledMonsterInformation(creatureGenericId: number = 0, creatureLevel: number = 0): SpawnScaledMonsterInformation

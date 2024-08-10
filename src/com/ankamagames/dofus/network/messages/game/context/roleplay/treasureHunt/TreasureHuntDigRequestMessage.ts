@@ -9,6 +9,9 @@ export class TreasureHuntDigRequestMessage extends NetworkMessage implements INe
 
 	public static readonly protocolId: number = 6696;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public questType: number = 0;
 
     public constructor()
@@ -21,6 +24,16 @@ export class TreasureHuntDigRequestMessage extends NetworkMessage implements INe
         return TreasureHuntDigRequestMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return TreasureHuntDigRequestMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return TreasureHuntDigRequestMessage.endpointServer;
+    }
+
     public initTreasureHuntDigRequestMessage(questType: number = 0): TreasureHuntDigRequestMessage
     {
         this.questType = questType;
@@ -31,7 +44,7 @@ export class TreasureHuntDigRequestMessage extends NetworkMessage implements INe
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

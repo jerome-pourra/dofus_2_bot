@@ -10,6 +10,9 @@ export class SocialFight implements INetworkType
 
 	public static readonly protocolId: number = 2810;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public socialFightInfo: SocialFightInfo;
 	public attackers: Array<CharacterMinimalPlusLookInformations>;
 	public defenders: Array<CharacterMinimalPlusLookInformations>;
@@ -26,6 +29,16 @@ export class SocialFight implements INetworkType
     public getTypeId()
     {
         return SocialFight.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return SocialFight.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return SocialFight.endpointServer;
     }
 
     public initSocialFight(socialFightInfo: SocialFightInfo = null, attackers: Array<CharacterMinimalPlusLookInformations> = null, defenders: Array<CharacterMinimalPlusLookInformations> = null, phase: FightPhase = null): SocialFight

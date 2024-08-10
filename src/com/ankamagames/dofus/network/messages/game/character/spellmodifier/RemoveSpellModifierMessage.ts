@@ -9,6 +9,9 @@ export class RemoveSpellModifierMessage extends NetworkMessage implements INetwo
 
 	public static readonly protocolId: number = 194;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public actorId: number = 0;
 	public actionType: number = 0;
 	public modifierType: number = 0;
@@ -24,6 +27,16 @@ export class RemoveSpellModifierMessage extends NetworkMessage implements INetwo
         return RemoveSpellModifierMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return RemoveSpellModifierMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return RemoveSpellModifierMessage.endpointServer;
+    }
+
     public initRemoveSpellModifierMessage(actorId: number = 0, actionType: number = 0, modifierType: number = 0, spellId: number = 0): RemoveSpellModifierMessage
     {
         this.actorId = actorId;
@@ -37,7 +50,7 @@ export class RemoveSpellModifierMessage extends NetworkMessage implements INetwo
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

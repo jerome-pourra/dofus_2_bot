@@ -7,6 +7,9 @@ export class RemodelingInformation implements INetworkType
 
 	public static readonly protocolId: number = 3743;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public name: string = "";
 	public breed: number = 0;
 	public sex: boolean = false;
@@ -21,6 +24,16 @@ export class RemodelingInformation implements INetworkType
     public getTypeId()
     {
         return RemodelingInformation.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return RemodelingInformation.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return RemodelingInformation.endpointServer;
     }
 
     public initRemodelingInformation(name: string = "", breed: number = 0, sex: boolean = false, cosmeticId: number = 0, colors: Array<number> = null): RemodelingInformation

@@ -9,6 +9,9 @@ export class HumanOptionGuild extends HumanOption implements INetworkType
 
 	public static readonly protocolId: number = 1132;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guildInformations: GuildInformations;
 
     public constructor()
@@ -20,6 +23,16 @@ export class HumanOptionGuild extends HumanOption implements INetworkType
     public getTypeId()
     {
         return HumanOptionGuild.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return HumanOptionGuild.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return HumanOptionGuild.endpointServer;
     }
 
     public initHumanOptionGuild(guildInformations: GuildInformations = null): HumanOptionGuild

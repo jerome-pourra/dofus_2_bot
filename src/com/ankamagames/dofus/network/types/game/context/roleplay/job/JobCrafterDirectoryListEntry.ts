@@ -9,6 +9,9 @@ export class JobCrafterDirectoryListEntry implements INetworkType
 
 	public static readonly protocolId: number = 7693;
 
+	public static readonly endpointClient: boolean = false;
+	public static readonly endpointServer: boolean = true;
+
 	public playerInfo: JobCrafterDirectoryEntryPlayerInfo;
 	public jobInfo: JobCrafterDirectoryEntryJobInfo;
 
@@ -21,6 +24,16 @@ export class JobCrafterDirectoryListEntry implements INetworkType
     public getTypeId()
     {
         return JobCrafterDirectoryListEntry.protocolId;
+    }
+
+    public isEndpointClient()
+    {
+        return JobCrafterDirectoryListEntry.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return JobCrafterDirectoryListEntry.endpointServer;
     }
 
     public initJobCrafterDirectoryListEntry(playerInfo: JobCrafterDirectoryEntryPlayerInfo = null, jobInfo: JobCrafterDirectoryEntryJobInfo = null): JobCrafterDirectoryListEntry

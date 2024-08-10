@@ -10,6 +10,9 @@ export class InviteInHavenBagMessage extends NetworkMessage implements INetworkM
 
 	public static readonly protocolId: number = 949;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public guestInformations: CharacterMinimalInformations;
 	public accept: boolean = false;
 
@@ -24,6 +27,16 @@ export class InviteInHavenBagMessage extends NetworkMessage implements INetworkM
         return InviteInHavenBagMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return InviteInHavenBagMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return InviteInHavenBagMessage.endpointServer;
+    }
+
     public initInviteInHavenBagMessage(guestInformations: CharacterMinimalInformations = null, accept: boolean = false): InviteInHavenBagMessage
     {
         this.guestInformations = guestInformations;
@@ -35,7 +48,7 @@ export class InviteInHavenBagMessage extends NetworkMessage implements INetworkM
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)

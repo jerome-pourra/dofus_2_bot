@@ -11,6 +11,9 @@ export class AllianceFightStartedMessage extends NetworkMessage implements INetw
 
 	public static readonly protocolId: number = 9676;
 
+	public static readonly endpointClient: boolean = true;
+	public static readonly endpointServer: boolean = false;
+
 	public allianceFightInfo: SocialFightInfo;
 	public phase: FightPhase;
 
@@ -26,6 +29,16 @@ export class AllianceFightStartedMessage extends NetworkMessage implements INetw
         return AllianceFightStartedMessage.protocolId;
     }
 
+    public isEndpointClient()
+    {
+        return AllianceFightStartedMessage.endpointClient;
+    }
+
+    public isEndpointServer()
+    {
+        return AllianceFightStartedMessage.endpointServer;
+    }
+
     public initAllianceFightStartedMessage(allianceFightInfo: SocialFightInfo = null, phase: FightPhase = null): AllianceFightStartedMessage
     {
         this.allianceFightInfo = allianceFightInfo;
@@ -37,7 +50,7 @@ export class AllianceFightStartedMessage extends NetworkMessage implements INetw
     {
         let data: CustomDataWrapper = new CustomDataWrapper();
         this.serialize(data);
-        this.writePacket(output, this.getMessageId(), data);
+        this.isEndpointClient() ? this.writePacketClient(output, this.getMessageId(), data) : this.writePacketServer(output, this.getMessageId(), data);
     }
 
     public override unpack(input: ICustomDataInput, length: number)
