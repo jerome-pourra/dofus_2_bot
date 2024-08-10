@@ -1,6 +1,8 @@
 import { Server, Socket } from "net";
 import { AnkClient } from "./AnkClient";
 import { AnkServer } from "./AnkServer";
+import { Robot } from "../bot/Robot";
+import { GameInstance } from "../GameInstance";
 
 export class Mitm {
 
@@ -26,17 +28,12 @@ export class Mitm {
 
             console.log("Mitm() -> new connection from " + socketClient.remoteAddress + "::" + socketClient.remotePort);
 
-            let ankClient = new AnkClient(socketClient);
-            let ankServer = new AnkServer();
-
-            ankClient.attachAnkServer(ankServer);
-            ankServer.attachAnkClient(ankClient);
-
-            ankClient.attachEvent("close", () => ankServer.end());
-            ankClient.attachEvent("data", (data: Buffer) => {
-                ankClient.hookRecv(data, (host: string, port: number) => {
-                    ankServer.connect(host, port);
-                    ankServer.attachEvent("close", () => ankClient.end());
+            let gameInstance = new GameInstance(socketClient);
+            gameInstance.ankClient.attachEvent("close", () => gameInstance.ankServer.end());
+            gameInstance.ankClient.attachEvent("data", (data: Buffer) => {
+                gameInstance.ankClient.hookRecv(data, (host: string, port: number) => {
+                    gameInstance.ankServer.connect(host, port);
+                    gameInstance.ankServer.attachEvent("close", () => gameInstance.ankClient.end());
                 });
             });
 

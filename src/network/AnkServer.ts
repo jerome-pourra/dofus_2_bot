@@ -1,15 +1,13 @@
 import { Socket } from "net";
-import { AnkClient } from "./AnkClient";
 import { AnkSocket, AnkSocketEndpoint } from "./AnkSocket";
 import { ConnectionHandler } from "./ConnectionHandler";
+import { GameInstance } from "../GameInstance";
 
 export class AnkServer extends AnkSocket {
 
-    private _ankClient: AnkClient;
+    public constructor(gameInstance: GameInstance) {
 
-    public constructor() {
-
-        super();
+        super(gameInstance);
 
         this._socket = new Socket();
         ConnectionHandler.setServer(this);
@@ -36,10 +34,6 @@ export class AnkServer extends AnkSocket {
 
     }
 
-    public attachAnkClient(ankClient: AnkClient) {
-        this._ankClient = ankClient;
-    }
-
     public connect(host: string, port: number) {
         this._socket.connect(port, host);
     }
@@ -49,7 +43,7 @@ export class AnkServer extends AnkSocket {
         let queue = this._packetHandler.acquisition(data, AnkSocketEndpoint.CLIENT);
         if (queue) {
             for (let packet of queue) {
-                this._ankClient.send(packet);
+                this._gameInstance.ankClient.send(packet);
             }
         }
     }

@@ -1,15 +1,13 @@
 import { Socket } from "net";
-import { AnkServer } from "./AnkServer";
 import { AnkSocket, AnkSocketEndpoint } from "./AnkSocket";
 import { ConnectionHandler } from "./ConnectionHandler";
+import { GameInstance } from "../GameInstance";
 
 export class AnkClient extends AnkSocket {
 
-    private _ankServer: AnkServer;
+    public constructor(gameInstance: GameInstance, socket: Socket) {
 
-    public constructor(socket: Socket) {
-
-        super();
+        super(gameInstance);
 
         if (socket.readyState !== "open") {
             throw new Error("AnkClient() -> socket not open");
@@ -30,10 +28,6 @@ export class AnkClient extends AnkSocket {
             console.log("AnkClient() -> socket closed");
         });
 
-    }
-
-    public attachAnkServer(ankServer: AnkServer) {
-        this._ankServer = ankServer;
     }
     
     public hookRecv(data: Buffer, callback: (host: string, port: number) => void) {
@@ -56,7 +50,7 @@ export class AnkClient extends AnkSocket {
         let queue = this._packetHandler.acquisition(data, AnkSocketEndpoint.SERVER);
         if (queue) {
             for (let packet of queue) {
-                this._ankServer.send(packet);
+                this._gameInstance.ankServer.send(packet);
             }
         }
     }

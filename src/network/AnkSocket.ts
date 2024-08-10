@@ -1,5 +1,6 @@
 import { Socket } from "net";
 import { PacketHandler } from "./packet/PacketHandler";
+import { GameInstance } from "../GameInstance";
 
 export enum AnkSocketEndpoint {
     CLIENT,
@@ -9,9 +10,12 @@ export enum AnkSocketEndpoint {
 export abstract class AnkSocket {
 
     protected _socket: Socket;
+    protected _gameInstance: GameInstance;
     protected _packetHandler: PacketHandler;
 
-    public constructor() {
+    public constructor(gameInstance: GameInstance) {
+        this._socket = null;
+        this._gameInstance = gameInstance;
         this._packetHandler = new PacketHandler();
     }
 
