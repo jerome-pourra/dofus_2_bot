@@ -10,7 +10,7 @@ export class GameInstance {
     private _ankServer: AnkServer;
 
     public constructor(socketClient: Socket) {
-        this.robot = new Robot();
+        this.robot = new Robot(this);
         this.ankClient = new AnkClient(this, socketClient);
         this.ankServer = new AnkServer(this);
     }
