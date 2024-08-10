@@ -104,7 +104,7 @@ export class PacketHeaderDecoder {
     private decodeContent(): void {
 
         if (!this._rawInput.canRead(this._size)) {
-            throw new Error("PacketHeaderDecoder.decodeContent() -> packet too short");
+            throw new PacketTooShortError("PacketHeaderDecoder.decodeContent() -> packet too short");
         }
 
         let start = this._rawInput.readOffset;
