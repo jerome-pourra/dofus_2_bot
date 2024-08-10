@@ -20,4 +20,20 @@ export class NetworkMessageWrapper {
 
     }
 
+    public lock(): void {
+        if (this.locked) {
+            return;
+        }
+        this.locked = true;
+        this.networkMessage.decreaseInstanceId();
+    }
+
+    public unlock(): void {
+        if (!this.locked) {
+            return;
+        }
+        this.locked = false;
+        this.networkMessage.decreaseInstanceId();
+    }
+
 }
