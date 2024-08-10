@@ -25,7 +25,10 @@ export class NetworkMessageWrapper {
             return;
         }
         this.locked = true;
-        this.networkMessage.decreaseInstanceId();
+        if (this.endpoint === AnkSocketEndpoint.SERVER) {
+            // On lock un packet qui été sencé partir vers le serveur, on decrémente l'instanceId
+            this.networkMessage.decreaseInstanceId();
+        }
     }
 
     public unlock(): void {
@@ -33,7 +36,10 @@ export class NetworkMessageWrapper {
             return;
         }
         this.locked = false;
-        this.networkMessage.decreaseInstanceId();
+        if (this.endpoint === AnkSocketEndpoint.SERVER) {
+            // On unlock un packet qui été sencé partir vers le serveur, on decrémente l'instanceId
+            this.networkMessage.increaseInstanceId();
+        }
     }
 
 }
