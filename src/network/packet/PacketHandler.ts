@@ -7,8 +7,8 @@ import { Logger } from "../../tools/Logger";
 import { ICustomDataInput } from "../../com/ankamagames/jerakine/network/ICustomDataInput";
 import { NetworkMessageWrapper } from "./NetworkMessageWrapper";
 import { INetworkMessage } from "../../com/ankamagames/jerakine/network/INetworkMessage";
-import { NetworkExtractor } from "../../bot/network/NetworkExtractor";
 import { PacketTooShortError } from "./PacketTooShortError";
+import { NetworkExtractor } from "../../bot/network/NetworkExtractor";
 
 export class PacketHandler {
 

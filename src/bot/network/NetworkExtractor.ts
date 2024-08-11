@@ -1,4 +1,3 @@
-import { INetworkMessage } from "../../com/ankamagames/jerakine/network/INetworkMessage";
 import { NetworkMessageWrapper } from "../../network/packet/NetworkMessageWrapper";
 import { INetworkExtractor } from "./INetworkExtractor";
 import { ChatClientMultiMessageExtractor } from "./messages/ChatClientMultiExtractor";
