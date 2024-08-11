@@ -32,6 +32,8 @@ export class Mitm {
             // Quand on switch de connexion on reset tout c'est comme si un nouveau client vennait de se connecter (FRIDA)
 
             let gameInstance = new GameInstance(socketClient);
+            GameInstance.add(gameInstance);
+
             gameInstance.ankClient.attachEvent("close", () => gameInstance.ankServer.end());
             gameInstance.ankClient.attachEvent("data", (data: Buffer) => {
                 gameInstance.ankClient.hookRecv(data, (host: string, port: number) => {

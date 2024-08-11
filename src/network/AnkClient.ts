@@ -44,18 +44,18 @@ export class AnkClient extends AnkSocket {
     }
 
     private recv(data: Buffer) {
-        // console.log("[Client >>> Mitm] : " + data.toString("hex"));
+        GameInstance.set(this._gameInstance.uuid);
         let queue = this._packetHandler.acquisition(data, AnkSocketEndpoint.SERVER);
         if (queue) {
             for (let packet of queue) {
                 this._gameInstance.ankServer.send(packet);
             }
         }
+        GameInstance.unset();
     }
 
     public send(data: Buffer) {
         if (this._socket.writable) {
-            // console.log("[Mitm >>> Client] : " + data.toString("hex"));
             this._socket.write(data, (error) => {
                 if (error) {
                     console.error("AnkClient.send() -> writing data error: " + error);

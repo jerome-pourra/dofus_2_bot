@@ -36,7 +36,7 @@ export abstract class AnkSocket {
         if (this._socket.readyState === "open") {
             this._socket.destroy();
         } else {
-            console.error(`${this.constructor.name}AnkServer.end() -> socket not open`);
+            console.error(`${this.constructor.name}.destroy() -> socket not open`);
         }
     }
 
