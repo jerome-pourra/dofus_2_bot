@@ -4,6 +4,10 @@ import { MainMessage, WorkerMessage } from "./worker/WorkerMessage";
 
 let packetHandler = new PacketHandler();
 
+parentPort.on("close", () => {
+    console.log("Worker -> parentPort close");
+});
+
 parentPort.on("message", (message: MainMessage) => {
 
     let { raw, endpoint } = message;
@@ -14,7 +18,7 @@ parentPort.on("message", (message: MainMessage) => {
     if (acquisition) {
 
         let { queue, treatments } = acquisition;
-    
+
         parentPort.postMessage({
             queue: queue.map(packet => packet.toString("hex")),
             endpoint: endpoint,

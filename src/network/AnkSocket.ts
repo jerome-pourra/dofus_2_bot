@@ -58,6 +58,7 @@ export abstract class AnkSocket {
                 clearInterval(interval);
                 if (this._socket.readyState === "open") {
                     this._socket.end();
+                    this._worker.terminate();
                 } else {
                     console.error(`${this.constructor.name}.end() -> socket not open`);
                 }
@@ -68,6 +69,7 @@ export abstract class AnkSocket {
     public destroy() {
         if (this._socket.readyState === "open") {
             this._socket.destroy();
+            this._worker.terminate();
         } else {
             console.error(`${this.constructor.name}.destroy() -> socket not open`);
         }

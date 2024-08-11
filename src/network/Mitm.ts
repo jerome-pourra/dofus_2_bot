@@ -34,6 +34,17 @@ export class Mitm {
             let ankClient = new AnkClient(worker, socketClient);
             let ankServer = new AnkServer(worker);
 
+            worker.on("error", (error: Error) => {
+                console.error("Mitm() -> worker error:" + error.message);
+            });
+
+            worker.on("exit", (code: number) => {
+                console.log("Mitm() -> worker exit with code " + code);
+                ankClient.end(ankServer);
+                ankServer.end(ankClient);
+                return;
+            });
+
             worker.on("message", (message: WorkerMessage) => {
 
                 let { queue, endpoint, treatments } = message;
