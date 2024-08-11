@@ -5,6 +5,8 @@ import { MainMessage, WorkerMessage } from "../worker/WorkerMessage";
 
 export class AnkClient extends AnkSocket {
 
+    protected _endpoint = AnkSocketEndpoint.SERVER;
+
     public constructor(worker: Worker, socket: Socket) {
 
         super(worker);
@@ -42,33 +44,6 @@ export class AnkClient extends AnkSocket {
         this.send(Buffer.alloc(1, 0x00, "hex"));
         callback(host, port);
 
-    }
-
-    private recv(data: Buffer) {
-        this._untreated += data.length;
-        this._worker.postMessage({
-            raw: data.toString("hex"), 
-            endpoint: AnkSocketEndpoint.SERVER,
-            timestamp: Date.now(),
-        } as MainMessage);
-    }
-
-    public multiSend(dataList: Buffer[]) {
-        for (let data of dataList) {
-            this.send(data);
-        }
-    }
-
-    public send(data: Buffer) {
-        if (this._socket.writable) {
-            this._socket.write(data, (error) => {
-                if (error) {
-                    console.error("AnkClient.send() -> writing data error: " + error);
-                }
-            });
-        } else {
-            console.error("AnkClient.send() -> socket not writable");
-        }
     }
 
 }

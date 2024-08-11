@@ -1,6 +1,7 @@
 import { Socket } from "net";
 import { Worker } from "worker_threads";
 import { PacketHandler } from "./packet/PacketHandler";
+import { MainMessage } from "../worker/WorkerMessage";
 
 export enum AnkSocketEndpoint {
     CLIENT,
@@ -9,10 +10,13 @@ export enum AnkSocketEndpoint {
 
 export abstract class AnkSocket {
 
+    public static readonly ENDPOINT: AnkSocketEndpoint;
+
     protected _socket: Socket;
     protected _worker: Worker;
     protected _untreated: number;
     protected _packetHandler: PacketHandler;
+    protected abstract _endpoint: AnkSocketEndpoint;
 
     public constructor(worker: Worker) {
         this._socket = null;
@@ -28,6 +32,24 @@ export abstract class AnkSocket {
     public attachEvent(event: string, callback: (...args: any[]) => void) {
         this._socket.removeAllListeners(event);
         this._socket.addListener(event, callback);
+    }
+
+    public multiSend(dataList: Buffer[]) {
+        for (let data of dataList) {
+            this.send(data);
+        }
+    }
+
+    public send(data: Buffer) {
+        if (this._socket.writable) {
+            this._socket.write(data, (error) => {
+                if (error) {
+                    console.error(`${this.constructor.name}.send() -> writing data error: ${error}`);
+                }
+            });
+        } else {
+            console.error(`${this.constructor.name}.send() -> socket not writable`);
+        }
     }
 
     public end(other: AnkSocket) {
@@ -49,6 +71,15 @@ export abstract class AnkSocket {
         } else {
             console.error(`${this.constructor.name}.destroy() -> socket not open`);
         }
+    }
+
+    protected recv(data: Buffer) {
+        this._untreated += data.length;
+        this._worker.postMessage({
+            raw: data.toString("hex"),
+            endpoint: this._endpoint,
+            timestamp: Date.now(),
+        } as MainMessage);
     }
 
 }
