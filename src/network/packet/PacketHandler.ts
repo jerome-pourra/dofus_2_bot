@@ -7,7 +7,7 @@ import { Logger } from "../../tools/Logger";
 import { ICustomDataInput } from "../../com/ankamagames/jerakine/network/ICustomDataInput";
 import { NetworkMessageWrapper } from "./NetworkMessageWrapper";
 import { INetworkMessage } from "../../com/ankamagames/jerakine/network/INetworkMessage";
-import { NetworkHandler } from "../../bot/network/NetworkHandler";
+import { NetworkExtractor } from "../../bot/network/NetworkExtractor";
 import { PacketTooShortError } from "./PacketTooShortError";
 
 export class PacketHandler {
@@ -67,7 +67,7 @@ export class PacketHandler {
                     networkMessage
                 );
 
-                NetworkHandler.process(networkWrapper);
+                NetworkExtractor.process(networkWrapper);
 
                 if (!networkWrapper.locked) {
                     messagesQueue.push(networkWrapper);

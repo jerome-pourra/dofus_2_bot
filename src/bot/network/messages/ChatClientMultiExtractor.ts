@@ -1,10 +1,10 @@
 import { ChatClientMultiMessage } from "../../../com/ankamagames/dofus/network/messages/game/chat/ChatClientMultiMessage";
 import { INetworkMessage } from "../../../com/ankamagames/jerakine/network/INetworkMessage";
 import { NetworkMessageWrapper } from "../../../network/packet/NetworkMessageWrapper";
-import { INetworkHandler } from "../INetworkHandler";
+import { INetworkExtractor } from "../INetworkExtractor";
 
 
-export class ChatClientMultiMessageHandler implements INetworkHandler {
+export class ChatClientMultiMessageExtractor implements INetworkExtractor {
 
     private _wrapper: NetworkMessageWrapper;
     private _message: ChatClientMultiMessage;
