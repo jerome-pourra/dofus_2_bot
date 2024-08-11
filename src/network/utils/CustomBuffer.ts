@@ -308,8 +308,11 @@ export class CustomBuffer implements IDataInput, IDataOutput {
     }
 
     public writeUTF(value: string): void {
-        this.writeUnsignedShort(value.length);
-        this.writeString(value);
+        // Pour les characteres spéciaux encodé sur plusieurs bytes
+        let tmp = Buffer.from(value, "utf-8");
+        let length = tmp.length;
+        this.writeUnsignedShort(length);
+        this.writeString(value, length, "utf-8");
     }
 
     public writeMultiByte(length: number, charset: BufferEncoding = "utf-8"): string {
@@ -395,10 +398,10 @@ export class CustomBuffer implements IDataInput, IDataOutput {
         this._writeOffset += 8;
     }
 
-    protected writeString(value: string, encoding: BufferEncoding = "utf-8"): void {
-        this.allocate(value.length);
-        this._buffer.write(value, this._writeOffset, value.length, encoding);
-        this._writeOffset += value.length;
+    protected writeString(value: string, length: number, encoding: BufferEncoding = "utf-8"): void {
+        this.allocate(length);
+        this._buffer.write(value, this._writeOffset, length, encoding);
+        this._writeOffset += length;
     }
 
 }

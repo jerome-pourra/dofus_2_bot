@@ -1,22 +1,18 @@
 import { Socket } from "net";
-import { AnkServer } from "./AnkServer";
 import { AnkSocket, AnkSocketEndpoint } from "./AnkSocket";
-import { ConnectionHandler } from "./ConnectionHandler";
+import { GameInstance } from "../GameInstance";
 
 export class AnkClient extends AnkSocket {
 
-    private _ankServer: AnkServer;
+    public constructor(gameInstance: GameInstance, socket: Socket) {
 
-    public constructor(socket: Socket) {
-
-        super();
+        super(gameInstance);
 
         if (socket.readyState !== "open") {
             throw new Error("AnkClient() -> socket not open");
         }
 
         this._socket = socket;
-        ConnectionHandler.setClient(this);
 
         this._socket.addListener("error", (error: Error) => {
             console.error("AnkClient() -> socket error:" + error.message);
@@ -30,10 +26,6 @@ export class AnkClient extends AnkSocket {
             console.log("AnkClient() -> socket closed");
         });
 
-    }
-
-    public attachAnkServer(ankServer: AnkServer) {
-        this._ankServer = ankServer;
     }
     
     public hookRecv(data: Buffer, callback: (host: string, port: number) => void) {
@@ -52,18 +44,18 @@ export class AnkClient extends AnkSocket {
     }
 
     private recv(data: Buffer) {
-        // console.log("[Client >>> Mitm] : " + data.toString("hex"));
+        GameInstance.set(this._gameInstance.uuid);
         let queue = this._packetHandler.acquisition(data, AnkSocketEndpoint.SERVER);
         if (queue) {
             for (let packet of queue) {
-                this._ankServer.send(packet);
+                this._gameInstance.ankServer.send(packet);
             }
         }
+        GameInstance.unset();
     }
 
     public send(data: Buffer) {
         if (this._socket.writable) {
-            // console.log("[Mitm >>> Client] : " + data.toString("hex"));
             this._socket.write(data, (error) => {
                 if (error) {
                     console.error("AnkClient.send() -> writing data error: " + error);

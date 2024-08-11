@@ -1,6 +1,8 @@
 import { Server, Socket } from "net";
 import { AnkClient } from "./AnkClient";
 import { AnkServer } from "./AnkServer";
+import { Robot } from "../bot/Robot";
+import { GameInstance } from "../GameInstance";
 
 export class Mitm {
 
@@ -26,17 +28,17 @@ export class Mitm {
 
             console.log("Mitm() -> new connection from " + socketClient.remoteAddress + "::" + socketClient.remotePort);
 
-            let ankClient = new AnkClient(socketClient);
-            let ankServer = new AnkServer();
+            // TODO Ici on va peut etre avoir un soucis avec le switch de connexion entre l'host server et le game server
+            // Quand on switch de connexion on reset tout c'est comme si un nouveau client vennait de se connecter (FRIDA)
 
-            ankClient.attachAnkServer(ankServer);
-            ankServer.attachAnkClient(ankClient);
+            let gameInstance = new GameInstance(socketClient);
+            GameInstance.add(gameInstance);
 
-            ankClient.attachEvent("close", () => ankServer.end());
-            ankClient.attachEvent("data", (data: Buffer) => {
-                ankClient.hookRecv(data, (host: string, port: number) => {
-                    ankServer.connect(host, port);
-                    ankServer.attachEvent("close", () => ankClient.end());
+            gameInstance.ankClient.attachEvent("close", () => gameInstance.ankServer.end());
+            gameInstance.ankClient.attachEvent("data", (data: Buffer) => {
+                gameInstance.ankClient.hookRecv(data, (host: string, port: number) => {
+                    gameInstance.ankServer.connect(host, port);
+                    gameInstance.ankServer.attachEvent("close", () => gameInstance.ankClient.end());
                 });
             });
 

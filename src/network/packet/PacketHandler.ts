@@ -7,8 +7,8 @@ import { Logger } from "../../tools/Logger";
 import { ICustomDataInput } from "../../com/ankamagames/jerakine/network/ICustomDataInput";
 import { NetworkMessageWrapper } from "./NetworkMessageWrapper";
 import { INetworkMessage } from "../../com/ankamagames/jerakine/network/INetworkMessage";
-import { NetworkHandler } from "../../bot/network/NetworkHandler";
 import { PacketTooShortError } from "./PacketTooShortError";
+import { NetworkExtractor } from "../../bot/network/NetworkExtractor";
 
 export class PacketHandler {
 
@@ -21,7 +21,7 @@ export class PacketHandler {
         this._buffer = Buffer.alloc(0);
     }
 
-    public acquisition(data: Buffer, enpoint: AnkSocketEndpoint, increaseSeq: boolean = true): Buffer[] {
+    public acquisition(data: Buffer, enpoint: AnkSocketEndpoint): Buffer[] {
 
         // Append new data to buffer
         this._buffer = Buffer.concat([this._buffer, data]);
@@ -67,8 +67,7 @@ export class PacketHandler {
                     networkMessage
                 );
 
-                // Process network passage into bot
-                NetworkHandler.process(networkWrapper);
+                NetworkExtractor.process(networkWrapper);
 
                 if (!networkWrapper.locked) {
                     messagesQueue.push(networkWrapper);
@@ -110,8 +109,8 @@ export class PacketHandler {
         }
 
         if (PacketHandler.LOG_UNPACK) {
-            console.log(JSON.stringify(message));
-            // console.log(util.inspect(message, { depth: null, colors: true }));
+            // console.log(JSON.stringify(message));
+            console.log(util.inspect(message, { depth: null, colors: true }));
         }
 
         return message;

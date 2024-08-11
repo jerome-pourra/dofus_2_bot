@@ -1,18 +1,14 @@
 import { Socket } from "net";
-import { AnkClient } from "./AnkClient";
 import { AnkSocket, AnkSocketEndpoint } from "./AnkSocket";
-import { ConnectionHandler } from "./ConnectionHandler";
+import { GameInstance } from "../GameInstance";
 
 export class AnkServer extends AnkSocket {
 
-    private _ankClient: AnkClient;
+    public constructor(gameInstance: GameInstance) {
 
-    public constructor() {
-
-        super();
+        super(gameInstance);
 
         this._socket = new Socket();
-        ConnectionHandler.setServer(this);
 
         this._socket.on("error", (error: Error) => {
             console.error("AnkServer() -> socket error:" + error.message);
@@ -36,27 +32,23 @@ export class AnkServer extends AnkSocket {
 
     }
 
-    public attachAnkClient(ankClient: AnkClient) {
-        this._ankClient = ankClient;
-    }
-
     public connect(host: string, port: number) {
         this._socket.connect(port, host);
     }
 
     private recv(data: Buffer) {
-        // console.log("[Server >>> Mitm] : " + data.toString("hex"));
+        GameInstance.set(this._gameInstance.uuid);
         let queue = this._packetHandler.acquisition(data, AnkSocketEndpoint.CLIENT);
         if (queue) {
             for (let packet of queue) {
-                this._ankClient.send(packet);
+                this._gameInstance.ankClient.send(packet);
             }
         }
+        GameInstance.unset();
     }
 
     public send(data: Buffer) {
         if (this._socket.writable) {
-            // console.log("[Mitm >>> Server] : " + data.toString("hex"));
             this._socket.write(data, (error) => {
                 if (error) {
                     console.error("AnkServer.send() -> writing data error: " + error);
