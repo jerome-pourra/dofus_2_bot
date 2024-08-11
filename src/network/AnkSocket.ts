@@ -1,6 +1,7 @@
 import { Socket } from "net";
+import { Worker } from "worker_threads";
 import { PacketHandler } from "./packet/PacketHandler";
-import { GameInstance } from "../GameInstance";
+import { MainMessage } from "../worker/WorkerMessage";
 
 export enum AnkSocketEndpoint {
     CLIENT,
@@ -9,14 +10,23 @@ export enum AnkSocketEndpoint {
 
 export abstract class AnkSocket {
 
-    protected _socket: Socket;
-    protected _gameInstance: GameInstance;
-    protected _packetHandler: PacketHandler;
+    public static readonly ENDPOINT: AnkSocketEndpoint;
 
-    public constructor(gameInstance: GameInstance) {
+    protected _socket: Socket;
+    protected _worker: Worker;
+    protected _untreated: number;
+    protected _packetHandler: PacketHandler;
+    protected abstract _endpoint: AnkSocketEndpoint;
+
+    public constructor(worker: Worker) {
         this._socket = null;
-        this._gameInstance = gameInstance;
+        this._worker = worker;
+        this._untreated = 0;
         this._packetHandler = new PacketHandler();
+    }
+
+    public treated(value: number) {
+        this._untreated -= value;
     }
 
     public attachEvent(event: string, callback: (...args: any[]) => void) {
@@ -24,20 +34,54 @@ export abstract class AnkSocket {
         this._socket.addListener(event, callback);
     }
 
-    public end() {
-        if (this._socket.readyState === "open") {
-            this._socket.end();
-        } else {
-            console.error(`${this.constructor.name}.end() -> socket not open`);
+    public multiSend(dataList: Buffer[]) {
+        for (let data of dataList) {
+            this.send(data);
         }
+    }
+
+    public send(data: Buffer) {
+        if (this._socket.writable) {
+            this._socket.write(data, (error) => {
+                if (error) {
+                    console.error(`${this.constructor.name}.send() -> writing data error: ${error}`);
+                }
+            });
+        } else {
+            console.error(`${this.constructor.name}.send() -> socket not writable`);
+        }
+    }
+
+    public end(other: AnkSocket) {
+        let interval = setInterval(() => {
+            if (other._untreated === 0) {
+                clearInterval(interval);
+                if (this._socket.readyState === "open") {
+                    this._socket.end();
+                    this._worker.terminate();
+                } else {
+                    console.error(`${this.constructor.name}.end() -> socket not open`);
+                }
+            }
+        }, 100);
     }
 
     public destroy() {
         if (this._socket.readyState === "open") {
             this._socket.destroy();
+            this._worker.terminate();
         } else {
             console.error(`${this.constructor.name}.destroy() -> socket not open`);
         }
+    }
+
+    protected recv(data: Buffer) {
+        this._untreated += data.length;
+        this._worker.postMessage({
+            raw: data.toString("hex"),
+            endpoint: this._endpoint,
+            timestamp: Date.now(),
+        } as MainMessage);
     }
 
 }

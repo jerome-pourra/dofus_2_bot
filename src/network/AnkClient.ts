@@ -1,12 +1,15 @@
 import { Socket } from "net";
+import { Worker } from "worker_threads";
 import { AnkSocket, AnkSocketEndpoint } from "./AnkSocket";
-import { GameInstance } from "../GameInstance";
+import { MainMessage, WorkerMessage } from "../worker/WorkerMessage";
 
 export class AnkClient extends AnkSocket {
 
-    public constructor(gameInstance: GameInstance, socket: Socket) {
+    protected _endpoint = AnkSocketEndpoint.SERVER;
 
-        super(gameInstance);
+    public constructor(worker: Worker, socket: Socket) {
+
+        super(worker);
 
         if (socket.readyState !== "open") {
             throw new Error("AnkClient() -> socket not open");
@@ -41,29 +44,6 @@ export class AnkClient extends AnkSocket {
         this.send(Buffer.alloc(1, 0x00, "hex"));
         callback(host, port);
 
-    }
-
-    private recv(data: Buffer) {
-        GameInstance.set(this._gameInstance.uuid);
-        let queue = this._packetHandler.acquisition(data, AnkSocketEndpoint.SERVER);
-        if (queue) {
-            for (let packet of queue) {
-                this._gameInstance.ankServer.send(packet);
-            }
-        }
-        GameInstance.unset();
-    }
-
-    public send(data: Buffer) {
-        if (this._socket.writable) {
-            this._socket.write(data, (error) => {
-                if (error) {
-                    console.error("AnkClient.send() -> writing data error: " + error);
-                }
-            });
-        } else {
-            console.error("AnkClient.send() -> socket not writable");
-        }
     }
 
 }
