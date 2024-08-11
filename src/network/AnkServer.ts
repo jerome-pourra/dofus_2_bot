@@ -1,12 +1,13 @@
 import { Socket } from "net";
+import { Worker } from "worker_threads";
 import { AnkSocket, AnkSocketEndpoint } from "./AnkSocket";
-import { GameInstance } from "../GameInstance";
+import { MainMessage, WorkerMessage } from "../worker/WorkerMessage";
 
 export class AnkServer extends AnkSocket {
 
-    public constructor(gameInstance: GameInstance) {
+    public constructor(worker: Worker) {
 
-        super(gameInstance);
+        super(worker);
 
         this._socket = new Socket();
 
@@ -37,14 +38,18 @@ export class AnkServer extends AnkSocket {
     }
 
     private recv(data: Buffer) {
-        GameInstance.set(this._gameInstance.uuid);
-        let queue = this._packetHandler.acquisition(data, AnkSocketEndpoint.CLIENT);
-        if (queue) {
-            for (let packet of queue) {
-                this._gameInstance.ankClient.send(packet);
-            }
+        this._untreated += data.length;
+        this._worker.postMessage({
+            raw: data.toString("hex"), 
+            endpoint: AnkSocketEndpoint.CLIENT,
+            timestamp: Date.now()
+        } as MainMessage);
+    }
+
+    public multiSend(dataList: Buffer[]) {
+        for (let data of dataList) {
+            this.send(data);
         }
-        GameInstance.unset();
     }
 
     public send(data: Buffer) {

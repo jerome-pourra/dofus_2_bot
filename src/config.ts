@@ -6,5 +6,8 @@ export const config = {
     mitm: {
         host: "127.0.0.1",
         port: 54321,
-    }
+    },
+    worker: {
+        script: "./dist/worker.js",
+    },
 }

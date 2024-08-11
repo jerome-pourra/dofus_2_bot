@@ -21,10 +21,11 @@ export class PacketHandler {
         this._buffer = Buffer.alloc(0);
     }
 
-    public acquisition(data: Buffer, enpoint: AnkSocketEndpoint): Buffer[] {
+    public acquisition(data: Buffer, enpoint: AnkSocketEndpoint): { queue: Buffer[], treatments: number } {
 
         // Append new data to buffer
         this._buffer = Buffer.concat([this._buffer, data]);
+        let bufferLength = this._buffer.length;
 
         try {
 
@@ -82,7 +83,11 @@ export class PacketHandler {
             }
 
             this._buffer = buffer;
-            return encodedQueue;
+
+            return {
+                queue: encodedQueue,
+                treatments: bufferLength
+            };
 
         } catch (error: unknown) {
             if (error instanceof PacketTooShortError) {
