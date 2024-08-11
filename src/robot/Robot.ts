@@ -1,13 +1,10 @@
-import { GameInstance } from "../GameInstance";
 import { Datacenter } from "./datacenter/Datacenter";
 
 export class Robot {
 
-    private _gameInstance: GameInstance;
     public datacenter: Datacenter;
 
-    public constructor(gameInstance: GameInstance) {
-        this._gameInstance = gameInstance;
+    public constructor() {
         this.datacenter = new Datacenter();
     }
 
