@@ -9,7 +9,7 @@ export class GameInstance {
     private static _instance: GameInstance = null;
     private static _instances: Map<string, GameInstance> = new Map<string, GameInstance>();
 
-    public uuid: string = null;
+    public uuid: string;
     private _robot: Robot;
     private _ankClient: AnkClient;
     private _ankServer: AnkServer;
