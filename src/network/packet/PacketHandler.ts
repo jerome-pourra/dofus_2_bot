@@ -21,7 +21,7 @@ export class PacketHandler {
         this._buffer = Buffer.alloc(0);
     }
 
-    public acquisition(data: Buffer, enpoint: AnkSocketEndpoint, increaseSeq: boolean = true): Buffer[] {
+    public acquisition(data: Buffer, enpoint: AnkSocketEndpoint): Buffer[] {
 
         // Append new data to buffer
         this._buffer = Buffer.concat([this._buffer, data]);
