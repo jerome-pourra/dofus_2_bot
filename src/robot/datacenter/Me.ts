@@ -14,28 +14,4 @@ export class Me {
         this.state = new PlayerStateManager();
     }
 
-    public setId(id: number): void {
-        this.id = id;
-    }
-
-    public getId(): number {
-        return this.id;
-    }
-
-    public setName(name: string): void {
-        this.name = name;
-    }
-
-    public getName(): string {
-        return this.name;
-    }
-
-    public setOrientation(orientation: number): void {
-        this.orientation = orientation;
-    }
-
-    public getOrientation(): number {
-        return this.orientation;
-    }
-
 }

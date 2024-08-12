@@ -10,7 +10,7 @@ export class CharacterSelectionExtractor extends AbstractNetworkExtractor<Charac
     }
 
     public process() {
-        Robot.get().datacenter.me.setId(this._message.id);
+        Robot.get().datacenter.me.id = this._message.id;
     }
 
 }
