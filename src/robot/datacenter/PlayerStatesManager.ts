@@ -13,7 +13,7 @@ export class PlayerStateManager extends RobotAccessor {
     public addState(state: PlayerState): void {
         this._activeStates.add(state);
         this.triggerIdle();
-        this.callActions();
+        this.robot.actions.executeActions();
     }
 
     public removeState(state: PlayerState): void {
@@ -22,7 +22,7 @@ export class PlayerStateManager extends RobotAccessor {
         }
         this._activeStates.delete(state);
         this.triggerIdle();
-        this.callActions();
+        this.robot.actions.executeActions();
     }
 
     public hasState(state: PlayerState): boolean {
@@ -32,7 +32,7 @@ export class PlayerStateManager extends RobotAccessor {
     public clearStates(): void {
         this._activeStates.clear();
         this.triggerIdle();
-        this.callActions();
+        this.robot.actions.executeActions();
     }
 
     public isIdle(): boolean {

@@ -1,7 +1,7 @@
-import { AbstractCommand } from "./AbstractCommand";
+import { RobotAccessor } from "../RobotAccessor";
 import { ICommand } from "./ICommand";
 
-export class Changeorient extends AbstractCommand implements ICommand {
+export class Changeorient extends RobotAccessor implements ICommand {
 
     private _active: boolean;
 
@@ -16,12 +16,12 @@ export class Changeorient extends AbstractCommand implements ICommand {
 
     public active(): void {
         this._active = true;
-        this.callActions();
+        this.robot.actions.executeActions();
     }
 
     public deactive(): void {
         this._active = false;
-        this.callActions();
+        this.robot.actions.executeActions();
     }
 
     public toogle(): void {
