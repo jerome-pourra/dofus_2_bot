@@ -16,8 +16,6 @@ export class Robot {
     public actions: ActionManager;
 
     public static initialize(parentThread: MessagePort): void {
-        console.log("Robot -> initialize");
-        
         if (Robot._instance !== null) {
             throw new Error("Robot already initialized");
         }

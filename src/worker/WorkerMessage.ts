@@ -1,13 +1,14 @@
 import { AnkSocketEndpoint } from "../network/AnkSocket";
 
 export enum WorkerMessageType {
+    TERMINATE,
     NETWORK_MAIN,
     NETWORK_ROBOT,
     NETWORK_THREAD,
 };
 
 export type WorkerMessage = {
-    type: WorkerMessageType,
+    type: WorkerMessageType | "terminate",
 };
 
 export type MainWorkerNetworkMessage = {

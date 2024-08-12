@@ -58,7 +58,7 @@ export abstract class AnkSocket {
                 clearInterval(interval);
                 if (this._socket.readyState === "open") {
                     this._socket.end();
-                    this._worker.terminate();
+                    this._worker.postMessage({ type: WorkerMessageType.TERMINATE });
                 } else {
                     console.error(`${this.constructor.name}.end() -> socket not open`);
                 }

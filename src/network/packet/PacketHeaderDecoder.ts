@@ -18,8 +18,6 @@ export class PacketHeaderDecoder {
     private static readonly ENCODING_HEAD_LENGTH: number = 2;
     private static readonly ENCODING_SEQ_LENGTH: number = 4;
 
-    private static IS_SEQUENCE_SYNC: boolean = false;
-
     private _id: number;
     private _seq: number;
     private _sos: number;
@@ -74,11 +72,6 @@ export class PacketHeaderDecoder {
             }
 
             this._seq = this._rawInput.readUnsignedInt();
-
-            if (!PacketHeaderDecoder.IS_SEQUENCE_SYNC) {
-                NetworkMessage.syncInstanceId(this._seq);
-                PacketHeaderDecoder.IS_SEQUENCE_SYNC = true;
-            }
 
         }
 

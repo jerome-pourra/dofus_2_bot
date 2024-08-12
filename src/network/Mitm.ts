@@ -36,52 +36,6 @@ export class Mitm {
 
             this.listenWorkerEvents(worker, ankClient, ankServer);
 
-            // worker.on("error", (error: Error) => {
-            //     console.error("Mitm() -> worker error:", error);
-            // });
-
-            // worker.on("exit", (code: number) => {
-            //     console.log("Mitm() -> worker exit with code " + code);
-            //     ankClient.end(ankServer);
-            //     ankServer.end(ankClient);
-            //     return;
-            // });
-
-            // worker.on("message", (message: WorkerMessage) => {
-
-            //     switch (message.type) {
-            //         case WorkerMessageType.NETWORK_THREAD:
-            //             ankClient.send(Buffer.from((message as ThreadWorkerNetworkMessage).raw, "hex"));
-            //             break;
-            //         case WorkerMessageType.NETWORK_ROBOT:
-            //             ankServer.send(Buffer.from((message as ThreadWorkerNetworkMessage).raw, "hex"));
-            //             break;
-            //         default:
-            //             throw new Error("Mitm() -> unknown message type");
-            //     }
-
-            //     if (message.type === WorkerMessageType.NETWORK_THREAD) {
-
-            //         let { queue, endpoint, treatments } = message as ThreadWorkerNetworkMessage;
-            //         let bufferQueue = queue.map(data => Buffer.from(data, "hex"));
-
-            //         switch (endpoint) {
-            //             case AnkSocketEndpoint.CLIENT:
-            //                 ankClient.multiSend(bufferQueue);
-            //                 ankServer.treated(treatments);
-            //                 break;
-            //             case AnkSocketEndpoint.SERVER:
-            //                 ankServer.multiSend(bufferQueue);
-            //                 ankClient.treated(treatments);
-            //                 break;
-            //         }
-
-            //     } else if  {
-            //         throw new Error("Mitm() -> unknown message type");
-            //     }
-
-            // });
-
             // TODO Ici on va peut etre avoir un soucis avec le switch de connexion entre l'host server et le game server
             // Quand on switch de connexion on reset tout c'est comme si un nouveau client vennait de se connecter (FRIDA)
 
@@ -103,6 +57,13 @@ export class Mitm {
 
     private listenWorkerEvents(worker: Worker, ankClient: AnkClient, ankServer: AnkServer): void {
 
+        worker.on("online", () => {
+            console.log("Mitm() -> worker online");
+            // setTimeout(() => {
+            //     worker.postMessage({ type: WorkerMessageType.TERMINATE });
+            // }, 100);
+        })
+
         worker.on("error", (error: Error) => {
             console.error("Mitm() -> worker error:", error);
         });
@@ -122,6 +83,9 @@ export class Mitm {
 
     private onWorkerMessage(message: WorkerMessage, ankClient: AnkClient, ankServer: AnkServer): void {
         switch (message.type) {
+            case WorkerMessageType.TERMINATE:
+                this.onThreadTerminate(message);
+                break;
             case WorkerMessageType.NETWORK_THREAD:
                 this.onThreadMessage(message as ThreadWorkerNetworkMessage, ankClient, ankServer);
                 break;
@@ -131,6 +95,10 @@ export class Mitm {
             default:
                 throw new Error("Mitm() -> unknown message type");
         }
+    }
+
+    private onThreadTerminate(message: any): void {
+        console.log("Mitm() -> thread termination sequence: " + message.sequence);
     }
 
     private onThreadMessage(message: ThreadWorkerNetworkMessage, ankClient: AnkClient, ankServer: AnkServer): void {
@@ -154,8 +122,8 @@ export class Mitm {
     private onRobotMessage(message: RobotWorkerNetworkMessage, ankClient: AnkClient, ankServer: AnkServer): void {
 
         let { raw, endpoint } = message;
-        let buffer = Buffer.from(raw, "hex");;
-        
+        let buffer = Buffer.from(raw, "hex");
+
         switch (endpoint) {
             case AnkSocketEndpoint.CLIENT:
                 ankClient.send(buffer);
