@@ -9,7 +9,7 @@ export class MapComplementaryInformationsDataMessageExtract extends AbstractNetw
     }
 
     public process(): void {
-        console.log("MapCompleteInformationsDataExtractor: " + this._message);
+        // TODO: Implement
     }
 
 }
