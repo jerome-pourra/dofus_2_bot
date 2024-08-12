@@ -1,7 +1,7 @@
 import { Robot } from "../../Robot";
 import { PlayerState } from "./PlayerStates";
 
-export class PlayerStateManager {
+export class PlayerStatesManager {
 
     private _activeStates: Set<PlayerState>;
 
@@ -11,14 +11,14 @@ export class PlayerStateManager {
     }
 
     public addState(state: PlayerState): void {
-        console.log("Add state: " + state);
+        // console.log("PlayerStatesManager.addState() -> state: " + state);
         this._activeStates.add(state);
         this.triggerIdle();
         Robot.get().actions.executeActions();
     }
 
     public removeState(state: PlayerState): void {
-        console.log("Remove state: " + state);
+        // console.log("PlayerStatesManager.removeState() -> state: " + state);
         this._activeStates.delete(state);
         this.triggerIdle();
         Robot.get().actions.executeActions();
@@ -29,6 +29,7 @@ export class PlayerStateManager {
     }
 
     public clearStates(): void {
+        // console.log("PlayerStatesManager.clearStates()");
         this._activeStates.clear();
         this.triggerIdle();
         Robot.get().actions.executeActions();
@@ -40,7 +41,7 @@ export class PlayerStateManager {
 
     private triggerIdle() {
         if (this._activeStates.size === 0) {
-            console.log("Add state: " + PlayerState.idle);
+            // console.log("PlayerStatesManager.triggerIdle() -> state: " + PlayerState.idle);
             this._activeStates.add(PlayerState.idle);
         } else {
             if (this._activeStates.has(PlayerState.idle)) {
