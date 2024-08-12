@@ -11,14 +11,14 @@ export class PlayerStatesManager {
     }
 
     public addState(state: PlayerState): void {
-        console.log("PlayerStatesManager.addState() -> state: " + state);
+        // console.log("PlayerStatesManager.addState() -> state: " + state);
         this._activeStates.add(state);
         this.triggerIdle();
         Robot.get().actions.executeActions();
     }
 
     public removeState(state: PlayerState): void {
-        console.log("PlayerStatesManager.removeState() -> state: " + state);
+        // console.log("PlayerStatesManager.removeState() -> state: " + state);
         this._activeStates.delete(state);
         this.triggerIdle();
         Robot.get().actions.executeActions();
@@ -29,7 +29,7 @@ export class PlayerStatesManager {
     }
 
     public clearStates(): void {
-        console.log("PlayerStatesManager.clearStates()");
+        // console.log("PlayerStatesManager.clearStates()");
         this._activeStates.clear();
         this.triggerIdle();
         Robot.get().actions.executeActions();
@@ -41,7 +41,7 @@ export class PlayerStatesManager {
 
     private triggerIdle() {
         if (this._activeStates.size === 0) {
-            console.log("PlayerStatesManager.triggerIdle() -> state: " + PlayerState.idle);
+            // console.log("PlayerStatesManager.triggerIdle() -> state: " + PlayerState.idle);
             this._activeStates.add(PlayerState.idle);
         } else {
             if (this._activeStates.has(PlayerState.idle)) {

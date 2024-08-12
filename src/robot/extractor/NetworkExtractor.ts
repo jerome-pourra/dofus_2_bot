@@ -46,7 +46,7 @@ export class NetworkExtractor {
     public static process(wrapper: NetworkMessageWrapper): void {
         let handlerType: new (wrapper: NetworkMessageWrapper) => AbstractNetworkExtract<INetworkMessage> = NetworkExtractor._types.get(wrapper.networkMessage.constructor.name);
         if (handlerType) {
-            console.log("Handle network message (CLASS " + wrapper.networkMessage.constructor.name + ")");
+            // console.log("Handle network message (CLASS " + wrapper.networkMessage.constructor.name + ")");
             new handlerType(wrapper).process();
         }
     }

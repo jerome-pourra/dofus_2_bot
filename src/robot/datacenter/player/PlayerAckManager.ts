@@ -7,16 +7,16 @@ export class PlayerAckManager {
     }
 
     public startAck(id: number, callback: () => void): void {
-        console.log("PlayerAckManager.startAck() -> id: " + id);
+        // console.log("PlayerAckManager.startAck() -> id: " + id);
         this._activeAck.set(id, callback);
     }
 
     public endAck(id: number): void {
-        console.log("PlayerAckManager.endAck() -> id: " + id);
+        // console.log("PlayerAckManager.endAck() -> id: " + id);
         if (this._activeAck.has(id)) {
             let callback = this._activeAck.get(id);
             if (callback) {
-                console.log("PlayerAckManager.endAck() -> callback: " + id);
+                // console.log("PlayerAckManager.endAck() -> callback: " + id);
                 callback();
                 this.removeAck(id);
             }
@@ -24,7 +24,7 @@ export class PlayerAckManager {
     }
 
     private removeAck(id: number): void {
-        console.log("PlayerAckManager.removeAck() -> id: " + id);
+        // console.log("PlayerAckManager.removeAck() -> id: " + id);
         this._activeAck.delete(id);
     }
 
