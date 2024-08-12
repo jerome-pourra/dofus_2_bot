@@ -1,19 +1,18 @@
-import { RobotAccessor } from '../RobotAccessor';
+import { Robot } from '../Robot';
 import { PlayerState } from './PlayerStates';
 
-export class PlayerStateManager extends RobotAccessor {
+export class PlayerStateManager {
 
     private _activeStates: Set<PlayerState>;
 
     constructor() {
-        super();
         this._activeStates = new Set<PlayerState>();
     }
 
     public addState(state: PlayerState): void {
         this._activeStates.add(state);
         this.triggerIdle();
-        this.robot.actions.executeActions();
+        Robot.get().actions.executeActions();
     }
 
     public removeState(state: PlayerState): void {
@@ -22,7 +21,7 @@ export class PlayerStateManager extends RobotAccessor {
         }
         this._activeStates.delete(state);
         this.triggerIdle();
-        this.robot.actions.executeActions();
+        Robot.get().actions.executeActions();
     }
 
     public hasState(state: PlayerState): boolean {
@@ -32,7 +31,7 @@ export class PlayerStateManager extends RobotAccessor {
     public clearStates(): void {
         this._activeStates.clear();
         this.triggerIdle();
-        this.robot.actions.executeActions();
+        Robot.get().actions.executeActions();
     }
 
     public isIdle(): boolean {
