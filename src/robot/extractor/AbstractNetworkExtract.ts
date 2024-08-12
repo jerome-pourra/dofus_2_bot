@@ -8,7 +8,7 @@ export abstract class AbstractNetworkExtract<T extends INetworkMessage> {
 
     public constructor(wrapper: NetworkMessageWrapper, message: T) {
         if (!(wrapper.networkMessage instanceof message.constructor)) {
-            throw new Error("Invalid message type");
+            throw new Error("Invalid message type for " + wrapper.networkMessage.constructor.name + " expected " + message.constructor.name);
         }
         this._wrapper = wrapper;
         this._message = wrapper.networkMessage as T;
