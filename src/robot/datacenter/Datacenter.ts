@@ -1,5 +1,5 @@
 import { Map } from "./map/Map";
-import { Me } from "./Me";
+import { Me } from "./player/Me";
 
 export class Datacenter {
 

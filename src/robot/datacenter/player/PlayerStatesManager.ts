@@ -1,5 +1,5 @@
-import { Robot } from '../Robot';
-import { PlayerState } from './PlayerStates';
+import { Robot } from "../../Robot";
+import { PlayerState } from "./PlayerStates";
 
 export class PlayerStateManager {
 

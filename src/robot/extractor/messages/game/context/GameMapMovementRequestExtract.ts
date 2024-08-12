@@ -1,6 +1,6 @@
 import { GameMapMovementRequestMessage } from "../../../../../com/ankamagames/dofus/network/messages/game/context/GameMapMovementRequestMessage";
 import { NetworkMessageWrapper } from "../../../../../network/packet/NetworkMessageWrapper";
-import { PlayerState } from "../../../../datacenter/PlayerStates";
+import { PlayerState } from "../../../../datacenter/player/PlayerStates";
 import { Robot } from "../../../../Robot";
 import { AbstractNetworkExtract } from "../../../AbstractNetworkExtract";
 

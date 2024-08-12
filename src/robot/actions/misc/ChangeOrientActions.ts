@@ -1,9 +1,9 @@
-import { GameMapChangeOrientationRequestMessage } from "../../com/ankamagames/dofus/network/messages/game/context/GameMapChangeOrientationRequestMessage";
-import { CustomDataWrapper } from "../../com/ankamagames/jerakine/network/CustomDataWrapper";
-import { AnkSocketEndpoint } from "../../network/AnkSocket";
-import { PlayerState } from "../datacenter/PlayerStates";
-import { Robot } from "../Robot";
-import { IAction } from "./IAction";
+import { GameMapChangeOrientationRequestMessage } from "../../../com/ankamagames/dofus/network/messages/game/context/GameMapChangeOrientationRequestMessage";
+import { CustomDataWrapper } from "../../../com/ankamagames/jerakine/network/CustomDataWrapper";
+import { AnkSocketEndpoint } from "../../../network/AnkSocket";
+import { PlayerState } from "../../datacenter/player/PlayerStates";
+import { Robot } from "../../Robot";
+import { IAction } from "../IAction";
 
 export class ChangeOrientAction implements IAction {
 

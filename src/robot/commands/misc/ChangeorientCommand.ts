@@ -1,6 +1,6 @@
-import { ChangeOrientAction } from "../actions/ChangeOrientActions";
-import { Robot } from "../Robot";
-import { ICommand } from "./ICommand";
+import { ChangeOrientAction } from "../../actions/misc/ChangeOrientActions";
+import { Robot } from "../../Robot";
+import { ICommand } from "../ICommand";
 
 export class ChangeorientCommand implements ICommand {
 

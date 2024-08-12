@@ -2,7 +2,7 @@ import { ChatServerMessage } from "../../com/ankamagames/dofus/network/messages/
 import { CustomDataWrapper } from "../../com/ankamagames/jerakine/network/CustomDataWrapper";
 import { AnkSocketEndpoint } from "../../network/AnkSocket";
 import { Robot } from "../Robot";
-import { ChangeorientCommand } from "./ChangeorientCommand";
+import { ChangeorientCommand } from "./misc/ChangeorientCommand";
 
 export class Commands {
 
