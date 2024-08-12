@@ -1,14 +1,14 @@
 import { INetworkMessage } from "../../com/ankamagames/jerakine/network/INetworkMessage";
 import { NetworkMessageWrapper } from "../../network/packet/NetworkMessageWrapper";
 
-export abstract class AbstractNetworkExtractor<T extends INetworkMessage> {
+export abstract class AbstractNetworkExtract<T extends INetworkMessage> {
 
     protected _wrapper: NetworkMessageWrapper;
     protected _message: T;
 
     public constructor(wrapper: NetworkMessageWrapper, message: T) {
         if (!(wrapper.networkMessage instanceof message.constructor)) {
-            throw new Error("Invalid message type");
+            throw new Error("Invalid message type for " + wrapper.networkMessage.constructor.name + " expected " + message.constructor.name);
         }
         this._wrapper = wrapper;
         this._message = wrapper.networkMessage as T;
