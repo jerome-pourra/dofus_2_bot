@@ -11,7 +11,7 @@ export class GameMapMovementRequestExtract extends AbstractNetworkExtract<GameMa
     }
 
     public process(): void {
-        Robot.get().datacenter.me.statesManager.addState(PlayerState.move);
+        Robot.get().datacenter.me.statesManager.addState(PlayerState.MOVE);
     }
 
 }

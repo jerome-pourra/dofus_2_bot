@@ -13,7 +13,7 @@ export class GameMapChangeOrientationExtract extends AbstractNetworkExtract<Game
     public process() {
         if (this._message.orientation.id === Robot.get().datacenter.me.id) {
             Robot.get().datacenter.me.orientation = this._message.orientation.direction;
-            Robot.get().datacenter.me.statesManager.removeState(PlayerState.changeorient);
+            Robot.get().datacenter.me.statesManager.removeState(PlayerState.CHANGE_ORIENT);
         }
     }
 
