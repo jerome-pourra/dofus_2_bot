@@ -1,24 +1,20 @@
 import { GameMapChangeOrientationMessage } from "../../../com/ankamagames/dofus/network/messages/game/context/GameMapChangeOrientationMessage";
-import { INetworkMessage } from "../../../com/ankamagames/jerakine/network/INetworkMessage";
 import { NetworkMessageWrapper } from "../../../network/packet/NetworkMessageWrapper";
-import { INetworkExtractor } from "../INetworkExtractor";
+import { PlayerState } from "../../datacenter/PlayerStates";
+import { Robot } from "../../Robot";
+import { AbstractNetworkExtractor } from "../AbstractNetworkExtractor";
 
-export class GameMapChangeOrientationExtractor implements INetworkExtractor {
+export class GameMapChangeOrientationExtractor extends AbstractNetworkExtractor<GameMapChangeOrientationMessage> {
 
-    private _wrapper: NetworkMessageWrapper;
-    private _message: GameMapChangeOrientationMessage;
-
-    constructor(wrapper: NetworkMessageWrapper) {
-        let message: INetworkMessage = wrapper.networkMessage;
-        if (!(message instanceof GameMapChangeOrientationMessage)) {
-            throw new Error("Invalid message type: " + message.constructor.name);
-        }
-        this._wrapper = wrapper;
-        this._message = message;
+    public constructor(wrapper: NetworkMessageWrapper) {
+        super(wrapper, GameMapChangeOrientationMessage.prototype);
     }
 
     public process() {
-
+        if (this._message.orientation.id === Robot.get().datacenter.me.id) {
+            Robot.get().datacenter.me.orientation = this._message.orientation.direction;
+            Robot.get().datacenter.me.state.removeState(PlayerState.changeorient);
+        }
     }
 
 }

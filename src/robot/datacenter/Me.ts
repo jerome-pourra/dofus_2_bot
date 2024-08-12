@@ -1,29 +1,41 @@
+import { PlayerStateManager } from "./PlayerStatesManager";
+
 export class Me {
 
     public id: number;
     public name: string;
-
-    private _initialized: boolean;
+    public orientation: number;
+    public state: PlayerStateManager;
 
     public constructor() {
-        this.id = null;
-        this.name = null;
+        this.id = 0;
+        this.name = "";
+        this.orientation = 0;
+        this.state = new PlayerStateManager();
     }
 
-    public isInitialized(): boolean {
-        return this._initialized;
-    }
-
-    public set(id: number, name: string): void {
+    public setId(id: number): void {
         this.id = id;
-        this.name = name;
-        this._initialized = true;
     }
 
-    public reset(): void {
-        this.id = null;
-        this.name = null;
-        this._initialized = false;
+    public getId(): number {
+        return this.id;
+    }
+
+    public setName(name: string): void {
+        this.name = name;
+    }
+
+    public getName(): string {
+        return this.name;
+    }
+
+    public setOrientation(orientation: number): void {
+        this.orientation = orientation;
+    }
+
+    public getOrientation(): number {
+        return this.orientation;
     }
 
 }

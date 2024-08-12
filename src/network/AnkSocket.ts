@@ -1,7 +1,7 @@
 import { Socket } from "net";
 import { Worker } from "worker_threads";
 import { PacketHandler } from "./packet/PacketHandler";
-import { MainMessage } from "../worker/WorkerMessage";
+import { MainWorkerNetworkMessage, WorkerMessageType } from "../worker/WorkerMessage";
 
 export enum AnkSocketEndpoint {
     CLIENT,
@@ -76,12 +76,14 @@ export abstract class AnkSocket {
     }
 
     protected recv(data: Buffer) {
-        this._untreated += data.length;
-        this._worker.postMessage({
+        let message: MainWorkerNetworkMessage = {
+            type: WorkerMessageType.NETWORK_MAIN,
             raw: data.toString("hex"),
             endpoint: this._endpoint,
-            timestamp: Date.now(),
-        } as MainMessage);
+            timestamp: Date.now()
+        };
+        this._untreated += data.length;
+        this._worker.postMessage(message);
     }
 
 }

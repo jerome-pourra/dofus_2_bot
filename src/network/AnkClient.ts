@@ -1,7 +1,6 @@
 import { Socket } from "net";
 import { Worker } from "worker_threads";
 import { AnkSocket, AnkSocketEndpoint } from "./AnkSocket";
-import { MainMessage, WorkerMessage } from "../worker/WorkerMessage";
 
 export class AnkClient extends AnkSocket {
 
