@@ -10,7 +10,7 @@ export class BasicAckExtract extends AbstractNetworkExtract<BasicAckMessage> {
     }
 
     public process() {
-        Robot.get().datacenter.ack(this._message.seq);
+        Robot.get().datacenter.me.ackManager.endAck(this._message.lastPacketId);
     }
 
 }
