@@ -1,7 +1,7 @@
 import { Robot } from "../../Robot";
 import { PlayerState } from "./PlayerStates";
 
-export class PlayerStateManager {
+export class PlayerStatesManager {
 
     private _activeStates: Set<PlayerState>;
 

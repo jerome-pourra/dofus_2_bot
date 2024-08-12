@@ -9,7 +9,7 @@ export class ChangeOrientAction implements IAction {
 
     public execute() {
 
-        if (Robot.get().datacenter.me.state.isIdle()) {
+        if (Robot.get().datacenter.me.statesManager.isIdle()) {
 
             let orientation = Robot.get().datacenter.me.orientation + 1;
             orientation = orientation > 7 ? 0 : orientation;
@@ -20,7 +20,7 @@ export class ChangeOrientAction implements IAction {
             networkMessage.pack(output);
 
             Robot.get().send(output.buffer, AnkSocketEndpoint.SERVER);
-            Robot.get().datacenter.me.state.addState(PlayerState.changeorient);
+            Robot.get().datacenter.me.statesManager.addState(PlayerState.changeorient);
 
         }
 
