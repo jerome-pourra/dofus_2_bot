@@ -9,6 +9,7 @@ import { GameMapChangeOrientationRequestExtract } from "./messages/game/context/
 import { GameMapMovementConfirmExtract } from "./messages/game/context/GameMapMovementConfirmExtract";
 import { GameMapMovementExtract } from "./messages/game/context/GameMapMovementExtract";
 import { GameMapMovementRequestExtract } from "./messages/game/context/GameMapMovementRequestExtract";
+import { ChangeMapExtract } from "./messages/game/context/roleplay/ChangeMapExtract";
 import { CurrentMapExtract } from "./messages/game/context/roleplay/CurrentMapExtract";
 import { MapComplementaryInformationsDataMessageExtract } from "./messages/game/context/roleplay/MapComplementaryInformationsDataExtract";
 import { ProtocolRequiredExtract } from "./messages/handshake/ProtocolRequiredExtract";
@@ -33,6 +34,7 @@ export class NetworkExtractor {
         this._types.set("GameMapMovementRequestMessage", GameMapMovementRequestExtract);
         this._types.set("GameMapMovementConfirmMessage", GameMapMovementConfirmExtract);
 
+        this._types.set("ChangeMapMessage", ChangeMapExtract);
         this._types.set("CurrentMapMessage", CurrentMapExtract);
         this._types.set("MapComplementaryInformationsDataMessage", MapComplementaryInformationsDataMessageExtract);
     }
