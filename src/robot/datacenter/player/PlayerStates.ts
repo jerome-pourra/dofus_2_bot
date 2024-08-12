@@ -1,6 +1,7 @@
 export enum PlayerState {
-    idle = "idle",
-    move = "move",
-    harvest = "harvest",
-    changeorient = "changeorient"
+    IDLE,
+    MOVE,
+    HARVEST,
+    CHANGE_MAP,
+    CHANGE_ORIENT
 }

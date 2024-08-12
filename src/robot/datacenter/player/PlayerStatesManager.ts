@@ -7,7 +7,7 @@ export class PlayerStatesManager {
 
     constructor() {
         this._activeStates = new Set<PlayerState>();
-        this._activeStates.add(PlayerState.idle);
+        this._activeStates.add(PlayerState.IDLE);
     }
 
     public addState(state: PlayerState): void {
@@ -36,16 +36,16 @@ export class PlayerStatesManager {
     }
 
     public isIdle(): boolean {
-        return this._activeStates.has(PlayerState.idle);
+        return this._activeStates.has(PlayerState.IDLE);
     }
 
     private triggerIdle() {
         if (this._activeStates.size === 0) {
-            // console.log("PlayerStatesManager.triggerIdle() -> state: " + PlayerState.idle);
-            this._activeStates.add(PlayerState.idle);
+            // console.log("PlayerStatesManager.triggerIdle() -> state: " + PlayerState.IDLE);
+            this._activeStates.add(PlayerState.IDLE);
         } else {
-            if (this._activeStates.has(PlayerState.idle)) {
-                this._activeStates.delete(PlayerState.idle);
+            if (this._activeStates.has(PlayerState.IDLE)) {
+                this._activeStates.delete(PlayerState.IDLE);
             }
         }
     }

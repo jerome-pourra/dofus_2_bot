@@ -1,5 +1,7 @@
 import { MapComplementaryInformationsDataMessage } from "../../../../../../com/ankamagames/dofus/network/messages/game/context/roleplay/MapComplementaryInformationsDataMessage";
 import { NetworkMessageWrapper } from "../../../../../../network/packet/NetworkMessageWrapper";
+import { PlayerState } from "../../../../../datacenter/player/PlayerStates";
+import { Robot } from "../../../../../Robot";
 import { AbstractNetworkExtract } from "../../../../AbstractNetworkExtract";
 
 export class MapComplementaryInformationsDataMessageExtract extends AbstractNetworkExtract<MapComplementaryInformationsDataMessage> {
@@ -9,7 +11,7 @@ export class MapComplementaryInformationsDataMessageExtract extends AbstractNetw
     }
 
     public process(): void {
-        console.log("MapCompleteInformationsDataExtractor: " + this._message);
+        Robot.get().datacenter.me.statesManager.removeState(PlayerState.CHANGE_MAP);
     }
 
 }

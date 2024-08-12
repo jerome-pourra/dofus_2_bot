@@ -13,7 +13,7 @@ export class GameMapMovementConfirmExtract extends AbstractNetworkExtract<GameMa
     public process(): void {
         Robot.get().datacenter.me.ackManager.startAck(
             this._message.getMessageId(),
-            () => Robot.get().datacenter.me.statesManager.removeState(PlayerState.move)
+            () => Robot.get().datacenter.me.statesManager.removeState(PlayerState.MOVE)
         );
     }
 

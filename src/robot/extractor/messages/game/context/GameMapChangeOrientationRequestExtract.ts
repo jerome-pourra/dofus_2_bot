@@ -11,7 +11,7 @@ export class GameMapChangeOrientationRequestExtract extends AbstractNetworkExtra
     }
 
     public process() {
-        Robot.get().datacenter.me.statesManager.addState(PlayerState.changeorient);
+        Robot.get().datacenter.me.statesManager.addState(PlayerState.CHANGE_ORIENT);
     }
 
 }
