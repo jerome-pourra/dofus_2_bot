@@ -154,15 +154,13 @@ export class Mitm {
     private onRobotMessage(message: RobotWorkerNetworkMessage, ankClient: AnkClient, ankServer: AnkServer): void {
 
         let { raw, endpoint } = message;
-        let buffer = Buffer.from(raw, "hex");
-        console.log(buffer);
+        let buffer = Buffer.from(raw, "hex");;
         
         switch (endpoint) {
             case AnkSocketEndpoint.CLIENT:
                 ankClient.send(buffer);
                 break;
             case AnkSocketEndpoint.SERVER:
-                console.log("ici server");
                 ankServer.send(buffer);
                 break;
         }

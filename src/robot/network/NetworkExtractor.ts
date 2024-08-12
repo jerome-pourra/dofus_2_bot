@@ -4,6 +4,7 @@ import { AbstractNetworkExtractor } from "./AbstractNetworkExtractor";
 import { CharacterSelectionExtractor } from "./messages/CharacterSelectionExtractor";
 import { ChatClientMultiMessageExtractor } from "./messages/ChatClientMultiExtractor";
 import { GameMapChangeOrientationExtractor } from "./messages/GameMapChangeOrientationExtractor";
+import { GameMapChangeOrientationRequestExtractor } from "./messages/GameMapChangeOrientationRequestExtractor";
 import { ProtocolRequiredExtractor } from "./messages/ProtocolRequiredExtractor";
 
 export class NetworkExtractor {
@@ -15,6 +16,7 @@ export class NetworkExtractor {
         this._types.set("GameMapChangeOrientationMessage", GameMapChangeOrientationExtractor);
         this._types.set("CharacterSelectionMessage", CharacterSelectionExtractor);
         this._types.set("ProtocolRequired", ProtocolRequiredExtractor);
+        this._types.set("GameMapChangeOrientationRequestMessage", GameMapChangeOrientationRequestExtractor);
     }
 
     public static getType(id: string): string {
