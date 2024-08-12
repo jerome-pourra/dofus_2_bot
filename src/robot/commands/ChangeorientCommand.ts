@@ -17,16 +17,16 @@ export class ChangeorientCommand implements ICommand {
 
     public active(): void {
         this._active = true;
+        Robot.get().commands.printChatCommand(this.name, this._active);
         Robot.get().actions.registerAction(this.name, new ChangeOrientAction());
         Robot.get().actions.executeActions();
-        Robot.get().commands.printChatCommand(this.name, this._active);
     }
 
     public deactive(): void {
         this._active = false;
+        Robot.get().commands.printChatCommand(this.name, this._active);
         Robot.get().actions.unregisterAction(this.name);
         Robot.get().actions.executeActions();
-        Robot.get().commands.printChatCommand(this.name, this._active);
     }
 
     public toogle(): void {
