@@ -12,6 +12,11 @@ export abstract class NetworkMessage implements INetworkMessage {
     public static BIT_MASK: number = 3;
     public static HASH_FUNCTION: Function;
 
+    public static syncInstanceId(id: number): void {
+        NetworkMessage.GLOBAL_INSTANCE_ID = id - 1;
+        console.log("NetworkMessage.syncGlobalInstanceId() -> id: " + NetworkMessage.GLOBAL_INSTANCE_ID);
+    }
+
     private _instance_id: number;
 
     public constructor() {
