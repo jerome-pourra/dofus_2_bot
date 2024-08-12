@@ -7,12 +7,11 @@ export class PlayerAckManager {
     }
 
     public startAck(id: number, callback: () => void): void {
-        console.log("Add ack: " + id);
         this._activeAck.set(id, callback);
     }
 
     public endAck(id: number): void {
-        if (!this._activeAck.has(id)) {
+        if (this._activeAck.has(id)) {
             let callback = this._activeAck.get(id);
             if (callback) {
                 callback();
@@ -22,7 +21,6 @@ export class PlayerAckManager {
     }
 
     private removeAck(id: number): void {
-        console.log("Remove ack: " + id);
         this._activeAck.delete(id);
     }
 
