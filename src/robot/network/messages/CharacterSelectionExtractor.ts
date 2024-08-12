@@ -5,9 +5,6 @@ import { AbstractNetworkExtractor } from "../AbstractNetworkExtractor";
 
 export class CharacterSelectionExtractor extends AbstractNetworkExtractor<CharacterSelectionMessage> {
 
-    // private _wrapper: NetworkMessageWrapper;
-    // declare protected _message: CharacterSelectionMessage;
-
     public constructor(wrapper: NetworkMessageWrapper) {
         super(wrapper, CharacterSelectionMessage.prototype);
     }
