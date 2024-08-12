@@ -1,23 +1,13 @@
 import { ChatClientMultiMessage } from "../../../com/ankamagames/dofus/network/messages/game/chat/ChatClientMultiMessage";
-import { INetworkMessage } from "../../../com/ankamagames/jerakine/network/INetworkMessage";
 import { NetworkMessageWrapper } from "../../../network/packet/NetworkMessageWrapper";
-import { Commands } from "../../commands/Commands";
 import { Robot } from "../../Robot";
-import { INetworkExtractor } from "../INetworkExtractor";
+import { AbstractNetworkExtractor } from "../AbstractNetworkExtractor";
 
 
-export class ChatClientMultiMessageExtractor implements INetworkExtractor {
-
-    private _wrapper: NetworkMessageWrapper;
-    private _message: ChatClientMultiMessage;
+export class ChatClientMultiMessageExtractor extends AbstractNetworkExtractor<ChatClientMultiMessage> {
 
     constructor(wrapper: NetworkMessageWrapper) {
-        let message: INetworkMessage = wrapper.networkMessage;
-        if (!(message instanceof ChatClientMultiMessage)) {
-            throw new Error("Invalid message type: " + message.constructor.name);
-        }
-        this._wrapper = wrapper;
-        this._message = message;
+        super(wrapper, ChatClientMultiMessage.prototype);
     }
 
     public process(): void {
