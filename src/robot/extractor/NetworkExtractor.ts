@@ -1,26 +1,26 @@
 import { INetworkMessage } from "../../com/ankamagames/jerakine/network/INetworkMessage";
 import { NetworkMessageWrapper } from "../../network/packet/NetworkMessageWrapper";
-import { AbstractNetworkExtractor } from "./AbstractNetworkExtractor";
-import { CharacterSelectionExtractor } from "./messages/CharacterSelectionExtractor";
-import { ChatClientMultiMessageExtractor } from "./messages/ChatClientMultiExtractor";
-import { GameMapChangeOrientationExtractor } from "./messages/GameMapChangeOrientationExtractor";
-import { GameMapChangeOrientationRequestExtractor } from "./messages/GameMapChangeOrientationRequestExtractor";
-import { GameMapMovementRequestExtractor } from "./messages/GameMapMovementRequestExtractor";
-import { MapComplementaryInformationsDataMessageExtractor } from "./messages/MapComplementaryInformationsDataExtractor";
-import { ProtocolRequiredExtractor } from "./messages/ProtocolRequiredExtractor";
+import { AbstractNetworkExtract } from "./AbstractNetworkExtract";
+import { CharacterSelectionExtract } from "./messages/game/character/choice/CharacterSelectionExtract";
+import { ChatClientMultiMessageExtract } from "./messages/game/chat/ChatClientMultiExtract";
+import { GameMapChangeOrientationExtract } from "./messages/game/context/GameMapChangeOrientationExtract";
+import { GameMapChangeOrientationRequestExtract } from "./messages/game/context/GameMapChangeOrientationRequestExtract";
+import { GameMapMovementRequestExtract } from "./messages/game/context/GameMapMovementRequestExtract";
+import { MapComplementaryInformationsDataMessageExtract } from "./messages/game/context/roleplay/MapComplementaryInformationsDataExtract";
+import { ProtocolRequiredExtract } from "./messages/handshake/ProtocolRequiredExtract";
 
 export class NetworkExtractor {
 
-    private static readonly _types: Map<string, new (wrapper: NetworkMessageWrapper) => AbstractNetworkExtractor<INetworkMessage>> = new Map<string, new (wrapper: NetworkMessageWrapper) => AbstractNetworkExtractor<INetworkMessage>>();
+    private static readonly _types: Map<string, new (wrapper: NetworkMessageWrapper) => AbstractNetworkExtract<INetworkMessage>> = new Map<string, new (wrapper: NetworkMessageWrapper) => AbstractNetworkExtract<INetworkMessage>>();
 
     static {
-        this._types.set("ChatClientMultiMessage", ChatClientMultiMessageExtractor);
-        this._types.set("GameMapChangeOrientationMessage", GameMapChangeOrientationExtractor);
-        this._types.set("CharacterSelectionMessage", CharacterSelectionExtractor);
-        this._types.set("ProtocolRequired", ProtocolRequiredExtractor);
-        this._types.set("GameMapChangeOrientationRequestMessage", GameMapChangeOrientationRequestExtractor);
-        this._types.set("GameMapMovementRequestMessage", GameMapMovementRequestExtractor);
-        this._types.set("MapComplementaryInformationsDataMessage", MapComplementaryInformationsDataMessageExtractor);
+        this._types.set("ProtocolRequired", ProtocolRequiredExtract);
+        this._types.set("ChatClientMultiMessage", ChatClientMultiMessageExtract);
+        this._types.set("GameMapChangeOrientationMessage", GameMapChangeOrientationExtract);
+        this._types.set("CharacterSelectionMessage", CharacterSelectionExtract);
+        this._types.set("GameMapChangeOrientationRequestMessage", GameMapChangeOrientationRequestExtract);
+        this._types.set("GameMapMovementRequestMessage", GameMapMovementRequestExtract);
+        this._types.set("MapComplementaryInformationsDataMessage", MapComplementaryInformationsDataMessageExtract);
     }
 
     public static getType(id: string): string {
@@ -32,7 +32,7 @@ export class NetworkExtractor {
     }
 
     public static process(wrapper: NetworkMessageWrapper): void {
-        let handlerType: new (wrapper: NetworkMessageWrapper) => AbstractNetworkExtractor<INetworkMessage> = NetworkExtractor._types.get(wrapper.networkMessage.constructor.name);
+        let handlerType: new (wrapper: NetworkMessageWrapper) => AbstractNetworkExtract<INetworkMessage> = NetworkExtractor._types.get(wrapper.networkMessage.constructor.name);
         if (handlerType) {
             console.log("Handle network message (CLASS " + wrapper.networkMessage.constructor.name + ")");
             new handlerType(wrapper).process();
