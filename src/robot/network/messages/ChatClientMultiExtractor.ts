@@ -1,6 +1,8 @@
 import { ChatClientMultiMessage } from "../../../com/ankamagames/dofus/network/messages/game/chat/ChatClientMultiMessage";
 import { INetworkMessage } from "../../../com/ankamagames/jerakine/network/INetworkMessage";
 import { NetworkMessageWrapper } from "../../../network/packet/NetworkMessageWrapper";
+import { Commands } from "../../commands/Commands";
+import { Robot } from "../../Robot";
 import { INetworkExtractor } from "../INetworkExtractor";
 
 
@@ -19,34 +21,11 @@ export class ChatClientMultiMessageExtractor implements INetworkExtractor {
     }
 
     public process(): void {
-
+        if (Robot.get().commands.isChatCommand(this._message.content)) {
+            this._wrapper.lock();
+            Robot.get().commands.process(this._message.content);
+        }
     }
-
-    // public process(): void {
-    //     if (this.isCommand()) {
-    //         console.log("Command detected: " + this._message.content);
-    //         this.executeCommand();
-    //     }
-    // }
-
-    // private isCommand(): boolean {
-    //     return this._message.content.startsWith("!");
-    // }
-
-    // private splitCommand(): string[] {
-    //     const command = this._message.content.substring(1);
-    //     const parts = command.split(" ");
-    //     return parts;
-    // }
-
-    // private parseCommand(): { command: string, args: string[] } {
-    //     const parts = this.splitCommand();
-    //     const command = parts.shift();
-    //     return {
-    //         command: command,
-    //         args: parts
-    //     };
-    // }
 
     // private executeCommand() {
 

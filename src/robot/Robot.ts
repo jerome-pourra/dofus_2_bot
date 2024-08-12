@@ -1,3 +1,4 @@
+import { ActionManager } from "./actions/ActionsManager";
 import { Commands } from "./commands/Commands";
 import { Datacenter } from "./datacenter/Datacenter";
 
@@ -7,6 +8,7 @@ export class Robot {
 
     public datacenter: Datacenter;
     public commands: Commands;
+    public actions: ActionManager;
 
     public static get(): Robot {
         if (Robot._instance === null) {
@@ -18,6 +20,7 @@ export class Robot {
     private constructor() {
         this.datacenter = new Datacenter();
         this.commands = new Commands();
+        this.actions = new ActionManager();
     }
 
 }

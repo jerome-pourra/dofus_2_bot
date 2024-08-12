@@ -1,10 +1,12 @@
+import { AbstractCommand } from "./AbstractCommand";
 import { ICommand } from "./ICommand";
 
-export class Changeorient implements ICommand {
+export class Changeorient extends AbstractCommand implements ICommand {
 
     private _active: boolean;
 
     constructor() {
+        super();
         this._active = false;
     }
 
@@ -13,17 +15,13 @@ export class Changeorient implements ICommand {
     }
 
     public active(): void {
-        console.log("Changeorient active");
-        
         this._active = true;
-        // confirm message in chat
+        this.callActions();
     }
 
     public deactive(): void {
-        console.log("Changeorient deactive");
-        
         this._active = false;
-        // confirm message in chat
+        this.callActions();
     }
 
     public toogle(): void {

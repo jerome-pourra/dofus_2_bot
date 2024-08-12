@@ -3,7 +3,7 @@ export interface ICommand {
     isActive(): boolean;
     
     active(...args: Array<string>): void;
-    deactive(): void;
-    toogle(): void;
+    deactive(...args: Array<string>): void;
+    toogle(...args: Array<string>): void;
 
 }
