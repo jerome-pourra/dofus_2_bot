@@ -13,11 +13,15 @@ export class Changeorient implements ICommand {
     }
 
     public active(): void {
+        console.log("Changeorient active");
+        
         this._active = true;
         // confirm message in chat
     }
 
     public deactive(): void {
+        console.log("Changeorient deactive");
+        
         this._active = false;
         // confirm message in chat
     }
