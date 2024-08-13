@@ -21,6 +21,7 @@ export function inject(rd_host: string, rd_port: number, filter_ports: number[])
         let sa_family: number;
         let port: number;
         let addr: string;
+        let pid: number;
         let can_hook: boolean = false;
 
         Interceptor.attach(connect_p, {
@@ -30,6 +31,7 @@ export function inject(rd_host: string, rd_port: number, filter_ports: number[])
                 sockfd = args[0];
                 sockaddr_p = args[1];
                 sa_family = sockaddr_p.add(1).readU8();
+                pid = Process.id;
                 port = 256 * sockaddr_p.add(2).readU8() + sockaddr_p.add(3).readU8();
         
                 let addList: number[] = [];
@@ -58,7 +60,7 @@ export function inject(rd_host: string, rd_port: number, filter_ports: number[])
                     return;
                 }
 
-                let connect_request = JSON.stringify({host: addr, port: port});
+                let connect_request = JSON.stringify({host: addr, port: port, pid: pid});
                 let buf_send = Memory.allocUtf8String(connect_request);
                 socket_send(sockfd.toInt32(), buf_send, connect_request.length, 0);
                 let buf_recv = Memory.alloc(512);
