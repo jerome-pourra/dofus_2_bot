@@ -24,7 +24,7 @@ export abstract class NetworkMessage implements INetworkMessage {
 
     public constructor() {
         this._instance_id = ++NetworkMessage.GLOBAL_INSTANCE_ID;
-        console.log("NetworkMessage.constructor() -> id: " + this._instance_id);
+        // console.log("NetworkMessage.constructor() -> id: " + this._instance_id);
     }
 
     public abstract pack(param1: ICustomDataOutput): void;

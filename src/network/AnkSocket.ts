@@ -1,5 +1,4 @@
 import { Socket } from "net";
-import { PacketHandler } from "./packet/PacketHandler";
 import { MainWorker } from "../worker/main/MainWorker";
 
 export enum AnkSocketEndpoint {
@@ -14,14 +13,12 @@ export abstract class AnkSocket {
     protected _socket: Socket;
     protected _worker: MainWorker;
     protected _untreated: number;
-    protected _packetHandler: PacketHandler;
     protected abstract _endpoint: AnkSocketEndpoint;
 
     public constructor(worker: MainWorker) {
         this._socket = null;
         this._worker = worker;
         this._untreated = 0;
-        this._packetHandler = new PacketHandler();
     }
 
     public treated(value: number) {

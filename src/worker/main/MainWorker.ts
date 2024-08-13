@@ -24,12 +24,12 @@ export class MainWorker {
         this.processPid = null;
 
         this.worker.on("online", () => {
-            this.postInitializationMessage();
             // console.log("MainWorker() -> new thread worker online");
+            this.postInitializationMessage();
         })
 
         this.worker.on("error", (error: Error) => {
-            console.error("MainWorker() -> thread worker error: " + error.message);
+            console.error("MainWorker() -> thread worker error: ", error);
         });
 
         this.worker.on("exit", (code: number) => {
@@ -59,12 +59,11 @@ export class MainWorker {
     }
 
     private setGameInstancePid(pid: number) {
-        this.processPid = pid;
         // console.log("MainWorker.addWorkerPid() -> new worker pid: " + pid);
+        this.processPid = pid;
     }
 
     private onThreadWorkerMessage(message: ThreadWorkerMessage): void {
-
         switch (message.type) {
             case ThreadWorkerMessageType.TERMINATE:
                 this.onTerminateMessage(message as ThreadWorkerTerminateMessage);
@@ -76,13 +75,13 @@ export class MainWorker {
                 this.onNetworkProcessMessage(message as ThreadWorkerNetworkProcessMessage);
                 break;
             default:
-                throw new Error("MainWorker.dispatchMessage() -> unknown message type");
+                throw new Error("MainWorker.onThreadWorkerMessage() -> unknown message type " + message.type);
         }
     }
 
     private onTerminateMessage(message: ThreadWorkerTerminateMessage): void {
+        // console.log("MainWorker.onTerminateMessage() -> thread termination with sequence: " + message.sequence);
         MainWorker.WORKERS_PID.set(this.processPid, message);
-        console.log("MainWorker.onTerminateMessage() -> thread termination with sequence: " + message.sequence);
     }
 
     private onNetworkRobotMessage(message: ThreadWorkerNetworkRobotMessage): void {
