@@ -18,7 +18,6 @@ export class ProtocolRequiredExtract extends AbstractNetworkExtract<ProtocolRequ
 
         if (fs.existsSync(protocolVersionPath)) {
             const protocolVersion = JSON.parse(fs.readFileSync(protocolVersionPath, "utf-8"));
-            this._message.version = protocolVersion.version;
             if (protocolVersion.version !== this._message.version) {
                 throw new Error(`ProtocolRequiredExtract.process() -> protocol version mismatch: ${this._message.version} (expected: ${protocolVersion.version})`);
             }
