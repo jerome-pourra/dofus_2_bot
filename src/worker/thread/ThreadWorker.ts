@@ -44,14 +44,14 @@ export class ThreadWorker {
     }
 
     private onTerminateMessage(message: MainWorkerTerminateMessage): void {
-        console.log("ThreadWorker.onTerminateMessage() -> termination");
+        // console.log("ThreadWorker.onTerminateMessage() -> termination");
         this.postTerminateMessage();
         process.exit(0);
     }
 
     private onNetworkProcessMessage(message: MainWorkerNetworkProcessMessage): void {
 
-        console.log("ThreadWorker.onNetworkProcessMessage() -> network process");
+        // console.log("ThreadWorker.onNetworkProcessMessage() -> network process");
 
         let { raw, endpoint } = message;
         let data = Buffer.from(raw, "hex");
