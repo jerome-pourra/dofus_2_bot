@@ -14,13 +14,17 @@ export abstract class NetworkMessage implements INetworkMessage {
 
     private _instance_id: number;
 
-    public static globalInstanceId(): number {
+    public static getGlobalInstanceId(): number {
         return NetworkMessage.GLOBAL_INSTANCE_ID;
+    }
+
+    public static setGlobalInstanceId(instanceId: number): void {
+        NetworkMessage.GLOBAL_INSTANCE_ID = instanceId;
     }
 
     public constructor() {
         this._instance_id = ++NetworkMessage.GLOBAL_INSTANCE_ID;
-        // console.log("NetworkMessage.constructor() -> id: " + this._instance_id);
+        console.log("NetworkMessage.constructor() -> id: " + this._instance_id);
     }
 
     public abstract pack(param1: ICustomDataOutput): void;

@@ -5,9 +5,11 @@ import { AnkClient } from "../../network/AnkClient";
 import { AnkServer } from "../../network/AnkServer";
 import { AnkSocketEndpoint } from "../../network/AnkSocket";
 import { ThreadWorkerMessage, ThreadWorkerMessageType, ThreadWorkerNetworkProcessMessage, ThreadWorkerNetworkRobotMessage, ThreadWorkerTerminateMessage } from "../thread/ThreadWorkerMessages";
-import { MainWorkerMessage, MainWorkerMessageType, MainWorkerNetworkProcessMessage, MainWorkerTerminateMessage } from "./MainWorkerMessages";
+import { MainWorkerInitializeMessage, MainWorkerMessageType, MainWorkerNetworkProcessMessage, MainWorkerTerminateMessage } from "./MainWorkerMessages";
 
 export class MainWorker {
+
+    private static WORKERS_PID: Map<number, ThreadWorkerTerminateMessage> = new Map<number, ThreadWorkerTerminateMessage>();
 
     public worker: Worker;
     public ankClient: AnkClient;
@@ -22,7 +24,8 @@ export class MainWorker {
         this.processPid = null;
 
         this.worker.on("online", () => {
-            console.log("MainWorker() -> new thread worker online");
+            this.postInitializationMessage();
+            // console.log("MainWorker() -> new thread worker online");
         })
 
         this.worker.on("error", (error: Error) => {
@@ -50,9 +53,14 @@ export class MainWorker {
                 this.ankServer.connect(host, port);
                 this.ankServer.attachEvent("close", () => this.ankClient.end());
             }, (pid: number) => {
-                this.processPid = pid;
+                this.setGameInstancePid(pid);
             });
         });
+    }
+
+    private setGameInstancePid(pid: number) {
+        this.processPid = pid;
+        // console.log("MainWorker.addWorkerPid() -> new worker pid: " + pid);
     }
 
     private onThreadWorkerMessage(message: ThreadWorkerMessage): void {
@@ -73,6 +81,7 @@ export class MainWorker {
     }
 
     private onTerminateMessage(message: ThreadWorkerTerminateMessage): void {
+        MainWorker.WORKERS_PID.set(this.processPid, message);
         console.log("MainWorker.onTerminateMessage() -> thread termination with sequence: " + message.sequence);
     }
 
@@ -114,6 +123,15 @@ export class MainWorker {
             raw: raw,
             endpoint: endpoint,
             timestamp: Date.now()
+        };
+        this.worker.postMessage(message);
+    }
+
+    public postInitializationMessage(): void {
+        const message: MainWorkerInitializeMessage = {
+            type: MainWorkerMessageType.INITIALIZE,
+            timestamp: Date.now(),
+            sequence: MainWorker.WORKERS_PID.get(this.processPid)?.sequence ?? 0
         };
         this.worker.postMessage(message);
     }

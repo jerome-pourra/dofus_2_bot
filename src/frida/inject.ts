@@ -46,7 +46,7 @@ export function inject(rd_host: string, rd_port: number, filter_ports: number[])
                 if (can_hook) {
                     sockaddr_p.add(2).writeByteArray([Math.floor(rd_port / 256), rd_port % 256]);
                     sockaddr_p.add(4).writeByteArray(ipToBytes(rd_host));
-                    console.log("Connect to: " + addr + "::" + port + " is redirected to " + rd_host + "::" + rd_port);
+                    // console.log("Connect to: " + addr + "::" + port + " is redirected to " + rd_host + "::" + rd_port);
                 } else {
                     console.log("Connect to: " + addr + "::" + port + " is not redirected");
                 }

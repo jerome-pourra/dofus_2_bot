@@ -2,7 +2,7 @@ import { parentPort } from "worker_threads";
 import { PacketHandler } from "./network/packet/PacketHandler";
 import { Robot } from "./robot/Robot";
 import { NetworkMessage } from "./com/ankamagames/jerakine/network/NetworkMessage";
-import { MainWorkerMessage, MainWorkerMessageType, MainWorkerNetworkProcessMessage } from "./worker/main/MainWorkerMessages";
+import { MainWorkerInitializeMessage, MainWorkerMessage, MainWorkerMessageType, MainWorkerNetworkProcessMessage } from "./worker/main/MainWorkerMessages";
 import { ThreadWorkerMessageType, ThreadWorkerNetworkProcessMessage } from "./worker/thread/ThreadWorkerMessages";
 
 Robot.initialize(parentPort);
@@ -12,12 +12,16 @@ parentPort.on("message", (message: MainWorkerMessage) => {
 
     switch (message.type) {
 
+        case MainWorkerMessageType.INITIALIZE:
+            NetworkMessage.setGlobalInstanceId(message.sequence);
+            break;
+            
         case MainWorkerMessageType.TERMINATE:
 
             parentPort.postMessage({
                 type: ThreadWorkerMessageType.TERMINATE,
-                // sequence: NetworkMessage.globalInstanceId(),
-                timestamp: Date.now()
+                timestamp: Date.now(),
+                sequence: NetworkMessage.getGlobalInstanceId(),
             });
             process.exit(0);
 
