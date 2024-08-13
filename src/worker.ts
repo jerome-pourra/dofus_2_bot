@@ -1,28 +1,29 @@
 import { parentPort } from "worker_threads";
 import { PacketHandler } from "./network/packet/PacketHandler";
 import { Robot } from "./robot/Robot";
-import { MainWorkerNetworkMessage, ThreadWorkerNetworkMessage, WorkerMessage, WorkerMessageType } from "./worker/WorkerMessage";
 import { NetworkMessage } from "./com/ankamagames/jerakine/network/NetworkMessage";
+import { MainWorkerMessage, MainWorkerMessageType, MainWorkerNetworkProcessMessage } from "./worker/main/MainWorkerMessages";
+import { ThreadWorkerMessageType, ThreadWorkerNetworkProcessMessage } from "./worker/thread/ThreadWorkerMessages";
 
 Robot.initialize(parentPort);
 let packetHandler = new PacketHandler();
 
-parentPort.on("message", (message: WorkerMessage) => {
+parentPort.on("message", (message: MainWorkerMessage) => {
 
     switch (message.type) {
 
-        case WorkerMessageType.TERMINATE:
+        case MainWorkerMessageType.TERMINATE:
 
             parentPort.postMessage({
-                type: WorkerMessageType.TERMINATE,
-                sequence: NetworkMessage.globalInstanceId(),
+                type: ThreadWorkerMessageType.TERMINATE,
+                // sequence: NetworkMessage.globalInstanceId(),
                 timestamp: Date.now()
             });
             process.exit(0);
 
-        case WorkerMessageType.NETWORK_MAIN:
+        case MainWorkerMessageType.NETWORK_PROCESS:
 
-            let { raw, endpoint } = message as MainWorkerNetworkMessage;
+            let { raw, endpoint } = message as MainWorkerNetworkProcessMessage;
             let data = Buffer.from(raw, "hex");
 
             let acquisition = packetHandler.acquisition(data, endpoint);
@@ -31,8 +32,8 @@ parentPort.on("message", (message: WorkerMessage) => {
 
                 let { queue, treatments } = acquisition;
 
-                let message: ThreadWorkerNetworkMessage = {
-                    type: WorkerMessageType.NETWORK_THREAD,
+                let message: ThreadWorkerNetworkProcessMessage = {
+                    type: ThreadWorkerMessageType.NETWORK_PROCESS,
                     queue: queue.map(packet => packet.toString("hex")),
                     endpoint: endpoint,
                     timestamp: Date.now(),

@@ -2,8 +2,8 @@ import { MessagePort } from "worker_threads";
 import { ActionManager } from "./actions/ActionsManager";
 import { Commands } from "./commands/Commands";
 import { Datacenter } from "./datacenter/Datacenter";
-import { RobotWorkerNetworkMessage, WorkerMessageType } from "../worker/WorkerMessage";
 import { AnkSocketEndpoint } from "../network/AnkSocket";
+import { ThreadWorkerMessageType, ThreadWorkerNetworkRobotMessage } from "../worker/thread/ThreadWorkerMessages";
 
 export class Robot {
 
@@ -40,8 +40,8 @@ export class Robot {
     }
 
     public send(buffer: Buffer, endpoint: AnkSocketEndpoint): void {
-        let message: RobotWorkerNetworkMessage = {
-            type: WorkerMessageType.NETWORK_ROBOT,
+        let message: ThreadWorkerNetworkRobotMessage = {
+            type: ThreadWorkerMessageType.NETWORK_ROBOT,
             raw: buffer.toString("hex"),
             endpoint: endpoint,
             timestamp: Date.now()
