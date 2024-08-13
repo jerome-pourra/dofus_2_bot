@@ -1,3 +1,5 @@
+import path from "path";
+
 export const config = {
     hook: {
         search: /Dofus.*/i,
@@ -9,5 +11,9 @@ export const config = {
     },
     worker: {
         script: "./dist/worker.js",
+    },
+    paths: {
+        root: path.resolve(__dirname, "../"),
+        protovolVersion: path.resolve(__dirname, "../ProtocolVersion.json"),
     },
 }

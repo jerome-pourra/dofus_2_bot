@@ -1,12 +1,13 @@
 import { Socket } from "net";
 import { Worker } from "worker_threads";
 import { AnkSocket, AnkSocketEndpoint } from "./AnkSocket";
+import { MainWorker } from "../worker/main/MainWorker";
 
 export class AnkServer extends AnkSocket {
 
     protected _endpoint = AnkSocketEndpoint.CLIENT;
 
-    public constructor(worker: Worker) {
+    public constructor(worker: MainWorker) {
 
         super(worker);
 
@@ -36,6 +37,10 @@ export class AnkServer extends AnkSocket {
 
     public connect(host: string, port: number) {
         this._socket.connect(port, host);
+    }
+
+    protected getPeer(): AnkSocket {
+        return this._worker.ankClient;
     }
 
 }

@@ -1,12 +1,13 @@
 import { Socket } from "net";
 import { Worker } from "worker_threads";
 import { AnkSocket, AnkSocketEndpoint } from "./AnkSocket";
+import { MainWorker } from "../worker/main/MainWorker";
 
 export class AnkClient extends AnkSocket {
 
     protected _endpoint = AnkSocketEndpoint.SERVER;
 
-    public constructor(worker: Worker, socket: Socket) {
+    public constructor(worker: MainWorker, socket: Socket) {
 
         super(worker);
 
@@ -30,10 +31,10 @@ export class AnkClient extends AnkSocket {
 
     }
     
-    public hookRecv(data: Buffer, callback: (host: string, port: number) => void) {
+    public hookRecv(data: Buffer, callbackConnect: (host: string, port: number) => void, callbackPid: (pid: number) => void): void {
 
         console.log("[Hook >>> Mitm] : " + data.toString("utf-8"));
-        const { host, port } = JSON.parse(data.toString("utf-8"));
+        const { host, port, pid } = JSON.parse(data.toString("utf-8"));
 
         this.attachEvent("data", (data: Buffer) => {
             this.recv(data);
@@ -41,8 +42,13 @@ export class AnkClient extends AnkSocket {
 
         // TODO: trouver une meilleure solution que d'envoyer un packet de merde...
         this.send(Buffer.alloc(1, 0x00, "hex"));
-        callback(host, port);
+        callbackConnect(host, port);
+        callbackPid(pid);
 
+    }
+
+    protected getPeer(): AnkSocket {
+        return this._worker.ankServer;
     }
 
 }

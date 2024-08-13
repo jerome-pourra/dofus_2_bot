@@ -1,4 +1,5 @@
 import { ICustomDataInput } from "../../com/ankamagames/jerakine/network/ICustomDataInput";
+import { NetworkMessage } from "../../com/ankamagames/jerakine/network/NetworkMessage";
 import { AnkSocketEndpoint } from "../AnkSocket";
 import { PacketTooShortError } from "./PacketTooShortError";
 

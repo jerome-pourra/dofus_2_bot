@@ -1,7 +1,5 @@
 import { Socket } from "net";
-import { Worker } from "worker_threads";
-import { PacketHandler } from "./packet/PacketHandler";
-import { MainWorkerNetworkMessage, WorkerMessageType } from "../worker/WorkerMessage";
+import { MainWorker } from "../worker/main/MainWorker";
 
 export enum AnkSocketEndpoint {
     CLIENT,
@@ -13,20 +11,19 @@ export abstract class AnkSocket {
     public static readonly ENDPOINT: AnkSocketEndpoint;
 
     protected _socket: Socket;
-    protected _worker: Worker;
+    protected _worker: MainWorker;
     protected _untreated: number;
-    protected _packetHandler: PacketHandler;
     protected abstract _endpoint: AnkSocketEndpoint;
 
-    public constructor(worker: Worker) {
+    public constructor(worker: MainWorker) {
         this._socket = null;
         this._worker = worker;
         this._untreated = 0;
-        this._packetHandler = new PacketHandler();
     }
 
     public treated(value: number) {
         this._untreated -= value;
+        // console.log(`${this.constructor.name}.treated() -> untreat: ${this._untreated}`);
     }
 
     public attachEvent(event: string, callback: (...args: any[]) => void) {
@@ -52,15 +49,16 @@ export abstract class AnkSocket {
         }
     }
 
-    public end(other: AnkSocket) {
-        let interval = setInterval(() => {
-            if (other._untreated === 0) {
+    public end() {
+        const peer = this.getPeer();
+        const interval = setInterval(() => {
+            if (peer._untreated === 0) {
                 clearInterval(interval);
                 if (this._socket.readyState === "open") {
                     this._socket.end();
-                    this._worker.terminate();
+                    this._worker.postTerminateMessage();
                 } else {
-                    console.error(`${this.constructor.name}.end() -> socket not open`);
+                    // console.error(`${this.constructor.name}.end() -> socket not open`);
                 }
             }
         }, 100);
@@ -71,19 +69,15 @@ export abstract class AnkSocket {
             this._socket.destroy();
             this._worker.terminate();
         } else {
-            console.error(`${this.constructor.name}.destroy() -> socket not open`);
+            // console.error(`${this.constructor.name}.destroy() -> socket not open`);
         }
     }
 
     protected recv(data: Buffer) {
-        let message: MainWorkerNetworkMessage = {
-            type: WorkerMessageType.NETWORK_MAIN,
-            raw: data.toString("hex"),
-            endpoint: this._endpoint,
-            timestamp: Date.now()
-        };
+        this._worker.postNetworkProcessMessage(data.toString("hex"), this._endpoint);
         this._untreated += data.length;
-        this._worker.postMessage(message);
     }
+
+    protected abstract getPeer(): AnkSocket;
 
 }

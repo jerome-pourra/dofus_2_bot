@@ -1,27 +1,24 @@
-import { MessagePort } from "worker_threads";
 import { ActionManager } from "./actions/ActionsManager";
 import { Commands } from "./commands/Commands";
 import { Datacenter } from "./datacenter/Datacenter";
-import { RobotWorkerNetworkMessage, WorkerMessageType } from "../worker/WorkerMessage";
 import { AnkSocketEndpoint } from "../network/AnkSocket";
+import { ThreadWorker } from "../worker/thread/ThreadWorker";
 
 export class Robot {
 
     private static _instance: Robot = null;
 
-    private _parentThread: MessagePort;
+    private _worker: ThreadWorker;
 
     public datacenter: Datacenter;
     public commands: Commands;
     public actions: ActionManager;
 
-    public static initialize(parentThread: MessagePort): void {
-        console.log("Robot -> initialize");
-        
+    public static initialize(worker: ThreadWorker): void {
         if (Robot._instance !== null) {
             throw new Error("Robot already initialized");
         }
-        this._instance = new Robot(parentThread);
+        this._instance = new Robot(worker);
     }
 
     public static get(): Robot {
@@ -31,9 +28,9 @@ export class Robot {
         return Robot._instance;
     }
 
-    private constructor(parentThread: MessagePort) {
+    private constructor(worker: ThreadWorker) {
 
-        this._parentThread = parentThread;
+        this._worker = worker;
 
         this.datacenter = new Datacenter();
         this.commands = new Commands();
@@ -42,13 +39,7 @@ export class Robot {
     }
 
     public send(buffer: Buffer, endpoint: AnkSocketEndpoint): void {
-        let message: RobotWorkerNetworkMessage = {
-            type: WorkerMessageType.NETWORK_ROBOT,
-            raw: buffer.toString("hex"),
-            endpoint: endpoint,
-            timestamp: Date.now()
-        };
-        this._parentThread.postMessage(message);
+        this._worker.postNetworkRobotMessage(buffer.toString("hex"), endpoint);
     }
 
 }
